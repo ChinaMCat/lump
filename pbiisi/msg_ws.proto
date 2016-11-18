@@ -1,0 +1,775 @@
+syntax = "proto3";
+package wlst.ws;
+
+option optimize_for = SPEED;
+
+message Head {
+    int64 idx = 1;  // 序号(必填)
+    int32 ver = 2;  // 协议版本(必填,默认为协议发布日期6位整型)。当前版本为 160328
+    string if_name = 3;  // 接口名称(可选)
+    int64 if_dt = 100;  // 请求或返回时间(必填)
+    int32 if_st = 101;  // 接口操作状态(必填)
+                            // 1-操作成功, 0-操作失败, 原因参考msg, 10-用户未登录或超时(1h),请求被拒绝, 11-用户权限不足
+                            // 41-数据库连接失败,42-指令提交失败(socket pool),43-第三方接口调用失败,45-数据库提交失败,46-参数错误
+    string if_msg = 102;  // 失败时填充详细原因(可选)
+    repeated string msg_filter = 103;  // 调用接口后可能产生的消息过滤器，仅对设备操作类型接口有效，如终端开关灯、选测，客户端可以动态设置这些过滤器用来获得精准推送
+    int32 paging_num = 200;  // 此次请求/应答是否使用分页(仅对非参数数据查询类接口有效,'query'开头的接口),0-不使用,大于0时使用,但是,若客户端请求的赋值>100或数据总量大于100,服务端按照100进行强制分页
+    int32 paging_idx = 201;  // 分页序号,从1开始,当序号大于分页总数时默认返回最后页
+    int32 paging_total = 202;  // 服务端返回该次请求产生的分页总数(客户端请求数据时不填充)
+    int64 paging_buffer_tag = 203;  // 分页缓存标签,0-要求服务器重建缓存,xx-根据服务器返回的tag从对应缓存读取数据
+    int32 paging_record_total = 204;  // 查询记录总数
+}
+
+// 共用应答
+message CommAns {
+    Head head = 1;  // 协议头信息
+}
+
+// 用户验证
+message rqUserLogin {
+    Head head = 1;  // 协议头信息
+    int32 dev = 2;  // 设备类型,1-pc,2-web,3-移动设备,不同设备同一用户可同时登录,同种设备同一用户互斥
+    string unique = 3;  // 移动设备唯一标示(移动设备填充,可以由服务器配置文件设置是否校验)
+    string user = 4;  // 用户名
+    string pwd = 5;  // 密码(md5加密传输)
+    double lon = 6; // 登录设备经度(选填)
+    double lat = 7;  // 登录设备纬度(选填)
+}
+// 应答
+message UserLogin {
+    Head head = 1;  // 协议头信息
+    string uuid = 2;  // 用户验证成功后分配的uuid(系统生成)
+    int32 auth = 3;  // 用户权限值
+    string fullname = 4;  // 用户全名
+    string user_db = 5;  // 用户关联数据库名称
+    int32 user_area = 6;  // 用户的区域id(暂不用)
+    string zmq = 7;  // 信息推送服务地址(zmp端口号)
+    string remark = 8; // 备注信息,如工作流系统登录的返回信息
+    repeated int32 area_r = 9;  // 可读区域
+    repeated int32 area_w = 10;  // 可写区域
+    repeated int32 area_x = 11;  // 可操作区域
+}
+
+// 用户注销 
+// CommAns应答
+
+// 用户uuid续订
+message rqUserRenew {
+    Head head = 1;
+    int32 dev = 2;  // 设备类型,1-pc,2-web,3-移动设备
+    string unique = 3;  // 移动设备唯一标示(移动设备填充)
+}
+
+// CommAns应答
+
+// 添加用户
+message rqUserAdd {
+    Head head = 1;
+    string user = 2;  // 新用户登录名(用户登录名不可修改)
+    string fullname = 3;  // 新用户全名
+    string pwd = 4;  // 新用户密码
+    int32 area_id = 5;  // 新用户所属区域id
+    int32 auth = 6;  // 新用户权限值,
+    string tel = 7;  // 新用户手机号
+    string code = 8;  // 新用户移动设备操作码(开关灯操作时输入)
+    string dbname = 9;  // 用户管理的数据库名称
+}
+
+// CommAns应答
+
+// 删除用户
+message rqUserDel {
+    Head head = 1;
+    string user_name = 3;  // 要删除的用户名
+}
+
+// CommAns应答
+
+// 修改用户参数
+message rqUserEdit {
+    Head head = 1;
+    string user_name = 2;  // 要修改的用户id
+    string fullname = 3;  // 新用户全名
+    string pwd = 4;  // 新用户密码(md5序列化后传输)如为空值表示不改密码
+    int32 area_id = 5;  // 新用户所属区域id
+    int32 auth = 6;  // 新用户权限值
+    string tel = 7;  // 新用户手机号
+    string code = 8;  // 新用户移动设备操作码(开关灯操作时输入)
+    string pwd_old = 9;  // 旧密码(uuid为管理员时不需要)
+}
+
+// CommAns应答
+
+// 请求用户信息
+message rqUserInfo {
+    Head head = 1;
+    string user_name = 2;  // 要请求的用户名(-1-请求全部)
+}
+
+message UserInfo {
+    message UserView {
+        string user = 1;  // 用户登录名
+        string fullname = 2;  // 用户全名
+        string pwd = 3;  // 用户密码
+        int32 auth = 4;  // 用户权限值
+        string tel = 5;  // 用户手机号
+        string code = 6;  // 用户移动设备操作码(开关灯操作时输入)
+        int32 user_id = 7;  // 用户id
+        int32 area_id = 8;  // 所属区域id
+        string db_name = 9;  // 所属数据库名称
+    }
+    Head head = 1;
+    repeated UserView user_view = 2;
+}
+
+// 请求区域信息应答
+message AreaInfo {
+    message AreaView {
+        int32 area_id = 1;  // 区域id
+        string area_name = 2;  // 区域名称
+        repeated int32 tml_id = 3;  // 下属设备id
+    }
+    Head head = 1;
+    repeated AreaView area_view = 2;
+}
+
+// 请求分组信息应答
+message GroupInfo {
+    message GroupView {
+        int32 grp_id = 1;  // 分组id
+        string grp_name = 2;  // 分组名称
+        repeated int32 tml_id = 3;  // 下属设备id
+        int32 grp_area = 4;  // 分组所属区域id
+        int32 grp_order = 5;  // 分组排序
+    }
+    Head head = 1;
+    repeated GroupView group_view = 2;
+}
+
+// 请求系统信息
+message rqSysInfo {
+    Head head = 1;
+    repeated int32 data_mark = 2[packed=true];  // 查询类型标记,1-系统名称,2-终端总数/启用数量/在线数量(暂不支持),
+                                                                                    // 3-现存故障总数,终端现存故障总数,单灯现存故障总数,防盗现存故障总数,
+                                                                                    // 4-系统包含的设备信息,
+                                                                                    // 7-服务运行状态(暂不支持)
+}
+// 应答
+message SysInfo {
+    Head head = 1;
+    repeated int32 data_mark = 2[packed=true];  // 查询类型标记,同请求
+    string sys_name = 3;  // 系统名称
+    repeated int32 tml_num = 4 [packed=true];  // [终端总数,启用数量,在线数量(暂不支持)]
+    repeated int32 err_num = 5 [packed=true];  // 故障总数 [现存故障总数,终端现存总数,单灯现存故障总数,防盗现存故障总数]
+    repeated int32 st_svr = 6 [packed=true];  // [数据服务,通信服务],0-服务不在线,1-服务在线,2-服务状态未知(暂不支持)
+    repeated int32 tml_type = 7 [packed=true];  // [终端数量,防盗数量,节能数量,抄表数量,光控数量,单灯数量,漏电数量]若无相应设备,则填0
+}
+
+// 系统名称修改
+message rqSysEdit {
+    Head head = 1;
+    string sys_name = 2;  // 新的系统名称
+}
+// CommAns应答
+
+// 单灯集中器选测
+message rqSluDataGet {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
+    repeated int32 phy_id = 7 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
+    int32 data_mark = 3;  // 选测内容标示, 0-选测集中器状态,4-选测控制器物理信息,6-选测控制器辅助数据,7-选测控制器基本数据
+    int32 sluitem_idx = 4;  // 控制器起始地址
+    int32 sluitem_num = 5;  // 控制器数量
+    int32 cmd_idx = 6;  // 命令序号
+}
+// CommAns应答
+
+// 单灯控制器选测
+message rqSluitemDataGet {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
+    repeated int32 phy_id = 6 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
+    int32 sluitem_idx = 3;  // 控制器地址
+    Data_mark data_mark = 4;  // 选测标示
+    int32 cmd_idx = 5;  // 命令序号
+    message Data_mark {
+        int32 read_data = 1;  // 选测
+        int32 read_timer = 2;  // 读取时钟
+        int32 read_args = 3;  // 读取运行参数
+        int32 read_group = 4;  // 读取组地址
+        int32 read_ver = 5;  // 读取版本
+        int32 read_sunriseset = 6;  // 读取当天日出日落
+        int32 read_timetable = 7;  // 读取本地参数（新）
+        int32 read_ctrldata = 8;  // 读取控制器数据（新）
+    }
+}
+// CommAns应答
+
+// 单灯控制
+message rqSluCtl {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
+    repeated int32 phy_id = 13 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
+    int32 cmd_idx = 3;  // 序号
+    int32 operation_type = 4;  // 指令类型 0-清除，1-定时，2-经纬度，3-即时
+    int32 operation_order = 5;  // 操作顺序 0-广播，1-依次
+    int32 addr_type = 6;  //地址类型 0-全部，1-组，2-规则，3-单一，4-gprs
+    repeated int32 addrs = 7 [packed=true];  // 控制器地址
+    repeated int32 week_set = 8 [packed=true];  // 周设置
+    int32 timer_or_offset = 9;  // 定时 hh*60+mm->int32 或偏移量 依据 operation_type定
+    int32 cmd_type = 10;  // 操作类型 3-经纬度关灯，4-混合控制，5-pwm调节，6-485调节
+    repeated int32 cmd_mix = 11 [packed=true];  // 混合回路操作 0-不操作，1-开灯，2-1档节能，3-2档节能，4-关灯（经纬度关灯时，cmd_type<4视为不操作）
+    CmdPWM cmd_pwm = 12;  // pwm功率调节
+    message CmdPWM {
+        repeated int32 loop_can_do = 1 [packed=true];  // 回路(仅需要操作的回路序号)
+        int32 scale = 2;  // 比例 0-100 -> 0%-100%
+        int32 rate = 3;  // 频率 /100为发送值
+    }
+}
+// CommAns应答
+
+// 单灯对时
+message rqSluTimerSet {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
+    repeated int32 phy_id = 4 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
+}
+// CommAns应答
+
+// 终端选测
+message rqRtuDataGet {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
+    repeated int32 phy_id = 4 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
+}
+// CommAns应答
+
+// 终端控制
+message rqRtuCtl {
+    message RtuDo {
+        int32 opt = 1;  // 1-单回路开关,2-多回路开关,3-停运,4-解除停运
+        repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
+        repeated int32 phy_id = 4 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
+        repeated int32 loop_do = 3 [packed=true];  // 从回路1开始最大16,要操作的内容0-关,1-开,2-不变,如3005共6个输出需要开启1,4,关闭2,6,则填入[1,0,2,1,2,0](opt=3,4时无效)
+    }
+    Head head = 1;
+    repeated RtuDo rtu_do = 2;
+}
+// CommAns应答
+
+// 事件记录查询
+message rqQueryDataEvents {
+    Head head = 1;
+    int64 dt_start = 5;  // 起始年月日时间,转换为long传输(1970-1-1开始)
+    int64 dt_end = 6;  // 结束年月日时间,转换为long传输(1970-1-1开始)
+    repeated int32 events_id = 7 [packed=true];  // 待定义
+    repeated string user_id = 8;  // 用户名,可多选
+    repeated int32 tml_id = 9 [packed=true];  // 设备id,可多选
+}
+// 应答
+message QueryDataEvents {
+    message DataEventsView {
+        int32 events_id = 1;  // 事件id
+        string user_name = 2;  // 用户id
+        int32 tml_id = 3;  // 设备对象id
+        string events_msg = 4;  // 事件内容
+        int64 dt_happen = 5;  // 事件发生时间
+        string events_name = 6;  // 事件名称
+    }
+    Head head = 1;
+    repeated DataEventsView data_events_view = 2;
+}
+
+// 故障查询
+message rqQueryDataErr {
+    Head head = 1;
+    int64 dt_start = 5;  // 起始年月日时间,转换为long传输(1970-1-1开始的秒数)
+    int64 dt_end = 6;  // 结束年月日时间,转换为long传输(1970-1-1开始的秒数)
+    int32 type = 7;  // 类型,0-最新,1-历史
+    repeated int32 tml_id = 9 [packed=true];  // 设备id,留空表示全部,可多选
+    repeated int32 err_id = 10 [packed=true];  // 要查询的故障id,留空表示全部,可多选
+}
+// 应答
+message QueryDataErr {
+    message ErrView {
+        int32 err_id = 1;  // 故障id
+        string err_name = 2;  // 故障名称
+        // int64 data_create_idx = 3;  // 产生故障的数据记录时间
+        // int64 data_remove_idx = 4;  // 消除故障的数据记录时间
+        int32 tml_id = 5;  // 产生故障的设备逻辑地址
+        int64 dt_create = 6;  // 故障产生时间
+        int64 dt_remove = 7;  // 故障消除时间(现存故障时为0)
+        int32 phy_id = 8;  // 设备物理地址
+        string tml_name = 9;  // 设备名称
+        int32 tml_sub_id1 = 10;  // 回路序号 或控制系序号或线路序号
+        int32 tml_sub_id2 = 11;  // 灯头序号 等
+        string remark = 12;  // 备注
+        int32 err_count = 13;  // 一定时间内的重复报警次数
+    }
+    Head head = 1;
+    int32 type = 2;  // 类型,0-最新,1-历史
+    repeated ErrView err_view = 3;
+}
+
+// 短信提交端口
+message rqSmsQueue {
+    Head head = 1;
+    repeated int32 tels = 2 [packed=true];  // 目标号码，长度11位，可填写多个
+    string msg = 3;  // 短信内容，长度超过340个字符会被拆分
+}
+// CommAns应答
+
+// 工控机提交数据
+message rqIpcUplink{
+    Head head = 1;
+    string dev_id = 2;  // 末端设备地址
+    string raw_string = 3;  // 末端设备的原始数据
+}
+// CommAns应答
+
+// 环境数据查询
+message rqQueryEMData {
+    Head head = 1;
+    string dev_id = 2;  // 末端设备地址
+    int64 dt_start = 5;  // 起始年月日时间,转换为long传输(1970-1-1开始)
+    int64 dt_end = 6;  // 结束年月日时间,转换为long传输(1970-1-1开始)
+    // 2个时间均为0表示查询最新的一条数据
+}
+// 应答
+message QueryEMData {
+    Head head = 1;
+    string dev_id = 2;  // 末端设备地址
+    repeated Qudata qudata = 3;  // 气象数据
+
+    message Qudata {
+        float temp = 1;  // 温度,摄氏度
+        float rehu = 2;  // 湿度 %
+        float wsds = 3;  // 瞬时风速 m/s
+        float wdis = 4;  // 风向度数
+        float ripm = 5;  // 分钟雨量, mm
+        float luxs = 6;  // 光照度
+        float atms = 7;  // 大气压强, pa
+        float svol = 8;  // 系统电压 V
+        float no = 9;  // 一氧化氮 ppm
+        float no2 = 10;  // 二氧化氮 ppm
+        float co = 11;  // 一氧化碳 ppb
+        float co2 = 12;  // 二氧化碳 ppm
+        float o3 = 13;  // 臭氧 ppb
+        float so2 = 14;  // 二氧化硫 ppm
+        float pm1 = 15;  // PM1.0 ug/m3
+        float pm25 = 16;  // PM2.5 ug/m3
+        float pm10 = 17;  // PM10 ug/m3
+        float tvoc = 18;  // 总挥发性有机化合物 ppb
+        float h2s = 19;  // 硫化氢 ppm
+        int64 dt_data = 20;  // 数据时间,1970-1-1 0:0:0 至今秒数
+    }
+}
+
+// 客户端提交控制指令给末端设备
+message rqIpcCtl {
+    Head head = 1;
+    repeated string dev_id = 12;  // 末端设备地址，填写多个地址时，表示所有地址的设备均执行相同的指令
+    string ctl_cmd = 10;  // 控制指令，接口依据指令选择读取相关字段，组装命令给末端设备，指令见下
+    repeated int64 ctl_target = 11 [packed=true];  // 末端设备识别码，当设置识别码时，仅第一个数据有效
+    string dev_ver = 2;  // 读取设备版本
+    string dev_supplier = 3;  // 读取供应商标识
+    string dev_name = 4;  //  读取板卡名称
+    string dev_cmds = 5;  // 读取指令清单
+    int64 dev_datetime = 6;  // 读取/设置系统时间,只支持DATETIME命令,转1970-1-1 0:0:0 至今的秒数,当命令为设置时间的返回时，1-表示设置成功，0-表示设置失败
+    int32 dev_status = 7;  // 读取/设置设备状态,0-保留,1-停运,2-启用,3-重启
+    Comm_Args comm_args = 8;  // 读取/设置通信参数
+    int32 rptint = 9;  // 读取/设置主报间隔,单位 秒
+    
+    message Comm_Args {
+        int32 baud_rate = 1;  // 波特率
+        int32 data_bit = 2;  // 数据位
+        int32 parity = 3;  // 校验位
+        int32 stop = 4;  // 停止位
+    }
+}
+// CommAns应答
+
+// 日出日落查询
+message rqQueryDataSunriset {
+    Head head = 1;
+}
+// 应答
+message QueryDataSunriset {
+    message DataSunrisetView {
+        int32 month = 1;  //月
+        int32 day = 2;  // 日
+        // int64 dt_sun = 3;  // 日期 yyyy-mm-dd
+        int32 sunrise = 4;  // 日出 hh*60+mm
+        int32 sunset = 5;  // 日落 hh*60+mm
+    }
+    Head head = 1;
+    repeated DataSunrisetView data_sunriset_view = 2;
+}
+
+// 短信告警
+message rqSmsSubmit {
+    Head head = 1;
+    repeated int32 tels = 2 [packed=true];  // 目标号码，长度11位，可填写多个
+    string msg = 3;  // 短信内容，长度超过340个字符会被拆分
+}
+// CommAns应答
+
+// 故障基础信息
+message rqErrInfo {
+    Head head = 1;
+}
+// 应答
+message ErrInfo {
+    message ErrInfoView {
+        int32 err_id = 1;  // 故障id
+        string err_name = 2;  // 故障名称
+        string err_name_custome = 3;  // 自定义名称
+        string err_remark = 4;  // 故障解释
+        int32 err_level = 5;  // 故障等级,1-写db,不推送,0-推送,2-推送置顶,3-
+        int32 enable_alarm = 6;  // 允许报警
+        string err_check_keyword = 7;  // 数字用关键字
+        int32 err_time_set = 8;  // 时段报警0-全天,1-开灯,2-关灯,3-自定义
+        int32 dt_err_custome_start = 9;  // 自定义时段开始
+        int32 dt_err_custome_end = 10;  // 自定义时段结束
+    }
+    Head head = 1;
+    repeated ErrInfoView err_info_view = 2;
+}
+
+// 事件记录基础信息
+message rqEventInfo {
+    Head head = 1;
+}
+// 应答
+message EventInfo {
+    message EventInfoView {
+        int32 event_id = 1;
+        string event_name = 2;
+    }
+    Head head = 1;
+    repeated EventInfoView event_info_view = 2;
+}
+
+// 终端数据查询
+message rqQueryDataRtu {
+    Head head = 1;
+    int64 dt_start = 5;  // 起始年月日时间,转换为long传输(1970-1-1开始的秒数)
+    int64 dt_end = 6;  // 结束年月日时间,转换为long传输(1970-1-1开始的秒数)
+    int32 type = 7;  // 类型,0-最新,1-历史
+    repeated int32 tml_id = 9 [packed=true];  // 设备id,留空表示全部,可多选
+}
+// 应答
+message QueryDataRtu {
+    message LoopView {
+        double voltage = 1;  // 电压
+        double current = 2;  // 电流
+        double power = 3;  // 功率
+        double rate = 4;  // 亮灯率
+        double factor = 5;  // 功率因数
+        int32 switch_in_st = 6;  // 开关量输入状态,0-断,1-通
+        int32 voltage_over_range = 7;  // 电压越限,0-正常,1-越下线,2-越上限,3-越量程
+        int32 current_over_range = 8;  // 电流越限,0-正常,1-越下线,2-越上限,3-越量程
+	string loop_name = 9;  // 回路名称
+	int32 loop_id = 10;  // 回路id
+    }
+    message DataRtuView {
+        int32 tml_id = 1;
+        int32 phy_id = 2;
+        string tml_name = 13;  // 设备名称
+        int64 dt_receive = 3;  // 数据接收时间
+        repeated LoopView loop_view = 4;
+        repeated int32 switch_out_st = 5 [packed=true];  // 开关量输出状态
+        double current_sum_a = 6;  // A相总电流
+        double current_sum_b = 7;  // B相总电流
+        double current_sum_c = 8;  // C相总电流
+        double voltage_a = 9;  // A相电压
+        double voltage_b = 10;  // B相电压
+        double voltage_c = 11;  // C相电压
+        repeated int32 alarm_st = 12 [packed=true];  // 终端报警状态,共8位,每一位0-正常,1-异常,[供电,开机申请,停运,报警,电压超限,电流超限,无电流,参数错误]
+    }
+    Head head = 1;
+    int32 type = 2;  // 类型,0-最新,1-历史
+    repeated DataRtuView data_rtu_view = 3;
+}
+
+// 单灯数据查询
+message rqQueryDataSlu {
+    Head head = 1;
+    int64 dt_start = 5;  // 起始年月日时间,转换为long传输(1970-1-1开始的秒数)
+    int64 dt_end = 6;  // 结束年月日时间,转换为long传输(1970-1-1开始的秒数)
+    int32 type = 7;  // 类型,0-最新,1-历史, 当查询最新数据时,tml_id只支持单选,读取第一个值
+    repeated int32 tml_id = 9 [packed=true];  // 设备id,留空表示全部,可多选
+    int32 data_mark = 10;  // 数据类型标示,0-集中器状态数据,7-控制器基本数据,6-控制器辅助数据(暂无),4-控制器物理信息(暂无)
+}
+// 应答
+message QueryDataSlu {
+    message DataSluView {
+        int32 tml_id = 1;
+        int32 phy_id = 2;
+        string tml_name = 10;  // 设备名称
+        int64 dt_receive = 3;  // 数据接收时间
+        repeated int32 reset_times = 4 [packed=true];  // 连续4天复位次数,[今天,昨天,前天,大前天]
+        repeated int32 st_running = 5 [packed=true];  // 集中器状态,[运行状态(0-正常,1-停运),报警状态(0-允许主报,1-禁止主报),开机申请(0-非开机申请,1-开机申请),通信方式(0-485,1-gprs),主动巡测(0-巡测,1-停止巡测)]
+        repeated int32 st_argv = 6 [packed=true];  // 集中器参数状态,0-正常,1-出错,[集中器参数,控制器参数,开关灯参数]
+        repeated int32 st_hw = 7 [packed=true];  // 硬件参数状态,0-正常,1-出错,[zigbee,电力载波,fram,蓝牙,硬件时钟]
+        int32 unknow_sluitem_num = 8;  // 未知控制器数量
+        repeated int32 zigbee_channel = 9;  // zigbee信道(1-16)
+    }
+    message DataSluitemView {
+        int32 tml_id = 1;
+        int32 phy_id = 2;
+        string tml_name = 10;  // 设备名称
+        int32 sluitem_id = 11;  // 控制器id
+        string sluitem_name = 12;  // 控制器名称
+        int64 dt_receive = 3;  // 数据接收时间
+        int64 dt_cache = 5;  // 集中器缓存该条数据的时间
+        repeated int32 st_sluitem = 6 [packed=true];  // 控制器状态,[继电器校准参数出错(0-正常,1-出错),EEPROM出错(0-正常,1-出错),停运(0-正常,1-停运),禁止主动报警(0-主动报警,1-禁止),设置工作参数(0-未设置,1-已设置),校准(0-未校准,1-已校准),状态(0-正常,1-电压越上限,2-电压越下限,3-通信故障)]
+        int32 temperature = 7;  // 温度,255或0表示无测温模块
+        repeated DataLampView data_lamp_view = 9;  // 灯头状态,数据
+    }
+    message DataLampView {
+        int32 lamp_id = 8;  // 灯头id
+        repeated int32 st_lamp = 1 [packed=true];  // 灯状态,[亮灯状态(0-亮灯,1-调档节能,2-调光节能,3-关灯),故障状态(0-正常,1-光源故障,2-补偿电容故障,3-意外灭灯,4-意外亮灯,5-自熄灯),漏电状态(0-无漏电,1-漏电),功率状态(0-正常,1-功率越上限,2-功率越下限)]
+        double lamp_voltage = 2;  // 电压,单位V
+        double lamp_current = 3;  // 电流,单位A
+        double lamp_power = 4;  // 有功功率,单位W
+        double lamp_electricity = 5;  // 累计电量,单位kW/h,0为无效数据
+        double lamp_electricity_count = 9;  // 软件计算的累计电量,单位kW/h,0为无效数据
+        double lamp_runtime = 6;  // 运行时间,单位分钟
+        double lamp_runtime_count = 10;  // 软件计算的运行时间,单位分钟
+        double lamp_saving = 7;  // 节能档位0-100%
+    }
+    message SluitemPhyView {
+        int32 tml_id = 1;
+        int32 phy_id = 2;
+        int64 dt_receive = 3;  // 数据接收时间
+        int32 sluitem_id = 4;  // 控制器地址
+        int32 signal_strength = 5;  // 信号强度
+        int32 routing = 6;  // 路由级数 电力载波 0-6,zigbee 0-10
+        int32 phase = 7;  // 所在相位 0-无法确定，1-A，2-B，3-C
+        int32 comm_success = 8;  // 通信成功次数 1-16
+        int32 comm_all = 9;  // 通信总次数 1-16
+        int32 sluitem_loops = 10;  // 控制器回路数量
+        int32 power_saving = 11;  // 节能方式 0-无控制，1-只有开关灯，2-一档节能，3-二档节能，4-RS485，5-PWM
+        int32 has_leakage = 12;  // 漏电流测量 0-无，1-有
+        int32 has_temperature = 13;  // 温度采集 0-无，1-有
+        int32 has_timer = 14;  // 时钟 0-无，1-有
+        int32 model = 15;  // 型号 0-unknow,1-wj2090j
+    }
+    Head head = 1;
+    int32 data_mark = 2;  // 数据类型标示,同请求
+    repeated DataSluView data_slu_view = 3;  // 当data_mark=0时返回
+    repeated DataSluitemView data_sluitem_view = 4; // 当data_mark=7时返回
+}
+
+// 设备参数
+message rqTmlInfo {
+    Head head = 1;
+    repeated int32 data_mark = 5 [packed=true];  // 请求数种类,1-baseinfo,2-gisinfo,4-rtuinfo,5-RtuCurrentAlarmInfo,6-sluinfo,7-lduinfo,8-alsinfo,9-mruinfo,10-esuinfo,11-esuopt
+    int32 tml_id = 6;  // 请求的设备id,0-返回所有数据
+}
+// 应答
+message TmlInfo {
+    message BaseInfo {
+        int64 tml_id = 1;  // 设备逻辑地址
+        int32 phy_id = 2;  // 设备物理地址
+        int32 tml_type = 3;  // 设备型号,1-终端,2-防盗,3-节能,4-抄表,5-光控,6-单灯,7-漏电
+        int32 tml_st = 4;  // 设备状态,0-不用,1-停运,2-启用
+        string tml_name = 5;  // 设备名称
+        string tml_com_sn = 6;  // 设备模块序列号(可以为sim卡号,需要出厂设置)
+        int32 tml_com_ip = 7;  // 模块ip地址(绑定ip时可设置,否则无意义)
+        int32 tml_model = 8;  // 设备型号,3005,3006,2090,3090等
+        int32 tml_parent_id = 9;  // 父设备id
+        int64 tml_dt_setup = 10;  // 安装日期
+        string tml_desc = 11;  // 备注
+        int64 tml_dt_update = 12;  // 最后更新时间
+        string tml_street = 13;  // 安装位置
+        string tml_guid=14;  // 唯一识别号
+    }
+    message GisInfo {
+        int64 tml_id = 1;  // 设备逻辑地址
+        double tml_pix_x = 5;  // 位图x坐标
+        double tml_pix_y = 2;  // 位图y坐标
+        double tml_gis_x = 3;  // gis x坐标
+        double tml_gis_y = 4;  // gis y坐标
+    }
+    message RtuInfo {
+        int64 tml_id = 1;  // 设备逻辑地址
+        int32 heart_beat = 2;  // 心跳周期,(单位分钟,默认60)(界面建议不呈现)
+        int32 active_report = 3;  // 主报周期,(单位分钟,默认260)(界面建议不呈现)
+        int32 alarm_delay = 4;  // 报警延迟,(单位秒,默认15)(界面建议不呈现)
+        repeated int32 work_mark = 5 [packed=true];  // 工作标志(界面建议不呈现),默认[1,0,0,1,1,1,0,1],0-false,1-true,[允许滚动显示(),允许声响报警,禁止报警,允许呼叫,允许开机申请,允许自检,禁止主报,禁止路由]
+        int32 voltage_range = 6;  // 电压量程 -
+        int32 voltage_uplimit = 7;  // 电压上限
+        int32 voltage_lowlimit = 8;  // 电压下限
+        int32 loop_st_switch_by_current = 9;  // 采用电流判断是否吸合，0-不采用，1-采用
+        repeated RtuLoopItem loop_item = 12;  // 回路信息
+    }
+    message SluInfo {
+        int64 tml_id = 1;  // 设备逻辑地址
+        int32 slu_auto_alarm = 2;  // 允许主报,0-false,1-true
+        int32 slu_auto_patrol = 3;  // 允许巡测,0-false,1-true
+        int32 slu_auto_resend = 4;  // 允许自动补发指令,0-false,1-true
+        int32 slu_suls_num = 5;  // 控制器数量
+        int32 slu_bt_pin = 6;  // 蓝牙pin码,默认62547600
+        int32 slu_domain = 7;  // 域名,1-65535
+        int32 slu_voltage_uplimit = 8;  // 电压报警上限,默认300
+        int32 slu_voltage_lowlimit = 9;  // 电压报警下限,默认170
+        int64 slu_zigbee_id = 10;  // zigbee地址
+        int32 slu_comm_fail_count = 11;  // 通信失败报警,1-50,默认5
+        double slu_power_factor = 12;  // 功率因数报警,0.4-1.0,默认0.6,发送时*100
+        repeated int32 slu_zigbee_comm = 13 [packed=true];  // 通信信道,1-16,可输入多个
+        double slu_current_range = 14;  // 电流量程,0.1~20A,发送时*10
+        int32 slu_power_range = 15;   // 功率量程,10~2000W,发送时/10
+        double slu_lon = 16;  // 经度
+        double slu_lat = 17; // 纬度
+        int32 slu_route = 18;  // 路由模式,1-5,默认1
+        int32 slu_is_zigbee = 19;  // 是否zigbee通信,0-载波,1-zigbee
+        int32 slu_saving_mode = 20;  // 节能方式,1-pwm,2-485,默认1
+        int32 slu_pwm_rate = 21;  // pwm频率或485波特率
+        int32 slu_off_line = 23;  // 停运,0-false,1-true
+        repeated SluItemInfo sluitem_info = 22;
+    }
+    message LduInfo {
+        int64 tml_id = 1;  // 设备逻辑地址
+        int32 lduitem_id = 2;  // 防盗集中器地址
+        repeated LduItemInfo lduitem_info = 3;
+    }
+    message AlsInfo {
+        int64 tml_id = 1;  // 设备逻辑地址
+        int32 als_id = 2;  // 光照度地址
+        int32 als_range = 3;  // 光照度量程,1-100,2-10000, 默认2
+        int32 als_mode = 4;  // 光照度模式,0-每隔5s主动上报(用户电脑串口直连),1-选测应答(选测1),2-按设定间隔主动上报(选测2),3-485连接下按设定间隔主动上报(选测3),4-按设定间隔主动上报(选测4)
+        int32 als_interval = 5;  // 上报间隔,单位秒,默认10
+        int32 als_comm = 6; // 1-串口直连,2-gprs,3-485
+    }
+    message MruInfo {
+        int64 tml_id = 1;  // 设备逻辑地址
+        repeated int32 mru_id = 2 [packed=true];  // 抄表地址,六字节
+        int32 mru_baud_rate = 3;  // 波特率
+        int32 mru_transformer = 4;  // 电表变比
+        int32 mru_type = 5;  // 协议版本,1-1997,2-2007
+    }
+    message EsuInfo {
+        int64 tml_id = 1;  // 设备逻辑地址
+		bool esu_used = 28;  // 有效标示  0-不用,1-使用
+		int32 esu_preheating_time = 2;  // 预热时间 默认2分钟
+		int32 esu_close_time = 4;  // 关机时间 不设置
+		int32 esu_open_time = 5;  // 开机时间 不设置
+		int32 esu_ct_radio_a = 6;  // A相接触器变比 50~500 默认150
+		int32 esu_ct_radio_b = 7;  // B相接触器变比 50~500 默认150
+		int32 esu_ct_radio_c = 8;  // C相接触器变比 50~500 默认150
+		int32 esu_time_mode = 25;  // 时间模式：0 为定时模式 ；1为延时模式；默认1
+		int32 esu_run_mode = 26;  // 运行模式：0 自动，1 手动； 默认 0
+		int32 esu_fansatrt_temp = 9;  // 风机启动温度 默认45
+		int32 esu_fanclose_temp = 10;  // 风机关闭温度 默认35
+		int32 esu_enery_save_temp = 11;  // 退出节能温度 默认 70 界面设置
+		int32 esu_mandatory_protect_temp = 12;  // 强制保护温度 默认85
+		int32 esu_recover_temp = 13;  // 恢复节能温度 默认50
+		double esu_input_overvoltage_limit = 14;  // 输入过压门限值 默认270
+		double esu_Input_undervoltage_limit = 15;  // 输入欠压门限值 默认170
+		double esu_output_undervoltage_limit = 16;  // 输出欠压门限值 默认160
+		double esu_output_overload_limit = 17;  // 输出过载门限值 默认 144 电流
+		int32 esu_regulating_speed = 18;  // 调压速度 仅模式为延时模式时有效 默认10 6~60
+		int32 esu_power_phases = 19;  // 供电相数  默认3 不提供界面设置
+		int32 esu_comm_type = 23;  // 通信模式 ：0 通过终端；1 通过通信模块 默认0
+		int32 esu_work_mode = 24;  // 工作模式：0 通用模式；1 特殊模式；不提供界面设置 默认0
+		int32 esu_auto_alarm = 20;  // 是否主动报警 0-false,1-true,0
+		int32 esu_alarm_delay = 21;  // 报警延时时间  默认10秒钟
+		int32 esu_mode = 22;  // 节能模式：0 接触器模式；1 IGBT模式 默认1
+        repeated EsuAdjustVoltage esu_adjust_voltage = 27;
+    }
+    message EsuAdjustVoltage {
+    	int32 esu_operate_id = 2;  // 操作序号 共有8个时间需要 1~8
+    	int32 esu_operatoe_value = 3;  // 操作节能值
+    	int32 esu_operate_time = 4;  // 操作时间 如00：30  则为30 时*60+分
+    	int64 esu_update_time = 5;  // 本条信息更新时间
+    }
+    message RtuLoopItem {
+        int32 loop_id = 1;  // 回路序号
+        string loop_name = 2;  // 回路名称
+        int32 loop_phase = 3;  // 回路电压相位,0-a,1-b,2-c
+        int32 loop_current_range = 4;  // 回路电流量程
+        int32 loop_switchout_id = 7;  // 回路对应的开关量输出id(1-16), 0-表示无对应开关量输出
+        string loop_switchout_name = 8;  // 开关量输出名称
+        int32 loop_switchout_vector = 9;  // 开关量输出矢量
+        int32 loop_switchin_id = 10;  // 回路模拟量输入id
+        int32 loop_switchin_vector = 11;  // 回路对应的模拟量矢量(1-36)
+        int32 loop_transformer = 12;  // 回路互感器比值
+        int32 loop_transformer_num = 13;  // 回路互感器圈数(默认1)
+        int32 loop_step_alarm = 14;  // 回路跳变报警
+        int32 loop_st_switch = 15;  // 0-常开,1-常闭,默认1
+        int32 loop_is_shield=16;  // 回路是否屏蔽,0-不屏蔽,1-屏蔽
+        int32 shield_small_current=17;  // 屏蔽小电流，0-表示不屏蔽，>0 表示低于设定值的电流屏蔽显示
+        double loop_light_rate_bm = 18;  // 亮灯率基准值
+        double loop_light_rate_alarm = 19;  // 亮灯率报警值
+        int32 current_uplimit = 20;  // 回路电流主动上限报警值
+        int32 current_lowlimit = 21;  // 回路电流主动下限报警值
+    }
+    message SluItemInfo {
+        int64 sluitem_idx = 2;  // 条码
+        int32 sluitem_power_uplimit = 3;  // 功率上限
+        int32 sluitem_power_lowlimit = 4;  // 功率下限
+        repeated int32 sluitem_route = 5 [packed=true];  // 控制器路由(前4级通信控制器编号1,2,3...)
+        int32 sluitem_order = 6;  // 开灯序号
+        repeated int32 sluitem_st_poweron = 7 [packed=true];  // 4路上电状态,0-关灯,1-开灯,默认[1,1,1,1]
+        int32 sluitem_st = 8;  // 控制器状态,0-停运,1-投运
+        int32 sluitem_alarm = 9;  // 控制器主报,0-不允许,1-允许
+        repeated int32 sluitem_vector = 10 [packed=true];  // 4路矢量,默认[1,2,3,4]
+        int32 sluitem_loop_num = 11; // 回路数量
+        repeated int32 sluitem_rated_power = 12 [packed=true];  // 4路额定功率(w),0-不设置,1-0:20,2-76:100,3-101:120,4-121:150,5-151:200,6-201:250,7-251:300,8-301:400,9-401:600,10-601:800,11-800:1000,12-1001:1500,13-1501:2000,14-21:50,15-51:75
+        string sluitem_name = 13;  // 名称
+        int32 sluitem_id = 14;  // 地址,唯一,不可变
+        int32 sluitem_phy_id = 15; // 物理地址,可变
+        string sluitem_lamp_id = 16;  // 灯杆编号/名称
+        double sluitem_gis_x = 17;  // x坐标
+        double sluitem_gis_y = 18;  // y坐标
+    }
+    message LduItemInfo {
+        int32 loop_id = 1;  // 线路id
+        string loop_name = 2;  // 线路名称
+        int32 loop_st = 3;  // 线路状态,0-不用,1-使用
+        int32 loop_transformer = 4;  // 互感器量程
+        int32 loop_phase = 5;  // 相位
+        string loop_lamppost = 6;  // 末端灯杆编号
+        int32 loop_lighton_ss = 7;  // 开灯信号强度门限,默认400
+        int32 loop_lightoff_ss = 8;  // 关灯信号强度门限,默认200,(界面可隐藏)
+        int32 loop_lighton_ia = 9;  // 开灯阻抗报警门限,默认100,(界面可隐藏)
+        int32 loop_lightoff_ia = 10;  // 关灯阻抗报警门限,默认600
+        int32 loop_lighting_rate = 11;  // 开灯亮灯率报警门限,默认80,(界面可隐藏)
+        repeated int32 loop_alarm_set = 12 [packed=true];  // 回路报警标识,0-false,1-true,共8个,默认[1,0,0,0,0,1,0,1],依次为[开灯信号强度告警,开灯阻抗告警,亮灯率变化告警,线路失电告警,关灯信号告警,关灯阻抗告警,线路短路告警,主动上报]
+        string loop_desc = 13; // 备注
+        int32 tml_loop_id = 14;  // 终端对应的回路序号
+        int32 loop_ctrl_type = 15; // 控制方式(暂不用)
+        int32 loop_comm_type = 16;  // 通信方式,3-485,6-gprs
+    }    
+    Head head = 1;
+    repeated BaseInfo base_info = 12;  // 设备基础信息
+    repeated GisInfo gis_info = 13;  // 设备地理信息
+    repeated RtuInfo rtu_info = 15;  // 终端设备填充
+    repeated SluInfo slu_info = 16;  // 单灯设备填充
+    repeated LduInfo ldu_info = 17;  // 防盗设备填充
+    repeated AlsInfo als_info = 18;  // 光照度设备填充
+    repeated MruInfo mru_info = 19;  // 抄表设备填充
+    repeated EsuInfo esu_info = 20;  // 节能设备填充
+    repeated int32 data_mark = 3 [packed=true];  // 请求数种类,1-baseinfo,2-gisinfo,4-rtuinfo,6-sluinfo,7-lduinfo,8-alsinfo,9-mruinfo,10-esuinfo
+}
+
+// 短信发送记录查询
+message rqQuerySmsRecord {
+    Head head = 1;
+    repeated int32 tels = 3 [packed=true];  // 查询号码,长度11,可填写多个,可选
+    string msg = 4;  // 查询内容,可模糊查询,可选
+    int64 dt_start = 5;  // 查询起始日期
+    int64 dt_end = 6;  // 查询结束日期
+}
+// 应答
+message QuerySmsRecord {
+    message SmsRecord {
+        int64 dt_send = 1;  // 发送日期
+        int32 tel = 2;  // 发送号码
+        string msg = 3;  // 发送内容
+    }
+    Head head = 1;
+    repeated SmsRecord sms_record = 3;
+}

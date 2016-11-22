@@ -27,7 +27,7 @@ class GroupInfoHandler(base.RequestHandler):
                                                        '',
                                                        None,
                                                        msgws.GroupInfo(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -70,7 +70,7 @@ class AreaInfoHandler(base.RequestHandler):
                                                        '',
                                                        None,
                                                        msgws.AreaInfo(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -129,7 +129,7 @@ class EventInfoHandler(base.RequestHandler):
                                                        pb2,
                                                        msgws.rqEventInfo(),
                                                        msgws.EventInfo(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -175,7 +175,7 @@ class QueryDataSunrisetHandler(base.RequestHandler):
                                                        pb2,
                                                        msgws.rqQueryDataErr(),
                                                        msgws.QueryDataErr(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -216,7 +216,7 @@ class QueryDataEventsHandler(base.RequestHandler):
                                                        pb2,
                                                        msgws.rqQueryDataEvents(),
                                                        msgws.QueryDataEvents(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -288,9 +288,8 @@ class QueryDataEventsHandler(base.RequestHandler):
                             del env
                         l = len(xquery.err_view)
                         if l > 0:
-                            buffer_tag, strraw = utils.set_cache('querydataevents', xquery, l,
-                                                                 msg.head.paging_num)
-                            xquery.ParseFromString(strraw)
+                            buffer_tag = utils.set_cache('querydataevents', xquery, l,
+                                                         msg.head.paging_num)
                             msg.head.paging_buffer_tag = buffer_tag
                             msg.head.paging_record_total = l
                             paging_idx, paging_total, lstdata = utils.update_msg_cache(
@@ -318,7 +317,7 @@ class SysEditHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqSysEdit(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
         env = False
         contents = ''
         if _user_data['user_auth'] in utils._can_write:
@@ -351,7 +350,7 @@ class SysInfoHandler(base.RequestHandler):
                                                        pb2,
                                                        msgws.rqSysInfo(),
                                                        msgws.SysInfo(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data['user_auth'] in utils._can_read:
             msg.data_mark.extend(rqmsg.data_mark)

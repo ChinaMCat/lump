@@ -69,8 +69,8 @@ class TestHandler(base.RequestHandler):
 
     @tornado.gen.coroutine
     def get(self):
-        self.write(str(self.request.path))
-        self.write(str(dir(self)))
+        self.write(str(self.request.arguments) + '<br/>')
+        self.write(str(dir(self)) + '<br/>')
         self.write(str(dir(self.request)))
         # strsql = 'select * from mydb10001_data.record_operator'
         # cur = yield utils.sql_pool.execute(strsql, ())

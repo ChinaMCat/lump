@@ -9,6 +9,8 @@ import base
 import tornado
 import mlib_iisi as libiisi
 import utils
+import logging
+import base64
 import time
 from datetime import datetime, timedelta
 import mxpsu as mx
@@ -22,101 +24,105 @@ class IpcUplinkHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
         pb2 = self.get_argument('pb2')
+        scode = self.get_argument('scode')
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid, pb2, msgws.rqIpcUplink())
-
-        if _user_data is not None:
-            if _user_data['user_auth'] in utils._can_exec:
-                devid = rqmsg.dev_id
-                raw_string = rqmsg.raw_string.replace('\r\n', '')
-                createsql = ''
-                insertsql = ''
-                db_names = set()
-                print(str(rqmsg))
-                if devid[:6] == '901001':  # 申欣环保
-                    if raw_string.startswith('QI:'):
-                        data = raw_string.split(':')[1]
-                        lstdata = data.split(',')
-                        ym = mx.stamp2time(time.time(), format_type='%y%m')
-                        for i in utils.qudata_sxhb:
-                            db_names.add('sens_data_{0:03d}_month_{1}'.format(i, ym))
-                        cur = yield utils.sql_pool.execute(
-                            'select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA=%s and TABLE_NAME like %s',
-                            (utils.m_dgdb_name, '%sens_data_%_month_%'))
-                        if cur.rowcount > 0:
-                            d = cur.fetchall()
-                            for z in d:
-                                db_names.discard(z[0])
+        legal, rqmsg, msg = utils.check_security_code(scode,
+                                                      pb2,
+                                                      msgws.rqIpcUplink(),
+                                                      msgws.CommAns(),
+                                                      request=self.request)
+        if legal:
+            devid = rqmsg.dev_id
+            raw_string = rqmsg.raw_string.replace('\r\n', '')
+            createsql = ''
+            insertsql = ''
+            db_names = set()
+            if devid[:6] == '901001':  # 申欣环保
+                if raw_string.startswith('QI:'):
+                    data = raw_string.split(':')[1]
+                    lstdata = data.split(',')
+                    ym = mx.stamp2time(time.time(), format_type='%y%m')
+                    for i in utils.qudata_sxhb:
+                        db_names.add('sens_data_{0:03d}_month_{1}'.format(i, ym))
+                    cur = yield utils.sql_pool.execute(
+                        'select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA=%s and TABLE_NAME like %s',
+                        (utils.m_dgdb_name, '%sens_data_%_month_%'))
+                    if cur.rowcount > 0:
+                        d = cur.fetchall()
+                        for z in d:
+                            db_names.discard(z[0])
+                    cur.close()
+                    for z in db_names:
+                        createsql += utils.sqlstr_create_emtable.format(z) + '\r\n'
+                    if len(createsql) > 0:
+                        createsql = 'use {0};'.format(utils.m_dgdb_name) + createsql
+                        cur = yield utils.sql_pool.execute(createsql, ())
                         cur.close()
-                        for z in db_names:
-                            createsql += utils.sqlstr_create_emtable.format(z) + '\r\n'
-                        if len(createsql) > 0:
-                            createsql = 'use {0};'.format(utils.m_dgdb_name) + createsql
-                            cur = yield utils.sql_pool.execute(createsql, ())
+                    t = int(time.time())
+                    for i in range(len(utils.qudata_sxhb)):
+                        try:
+                            insertsql += 'insert into {5}.sens_data_{0:03d}_month_{1} (dev_id,dev_data,date_create) values ({2},{3},{4});'.format(
+                                utils.qudata_sxhb[i], ym, devid, lstdata[i], t, utils.m_dgdb_name)
+                        except:
+                            pass
+                    if len(insertsql) > 0:
+                        try:
+                            cur = yield utils.sql_pool.execute(insertsql, ())
                             cur.close()
-                        t = int(time.time())
-                        for i in range(len(utils.qudata_sxhb)):
-                            try:
-                                insertsql += 'insert into {5}.sens_data_{0:03d}_month_{1} (dev_id,dev_data,date_create) values ({2},{3},{4});'.format(
-                                    utils.qudata_sxhb[i], ym, devid, lstdata[i], t,
-                                    utils.m_dgdb_name)
-                            except:
-                                pass
-                        if len(insertsql) > 0:
-                            try:
-                                cur = yield utils.sql_pool.execute(insertsql, ())
-                                cur.close()
-                            except Exception as ex:
-                                if 'object is not iterable' not in ex.message:
-                                    msg.head.if_st = 45
-                                    msg.head.if_msg = ex.message
-                    elif raw_string.startswith('QH:'):  # 读取支持的指令
-                        msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.lscmd.get')
-                        msgpub.dev_id.extend([devid])
-                        msgpub.dev_cmds = raw_string[3:].replace(' ', '').replace('|', ',')
-                        libiisi.send_to_zmq_pub('ipc.rep.ipc.lscmd.get.{0}'.format(devid),
-                                                msgpub.SerializeToString())
-                    elif raw_string.startswith('QD:'):  # 读取日期
-                        msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.date.get')
-                        msgpub.dev_id.extend([devid])
-                        s = raw_string[3:].split(',')
-                        msgpub.dev_datetime = int(mx.time2stamp('{0}-{1}-{2} 00:00:00'.format(s[
-                            0], s[1], s[2])))
-                        libiisi.send_to_zmq_pub('ipc.rep.ipc.date.get.{0}'.format(devid),
-                                                msgpub.SerializeToString())
-                    elif raw_string.startswith('QT:'):  # 读取时间
-                        msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.time.get')
-                        msgpub.dev_id.extend([devid])
-                        s = raw_string[3:].split(',')
-                        msgpub.dev_datetime = int(mx.time2stamp('{0}-{1}-{2} {3}:{4}:{5}'.format(
-                            time.localtime()[0], time.localtime()[
-                                1], time.localtime()[2], s[0], s[1], s[2])))
-                        libiisi.send_to_zmq_pub('ipc.rep.ipc.time.get.{0}'.format(devid),
-                                                msgpub.SerializeToString())
-                    elif raw_string.startswith('QV:') or raw_string.startswith(
-                            'Device ID:'):  # 读取版本
-                        msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.verf.get')
-                        msgpub.dev_id.extend([devid])
-                        msgpub.dev_ver = raw_string
-                        libiisi.send_to_zmq_pub('ipc.rep.ipc.verf.get.{0}'.format(devid),
-                                                msgpub.SerializeToString())
-                    elif raw_string.startswith('QC:'):  # 设置日期和时间
-                        msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.datetime.set')
-                        msgpub.dev_id.extend([devid])
-                        if 'completed' in raw_string:
-                            msgpub.dev_datetime = 1
-                        else:
-                            msgpub.dev_datetime = 0
-                        libiisi.send_to_zmq_pub('ipc.rep.ipc.datetime.set.{0}'.format(devid),
-                                                msgpub.SerializeToString())
+                        except Exception as ex:
+                            if 'object is not iterable' not in ex.message:
+                                msg.head.if_st = 45
+                                msg.head.if_msg = ex.message
+                elif raw_string.startswith('QH:'):  # 读取支持的指令
+                    msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.lscmd.get')
+                    msgpub.dev_id.extend([devid])
+                    msgpub.dev_cmds = raw_string[3:].replace(' ', '').replace('|', ',')
+                    libiisi.send_to_zmq_pub('ipc.rep.ipc.lscmd.get.{0}'.format(devid),
+                                            msgpub.SerializeToString())
+                elif raw_string.startswith('QD:'):  # 读取日期
+                    msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.date.get')
+                    msgpub.dev_id.extend([devid])
+                    s = raw_string[3:].split(',')
+                    msgpub.dev_datetime = int(mx.time2stamp('{0}-{1}-{2} 00:00:00'.format(s[
+                        0], s[1], s[2])))
+                    libiisi.send_to_zmq_pub('ipc.rep.ipc.date.get.{0}'.format(devid),
+                                            msgpub.SerializeToString())
+                elif raw_string.startswith('QT:'):  # 读取时间
+                    msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.time.get')
+                    msgpub.dev_id.extend([devid])
+                    s = raw_string[3:].split(',')
+                    msgpub.dev_datetime = int(mx.time2stamp('{0}-{1}-{2} {3}:{4}:{5}'.format(
+                        time.localtime()[0], time.localtime()[
+                            1], time.localtime()[2], s[0], s[1], s[2])))
+                    libiisi.send_to_zmq_pub('ipc.rep.ipc.time.get.{0}'.format(devid),
+                                            msgpub.SerializeToString())
+                elif raw_string.startswith('QV:') or raw_string.startswith('Device ID:'):  # 读取版本
+                    msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.verf.get')
+                    msgpub.dev_id.extend([devid])
+                    msgpub.dev_ver = raw_string
+                    libiisi.send_to_zmq_pub('ipc.rep.ipc.verf.get.{0}'.format(devid),
+                                            msgpub.SerializeToString())
+                elif raw_string.startswith('QC:'):  # 设置日期和时间
+                    msgpub = utils.init_msgws(msgws.rqIpcCtl(), 'ipc.datetime.set')
+                    msgpub.dev_id.extend([devid])
+                    if 'completed' in raw_string:
+                        msgpub.dev_datetime = 1
                     else:
-                        msg.head.if_st = 46
+                        msgpub.dev_datetime = 0
+                    libiisi.send_to_zmq_pub('ipc.rep.ipc.datetime.set.{0}'.format(devid),
+                                            msgpub.SerializeToString())
+                else:
+                    msg.head.if_st = 46
+        else:
+            msg.head.if_st = 0
+            msg.head.if_msg = 'Security code error'
+            logging.error(utils.format_log(self.request.remote_ip, msg.head.if_msg,
+                                           self.request.path, 0))
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, _user_data
+        del msg, rqmsg
 
 
 @base.route()
@@ -127,7 +133,10 @@ class IpcCtlHandler(base.RequestHandler):
         _user_uuid = self.get_argument('uuid')
         pb2 = self.get_argument('pb2')
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid, pb2, msgws.rqIpcCtl())
+        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
+                                                       pb2,
+                                                       msgws.rqIpcCtl(),
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_exec:
@@ -174,8 +183,11 @@ class QueryEMDataHandler(base.RequestHandler):
         _user_uuid = self.get_argument('uuid')
         pb2 = self.get_argument('pb2')
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid, pb2, msgws.rqQueryEMData(),
-                                                       msgws.QueryEMData())
+        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
+                                                       pb2,
+                                                       msgws.rqQueryEMData(),
+                                                       msgws.QueryEMData(),
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -273,9 +285,8 @@ class QueryEMDataHandler(base.RequestHandler):
 
                         l = len(xquery.qudata)
                         if l > 0:
-                            buffer_tag, strraw = utils.set_cache('queryemdata', xquery, l,
-                                                                 msg.head.paging_num)
-                            xquery.ParseFromString(strraw)
+                            buffer_tag = utils.set_cache('queryemdata', xquery, l,
+                                                         msg.head.paging_num)
                             msg.head.if_st = 1
                             msg.head.if_msg = ''
                             msg.head.paging_buffer_tag = buffer_tag

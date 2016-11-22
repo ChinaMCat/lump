@@ -7,8 +7,10 @@ import base64
 import codecs
 import json
 import time
+import logging
 import mlib_iisi as libiisi
 from tornado_mysql import pools
+import pymysql
 import pbiisi.msg_ws_pb2 as msgws
 import protobuf3.msg_with_ctrl_pb2 as msgctrl
 import mxpsu as mx
@@ -17,6 +19,7 @@ import os
 m_jkdb_name = libiisi.m_config.conf_data['jkdb_name']
 m_dgdb_name = libiisi.m_config.conf_data['dgdb_name']
 m_dz_url = libiisi.m_config.conf_data['dz_url']
+m_fs_url = libiisi.m_config.conf_data['fs_url']
 _tml_phy = dict()
 
 _can_read = (4, 5, 7, 15)
@@ -138,8 +141,8 @@ sql_pool = pools.Pool(
          passwd=libiisi.m_config.conf_data['db_pwd'],
          charset='utf8'),
     max_idle_connections=1,
-    max_recycle_sec=30,
-    max_open_connections=0)
+    max_recycle_sec=360,
+    max_open_connections=100)
 
 
 def check_tml_r(uuid, settml):
@@ -148,13 +151,21 @@ def check_tml_r(uuid, settml):
         cache_tml_r[uuid] = set()
         strsql = 'select rtu_list from {0}.area_info where area_id in ({0})'.format(','.join(
             cache_user[uuid]['area_r']))
-        cur = sql_pool.execute(strsql, ())
+        conn = pymysql.connect(host=libiisi.m_config.conf_data['db_host'].split(':')[0],
+                               port=3306 if len(libiisi.m_config.conf_data['db_host'].split(':')) ==
+                               1 else int(libiisi.m_config.conf_data['db_host'].split(':')[1]),
+                               user=libiisi.m_config.conf_data['db_user'],
+                               passwd=libiisi.m_config.conf_data['db_pwd'],
+                               charset='utf8')
+        cur = conn.cursor()
+        cur.execute(strsql)
         if cur.rowcount > 0:
             d = cur.fetchall()
             for a in d:
                 cache_tml_r[uuid].union(set([int(b) for b in a.split(';')[:-1]]))
         cur.close()
-        del cur
+        conn.close()
+        del cur, conn
 
     return cache_tml_r[uuid].intersection(settml)
 
@@ -165,13 +176,21 @@ def check_tml_w(uuid, settml):
         cache_tml_w[uuid] = set()
         strsql = 'select rtu_list from {0}.area_info where area_id in ({0})'.format(','.join(
             cache_user[uuid]['area_w']))
-        cur = sql_pool.execute(strsql, ())
+        conn = pymysql.connect(host=libiisi.m_config.conf_data['db_host'].split(':')[0],
+                               port=3306 if len(libiisi.m_config.conf_data['db_host'].split(':')) ==
+                               1 else int(libiisi.m_config.conf_data['db_host'].split(':')[1]),
+                               user=libiisi.m_config.conf_data['db_user'],
+                               passwd=libiisi.m_config.conf_data['db_pwd'],
+                               charset='utf8')
+        cur = conn.cursor()
+        cur.execute(strsql)
         if cur.rowcount > 0:
             d = cur.fetchall()
             for a in d:
-                cache_tml_w[uuid].union(set([int(b) for b in a.split(';')[:-1]]))
+                cache_tml_r[uuid].union(set([int(b) for b in a.split(';')[:-1]]))
         cur.close()
-        del cur
+        conn.close()
+        del cur, conn
 
     return cache_tml_w[uuid].intersection(settml)
 
@@ -182,18 +201,26 @@ def check_tml_x(uuid, settml):
         cache_tml_x[uuid] = set()
         strsql = 'select rtu_list from {0}.area_info where area_id in ({0})'.format(','.join(
             cache_user[uuid]['area_x']))
-        cur = sql_pool.execute(strsql, ())
+        conn = pymysql.connect(host=libiisi.m_config.conf_data['db_host'].split(':')[0],
+                               port=3306 if len(libiisi.m_config.conf_data['db_host'].split(':')) ==
+                               1 else int(libiisi.m_config.conf_data['db_host'].split(':')[1]),
+                               user=libiisi.m_config.conf_data['db_user'],
+                               passwd=libiisi.m_config.conf_data['db_pwd'],
+                               charset='utf8')
+        cur = conn.cursor()
+        cur.execute(strsql)
         if cur.rowcount > 0:
             d = cur.fetchall()
             for a in d:
-                cache_tml_x[uuid].union(set([int(b) for b in a.split(';')[:-1]]))
+                cache_tml_r[uuid].union(set([int(b) for b in a.split(';')[:-1]]))
         cur.close()
-        del cur
+        conn.close()
+        del cur, conn
 
     return cache_tml_x[uuid].intersection(settml)
 
 
-def init_msgws(msgpb, if_name):
+def init_msgws(msgpb, if_name=''):
     msgpb.head.idx = 0
     msgpb.head.ver = 160328
     msgpb.head.if_dt = int(time.time())
@@ -219,7 +246,7 @@ def get_cache(cache_head, buffer_tag):
     cache_head = ''.join(['{0:x}'.format(ord(a)) for a in cache_head])
     cache_file = os.path.join(libiisi.m_cachedir, '{0}{1}'.format(cache_head, buffer_tag))
     if os.path.isfile(cache_file):
-        f = open(cache_file, 'r')
+        f = open(cache_file, 'rb')
         s = f.read()
         f.close()
         del f
@@ -248,29 +275,58 @@ def set_cache(cache_head, cache_msg, record_total, paging_num):
     #         except:
     #             pass
     s = cache_msg.SerializeToString()
-    with open(cache_file, 'w') as f:
-        f.write(s)
-        f.close()
+    f = open(cache_file, 'wb')
+    f.write(s)
+    f.close()
+    del f
     # f = codecs.open(cache_file, 'w', 'utf8')
     # f.write(cache_msg.SerializeToString())
     # f.close()
     # del f
-    return buffer_tag, s
+    return buffer_tag  # , s
 
 
-def check_arguments(user_uuid, pb2str='', pb2rq=None, pb2msg=None, remote_ip=''):
+def check_security_code(scode, pb2str='', pb2rq=None, pb2msg=None, request=None):
+    logging.info(format_log(request.remote_ip, str(request.arguments), request.path, is_req=1))
+
+    x = set([mx.getMD5('{0}3a533ba0'.format(mx.stamp2time(time.time(), format_type='%Y%m%d%H')))])
+    if time.localtime()[4] >= 55:
+        x.add(mx.getMD5('{0}3a533ba0'.format(mx.stamp2time(time.time() + 360,
+                                                           format_type='%Y%m%d%H'))))
+    elif time.localtime()[4] < 5:
+        x.add(mx.getMD5('{0}3a533ba0'.format(mx.stamp2time(time.time() - 360,
+                                                           format_type='%Y%m%d%H'))))
+    leage = 1 if scode.lower() in x else 0
+
+    if leage:
+        rqmsg = pb2rq
+        # 初始化应答消息
+        if pb2msg is None:
+            msg = init_msgws(msgws.CommAns())
+        else:
+            msg = pb2msg
+        msg.head.if_st = 1
+    else:
+        rqmsg = None
+        msg = None
+
+    # print(scode, x)
+    return leage, rqmsg, msg
+
+
+def check_arguments(user_uuid, pb2str='', pb2rq=None, pb2msg=None, request=None):
     global cache_user
+
+    logging.info(format_log(request.remote_ip, str(request.arguments), request.path, is_req=1))
 
     user_data = None
     rqmsg = pb2rq
-    msg = pb2msg
     # 初始化应答消息
     if pb2msg is None:
-        msg = msgws.CommAns()
-    msg.head.idx = 0
+        msg = init_msgws(msgws.CommAns())
+    else:
+        msg = pb2msg
     msg.head.if_st = 1
-    msg.head.ver = 160328
-    msg.head.if_dt = int(time.time())
 
     # 检查uuid长度
     if len(user_uuid) != 32:
@@ -294,7 +350,7 @@ def check_arguments(user_uuid, pb2str='', pb2rq=None, pb2msg=None, remote_ip='')
             user_data['active_time'] = time.time()
             cache_user[user_uuid] = user_data
         else:
-            if user_data['remote_ip'] != remote_ip:
+            if user_data['remote_ip'] != request.remote_ip:
                 del user_data[user_uuid]
                 contents = 'User source ip is illegal'
                 msg.head.if_st = 12
@@ -376,12 +432,32 @@ def set_phy_list(rtu_id, phy_id):
 def get_phy_list(tml_list):
     global _tml_phy
     if len(_tml_phy) == 0:
+        conn = pymysql.connect(host=libiisi.m_config.conf_data['db_host'].split(':')[0],
+                               port=3306 if len(libiisi.m_config.conf_data['db_host'].split(':')) ==
+                               1 else int(libiisi.m_config.conf_data['db_host'].split(':')[1]),
+                               user=libiisi.m_config.conf_data['db_user'],
+                               passwd=libiisi.m_config.conf_data['db_pwd'],
+                               charset='utf8')
         strsql = 'select rtu_id, rtu_phy_id from {0}.para_base_equipment'.format(m_jkdb_name)
-        cur = sql_pool.execute(strsql, ())
+        cur = conn.cursor()
+        cur.execute(strsql)
         if cur.rowcount > 0:
             d = cur.fetchall()
             for a in d:
                 _tml_phy[a[0]] = a[1]
         cur.close()
-        del cur
-    return [_tml_phy[a] for a in tml_list]
+        conn.close()
+        del cur, conn
+    x = []
+    for a in tml_list:
+        b = _tml_phy.get(a)
+        if b is not None:
+            x.append(b)
+    return x
+
+
+def format_log(remote_ip, msg, path='', is_req=1):
+    if is_req:
+        return '({0}) req: {1} {2}'.format(remote_ip, path, msg)
+    else:
+        return '({0}) rep: {1} {2}'.format(remote_ip, path, msg)

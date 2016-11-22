@@ -27,7 +27,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                                        pb2,
                                                        msgws.rqQueryDataSlu(),
                                                        msgws.QueryDataSlu(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -129,9 +129,8 @@ class QueryDataSluHandler(base.RequestHandler):
 
                         l = len(xquery.data_slu_view)
                         if l > 0:
-                            buffer_tag, strraw = utils.set_cache('querydataslu', xquery, l,
-                                                                 msg.head.paging_num)
-                            xquery.ParseFromString(strraw)
+                            buffer_tag = utils.set_cache('querydataslu', xquery, l,
+                                                         msg.head.paging_num)
                             msg.head.paging_buffer_tag = buffer_tag
                             msg.head.paging_record_total = l
                             paging_idx, paging_total, lstdata = utils.update_msg_cache(
@@ -257,9 +256,8 @@ class QueryDataSluHandler(base.RequestHandler):
 
                         l = len(xquery.data_sluitem_view)
                         if l > 0:
-                            buffer_tag, strraw = utils.set_cache('querydatasluitem', xquery, l,
-                                                                 msg.head.paging_num)
-                            xquery.ParseFromString(strraw)
+                            buffer_tag = utils.set_cache('querydatasluitem', xquery, l,
+                                                         msg.head.paging_num)
                             msg.head.paging_buffer_tag = buffer_tag
                             msg.head.paging_record_total = l
                             paging_idx, paging_total, lstdata = utils.update_msg_cache(
@@ -285,7 +283,7 @@ class SluDataGetHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqSluDataGet(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -330,7 +328,7 @@ class SluitemDataGetHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqSluitemDataGet(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -375,7 +373,7 @@ class SluTimerSetHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqSluTimerSet(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
         env = False
         contents = ''
         if _user_data is not None:
@@ -424,7 +422,7 @@ class SluCtlHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqSluCtl(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
         env = False
         contents = ''
         if _user_data is not None:

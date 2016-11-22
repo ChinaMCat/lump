@@ -21,12 +21,13 @@ class QueryDataErrHandler(base.RequestHandler):
     def post(self):
         _user_uuid = self.get_argument('uuid')
         pb2 = self.get_argument('pb2')
-
+        
+        
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqQueryDataErr(),
                                                        msgws.QueryDataErr(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -141,9 +142,8 @@ class QueryDataErrHandler(base.RequestHandler):
 
                         l = len(xquery.err_view)
                         if l > 0:
-                            buffer_tag, strraw = utils.set_cache('querydataerr', xquery, l,
-                                                                 msg.head.paging_num)
-                            xquery.ParseFromString(strraw)
+                            buffer_tag = utils.set_cache('querydataerr', xquery, l,
+                                                         msg.head.paging_num)
                             msg.head.paging_buffer_tag = buffer_tag
                             msg.head.paging_record_total = l
                             paging_idx, paging_total, lstdata = utils.update_msg_cache(
@@ -169,7 +169,7 @@ class ErrInfoHandler(base.RequestHandler):
                                                        pb2,
                                                        msgws.rqErrInfo(),
                                                        msgws.ErrInfo(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:

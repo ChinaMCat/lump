@@ -15,6 +15,8 @@ import os
 import uuid
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
+import tornado.httpclient as thc
+from tornado.httputil import url_concat
 from tornado import gen
 
 
@@ -114,9 +116,20 @@ class UserLoginJKHandler(base.RequestHandler):
             del _area_r, _area_w, _area_x
         cur.close()
         del cur
-        print(str(msg))
         # 登录工作流
-        # todo
+        if rqmsg.dev == 3 and msg.head.if_st == 1:
+            try:
+                client = thc.AsyncHTTPClient()
+                baseurl = '{0}/FlowService.asmx/mobileLogin'.format(utils.m_fs_url)
+                args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
+                url = url_concat(baseurl, args)
+
+                rep = yield client.fetch(url)
+                if rep.code == 200:
+                    msg.remark = rep.body
+            except Exception as ex:
+                print(str(ex))
+
         self.write(mx.convertProtobuf(msg))
         self.finish()
         x, y = utils.write_event(121, contents, 2, user_name=rqmsg.user)
@@ -205,7 +218,7 @@ class UserLogoutHandler(base.RequestHandler):
         contents = ''
         env = False
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid, remote_ip=self.request.remote_ip)
+        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid, request=self.request)
 
         if _user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
@@ -245,7 +258,7 @@ class UserRenewHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqUserRenew(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
@@ -265,7 +278,8 @@ class UserAddHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqUserAdd(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
+
         if _user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to add new user.'
@@ -322,7 +336,7 @@ class UserDelHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqUserDel(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
@@ -376,7 +390,7 @@ class UserEditHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqUserEdit(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
@@ -443,7 +457,7 @@ class UserInfoHandler(base.RequestHandler):
                                                        pb2,
                                                        msgws.rqUserInfo(),
                                                        msgws.UserInfo(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0

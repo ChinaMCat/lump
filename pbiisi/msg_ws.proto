@@ -773,3 +773,20 @@ message QuerySmsRecord {
     Head head = 1;
     repeated SmsRecord sms_record = 3;
 }
+
+// 中间层报警信息提交
+message rqSubmitAlarm {
+    message AlarmView {
+        int64 dt_create = 1;  // 故障产生时间
+        int32 err_id = 2;  // 故障id
+        int32 tml_id = 3;  // 设备id
+        int32 loop_id = 4;  // 回路id,从1开始,非回路故障填0
+        int32 lamp_id = 5;  // 灯头id,从1开始,非灯头故障填0
+        int32 err_count = 6;  // 在一定时间内重复产生的故障数量
+        string remark = 7;  // 备注
+        int64 dt_remove = 8;  // 故障消除时间
+        int32 is_alarm = 9;  // 1-报警,0-消警
+    }
+    Head head = 1;
+    repeated AlarmView alarm_view = 2;
+}

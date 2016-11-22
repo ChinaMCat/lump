@@ -1,3 +1,15 @@
+[2016-11-22]
+------------
+
+-	增加接口submitalarm
+-	重命名smssublimt->sublimitsms, tcssubmit->submittcs
+-	增加接口内请求参数日志记录
+
+[2016-11-21]
+------------
+
+-	修改tcssubmit, smssubmit, ipcuplink接口参数,uuid->scode,采用YYYYMMDDHH<salt>格式,动态运算获得
+
 [2016-11-17]
 ------------
 

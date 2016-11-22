@@ -13,6 +13,7 @@ import protobuf3.msg_with_ctrl_pb2 as msgctrl
 import mxpsu as mx
 import utils
 from tornado import gen
+import time
 
 
 @base.route()
@@ -34,7 +35,7 @@ class TmlInfoHandler(base.RequestHandler):
                                                        pb2,
                                                        msgws.rqTmlInfo(),
                                                        msgws.TmlInfo(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -439,7 +440,7 @@ class QuerydataRtuHandler(base.RequestHandler):
                                                        pb2,
                                                        msgws.rqQueryDataRtu(),
                                                        msgws.QueryDataRtu(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -585,7 +586,6 @@ class QuerydataRtuHandler(base.RequestHandler):
                                     left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id \
                                     where a.date_create>={1} and a.date_create<={2} {3}'.format(
                             utils.m_jkdb_name, sdt, edt, str_tmls)
-
                         cur = yield utils.sql_pool.execute(strsql, ())
                         if cur.rowcount > 0:
                             drv = msgws.QueryDataRtu.DataRtuView()
@@ -618,25 +618,24 @@ class QuerydataRtuHandler(base.RequestHandler):
                                     x = d[12][:len(d[12]) - 1].split(';')
                                     drv.switch_out_st.extend([1 if a == 'True' else 0 for a in x])
 
-                                drlv = msgws.QueryDataRtu.LoopView()
-                                drlv.loop_name = d[2]
-                                drlv.loop_id = d[13]
-                                drlv.voltage = d[14]
-                                drlv.current = d[15]
-                                drlv.power = d[16]
-                                drlv.factor = d[17]
-                                drlv.rate = d[18]
-                                drlv.switch_in_st = d[19]
-                                drlv.current_over_range = d[20]
-                                drlv.voltage_over_range = d[21]
-                                drv.loop_view.extend([drlv])
-                                del drlv
-
+                                if d[2] is not None:
+                                    drlv = msgws.QueryDataRtu.LoopView()
+                                    drlv.loop_name = d[2]  # if d[2] is not None else ''
+                                    drlv.loop_id = d[13]
+                                    drlv.voltage = d[14]
+                                    drlv.current = d[15]
+                                    drlv.power = d[16]
+                                    drlv.factor = d[17]
+                                    drlv.rate = d[18]
+                                    drlv.switch_in_st = d[19]
+                                    drlv.current_over_range = d[20]
+                                    drlv.voltage_over_range = d[21]
+                                    drv.loop_view.extend([drlv])
+                                    del drlv
                             l = len(xquery.data_rtu_view)
                             if l > 0:
-                                buffer_tag, strraw = utils.set_cache('querydatartu', xquery, l,
-                                                                     msg.head.paging_num)
-                                xquery.ParseFromString(strraw)
+                                buffer_tag = utils.set_cache('querydatartu', xquery, l,
+                                                             msg.head.paging_num)
                                 msg.head.paging_buffer_tag = buffer_tag
                                 msg.head.paging_record_total = l
                                 paging_idx, paging_total, lstdata = utils.update_msg_cache(
@@ -664,7 +663,7 @@ class RtuDataGetHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqRtuDataGet(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_read:
@@ -702,7 +701,7 @@ class RtuCtlHandler(base.RequestHandler):
         _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
                                                        pb2,
                                                        msgws.rqRtuCtl(),
-                                                       remote_ip=self.request.remote_ip)
+                                                       request=self.request)
 
         if _user_data is not None:
             if _user_data['user_auth'] in utils._can_exec:

@@ -15,6 +15,7 @@ m_confdir, m_logdir, m_cachedir = mx.get_dirs('dclms', 'iisi')
 m_zmq_pub = None
 
 m_send_queue = mx.PriorityQueue(maxsize=5000)
+
 # _wait4ans = dict()
 # _ans_queue = dict()
 
@@ -203,6 +204,7 @@ class Conf():
             'jkdb_name': 'mydb10001',
             'dgdb_name': 'dgdb10001',
             'dz_url': 'http://id.dz.tt/index.php',
+            'fs_url': 'http://192.168.50.80:33819/ws_common',
         }
 
     def saveConf(self):
@@ -236,6 +238,8 @@ class Conf():
         conf.append('dgdb_name={0}'.format(self.conf_data['dgdb_name']))
         conf.append(u'# 电桩接口地址')
         conf.append('dz_url={0}'.format(self.conf_data['dz_url']))
+        conf.append(u'# 工作流接口地址')
+        conf.append('fs_url={0}'.format(self.conf_data['fs_url']))
 
         with codecs.open(self.conf_file, 'w', encoding='utf-8') as f:
             try:

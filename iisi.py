@@ -68,12 +68,21 @@ if __name__ == '__main__':
     libiisi.m_config.loadConfig(results.conf)
 
     if options.log_file_prefix is None:
-        options.parse_command_line(
-            args=['', '--logging=debug', '--log_to_stderr', '--log_file_prefix={0}'.format(
-                os.path.join(libiisi.m_logdir, 'iisi{0}.debug.log'.format(
-                    libiisi.m_config.conf_data[
-                        'bind_port'])))],
-            final=True)
+        if libiisi.m_config.conf_data['log_level'] == '10':
+            loglevel = 'debug'
+        elif libiisi.m_config.conf_data['log_level'] == '20':
+            loglevel = 'info'
+        elif libiisi.m_config.conf_data['log_level'] == '30':
+            loglevel = 'warring'
+        elif libiisi.m_config.conf_data['log_level'] == '40':
+            loglevel = 'error'
+        else:
+            loglevel = 'info'
+        options.parse_command_line(args=['', '--logging={0}'.format(
+            loglevel), '--log_to_stderr', '--log_file_prefix={0}'.format(os.path.join(
+                libiisi.m_logdir, 'iisi{0}.debug.log'.format(libiisi.m_config.conf_data[
+                    'bind_port'])))],
+                                   final=True)
 
     if results.hp:
         tornado.process.fork_processes(0)

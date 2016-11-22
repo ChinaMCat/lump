@@ -132,7 +132,7 @@ class TcsClient(threading.Thread):
                         except:
                             pass
                     else:
-                        self.save_log('recv:{0}'.format(rec), 20)
+                        # self.save_log('recv:{0}'.format(rec), 20)
                         self.data_process(rec)
 
                 if m_send_queue.empty() and self.is_connect:
@@ -196,7 +196,7 @@ class TcsClient(threading.Thread):
                                 except:
                                     pass
                             else:
-                                self.save_log('recv:{0}'.format(rec), 20)
+                                # self.save_log('recv:{0}'.format(rec), 20)
                                 self.data_process(rec)
                         elif event & _EPOLLOUT:
                             try:

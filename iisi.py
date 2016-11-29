@@ -93,28 +93,18 @@ if __name__ == '__main__':
     tt.setDaemon(True)
     tt.start()
 
-    # libiisi.SQL_POOL = pools.Pool(
-    #     dict(host=libiisi.m_config.conf_data['db_host'].split(':')[0],
-    #          port=3306 if len(libiisi.m_config.conf_data['db_host'].split(':')) == 1 else int(
-    #              libiisi.m_config.conf_data[
-    #                  'db_host'].split(':')[1]),
-    #          user=libiisi.m_config.conf_data['db_user'],
-    #          passwd=libiisi.m_config.conf_data['db_pwd'],
-    #          charset='utf8'),
-    #     max_idle_connections=1,
-    #     max_recycle_sec=30,
-    #     max_open_connections=0)
-
     settings = dict(static_path=os.path.join(mx.SCRIPT_DIR, 'static'),
                     template_path=os.path.join(mx.SCRIPT_DIR, 'templates'),
                     cookie_secret='RGVhciwgSSBsb3ZlIHlvdSBmb3JldmVyLg==',
                     gzip=True,
                     debug=results.debug,
                     # xsrf_cookies=True,
-                    login_url='/userlogin', )
+                    # login_url='/userloginjk', 
+                    )
 
-    import handler
-    application = tornado.web.Application(handlers=handler.handlers, **settings)
+    from handler import lst_handler
+
+    application = tornado.web.Application(handlers=lst_handler, **settings)
     application.listen(int(libiisi.m_config.conf_data['bind_port']))
     logging.error('======= start the service on port {0} ======='.format(libiisi.m_config.conf_data[
         'bind_port']))

@@ -13,25 +13,22 @@ import protobuf3.msg_with_ctrl_pb2 as msgctrl
 import mxpsu as mx
 import utils
 from tornado import gen
+from greentor import green
+import mxweb
 
 
-@base.route()
+@mxweb.route()
 class QueryDataSluHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataSlu(),
+                                                                msgws.QueryDataSlu())
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqQueryDataSlu(),
-                                                       msgws.QueryDataSlu(),
-                                                       request=self.request)
-
-        if _user_data is not None:
-            if _user_data['user_auth'] in utils._can_read:
-                sdt, edt = utils.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+        if user_data is not None:
+            if user_data['user_auth'] in utils._can_read:
+                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.data_mark = rqmsg.data_mark
 
                 xquery = msgws.QueryDataSlu()
@@ -39,10 +36,10 @@ class QueryDataSluHandler(base.RequestHandler):
 
                 if rqmsg.data_mark == 0:  # 集中器数据
                     if rqmsg.head.paging_buffer_tag > 0 and rqmsg.type == 1:
-                        s = utils.get_cache('querydataslu', rqmsg.head.paging_buffer_tag)
+                        s = self.get_cache('querydataslu', rqmsg.head.paging_buffer_tag)
                         if s is not None:
                             xquery.ParseFromString(s)
-                            total, idx, lstdata = utils.update_msg_cache(
+                            total, idx, lstdata = self.update_msg_cache(
                                 list(xquery.data_slu_view), msg.head.paging_idx,
                                 msg.head.paging_num)
                             msg.head.paging_idx = idx
@@ -56,7 +53,7 @@ class QueryDataSluHandler(base.RequestHandler):
 
                     if rebuild_cache:
                         # 验证用户可操作的设备id
-                        if _user_data['user_auth'] in utils._can_admin or _user_data[
+                        if user_data['user_auth'] in utils._can_admin or user_data[
                                 'is_buildin'] == 1:
                             if rqmsg.type == 0:
                                 if len(rqmsg.tml_id) == 0:
@@ -72,7 +69,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                         rqmsg.tml_id)))
                         else:
                             if rqmsg.type == 0:
-                                tml_ids = utils.check_tml_r(uuid, [rqmsg.tml_id[0]])
+                                tml_ids = self.check_tml_r(user_uuid, [rqmsg.tml_id[0]])
                                 if len(tml_ids) == 0:
                                     str_tmls = ' and a.rtu_id=0'
                                     msg.head.if_st = 46
@@ -81,9 +78,9 @@ class QueryDataSluHandler(base.RequestHandler):
                             else:
                                 if len(rqmsg.tml_id) == 0:
                                     str_tmls = ' and a.rtu_id in ({0})'.format(','.join(
-                                        utils.cache_tml_r[uuid]))
+                                        self._cache_tml_r[user_uuid]))
                                 else:
-                                    tml_ids = utils.check_tml_r(uuid, list(rqmsg.tml_id))
+                                    tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                                     if len(tml_ids) == 0:
                                         str_tmls = ' and a.rtu_id=0'
                                         msg.head.if_st = 46
@@ -101,21 +98,19 @@ class QueryDataSluHandler(base.RequestHandler):
                             utils.m_jkdb_name, sdt, edt, str_tmls)
                         if rqmsg.type == 0:
                             strsql += ' limit 1'
-
-                        cur = yield utils.sql_pool.execute(strsql, ())
-                        if cur.rowcount > 0:
-                            while True:
-                                try:
-                                    d = cur.fetchone()
-                                    if d is None:
-                                        break
-                                except:
-                                    break
-                                dv = msgws.QueryDataSlu.DataSluView()
+                            ParseFromString
+                        cur = self.mysql_generator(strsql)
+                        while True:
+                            try:
+                                d = cur.next()
+                            except:
+                                break
+                            dv = msgws.QueryDataSlu.DataSluView()
+                            if d[1] is not None:
                                 dv.tml_id = d[0]
                                 dv.phy_id = d[1]
                                 dv.tml_name = d[2]
-                                dv.dt_receive = d[3]
+                                dv.dt_receive = mx.switchStamp(d[3])
                                 dv.reset_times.extend([d[4], d[5], d[6], d[7]])
                                 dv.st_running.extend([d[8], d[9], d[10], d[11]])
                                 dv.st_argv.extend([d[12], d[13]])
@@ -125,15 +120,15 @@ class QueryDataSluHandler(base.RequestHandler):
                                 xquery.data_slu_view.extend([dv])
                                 del dv
                         cur.close()
-                        del cur
+                        del cur, strsql
 
                         l = len(xquery.data_slu_view)
                         if l > 0:
-                            buffer_tag = utils.set_cache('querydataslu', xquery, l,
-                                                         msg.head.paging_num)
+                            buffer_tag = self.set_cache('querydataslu', xquery, l,
+                                                        msg.head.paging_num)
                             msg.head.paging_buffer_tag = buffer_tag
                             msg.head.paging_record_total = l
-                            paging_idx, paging_total, lstdata = utils.update_msg_cache(
+                            paging_idx, paging_total, lstdata = self.update_msg_cache(
                                 list(xquery.data_slu_view), msg.head.paging_idx,
                                 msg.head.paging_num)
                             msg.head.paging_idx = paging_idx
@@ -141,10 +136,10 @@ class QueryDataSluHandler(base.RequestHandler):
                             msg.data_slu_view.extend(lstdata)
                 elif rqmsg.data_mark == 7:  # 控制器基本数据
                     if rqmsg.head.paging_buffer_tag > 0 and rqmsg.type == 1:
-                        s = utils.get_cache('querydatasluitem', rqmsg.head.paging_buffer_tag)
+                        s = self.get_cache('querydatasluitem', rqmsg.head.paging_buffer_tag)
                         if s is not None:
                             xquery.ParseFromString(s)
-                            total, idx, lstdata = utils.update_msg_cache(
+                            total, idx, lstdata = self.update_msg_cache(
                                 list(xquery.data_sluitem_view), msg.head.paging_idx,
                                 msg.head.paging_num)
                             msg.head.paging_idx = idx
@@ -158,7 +153,7 @@ class QueryDataSluHandler(base.RequestHandler):
 
                     if rebuild_cache:
                         # 验证用户可操作的设备id
-                        if _user_data['user_auth'] in utils._can_admin or _user_data[
+                        if user_data['user_auth'] in utils._can_admin or user_data[
                                 'is_buildin'] == 1:
                             if rqmsg.type == 0:
                                 if len(rqmsg.tml_id) == 0:
@@ -174,7 +169,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                         rqmsg.tml_id)))
                         else:
                             if rqmsg.type == 0:
-                                tml_ids = utils.check_tml_r(uuid, [rqmsg.tml_id[0]])
+                                tml_ids = self.check_tml_r(user_uuid, [rqmsg.tml_id[0]])
                                 if len(tml_ids) == 0:
                                     str_tmls = ' and a.slu_id=0'
                                     msg.head.if_st = 46
@@ -183,9 +178,9 @@ class QueryDataSluHandler(base.RequestHandler):
                             else:
                                 if len(rqmsg.tml_id) == 0:
                                     str_tmls = ' and a.slu_id in ({0})'.format(','.join(
-                                        utils.cache_tml_r[uuid]))
+                                        self._cache_tml_r[user_uuid]))
                                 else:
-                                    tml_ids = utils.check_tml_r(uuid, list(rqmsg.tml_id))
+                                    tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                                     if len(tml_ids) == 0:
                                         str_tmls = ' and a.slu_id=0'
                                         msg.head.if_st = 46
@@ -211,18 +206,16 @@ class QueryDataSluHandler(base.RequestHandler):
                         if rqmsg.type == 0:
                             strsql += ' limit 1'
 
-                        cur = yield utils.sql_pool.execute(strsql, ())
-                        if cur.rowcount > 0:
-                            dv = msgws.QueryDataSlu.DataSluitemView()
-                            while True:
-                                try:
-                                    d = cur.fetchone()
-                                    if d is None:
-                                        if dv.sluitem_id > 0:
-                                            xquery.data_sluitem_view.extend([dv])
-                                        break
-                                except:
-                                    break
+                        cur = self.mysql_generator(strsql)
+                        dv = msgws.QueryDataSlu.DataSluitemView()
+                        while True:
+                            try:
+                                d = cur.next()
+                            except:
+                                if dv.sluitem_id > 0:
+                                    xquery.data_sluitem_view.extend([dv])
+                                break
+                            if d[1] is not None:
                                 if dv.sluitem_id != d[3]:
                                     if dv.sluitem_id > 0:
                                         xquery.data_sluitem_view.extend([dv])
@@ -232,8 +225,8 @@ class QueryDataSluHandler(base.RequestHandler):
                                     dv.tml_name = d[2]
                                     dv.sluitem_id = d[3]
                                     dv.sluitem_name = d[4]
-                                    dv.dt_receive = d[5]
-                                    dv.dt_cache = d[6]
+                                    dv.dt_receive = mx.switchStamp(d[5])
+                                    dv.dt_cache = mx.switchStamp(d[6])
                                     dv.st_sluitem.extend([d[7], d[8], d[9], d[10], d[11], d[12], d[
                                         13]])
                                     dv.temperature = d[14]
@@ -252,15 +245,15 @@ class QueryDataSluHandler(base.RequestHandler):
                                 dv.data_lamp_view.extend([dvs])
                                 del dvs
                         cur.close()
-                        del cur
+                        del cur, strsql
 
                         l = len(xquery.data_sluitem_view)
                         if l > 0:
-                            buffer_tag = utils.set_cache('querydatasluitem', xquery, l,
-                                                         msg.head.paging_num)
+                            buffer_tag = self.set_cache('querydatasluitem', xquery, l,
+                                                        msg.head.paging_num)
                             msg.head.paging_buffer_tag = buffer_tag
                             msg.head.paging_record_total = l
-                            paging_idx, paging_total, lstdata = utils.update_msg_cache(
+                            paging_idx, paging_total, lstdata = self.update_msg_cache(
                                 list(xquery.data_sluitem_view), msg.head.paging_idx,
                                 msg.head.paging_num)
                             msg.head.paging_idx = paging_idx
@@ -269,34 +262,29 @@ class QueryDataSluHandler(base.RequestHandler):
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, _user_data
+        del msg, rqmsg, user_data, xquery
 
 
-@base.route()
+@mxweb.route()
 class SluDataGetHandler(base.RequestHandler):
 
+    # @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluDataGet(), None)
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqSluDataGet(),
-                                                       request=self.request)
-
-        if _user_data is not None:
-            if _user_data['user_auth'] in utils._can_read:
+        if user_data is not None:
+            if user_data['user_auth'] in utils._can_read:
                 # 验证用户可操作的设备id
-                if _user_data['user_auth'] in utils._can_admin or _user_data['is_buildin'] == 1:
+                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
                     if len(rqmsg.phy_id) > 0:
                         rtu_ids = ','.join([str(a) for a in rqmsg.phy_id])
                     else:
-                        rtu_ids = ','.join([str(a) for a in utils.get_phy_list(rqmsg.tml_id)])
+                        rtu_ids = ','.join([str(a) for a in self.get_phy_list(rqmsg.tml_id)])
                 else:
-                    rtu_ids = ','.join([str(
-                        a) for a in utils.get_phy_list(utils.check_tml_r(uuid, list(rqmsg.tml_id)))
-                                        ])
+                    rtu_ids = ','.join([str(a)
+                                        for a in self.get_phy_list(self.check_tml_r(user_uuid, list(
+                                            rqmsg.tml_id)))])
 
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 46
@@ -314,34 +302,29 @@ class SluDataGetHandler(base.RequestHandler):
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, _user_data
+        del msg, rqmsg, user_data, user_uuid
 
 
-@base.route()
+@mxweb.route()
 class SluitemDataGetHandler(base.RequestHandler):
 
+    # @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluitemDataGet(), None)
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqSluitemDataGet(),
-                                                       request=self.request)
-
-        if _user_data is not None:
-            if _user_data['user_auth'] in utils._can_read:
+        if user_data is not None:
+            if user_data['user_auth'] in utils._can_read:
                 # 验证用户可操作的设备id
-                if _user_data['user_auth'] in utils._can_admin or _user_data['is_buildin'] == 1:
+                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
                     if len(rqmsg.phy_id) > 0:
                         rtu_ids = ','.join([str(a) for a in rqmsg.phy_id])
                     else:
-                        rtu_ids = ','.join([str(a) for a in utils.get_phy_list(rqmsg.tml_id)])
+                        rtu_ids = ','.join([str(a) for a in self.get_phy_list(rqmsg.tml_id)])
                 else:
-                    rtu_ids = ','.join([str(
-                        a) for a in utils.get_phy_list(utils.check_tml_r(uuid, list(rqmsg.tml_id)))
-                                        ])
+                    rtu_ids = ','.join([str(a)
+                                        for a in self.get_phy_list(self.check_tml_r(user_uuid, list(
+                                            rqmsg.tml_id)))])
 
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 46
@@ -359,37 +342,32 @@ class SluitemDataGetHandler(base.RequestHandler):
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, _user_data
+        del msg, rqmsg, user_data, user_uuid
 
 
-@base.route()
+@mxweb.route()
 class SluTimerSetHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
-
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqSluTimerSet(),
-                                                       request=self.request)
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluTimerSet(), None)
         env = False
         contents = ''
-        if _user_data is not None:
-            if _user_data['user_auth'] in utils._can_exec:
+        if user_data is not None:
+            if user_data['user_auth'] in utils._can_exec:
                 env = True
                 contents = 'user from {0} set slu timer'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id
-                if _user_data['user_auth'] in utils._can_admin or _user_data['is_buildin'] == 1:
+                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
                     if len(rqmsg.phy_id) > 0:
                         rtu_ids = ','.join([str(a) for a in rqmsg.phy_id])
                     else:
-                        rtu_ids = ','.join([str(a) for a in utils.get_phy_list(rqmsg.tml_id)])
+                        rtu_ids = ','.join([str(a) for a in self.get_phy_list(rqmsg.tml_id)])
                 else:
-                    rtu_ids = ','.join([str(
-                        a) for a in utils.get_phy_list(utils.check_tml_x(uuid, list(rqmsg.tml_id)))
-                                        ])
+                    rtu_ids = ','.join([str(a)
+                                        for a in self.get_phy_list(self.check_tml_x(user_uuid, list(
+                                            rqmsg.tml_id)))])
 
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 46
@@ -404,41 +382,33 @@ class SluTimerSetHandler(base.RequestHandler):
         self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
-            x, y = utils.write_event(57, contents, 2, user_name=_user_data['user_name'])
-            cur = yield sql_pool.execute(x, y)
-            cur.close()
-            # utils.write_event(57, contents, 2, user_name=_user_data['user_name'])
-        del msg, rqmsg, _user_data
+            self.write_event(57, contents, 2, user_name=user_data['user_name'])
+        del msg, rqmsg, user_data, user_uuid
 
 
-@base.route()
+@mxweb.route()
 class SluCtlHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
-
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqSluCtl(),
-                                                       request=self.request)
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluCtl(), None)
         env = False
         contents = ''
-        if _user_data is not None:
-            if _user_data['user_auth'] in utils._can_exec:
+        if user_data is not None:
+            if user_data['user_auth'] in utils._can_exec:
                 env = True
                 contents = 'user from {0} ctrl slu'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id
-                if _user_data['user_auth'] in utils._can_admin or _user_data['is_buildin'] == 1:
+                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
                     if len(rqmsg.phy_id) > 0:
                         rtu_ids = ','.join([str(a) for a in rqmsg.phy_id])
                     else:
-                        rtu_ids = ','.join([str(a) for a in utils.get_phy_list(rqmsg.tml_id)])
+                        rtu_ids = ','.join([str(a) for a in self.get_phy_list(rqmsg.tml_id)])
                 else:
-                    rtu_ids = ','.join([str(
-                        a) for a in utils.get_phy_list(utils.check_tml_x(uuid, list(rqmsg.tml_id)))
-                                        ])
+                    rtu_ids = ','.join([str(a)
+                                        for a in self.get_phy_list(self.check_tml_x(user_uuid, list(
+                                            rqmsg.tml_id)))])
 
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 46
@@ -466,8 +436,5 @@ class SluCtlHandler(base.RequestHandler):
         self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
-            x, y = utils.write_event(65, contents, 2, user_name=_user_data['user_name'])
-            cur = yield sql_pool.execute(x, y)
-            cur.close()
-            # utils.write_event(65, contents, 2, user_name=_user_data['user_name'])
-        del msg, rqmsg, _user_data
+            self.write_event(65, contents, 2, user_name=user_data['user_name'])
+        del msg, rqmsg, user_data, user_uuid

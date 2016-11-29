@@ -6,29 +6,31 @@ __ver__ = '0.1'
 __doc__ = 'user handler'
 
 import base
-import tornado
+import time
 import base64
-import mxpsu as mx
-import utils
 import time
 import os
+import json
 import uuid
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import tornado.httpclient as thc
-from tornado.httputil import url_concat
+import protobuf3.msg_with_ctrl_pb2 as msgctrl
+import mxpsu as mx
+import utils
+from greentor import green
 from tornado import gen
+import mxweb
 
 
-@base.route()
+@mxweb.route()
 class UserLoginJKHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserLogin()
         rqmsg.ParseFromString(base64.b64decode(pb2))
-
         msg = msgws.UserLogin()
         msg.head.idx = rqmsg.head.idx
         msg.head.if_st = 1
@@ -36,12 +38,15 @@ class UserLoginJKHandler(base.RequestHandler):
         msg.head.if_dt = int(time.time())
 
         # 检查用户名密码是否合法
-        cur = yield utils.sql_pool.execute(
-            'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
-            where user_name=%s and user_password=%s'.format(utils.m_jkdb_name), (rqmsg.user,
-                                                                                 rqmsg.pwd, ))
-
-        if cur.rowcount == 0:
+        strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
+        where user_name="{1}" and user_password="{2}"'.format(utils.m_jkdb_name, rqmsg.user,
+                                                              rqmsg.pwd)
+        cur = self.mysql_generator(strsql)
+        try:
+            d = cur.next()
+        except:
+            d = None
+        if d is None:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
             msg.head.if_st = 40
             msg.head.if_msg = 'Wrong username or password'
@@ -56,98 +61,109 @@ class UserLoginJKHandler(base.RequestHandler):
                         if ud['user_name'] == rqmsg.user and ud['source_dev'] == rqmsg.dev:
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
-                            _user_name = utils.cache_user[k]['user_name']
-                            utils.write_event(122, contents, 2, user_name=_user_name)
+                            user_name = utils.cache_user[k]['user_name']
+                            self.write_event(122, contents, 2, user_name=user_name)
                             del utils.cache_user[k]
                             break
-            # else:
             contents = 'login from {0} success'.format(self.request.remote_ip)
-            d = cur.fetchone()
-            _user_uuid = uuid.uuid1().hex
-            msg.uuid = _user_uuid
+            user_uuid = uuid.uuid1().hex
+            msg.uuid = user_uuid
             msg.fullname = d[1] if d[1] is not None else ''
             msg.zmq = libiisi.m_config.conf_data['zmq_pub']
 
-            _user_auth = 0
+            user_auth = 0
             _area_r = []
             _area_w = []
             _area_x = []
             strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
                 utils.m_jkdb_name, rqmsg.user)
-            cur1 = yield utils.sql_pool.execute(strsql, ())
-            if cur1.rowcount > 0:
-                x = cur1.fetchone()
+            cur1 = self.mysql_generator(strsql)
+            while True:
+                try:
+                    x = cur1.next()
+                except:
+                    break
                 if x[3] == 1:
-                    _user_auth = 15
+                    user_auth = 15
                 else:
-                    _user_auth = 0
+                    user_auth = 0
                     if x[0] is not None:
                         if len(x[0].split(';')[:-1]) > 0:
-                            _user_auth += 4
+                            user_auth += 4
                             _area_r = [int(a) for a in x[0].split(';')]
                     if x[1] is not None:
                         if len(x[1].split(';')[:-1]) > 0:
-                            _user_auth += 2
+                            user_auth += 2
                             _area_w = [int(a) for a in x[1].split(';')]
                     if x[2] is not None:
                         if len(x[2].split(';')[:-1]) > 0:
-                            _user_auth += 1
+                            user_auth += 1
                             _area_x = [int(a) for a in x[2].split(';')]
             cur1.close()
             del cur1
 
-            msg.auth = _user_auth
+            msg.auth = user_auth
             msg.area_r.extend(_area_r)
             msg.area_w.extend(_area_w)
             msg.area_x.extend(_area_x)
             # 加入用户缓存{uuid:dict()}
-            utils.cache_user[_user_uuid] = dict(user_name=rqmsg.user,
-                                                user_auth=_user_auth,
-                                                login_time=time.time(),
-                                                active_time=time.time(),
-                                                user_db=utils.m_jkdb_name,
-                                                area_id=0,
-                                                source_dev=rqmsg.dev,
-                                                remote_ip=self.request.remote_ip,
-                                                area_r=set(_area_r),
-                                                area_w=set(_area_w),
-                                                area_x=set(_area_x),
-                                                is_buildin=0)
+            utils.cache_user[user_uuid] = dict(user_name=rqmsg.user,
+                                               user_auth=user_auth,
+                                               login_time=time.time(),
+                                               active_time=time.time(),
+                                               user_db=utils.m_jkdb_name,
+                                               area_id=0,
+                                               source_dev=rqmsg.dev,
+                                               remote_ip=self.request.remote_ip,
+                                               area_r=set(_area_r),
+                                               area_w=set(_area_w),
+                                               area_x=set(_area_x),
+                                               is_buildin=0)
             del _area_r, _area_w, _area_x
         cur.close()
-        del cur
-        # 登录工作流
+        del cur, strsql
+
+        # # 登录工作流
         if rqmsg.dev == 3 and msg.head.if_st == 1:
+            retry = False
             try:
-                client = thc.AsyncHTTPClient()
                 baseurl = '{0}/FlowService.asmx/mobileLogin'.format(utils.m_fs_url)
                 args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
-                url = url_concat(baseurl, args)
-
-                rep = yield client.fetch(url)
-                if rep.code == 200:
-                    msg.remark = rep.body
+                rep = utils.m_httpclinet_pool.request('GET',
+                                                      baseurl,
+                                                      fields=args,
+                                                      timeout=7.0,
+                                                      retries=False)
+                msg.remark = rep.data
             except Exception as ex:
-                print(str(ex))
+                if not retry:
+                    retry = True
+                    baseurl = '{0}/FlowService.asmx/mobileLogin'.format(utils.m_fs_url)
+                    args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
+                    rep = utils.m_httpclinet_pool.request('GET',
+                                                          baseurl,
+                                                          fields=args,
+                                                          timeout=2.0,
+                                                          retries=False)
+                    msg.remark = rep.data
+                else:
+                    print(str(ex))
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        x, y = utils.write_event(121, contents, 2, user_name=rqmsg.user)
-        cur = yield utils.sql_pool.execute(x, y)
-        cur.close()
-        # utils.write_event(121, contents, 2, user_name=rqmsg.user)
-        del cur, rqmsg, msg
+        self.write_event(121, contents, 2, user_name=rqmsg.user)
+        del rqmsg, msg
 
 
-@base.route()
+@mxweb.route()
 class UserLoginHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserLogin()
         rqmsg.ParseFromString(base64.b64decode(pb2))
-
         msg = msgws.UserLogin()
         msg.head.idx = rqmsg.head.idx
         msg.head.if_st = 1
@@ -155,12 +171,15 @@ class UserLoginHandler(base.RequestHandler):
         msg.head.if_dt = int(time.time())
 
         # 检查用户名密码是否合法
-        cur = yield utils.sql_pool.execute(
-            'select user_name, user_real_name, user_right, user_phonenumber, user_operator_code from {0}.user_list \
-            where user_name=%s and user_password=%s'.format(utils.m_jkdb_name), (rqmsg.user,
-                                                                                 rqmsg.pwd, ))
-
-        if cur.rowcount == 0:
+        strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
+        where user_name="{1}" and user_password="{2}"'.format(utils.m_jkdb_name, rqmsg.user,
+                                                              rqmsg.pwd)
+        cur = self.mysql_generator(strsql)
+        try:
+            d = cur.next()
+        except:
+            d = None
+        if d is None:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
             msg.head.if_st = 40
             msg.head.if_msg = 'Wrong username or password'
@@ -175,62 +194,96 @@ class UserLoginHandler(base.RequestHandler):
                         if ud['user_name'] == rqmsg.user and ud['source_dev'] == rqmsg.dev:
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
-                            _user_name = utils.cache_user[k]['user_name']
-                            utils.write_event(122, contents, 2, user_name=_user_name)
+                            user_name = utils.cache_user[k]['user_name']
+                            self.write_event(122, contents, 2, user_name=user_name)
                             del utils.cache_user[k]
                             break
-            # else:
             contents = 'login from {0} success'.format(self.request.remote_ip)
-            d = cur.fetchone()
-            _user_uuid = uuid.uuid1().hex
-            _user_auth = int(d[2])
-            msg.uuid = _user_uuid
-            msg.auth = _user_auth
-            # msg.user_area = d[2]
-            msg.fullname = d[1]
+            user_uuid = uuid.uuid1().hex
+            msg.uuid = user_uuid
+            msg.fullname = d[1] if d[1] is not None else ''
             msg.zmq = libiisi.m_config.conf_data['zmq_pub']
 
+            user_auth = 0
+            _area_r = []
+            _area_w = []
+            _area_x = []
+            strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
+                utils.m_jkdb_name, rqmsg.user)
+            cur1 = self.mysql_generator(strsql)
+            while True:
+                try:
+                    x = cur1.next()
+                except:
+                    break
+                if x[3] == 1:
+                    user_auth = 15
+                else:
+                    user_auth = 0
+                    if x[0] is not None:
+                        if len(x[0].split(';')[:-1]) > 0:
+                            user_auth += 4
+                            _area_r = [int(a) for a in x[0].split(';')]
+                    if x[1] is not None:
+                        if len(x[1].split(';')[:-1]) > 0:
+                            user_auth += 2
+                            _area_w = [int(a) for a in x[1].split(';')]
+                    if x[2] is not None:
+                        if len(x[2].split(';')[:-1]) > 0:
+                            user_auth += 1
+                            _area_x = [int(a) for a in x[2].split(';')]
+            cur1.close()
+            del cur1
+
+            msg.auth = user_auth
+            msg.area_r.extend(_area_r)
+            msg.area_w.extend(_area_w)
+            msg.area_x.extend(_area_x)
             # 加入用户缓存{uuid:dict()}
-            utils.cache_user[_user_uuid] = dict(user_name=d[0],
-                                                user_auth=_user_auth,
-                                                login_time=time.time(),
-                                                active_time=time.time(),
-                                                user_db=utils.m_jkdb_name,
-                                                area_id=0,
-                                                source_dev=rqmsg.dev,
-                                                remote_ip=self.request.remote_ip)
+            utils.cache_user[user_uuid] = dict(user_name=rqmsg.user,
+                                               user_auth=user_auth,
+                                               login_time=time.time(),
+                                               active_time=time.time(),
+                                               user_db=utils.m_jkdb_name,
+                                               area_id=0,
+                                               source_dev=rqmsg.dev,
+                                               remote_ip=self.request.remote_ip,
+                                               area_r=set(_area_r),
+                                               area_w=set(_area_w),
+                                               area_x=set(_area_x),
+                                               is_buildin=0)
+            del _area_r, _area_w, _area_x
         cur.close()
+        del cur, strsql
+
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        x, y = utils.write_event(121, contents, 2, user_name=rqmsg.user)
-        cur = yield utils.sql_pool.execute(x, y)
-        cur.close()
-        # utils.write_event(121, contents, 2, user_name=rqmsg.user)
-        del cur, rqmsg, msg
+        self.write_event(121, contents, 2, user_name=rqmsg.user)
+        del rqmsg, msg
 
 
-@base.route()
+@mxweb.route()
 class UserLogoutHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
         contents = ''
         env = False
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid, request=self.request)
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(None, None)
 
-        if _user_uuid in utils.cache_buildin_users:
+        if user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to logout.'
         else:
-            if _user_data is not None:
+            if user_data is not None:
                 contents = 'logout from {0}'.format(self.request.remote_ip)
-                del utils.cache_user[_user_uuid]
+                del utils.cache_user[user_uuid]
                 try:
-                    del utils.cache_tml_r[_user_uuid]
-                    del utils.cache_tml_w[_user_uuid]
-                    del utils.cache_tml_x[_user_uuid]
+                    del self._cache_tml_r[user_uuid]
+                    del self._cache_tml_w[user_uuid]
+                    del self._cache_tml_x[user_uuid]
                 except:
                     pass
                 env = True
@@ -241,121 +294,109 @@ class UserLogoutHandler(base.RequestHandler):
         self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
-            x, y = utils.write_event(122, contents, 2, user_name=_user_data['user_name'])
-            cur = yield utils.sql_pool.execute(x, y)
-            cur.close()
-            # utils.write_event(122, contents, 2, user_name=_user_data['user_name'])
-        del msg, rqmsg, _user_data
+            self.write_event(122, contents, 2, user_name=user_data['user_name'])
+        del msg, rqmsg, user_data
+        try:
+            baseurl = 'http://{0}/cleaningwork'.format(self.request.host)
+            rep = utils.m_httpclinet_pool.request('GET', baseurl, timeout=1.0, retries=False)
+            del rep
+        except Exception as ex:
+            print(str(ex))
 
 
-@base.route()
+@mxweb.route()
 class UserRenewHandler(base.RequestHandler):
 
+    # @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqUserRenew(),
-                                                       request=self.request)
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserRenew(), None)
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, _user_data
+        del msg, rqmsg, user_data
+        try:
+            baseurl = 'http://{0}/cleaningwork'.format(self.request.host)
+            rep = utils.m_httpclinet_pool.request('GET', baseurl, timeout=1.0, retries=False)
+            del rep
+        except Exception as ex:
+            print(str(ex))
 
 
-@base.route()
+@mxweb.route()
 class UserAddHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserAdd(), None)
+
         env = False
         contents = ''
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqUserAdd(),
-                                                       request=self.request)
-
-        if _user_uuid in utils.cache_buildin_users:
+        if user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to add new user.'
         else:
-            if _user_data is not None:
-                if _user_data['user_auth'] < 15:
+            if user_data is not None:
+                if user_data['user_auth'] < 15:
                     msg.head.if_st = 11
                 else:
                     # 判断用户是否存在
-                    try:
-                        cur = yield utils.sql_pool.execute(
-                            'select * from {0}.user_list where user_name=%s and user_password=%s'.format(
-                                _user_data['user_db']), (rqmsg.user, rqmsg.pwd))
-
-                        if cur.rowcount > 0:
-                            msg.head.if_st = 45
-                            msg.head.if_msg = 'User already exists'
-                        else:
-                            cur1 = yield utils.sql_pool.execute(
-                                'insert into {0}.user_list (user_name, user_real_name, user_password, area_id, user_auth, user_phonenumber, user_operator_code, date_create, date_update, date_access) \
-                        values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'.format(_user_data['user_db']),
-                                (rqmsg.user, rqmsg.fullname, rqmsg.pwd, rqmsg.area_id, rqmsg.auth,
-                                 rqmsg.tel, rqmsg.code, int(time.time()), int(time.time()),
-                                 int(time.time())))
-
-                            env = True
-                            contents = 'add user {0}'.format(rqmsg.user)
-                            cur1.close()
-                        cur.close()
-                    except Exception as ex:
-                        msg.head.if_st = 0
-                        msg.head.if_msg = str(ex)
+                    strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
+                        utils.m_jkdb_name, rqmsg.user, rqmsg.pwd)
+                    cur = self.mysql_generator(strsql, 0)
+                    if cur.next() > 0:
+                        msg.head.if_st = 45
+                        msg.head.if_msg = 'User already exists'
+                    else:
+                        strsql = 'insert into {0}.user_list (user_name, user_real_name, user_password, user_phonenumber, user_operator_code, date_create, date_update, date_access) \
+                        values ("{1}","{2}","{3}","{4}","{5}",{6},{7},{8})'.format(
+                            utils.m_jkdb_name, rqmsg.user, rqmsg.fullname, rqmsg.pwd, rqmsg.tel,
+                            rqmsg.code, int(time.time()), int(time.time()), int(time.time()))
+                        cur1 = self.mysql_generator(strsql, 0)
+                        env = True
+                        contents = 'add user {0}'.format(rqmsg.user)
+                        cur1.close()
+                        del cur1
+                    cur.close()
+                    del cur, strsql
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
-            x, y = utils.write_event(154, contents, 2, user_name=_user_data['user_name'])
-            cur = yield utils.sql_pool.execute(x, y)
-            cur.close()
-            # utils.write_event(154, contents, 2, user_name=_user_data['user_name'])
-        del msg, rqmsg, _user_data
+            self.write_event(154, contents, 2, user_name=user_data['user_name'])
+        del msg, rqmsg, user_data
 
 
-@base.route()
+@mxweb.route()
 class UserDelHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserDel(), None)
+
         env = False
         contents = ''
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqUserDel(),
-                                                       request=self.request)
-
-        if _user_uuid in utils.cache_buildin_users:
+        if user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to del user.'
         else:
-            if _user_data is not None:
-                if _user_data['user_auth'] < 15:
+            if user_data is not None:
+                if user_data['user_auth'] < 15:
                     msg.head.if_st = 11
                 else:
                     # 删除用户
                     try:
-                        cur = yield utils.sql_pool.execute(
-                            'select * from {0}.user_list where user_name=%s'.format(_user_data[
-                                'user_db']), (rqmsg.user_name, ))
-                        if cur.rowcount > 0:
-                            cur1 = yield utils.sql_pool.execute(
-                                'delete from {0}.user_list where user_name=%s'.format(_user_data[
-                                    'user_db']), (rqmsg.user_name, ))
-
+                        strsql = 'select * from {0}.user_list where user_name="{1}"'.format(
+                            utils.m_jkdb_name, rqmsg.user_name)
+                        cur = self.mysql_generator(strsql, 0)
+                        if cur.next() > 0:
+                            strsql = 'delete from {0}.user_list where user_name="{1}"'.format(
+                                utils.m_jkdb_name, rqmsg.user_name)
+                            cur1 = self.mysql_generator(strsql, 0)
                             cur1.close()
                             env = True
                             contents = 'del user {0}'.format(rqmsg.user_name)
@@ -363,6 +404,7 @@ class UserDelHandler(base.RequestHandler):
                             msg.head.if_st = 46
                             msg.head.if_msg = 'no such user'
                         cur.close()
+                        del cur, strsql
                     except Exception as ex:
                         msg.head.if_st = 0
                         msg.head.if_msg = str(ex.message)
@@ -370,123 +412,109 @@ class UserDelHandler(base.RequestHandler):
         self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
-            x, y = utils.write_event(156, contents, 2, user_name=_user_data['user_name'])
-            cur = yield utils.sql_pool.execute(x, y)
-            cur.close()
-            # utils.write_event(156, contents, 2, user_name=_user_data['user_name'])
-        del msg, rqmsg, _user_data
+            self.write_event(156, contents, 2, user_name=user_data['user_name'])
+        del msg, rqmsg, user_data, user_uuid, pb2
 
 
-@base.route()
+@mxweb.route()
 class UserEditHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(rqUserEdit(), None)
+
         env = False
         contents = ''
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqUserEdit(),
-                                                       request=self.request)
-
-        if _user_uuid in utils.cache_buildin_users:
+        if user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to edit user.'
         else:
-            if _user_data is not None:
-                try:
-                    cur = yield utils.sql_pool.execute(
-                        'select * from {0}.user_list where user_name=%s and user_password=%s'.format(
-                            _user_data[
-                                'user_db']), (rqmsg.user_name, rqmsg.pwd_old))
-                    if cur.rowcount > 0:
-                        cur1 = None
-                        if _user_data['user_name'] == rqmsg.user_name:
-                            if _user_data['user_auth'] in (2, 3, 6, 7, 15):
-                                cur1 = yield utils.sql_pool.execute(
-                                    'update {0}.user_list set user_real_name=%s,user_password=%s,area_id=%s,user_phonenumber=%s,user_operator_code=%s where user_name=%s'.format(
-                                        _user_data['user_db']), (rqmsg.fullname, rqmsg.pwd,
-                                                                 rqmsg.area_id, rqmsg.tel,
-                                                                 rqmsg.code, rqmsg.user_name))
-                            else:
-                                msg.head.if_st = 11
-                                msg.head.if_msg = 'You do not have permission to modify the information'
-                        else:
-                            if _user_data['user_auth'] in utils._can_admin:
-                                cur1 = yield utils.sql_pool.execute(
-                                    'update {0}.user_list set user_real_name=%s,user_password=%s,area_id=%s,user_auth=%s,user_phonenumber=%s,user_operator_code=%s where user_name=%s'.format(
-                                        _user_data['user_db']),
-                                    (rqmsg.fullname, rqmsg.pwd, rqmsg.area_id, rqmsg.auth,
-                                     rqmsg.tel, rqmsg.code, rqmsg.user_name))
-                            else:
-                                msg.head.if_st = 11
-                                msg.head.if_msg = 'You do not have permission to modify the information to others'
-                        if cur1 is not None:
-                            if cur1.rowcount == 0:
-                                msg.head.if_st = 45
-                                msg.head.if_msg = 'sql update error'
+            if user_data is not None:
+                strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
+                    utils.m_jkdb_name, rqmsg.user_name, rqmsg.pwd_old)
+                cur = self.mysql_generator(strsql, 0)
+                if cur.next() > 0:
+                    cur1 = None
+                    if user_data['user_name'] == rqmsg.user_name:
+                        if user_data['user_auth'] in utils._can_write:
+                            strsql = 'update {0}.user_list set user_real_name="{1}", \
+                                        user_password="{2}", \
+                                        user_phonenumber="{3}", \
+                                        user_operator_code="{4}" \
+                                        where user_name="{5}"'.format(
+                                utils.m_jkdb_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
+                                rqmsg.user_name)
+                            cur1 = self.mysql_generator(strsql, 0)
                             cur1.close()
-
+                            del cur1
+                        else:
+                            msg.head.if_st = 11
+                            msg.head.if_msg = 'You do not have permission to modify the information'
                     else:
-                        msg.head.if_st = 46
-                        msg.head.if_msg = 'User old password error'
-                    cur.close()
-                except Exception as ex:
-                    msg.head.if_st = 0
-                    msg.head.if_msg = str(ex)
-
+                        if user_data['user_auth'] in utils._can_admin:
+                            strsql = 'update {0}.user_list set user_real_name="{1}", \
+                                        user_password="{2}", \
+                                        user_phonenumber="{3}", \
+                                        user_operator_code="{4}" \
+                                        where user_name="{5}"'.format(
+                                utils.m_jkdb_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
+                                rqmsg.user_name)
+                            cur1 = self.mysql_generator(strsql, 0)
+                            cur1.close()
+                            del cur1
+                        else:
+                            msg.head.if_st = 11
+                            msg.head.if_msg = 'You do not have permission to modify the information to others'
+                else:
+                    msg.head.if_st = 46
+                    msg.head.if_msg = 'User old password error'
+                cur.close()
+                del cur, strsql
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, _user_data
+        del msg, rqmsg, user_data
 
 
-@base.route()
+@mxweb.route()
 class UserInfoHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserInfo(),
+                                                                msgws.UserInfo())
+
         env = False
         contents = ''
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       msgws.rqUserInfo(),
-                                                       msgws.UserInfo(),
-                                                       request=self.request)
-
-        if _user_uuid in utils.cache_buildin_users:
+        if user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to view user info.'
         else:
-            if _user_data is not None:
+            if user_data is not None:
                 try:
                     sqlstr = ''
-                    if _user_data['user_auth'] < 4:
+                    if user_data['user_auth'] < 4:
                         msg.head.if_st = 11
-                    elif _user_data['user_auth'] in (4, 5, 6, 7):
-                        sqlstr = 'select user_name, user_real_name, user_password, user_auth, user_phonenumber, user_operator_code, area_id from {0}.user_list where user_name=%s'.format(
-                            _user_data['user_db'])
-                        sqlargs = (_user_data['user_name'], )
-                    elif _user_data['user_auth'] in utils._can_admin:
+                    elif user_data['user_auth'] in utils._can_read:
+                        sqlstr = 'select user_name, user_real_name, user_password, user_auth, user_phonenumber, user_operator_code, area_id from {0}.user_list where user_name="{1}"'.format(
+                            utils.m_jkdb_name, rqmsg.user_name)
+                    elif user_data['user_auth'] in utils._can_admin:
                         if len(rqmsg.user_name) == 0:
                             sqlstr = 'select user_name, user_real_name, user_password, user_auth, user_phonenumber, user_operator_code, area_id from {0}.user_list'.format(
-                                _user_data['user_db'])
-                            sqlargs = ()
+                                user_data['user_db'])
                         else:
-                            sqlstr = 'select user_name, user_real_name, user_password, user_auth, user_phonenumber, user_operator_code, area_id from {0}.user_list where user_name=%s'.format(
-                                _user_data['user_db'])
-                            sqlargs = (rqmsg.user_name, )
+                            sqlstr = 'select user_name, user_real_name, user_password, user_auth, user_phonenumber, user_operator_code, area_id from {0}.user_list where user_name="{1}"'.format(
+                                utils.m_jkdb_name, rqmsg.user_name)
                     if len(sqlstr) > 0:
-                        cur = yield utils.sql_pool.execute(sqlstr, sqlargs)
-                        d = cur.fetchall()
-                        if d is None:
-                            msg.head.if_st = 40
-                        else:
+                        cur = self.mysql_generator(strsql)
+                        while True:
+                            try:
+                                d = cur.next()
+                            except:
+                                break
                             for a in d:
                                 userview = msgws.UserInfo.UserView()
                                 userview.user = a[0]
@@ -498,11 +526,12 @@ class UserInfoHandler(base.RequestHandler):
                                 userview.area_id = a[6]
                                 msg.user_view.extend([userview])
                                 del userview
-                        cur.close()
+                            cur.close()
+                            del cur
                 except Exception as ex:
                     msg.head.if_st = 0
                     msg.head.if_msg = str(ex)
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, _user_data
+        del msg, rqmsg, user_data, user_uuid

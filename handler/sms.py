@@ -17,30 +17,27 @@ import mxpsu as mx
 import pbiisi.msg_ws_pb2 as msgws
 import protobuf3.msg_with_ctrl_pb2 as msgtcs
 from tornado import gen
+from greentor import green
+import mxweb
 
 
-@base.route()
+@mxweb.route()
 class QuerySmsRecordHandler(base.RequestHandler):
 
+    @green.green
     @gen.coroutine
     def post(self):
-        _user_uuid = self.get_argument('uuid')
-        pb2 = self.get_argument('pb2')
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(rqSubmitSms(), None)
 
-        _user_data, rqmsg, msg = utils.check_arguments(_user_uuid,
-                                                       pb2,
-                                                       rqSubmitSms(),
-                                                       request=self.request)
-
-        if _user_data is not None:
-            if _user_data['user_auth'] in utils._can_read:
+        if user_data is not None:
+            if user_data['user_auth'] in utils._can_read:
                 xquery = msgws.QuerySmsRecord()
                 rebuild_cache = False
                 if rqmsg.head.paging_buffer_tag > 0:
-                    s = utils.get_cache('querysmsrecord', rqmsg.head.paging_buffer_tag)
+                    s = self.get_cache('querysmsrecord', rqmsg.head.paging_buffer_tag)
                     if s is not None:
                         xquery.ParseFromString(s)
-                        total, idx, lstdata = utils.update_msg_cache(
+                        total, idx, lstdata = self.update_msg_cache(
                             list(xquery.sms_record), msg.head.paging_idx, msg.head.paging_num)
                         msg.head.paging_idx = idx
                         msg.head.paging_total = total
@@ -52,7 +49,7 @@ class QuerySmsRecordHandler(base.RequestHandler):
                     rebuild_cache = True
 
                 if rebuild_cache:
-                    sdt, edt = utils.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                    sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                     if len(rqmsg.tels) > 0:
                         str_tels = ' and send_msg in ({0})'.format(','.join(list(rqmsg.tels)))
                     else:
@@ -60,54 +57,45 @@ class QuerySmsRecordHandler(base.RequestHandler):
                     strsql = 'select send_date,send_number,send_msg from {0}.record_msg_log \
                                     where send_date>={1} and send_date<={2} and send_msg like "%{3}%" \
                                     {4}'.format(utils.m_jkdb_name, sdt, edt, rqmsg.msg, str_tels)
-                    cur = yield utils.sql_pool.execute(strsql, ())
-                    if cur.rowcount > 0:
-                        while True:
-                            try:
-                                d = cur.fetchone()
-                                if d is None:
-                                    break
-                            except:
-                                break
-                            smsr = msgws.QuerySmsRecord.SmsRecord()
-                            smsr.dt_send = mx.switchStamp(d[0])
-                            smsr.tel = d[1]
-                            smsr.msg = d[2]
-                            xquery.sms_record.extend([smsr])
-
-                        l = len(xquery.sms_record)
-                        if l > 0:
-                            buffer_tag = utils.set_cache('querysmsrecord', xquery, l,
-                                                         msg.head.paging_num)
-                            msg.head.paging_buffer_tag = buffer_tag
-                            msg.head.paging_record_total = l
-                            paging_idx, paging_total, lstdata = utils.update_msg_cache(
-                                list(xquery.sms_record), msg.head.paging_idx, msg.head.paging_num)
-                            msg.head.paging_idx = paging_idx
-                            msg.head.paging_total = paging_total
-                            msg.sms_record.extend(lstdata)
+                    cur = self.mysql_generator(strsql)
+                    while True:
+                        try:
+                            d = cur.next()
+                        except:
+                            break
+                        smsr = msgws.QuerySmsRecord.SmsRecord()
+                        smsr.dt_send = mx.switchStamp(d[0])
+                        smsr.tel = d[1]
+                        smsr.msg = d[2]
+                        xquery.sms_record.extend([smsr])
+                        del smsr
                     cur.close()
-                    del cur
+                    del cur, strsql
+
+                    l = len(xquery.sms_record)
+                    if l > 0:
+                        buffer_tag = self.set_cache('querysmsrecord', xquery, l,
+                                                    msg.head.paging_num)
+                        msg.head.paging_buffer_tag = buffer_tag
+                        msg.head.paging_record_total = l
+                        paging_idx, paging_total, lstdata = self.update_msg_cache(
+                            list(xquery.sms_record), msg.head.paging_idx, msg.head.paging_num)
+                        msg.head.paging_idx = paging_idx
+                        msg.head.paging_total = paging_total
+                        msg.sms_record.extend(lstdata)
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, _user_data
+        del msg, rqmsg, user_data, user_uuid, xquery
 
 
 # sms数据提交
-@base.route()
+@mxweb.route()
 class SubmitSmsHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        pb2 = self.get_argument('pb2')
-        scode = self.get_argument('scode')
-
-        legal, rqmsg, msg = utils.check_security_code(scode,
-                                                      pb2,
-                                                      msgws.rqSubmitSms(),
-                                                      msgws.CommAns(),
-                                                      request=self.request)
+        legal, rqmsg, msg = self.check_arguments(msgws.rqSubmitSms(), msgws.CommAns(), use_scode=1)
         if legal:
             strsql = ''
             t = time.time()
@@ -115,13 +103,8 @@ class SubmitSmsHandler(base.RequestHandler):
                 strsql += 'insert into {0}_data.record_msg_new (date_create,rtu_name,user_phone_number,is_alarm) values ({1},"{2}",{3},2);'.format(
                     libiisi.m_jkdb_name, t, rqmsg.msg, tel)
             if len(strsql) > 0:
-                try:
-                    cur = yield utils.sql_pool.execute(strsql, ())
-                    cur.close()
-                except Exception as ex:
-                    if 'object is not iterable' not in ex.message:
-                        msg.head.if_st = 45
-                        msg.head.if_msg = ex.message
+                cur = self.mysql_generator(strsql, 0)
+                del cur, strsql
         else:
             msg.head.if_st = 0
             msg.head.if_msg = 'Security code error'
@@ -130,4 +113,4 @@ class SubmitSmsHandler(base.RequestHandler):
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, _user_data
+        del msg, rqmsg, user_data

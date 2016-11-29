@@ -1,3 +1,19 @@
+[2016-11-28]
+------------
+
+-	用Cython封装web handler和部分方法
+-	tmlinfo 中tml_id字段改为repeated格式
+-	tmlnfo 增加slubaseinfo和sluitemgrpinfo
+
+[2016-11-23]
+------------
+
+-	tmlinfo接口增加data_mark值3，只返回baseinfo中的tml_id和tml_dt_update字段
+-	修正 .profile 和 lic.dll 读取路径错误bug
+-	增加showhandlers接口，列出所有可用接口
+-	修正部分接口中数据库读取的时间格式未转换问题
+-	修正协议集中部分repeated int类型未加 [packed=true] 的问题,可能导致数据填充和读取问题
+
 [2016-11-22]
 ------------
 

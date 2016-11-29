@@ -9,13 +9,12 @@ import pbiisi.msg_ws_pb2 as msgif
 import protobuf3.msg_with_ctrl_pb2 as msgtcs
 import mxpsu as mx
 import tornado.httpclient as thc
-import pbiisi.dataslu_pb2 as msgslu
 from tornado.httputil import url_concat
 
 baseurl = 'http://192.168.50.55:63800/'
+baseurl = 'http://180.153.108.83:20525/'
 pm = urllib3.PoolManager(num_pools=10)
 user_id = 'ef61022b553911e6832074d435009085'
-
 
 
 def init_head(msg):
@@ -28,14 +27,14 @@ def init_head(msg):
 def test_userlogin():
     global user_id
     print('=== login ===')
-    url = baseurl + 'userloginjk'
+    url = baseurl + 'userlogin'
     rqmsg = init_head(msgif.rqUserLogin())
     rqmsg.dev = 3
     rqmsg.user = 'admin'
-    rqmsg.pwd = '123'
+    rqmsg.pwd = '1234'
 
     data = {'pb2': base64.b64encode(rqmsg.SerializeToString())}
-    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
     print(r.data)
     msg = msgif.UserLogin()
     msg.ParseFromString(base64.b64decode(r.data))
@@ -295,7 +294,7 @@ def test_errquery():
     print('=== query err data ===')
     url = baseurl + 'querydataerr'
     rqmsg = msgif.rqQueryDataErr()
-    rqmsg.dt_start = mx.time2stamp('2016-09-10 00:00:00')
+    rqmsg.dt_start = mx.time2stamp('2015-09-10 00:00:00')
     rqmsg.dt_end = mx.time2stamp('2016-11-20 00:00:00')
     rqmsg.type = 1
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
@@ -312,7 +311,7 @@ def test_rtudataquery():
     print('=== query rty data ===')
     url = baseurl + 'querydatartu'
     rqmsg = msgif.rqQueryDataRtu()
-    rqmsg.dt_start = 0
+    rqmsg.dt_start = mx.time2stamp('2015-01-20 00:00:00')
     rqmsg.dt_end = mx.time2stamp('2016-11-20 00:00:00')
     rqmsg.type = 1
     # rqmsg.tml_id.extend([1000001])
@@ -330,7 +329,7 @@ def test_rtuinfo():
     print('=== query rty info ===')
     url = baseurl + 'tmlinfo'
     rqmsg = msgif.rqTmlInfo()
-    rqmsg.data_mark.extend([9])
+    rqmsg.data_mark.extend([11])
 
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=3.0, retries=False)
@@ -345,14 +344,15 @@ def test_querysludata():
     global user_id
     print('=== query slu data ===')
     url = baseurl + 'querydataslu'
-    rqmsg = msgslu.rqQueryDataSlu()
-    rqmsg.dt_start = mx.time2stamp('2016-09-10 00:00:00')
+    rqmsg = msgif.rqQueryDataSlu()
+    rqmsg.dt_start = mx.time2stamp('2015-09-10 00:00:00')
     rqmsg.dt_end = mx.time2stamp('2016-11-20 00:00:00')
-    rqmsg.type = 0
+    rqmsg.type = 1
     rqmsg.data_mark = 7
+    rqmsg.tml_id.extend([])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=30.0, retries=False)
-    msg = msgslu.QueryDataSlu()
+    msg = msgif.QueryDataSlu()
     msg.ParseFromString(base64.b64decode(r.data))
     print(msg)
     print('post finish')
@@ -365,6 +365,7 @@ def test_areainfo():
     url = baseurl + 'areainfo'
     data = {'uuid': user_id}
     r = pm.request('POST', url, fields=data, timeout=30.0, retries=False)
+    print(r.data)
     msg = msgif.AreaInfo()
     msg.ParseFromString(base64.b64decode(r.data))
     print(msg)
@@ -390,7 +391,7 @@ def test_sysinfo():
     print('=== sys info ===')
     url = baseurl + 'sysinfo'
     rqmsg = msgif.rqSysInfo()
-    rqmsg.data_mark.extend([3])
+    rqmsg.data_mark.extend([1,2,3,4])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     print(r.data)
@@ -406,8 +407,8 @@ def handle_response(response):
         print "Error:", response.error
     else:
         print response.body
-    
-    
+
+
 def test_ws():
     client = thc.HTTPClient()
     baseurl = 'http://192.168.50.80:33819/ws_common/FlowService.asmx/mobileLogin'
@@ -419,20 +420,32 @@ def test_ws():
     print(repr(rep.body))
 
 
+def test_test():
+    global user_id
+    print('=== test info ===')
+    url = baseurl + 'testjk'
+    rqmsg = msgif.rqSysInfo()
+    rqmsg.data_mark.extend([3])
+    data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    print(r.data)
+    msg = msgif.SysInfo()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    print('post finish')
+    time.sleep(1)
+
 if __name__ == '__main__':
-    # test_ws()
+    # test_test()
     # exit()
     test_userlogin()
-    test_rtudataget()
-    # test_rtudataquery()
+    # test_sysinfo()
+    # test_errquery()
     # test_errinfo()
-    # while 1:
-    #     test_ipcsubmit()
-    # test_rtuctl()
-
+    # test_querysludata()
+    test_areainfo()
+    # test_grpinfo()
     # test_ipcqueue()
-
-    # test_userlogin()
 
     # test_userrenew()
 

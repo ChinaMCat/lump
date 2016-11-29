@@ -1,18 +1,13 @@
 # -*- mode: python -*-
 
-block_cipher = pyi_crypto.PyiBlockCipher(key='Bye-bye my love.')
+block_cipher = None
 
 
-a = Analysis(['iisi.py'],
+a = Analysis(['iisi-setup.py'],
              pathex=['/home/xy/work/python/lump'],
              binaries=None,
              datas=None,
-             hiddenimports=['Crypto.Cipher.AES',
-                                            'ConfigParser',
-                                            'tornado',
-                                            'wmi',
-                                            'greentor',
-                                            ],
+             hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -24,15 +19,15 @@ pyz = PYZ(a.pure, a.zipped_data,
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='iisi',
+          name='install',
           debug=False,
           strip=False,
           upx=True,
-          console=True , icon='static\\image\\iisi.ico', version='file_ver.txt')
+          console=True )
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
                a.datas,
                strip=False,
                upx=True,
-               name='iisi-win')
+               name='iisi-setup')

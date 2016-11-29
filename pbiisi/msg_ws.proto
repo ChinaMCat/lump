@@ -45,9 +45,9 @@ message UserLogin {
     int32 user_area = 6;  // 用户的区域id(暂不用)
     string zmq = 7;  // 信息推送服务地址(zmp端口号)
     string remark = 8; // 备注信息,如工作流系统登录的返回信息
-    repeated int32 area_r = 9;  // 可读区域
-    repeated int32 area_w = 10;  // 可写区域
-    repeated int32 area_x = 11;  // 可操作区域
+    repeated int32 area_r = 9 [packed=true];  // 可读区域
+    repeated int32 area_w = 10 [packed=true];  // 可写区域
+    repeated int32 area_x = 11 [packed=true];  // 可操作区域
 }
 
 // 用户注销 
@@ -127,7 +127,7 @@ message AreaInfo {
     message AreaView {
         int32 area_id = 1;  // 区域id
         string area_name = 2;  // 区域名称
-        repeated int32 tml_id = 3;  // 下属设备id
+        repeated int32 tml_id = 3 [packed=true];  // 下属设备id
     }
     Head head = 1;
     repeated AreaView area_view = 2;
@@ -138,7 +138,7 @@ message GroupInfo {
     message GroupView {
         int32 grp_id = 1;  // 分组id
         string grp_name = 2;  // 分组名称
-        repeated int32 tml_id = 3;  // 下属设备id
+        repeated int32 tml_id = 3 [packed=true];  // 下属设备id
         int32 grp_area = 4;  // 分组所属区域id
         int32 grp_order = 5;  // 分组排序
     }
@@ -513,7 +513,7 @@ message QueryDataSlu {
         repeated int32 st_argv = 6 [packed=true];  // 集中器参数状态,0-正常,1-出错,[集中器参数,控制器参数,开关灯参数]
         repeated int32 st_hw = 7 [packed=true];  // 硬件参数状态,0-正常,1-出错,[zigbee,电力载波,fram,蓝牙,硬件时钟]
         int32 unknow_sluitem_num = 8;  // 未知控制器数量
-        repeated int32 zigbee_channel = 9;  // zigbee信道(1-16)
+        repeated int32 zigbee_channel = 9 [packed=true];  // zigbee信道(1-16)
     }
     message DataSluitemView {
         int32 tml_id = 1;
@@ -565,8 +565,8 @@ message QueryDataSlu {
 // 设备参数
 message rqTmlInfo {
     Head head = 1;
-    repeated int32 data_mark = 5 [packed=true];  // 请求数种类,1-baseinfo,2-gisinfo,4-rtuinfo,5-RtuCurrentAlarmInfo,6-sluinfo,7-lduinfo,8-alsinfo,9-mruinfo,10-esuinfo,11-esuopt
-    int32 tml_id = 6;  // 请求的设备id,0-返回所有数据
+    repeated int32 data_mark = 5 [packed=true];  // 请求数种类,1-baseinfo,2-gisinfo,3-updateinfo(仅填充baseinfo中的tml_id,tml_dt_update两个字段),4-rtuinfo,6-sluinfo,7-lduinfo,8-alsinfo,9-mruinfo,10-esuinfo(暂不做),11-slubaseinfo(单灯简要信息)
+    repeated int32 tml_id = 6 [packed=true];  // 请求的设备id,留空-返回所有数据
 }
 // 应答
 message TmlInfo {
@@ -706,6 +706,16 @@ message TmlInfo {
         int32 current_uplimit = 20;  // 回路电流主动上限报警值
         int32 current_lowlimit = 21;  // 回路电流主动下限报警值
     }
+    message SluitemGrpInfo {
+        message SluitemGrpView {
+            int32 grp_id = 2;  // 分组id
+            string grp_name = 3;  // 分组名称
+            int64 dt_update = 4;  // 最后修改时间
+            repeated int32 sluitem_id = 5 [packed=true];  // 该组控制器序号列表
+        }
+        int32 slu_id = 1;  // 集中器地址
+        repeated SluitemGrpView sluitem_grp_view = 2;
+    }
     message SluItemInfo {
         int64 sluitem_idx = 2;  // 条码
         int32 sluitem_power_uplimit = 3;  // 功率上限
@@ -752,7 +762,8 @@ message TmlInfo {
     repeated AlsInfo als_info = 18;  // 光照度设备填充
     repeated MruInfo mru_info = 19;  // 抄表设备填充
     repeated EsuInfo esu_info = 20;  // 节能设备填充
-    repeated int32 data_mark = 3 [packed=true];  // 请求数种类,1-baseinfo,2-gisinfo,4-rtuinfo,6-sluinfo,7-lduinfo,8-alsinfo,9-mruinfo,10-esuinfo
+    repeated SluitemGrpInfo sluitem_grpinfo = 21;  // 单灯分组信息填充
+    repeated int32 data_mark = 3 [packed=true];  // 请求数种类,1-baseinfo,2-gisinfo,3-updateinfo(仅填充baseinfo中的tml_id,tml_dt_update两个字段),4-rtuinfo,5-sluitemgrpinfo,6-sluinfo,7-lduinfo,8-alsinfo,9-mruinfo,10-esuinfo(暂不做),11-slubaseinfo(单灯简要信息)
 }
 
 // 短信发送记录查询
@@ -783,7 +794,6 @@ message rqSubmitAlarm {
         int32 loop_id = 4;  // 回路id,从1开始,非回路故障填0
         int32 lamp_id = 5;  // 灯头id,从1开始,非灯头故障填0
         int32 err_count = 6;  // 在一定时间内重复产生的故障数量
-        string remark = 7;  // 备注
         int64 dt_remove = 8;  // 故障消除时间
         int32 is_alarm = 9;  // 1-报警,0-消警
     }

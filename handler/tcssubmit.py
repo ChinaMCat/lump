@@ -17,22 +17,19 @@ import mxpsu as mx
 import pbiisi.msg_ws_pb2 as msgws
 import protobuf3.msg_with_ctrl_pb2 as msgtcs
 from tornado import gen
+import mxweb
+# from greentor import green
 
 
 # 故障提交
-@base.route()
+@mxweb.route()
 class SubmitAlarmHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        pb2 = self.get_argument('pb2')
-        scode = self.get_argument('scode')
-
-        legal, rqmsg, msg = utils.check_security_code(scode,
-                                                      pb2,
-                                                      msgws.rqSubmitAlarm(),
-                                                      msgws.CommAns(),
-                                                      request=self.request)
+        legal, rqmsg, msg = self.check_arguments(msgws.rqSubmitAlarm(),
+                                                 msgws.CommAns(),
+                                                 use_scode=1)
         if legal:
             try:
                 a = base64.b64decode(pb2)
@@ -44,7 +41,8 @@ class SubmitAlarmHandler(base.RequestHandler):
                                                                       av.tml_id)
                         libiisi.send_to_zmq_pub(sfilter, av.SerializeToString())
                     except Exception as ex:
-                        print(str(ex))
+                        pass
+                        # print(str(ex))
             except Exception as ex:
                 logging.error(utils.format_log(self.request.remote_ip, str(ex), self.request.path,
                                                0))
@@ -54,23 +52,16 @@ class SubmitAlarmHandler(base.RequestHandler):
 
         self.write('Done.')
         self.finish()
-        del scode, pb2
+        del legal, rqmsg, msg
 
 
 # tcs数据提交
-@base.route()
+@mxweb.route()
 class SubmitTcsHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        pb2 = self.get_argument('pb2')
-        scode = self.get_argument('scode')
-
-        legal, rqmsg, msg = utils.check_security_code(scode,
-                                                      pb2,
-                                                      msgtcs.MsgWithCtrl(),
-                                                      msgws.CommAns(),
-                                                      request=self.request)
+        legal, rqmsg, msg = self.check_arguments(msgtcs.MsgWithCtrl(), msgws.CommAns(), use_scode=1)
         if legal:
             try:
                 a = base64.b64decode(pb2)
@@ -87,4 +78,4 @@ class SubmitTcsHandler(base.RequestHandler):
 
         self.write('Done.')
         self.finish()
-        del scode, pb2
+        del legal, rqmsg, msg

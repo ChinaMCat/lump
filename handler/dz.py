@@ -8,11 +8,12 @@ import base
 import tornado
 import tornado.httpclient as thc
 from tornado import gen
+import mxweb
 
 dz_url = 'http://id.dz.tt/index.php'
 
 
-@base.route()
+@mxweb.route()
 class DZProxyHandler(base.RequestHandler):
 
     @gen.coroutine
@@ -26,6 +27,7 @@ class DZProxyHandler(base.RequestHandler):
         else:
             self.write('There\'s something wrong.')
         self.finish()
+        del client, url, rep
 
     @gen.coroutine
     def post(self):

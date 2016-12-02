@@ -10,110 +10,74 @@ import tornado
 import utils
 import time
 import gc
+import mlib_iisi as libiisi
 from tornado import gen, web
 from greentor import green
 import mxweb
 
-# 
-# @mxweb.route()
-# class Test3Handler(base.RequestHandler):
-# 
-#     @green.green
-#     # @web.asynchronous
-#     @gen.coroutine
-#     def get(self):
-#         self.write('start: ' + str(time.localtime()) + '<br/>')
-#         strsql = 'SELECT * FROM mydb_dy_data.data_rtu_view limit 100000'
-#         strsql = 'select b.rtu_name, \
-#                     b.rtu_phy_id, \
-#                     c.loop_name, \
-#                     a.date_create, \
-#                     a.rtu_id, \
-#                     a.rtu_voltage_a, \
-#                     a.rtu_voltage_b, \
-#                     a.rtu_voltage_c, \
-#                     a.rtu_current_sum_a, \
-#                     a.rtu_current_sum_b, \
-#                     a.rtu_current_sum_c, \
-#                     a.rtu_alarm, \
-#                     a.switch_out_attraction, \
-#                     a.loop_id, \
-#                     a.v, \
-#                     a.a, \
-#                     a.power, \
-#                     a.power_factor, \
-#                     a.bright_rate, \
-#                     a.switch_in_state, \
-#                     a.a_over_range, \
-#                     a.v_over_range  \
-#                     from {0}_data.data_rtu_view as a left join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id \
-#                     left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id'.format(
-#             utils.m_jkdb_name)
-#         # conn = base.pool.get_conn()
-#         # cur = conn.cursor()
-#         # cur.execute(strsql)
-#         cur = self.mysql_generator(strsql)
-#         while 1:
-#             try:
-#                 result = cur.next()
-#                 if result is None:
-#                     break
-#             except:
-#                 break
-#             # print(result)
-#         del cur
-#         self.write('Done.' + str(time.localtime()) + '<br/>')
-# 
-#         self.write(str(self.request.host) + '<br/><br/>')
-#         self.write(str(dir(self.request)) + '<br/><br/>')
-#         self.write(str(dir(self)) + '<br/>')
-#         self.finish()
-# 
-# 
-# @mxweb.route()
-# class Test2Handler(base.RequestHandler):
-# 
-#     @green.green
-#     @gen.coroutine
-#     def get(self):
-#         self.write('start: ' + str(time.localtime()) + '<br/>')
-#         strsql = 'SELECT * FROM mydb_jiaxing1024_data.data_rtu_view limit 100000'
-#         # conn = base.pool.get_conn()
-#         # cur = conn.cursor()
-#         # cur.execute(strsql)
-#         cur = self.mysql_generator(strsql)
-#         while 1:
-#             try:
-#                 result = cur.next()
-#                 if result is None:
-#                     break
-#             except:
-#                 break
-#             # print('test2')
-#         del cur
-#         self.write('Done.' + str(time.localtime()) + '<br/>')
-# 
-#         self.write(str(self.request.host) + '<br/><br/>')
-#         self.write(str(dir(self.request)) + '<br/><br/>')
-#         self.write(str(dir(self)) + '<br/>')
-#         self.finish()
+
+@mxweb.route()
+class ServiceCheckHandler(base.RequestHandler):
+
+    @green.green
+    @gen.coroutine
+    def get(self):
+        try:
+            jobs = self.get_arguments('do')
+            for do in jobs:
+                if do == 'testconfig':
+                    self.write('<br/>=== test config ===<br/>')
+                    if libiisi.m_tcs is None:
+                        self.write('TCS server status ... disconnected.<br/>')
+                    else:
+                        if libiisi.m_tcs.is_connect:
+                            self.write('Test tcs config ... connected.<br/>')
+                        else:
+                            self.write('TCS server status ... disconnected.<br/>')
+                    try:
+                        jk_isok = False
+                        dg_isok = False
+                        strsql = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME in ("{0}","{1}");'.format(
+                            utils.m_jkdb_name, utils.m_dgdb_name)
+                        cur = self.mysql_generator(strsql)
+                        while True:
+                            try:
+                                d = cur.next()
+                            except:
+                                break
+                            if d is None:
+                                break
+                            else:
+                                if d[0] == utils.m_jkdb_name:
+                                    jk_isok = True
+                                elif d[0] == utils.m_dgdb_name:
+                                    dg_isok = True
+                        if jk_isok:
+                            self.write('Test jkdb config ... success.<br/>')
+                        else:
+                            self.write('Test jkdb config ... failed.<br/>')
+                        if dg_isok:
+                            self.write('Test dgdb config ... success.<br/>')
+                        else:
+                            self.write('Test dgdb config ... failed.<br/>')
+                        del cur
+                    except:
+                        self.write('Test jkdb config ... failed.<br/>')
+                        self.write('Test dgdb config ... failed.<br/>')
+
+                if do == 'showhandlers':
+                    self.write('<br/>=== show handlers ===<br/>')
+                    x = self.application.handlers[0][1]
+                    for a in x:
+                        if '%s' not in a._path:
+                            self.write(a._path + '<br/>')
+        except:
+            pass
+        self.finish()
 
 
 @mxweb.route()
 class TestHandler(base.RequestHandler):
-
-    # @green.green
-    # @gen.coroutine
-    # def get(self):
-    #     print('start sleep', time.localtime())
-    #     
-    #     a = yield self.sleep(10)
-    #     print('end sleep', time.localtime())
-    #     self.finish()
-    # self.write(str(self.request.host) + '<br/><br/>')
-    # self.write(str(dir(self.request)) + '<br/><br/>')
-    # self.write(str(dir(self)) + '<br/>')
-
     # @web.asynchronous
     # @gen.coroutine
     @green.green
@@ -133,19 +97,6 @@ class TestHandler(base.RequestHandler):
         self.write(str(self.request.host) + '<br/><br/>')
         self.write(str(dir(self.request)) + '<br/><br/>')
         self.write(str(dir(self)) + '<br/>')
-        self.finish()
-
-
-@mxweb.route()
-class ShowHandlersHandler(base.RequestHandler):
-
-    # @web.asynchronous
-    @gen.coroutine
-    def get(self):
-        x = self.application.handlers[0][1]
-        for a in x:
-            if '%s' not in a._path:
-                self.write(a._path + '<br/>')
         self.finish()
 
 

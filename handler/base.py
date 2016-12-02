@@ -92,15 +92,14 @@ class RequestHandler(mxweb.MXRequestHandler):
         return sdt, edt
 
     def get_phy_cache(self):
-        strsql = 'select rtu_id, rtu_phy_id from {0}.para_base_equipment'.format(m_jkdb_name)
+        strsql = 'select rtu_id, rtu_phy_id from {0}.para_base_equipment'.format(utils.m_jkdb_name)
         cur = self.mysql_generator(strsql)
         while True:
             try:
                 d = cur.next()
             except:
                 break
-            for a in d:
-                self._tml_phy[a[0]] = a[1]
+            self._tml_phy[d[0]] = d[1]
         cur.close()
         del cur
 
@@ -155,13 +154,16 @@ class RequestHandler(mxweb.MXRequestHandler):
         if tml_type == 'r':
             self._cache_tml_r[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                utils.m_jkdb_name, ','.join(self._cache_user[user_uuid]['area_r']))
+                utils.m_jkdb_name,
+                ','.join([str(a) for a in utils.cache_user[user_uuid]['area_r']]))
         elif tml_type == 'w':
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                utils.m_jkdb_name, ','.join(self._cache_user[user_uuid]['area_w']))
+                utils.m_jkdb_name,
+                ','.join([str(a) for a in utils.cache_user[user_uuid]['area_w']]))
         elif tml_type == 'x':
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                utils.m_jkdb_name, ','.join(self._cache_user[user_uuid]['area_x']))
+                utils.m_jkdb_name,
+                ','.join([str(a) for a in utils.cache_user[user_uuid]['area_x']]))
         cur = self.mysql_generator(strsql)
         while 1:
             try:
@@ -182,17 +184,17 @@ class RequestHandler(mxweb.MXRequestHandler):
 
     def check_tml_r(self, user_uuid, settml):
         if user_uuid not in self._cache_tml_r.keys():
-            self.get_tml_cache('r', uuid)
+            self.get_tml_cache('r', user_uuid)
         return self._cache_tml_r[user_uuid].intersection(settml)
 
-    def check_tml_w(self, uuid, settml):
+    def check_tml_w(self, user_uuid, settml):
         if user_uuid not in self._cache_tml_w.keys():
-            self.get_tml_cache('w', uuid)
+            self.get_tml_cache('w', user_uuid)
         return self._cache_tml_w[user_uuid].intersection(settml)
 
-    def check_tml_x(self, uuid, settml):
-        if user_uuid not in cache_tml_x.keys():
-            self.get_tml_cache('x', uuid)
+    def check_tml_x(self, user_uuid, settml):
+        if user_uuid not in self._cache_tml_x.keys():
+            self.get_tml_cache('x', user_uuid)
         return self._cache_tml_x[user_uuid].intersection(settml)
 
     def write_event(self, event_id, contents, is_client_snd, **kwords):

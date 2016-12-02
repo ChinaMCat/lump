@@ -89,9 +89,9 @@ if __name__ == '__main__':
 
     # 开启后台线程
     ip, port = libiisi.m_config.conf_data['tcs_server'].split(':')
-    tt = libiisi.TcsClient(ip, int(port))
-    tt.setDaemon(True)
-    tt.start()
+    libiisi.m_tcs = libiisi.TcsClient(ip, int(port))
+    libiisi.m_tcs.setDaemon(True)
+    libiisi.m_tcs.start()
 
     settings = dict(static_path=os.path.join(mx.SCRIPT_DIR, 'static'),
                     template_path=os.path.join(mx.SCRIPT_DIR, 'templates'),

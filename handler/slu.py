@@ -53,8 +53,7 @@ class QueryDataSluHandler(base.RequestHandler):
 
                     if rebuild_cache:
                         # 验证用户可操作的设备id
-                        if user_data['user_auth'] in utils._can_admin or user_data[
-                                'is_buildin'] == 1:
+                        if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                             if rqmsg.type == 0:
                                 if len(rqmsg.tml_id) == 0:
                                     str_tmls = ' and a.rtu_id=0'
@@ -153,8 +152,7 @@ class QueryDataSluHandler(base.RequestHandler):
 
                     if rebuild_cache:
                         # 验证用户可操作的设备id
-                        if user_data['user_auth'] in utils._can_admin or user_data[
-                                'is_buildin'] == 1:
+                        if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                             if rqmsg.type == 0:
                                 if len(rqmsg.tml_id) == 0:
                                     str_tmls = ' and a.slu_id=0'
@@ -268,7 +266,7 @@ class QueryDataSluHandler(base.RequestHandler):
 @mxweb.route()
 class SluDataGetHandler(base.RequestHandler):
 
-    # @green.green
+    @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluDataGet(), None)
@@ -276,7 +274,7 @@ class SluDataGetHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 # 验证用户可操作的设备id
-                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
+                if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     if len(rqmsg.phy_id) > 0:
                         rtu_ids = ','.join([str(a) for a in rqmsg.phy_id])
                     else:
@@ -308,7 +306,7 @@ class SluDataGetHandler(base.RequestHandler):
 @mxweb.route()
 class SluitemDataGetHandler(base.RequestHandler):
 
-    # @green.green
+    @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluitemDataGet(), None)
@@ -316,7 +314,7 @@ class SluitemDataGetHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 # 验证用户可操作的设备id
-                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
+                if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     if len(rqmsg.phy_id) > 0:
                         rtu_ids = ','.join([str(a) for a in rqmsg.phy_id])
                     else:
@@ -359,7 +357,7 @@ class SluTimerSetHandler(base.RequestHandler):
                 env = True
                 contents = 'user from {0} set slu timer'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id
-                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
+                if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
                     if len(rqmsg.phy_id) > 0:
                         rtu_ids = ','.join([str(a) for a in rqmsg.phy_id])
                     else:
@@ -400,7 +398,7 @@ class SluCtlHandler(base.RequestHandler):
                 env = True
                 contents = 'user from {0} ctrl slu'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id
-                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
+                if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
                     if len(rqmsg.phy_id) > 0:
                         rtu_ids = ','.join([str(a) for a in rqmsg.phy_id])
                     else:

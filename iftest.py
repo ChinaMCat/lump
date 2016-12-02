@@ -12,7 +12,7 @@ import tornado.httpclient as thc
 from tornado.httputil import url_concat
 
 baseurl = 'http://192.168.50.55:63800/'
-baseurl = 'http://180.153.108.83:20525/'
+# baseurl = 'http://180.153.108.83:20525/'
 pm = urllib3.PoolManager(num_pools=10)
 user_id = 'ef61022b553911e6832074d435009085'
 
@@ -27,11 +27,11 @@ def init_head(msg):
 def test_userlogin():
     global user_id
     print('=== login ===')
-    url = baseurl + 'userlogin'
+    url = baseurl + 'userloginjk'
     rqmsg = init_head(msgif.rqUserLogin())
-    rqmsg.dev = 3
+    rqmsg.dev = 1
     rqmsg.user = 'admin'
-    rqmsg.pwd = '1234'
+    rqmsg.pwd = '123'
 
     data = {'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
@@ -148,17 +148,17 @@ def test_rtuctl():
     rqmsg = init_head(msgif.rqRtuCtl())
     rtudo = msgif.rqRtuCtl.RtuDo()
     rtudo.opt = 1
-    rtudo.tml_id.extend([2, 3])
+    rtudo.tml_id.extend([1000002, 1000003])
     rtudo.loop_do.extend([1, 1, 0, 0, 2, 2])
     rqmsg.rtu_do.extend([rtudo])
     rtudo = msgif.rqRtuCtl.RtuDo()
     rtudo.opt = 1
-    rtudo.tml_id.extend([2, 3])
+    rtudo.tml_id.extend([1000002, 1000003])
     rtudo.loop_do.extend([2, 2, 1, 1, 2, 2])
     rqmsg.rtu_do.extend([rtudo])
     rtudo = msgif.rqRtuCtl.RtuDo()
     rtudo.opt = 2
-    rtudo.tml_id.extend([2, 3])
+    rtudo.tml_id.extend([1000002, 1000003])
     rtudo.loop_do.extend([0, 0, 0, 0, 2, 2])
     rqmsg.rtu_do.extend([rtudo])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
@@ -265,8 +265,9 @@ def test_errinfo():
     url = baseurl + 'errinfo'
     rqmsg = msgif.rqErrInfo()
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    print(data)
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
-    print(r.data)
+    # print(r.data)
     msg = msgif.ErrInfo()
     msg.ParseFromString(base64.b64decode(r.data))
     print(msg)
@@ -329,7 +330,7 @@ def test_rtuinfo():
     print('=== query rty info ===')
     url = baseurl + 'tmlinfo'
     rqmsg = msgif.rqTmlInfo()
-    rqmsg.data_mark.extend([11])
+    rqmsg.data_mark.extend([11,1])
 
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=3.0, retries=False)
@@ -443,17 +444,17 @@ if __name__ == '__main__':
     # test_errquery()
     # test_errinfo()
     # test_querysludata()
-    test_areainfo()
+    # test_areainfo()
     # test_grpinfo()
     # test_ipcqueue()
 
     # test_userrenew()
 
-    # test_useradd()
+    # test_rtuinfo()
 
-    # test_useredit()
+    # test_rtuctl()
 
-    # test_userinfo()
+    test_rtudataget()
 
     # test_userdel()
 

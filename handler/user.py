@@ -85,20 +85,23 @@ class UserLoginJKHandler(base.RequestHandler):
                     break
                 if x[3] == 1:
                     user_auth = 15
+                    _area_r = [0]
+                    _area_w = [0]
+                    _area_x = [0]
                 else:
                     user_auth = 0
                     if x[0] is not None:
                         if len(x[0].split(';')[:-1]) > 0:
                             user_auth += 4
-                            _area_r = [int(a) for a in x[0].split(';')]
+                            _area_r = [int(a) for a in x[0].split(';')[:-1]]
                     if x[1] is not None:
                         if len(x[1].split(';')[:-1]) > 0:
                             user_auth += 2
-                            _area_w = [int(a) for a in x[1].split(';')]
+                            _area_w = [int(a) for a in x[1].split(';')[:-1]]
                     if x[2] is not None:
                         if len(x[2].split(';')[:-1]) > 0:
                             user_auth += 1
-                            _area_x = [int(a) for a in x[2].split(';')]
+                            _area_x = [int(a) for a in x[2].split(';')[:-1]]
             cur1.close()
             del cur1
 
@@ -218,20 +221,23 @@ class UserLoginHandler(base.RequestHandler):
                     break
                 if x[3] == 1:
                     user_auth = 15
+                    _area_r = [0]
+                    _area_w = [0]
+                    _area_x = [0]
                 else:
                     user_auth = 0
                     if x[0] is not None:
                         if len(x[0].split(';')[:-1]) > 0:
                             user_auth += 4
-                            _area_r = [int(a) for a in x[0].split(';')]
+                            _area_r = [int(a) for a in x[0].split(';')[:-1]]
                     if x[1] is not None:
                         if len(x[1].split(';')[:-1]) > 0:
                             user_auth += 2
-                            _area_w = [int(a) for a in x[1].split(';')]
+                            _area_w = [int(a) for a in x[1].split(';')[:-1]]
                     if x[2] is not None:
                         if len(x[2].split(';')[:-1]) > 0:
                             user_auth += 1
-                            _area_x = [int(a) for a in x[2].split(';')]
+                            _area_x = [int(a) for a in x[2].split(';')[:-1]]
             cur1.close()
             del cur1
 

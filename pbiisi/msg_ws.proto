@@ -717,7 +717,7 @@ message TmlInfo {
         repeated SluitemGrpView sluitem_grp_view = 2;
     }
     message SluItemInfo {
-        int64 sluitem_idx = 2;  // 条码
+        int64 sluitem_barcode = 2;  // 条码
         int32 sluitem_power_uplimit = 3;  // 功率上限
         int32 sluitem_power_lowlimit = 4;  // 功率下限
         repeated int32 sluitem_route = 5 [packed=true];  // 控制器路由(前4级通信控制器编号1,2,3...)

@@ -32,9 +32,6 @@ class SubmitAlarmHandler(base.RequestHandler):
                                                  use_scode=1)
         if legal:
             try:
-                a = base64.b64decode(pb2)
-                rqmsg.ParseFromString(a)
-                del a
                 for av in rqmsg.alarm_view:
                     try:
                         sfilter = 'jkdb.rep.alarm.{0}.{1}.{2}'.format(av.is_alarm, av.err_id,
@@ -44,11 +41,11 @@ class SubmitAlarmHandler(base.RequestHandler):
                         pass
                         # print(str(ex))
             except Exception as ex:
-                logging.error(utils.format_log(self.request.remote_ip, str(ex), self.request.path,
-                                               0))
+                logging.error(base.format_log(self.request.remote_ip, str(ex), self.request.path,
+                                              0))
         else:
-            logging.error(utils.format_log(self.request.remote_ip, 'Security code error',
-                                           self.request.path, 0))
+            logging.error(base.format_log(self.request.remote_ip, 'Security code error',
+                                          self.request.path, 0))
 
         self.write('Done.')
         self.finish()
@@ -64,17 +61,14 @@ class SubmitTcsHandler(base.RequestHandler):
         legal, rqmsg, msg = self.check_arguments(msgtcs.MsgWithCtrl(), msgws.CommAns(), use_scode=1)
         if legal:
             try:
-                a = base64.b64decode(pb2)
-                rqmsg.ParseFromString(a)
-                del a
                 sfilter = 'tcs.rep.{0}.{1}'.format(rqmsg.head.cmd, rqmsg.args.addr[0])
                 libiisi.send_to_zmq_pub(sfilter, rqmsg.SerializeToString())
             except Exception as ex:
-                logging.error(utils.format_log(self.request.remote_ip, str(ex), self.request.path,
-                                               0))
+                logging.error(base.format_log(self.request.remote_ip, str(ex), self.request.path,
+                                              0))
         else:
-            logging.error(utils.format_log(self.request.remote_ip, 'Security code error',
-                                           self.request.path, 0))
+            logging.error(base.format_log(self.request.remote_ip, 'Security code error',
+                                          self.request.path, 0))
 
         self.write('Done.')
         self.finish()

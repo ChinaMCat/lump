@@ -1,3 +1,20 @@
+[2016-12-02]
+------------
+
+-	调整tmlinfo.sluiteminfo.sluitem_idx -> tmlinfo.sluiteminfo.sluitem_barcode,原命名易误解
+
+[2016-11-30]
+------------
+
+-	合并testconfig和showhandlers接口为servicecheck,使用do=showhandler&do=testconfig参数
+-	修正get_phy_cache,参数传递错误
+-	操作类接口安全方面使用判断区域0替换判断权限值
+
+[2016-11-29]
+------------
+
+-	修正用户登录中area_r,area_w,area_x填充bug
+
 [2016-11-28]
 ------------
 

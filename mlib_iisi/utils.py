@@ -16,6 +16,7 @@ m_zmq_pub = None
 
 m_send_queue = mx.PriorityQueue(maxsize=5000)
 
+m_tcs = None
 # _wait4ans = dict()
 # _ans_queue = dict()
 

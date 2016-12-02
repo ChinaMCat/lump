@@ -50,20 +50,22 @@ class QueryDataErrHandler(base.RequestHandler):
                         str_errs = ''
                     else:
                         str_errs = ' a.fault_id in ({0}) '.format(','.join([str(a)
-                                                                                            for a in rqmsg.err_id]))
+                                                                            for a in rqmsg.err_id]))
                     # 验证用户可操作的设备id
-                    if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
+                    if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                         tml_ids = list(rqmsg.tml_id)
                         if len(tml_ids) == 0:
                             str_tmls = ''
                         else:
-                            str_tmls = 'a. rtu_id in ({0}) '.format(','.join([str(a) for a in tml_ids]))
+                            str_tmls = 'a. rtu_id in ({0}) '.format(','.join([str(a) for a in
+                                                                              tml_ids]))
                     else:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                         if len(tml_ids) == 0:
                             msg.head.if_st = 46
                         else:
-                            str_tmls = 'a. rtu_id in ({0}) '.format(','.join([str(a) for a in tml_ids]))
+                            str_tmls = 'a. rtu_id in ({0}) '.format(','.join([str(a) for a in
+                                                                              tml_ids]))
                     if msg.head.if_st == 1:
                         if rqmsg.type == 0:  # 现存故障
                             strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create, \
@@ -78,7 +80,7 @@ class QueryDataErrHandler(base.RequestHandler):
                             if len(str_errs) > 0:
                                 strsql += ' and {0}'.format(str_errs)
                             strsql += ' order by a.date_create desc'
-                            
+
                             cur = self.mysql_generator(strsql)
                             while True:
                                 try:
@@ -162,7 +164,7 @@ class ErrInfoHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 # ,akarn_time_set,alarm_time_start,alarm_time_end
-                strsql = 'select fault_id,fault_name,fault_name_define,is_enable,fault_remark,warn_level, \
+                strsql = 'select fault_id,fault_name,fault_name_define,is_enable,fault_remark,priority_level, \
                             fault_check_keyword from {0}.fault_types'.format(utils.m_jkdb_name)
                 cur = self.mysql_generator(strsql)
                 while True:
@@ -185,7 +187,6 @@ class ErrInfoHandler(base.RequestHandler):
                     del errinfoview
                 cur.close()
                 del cur, strsql
-
         self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid

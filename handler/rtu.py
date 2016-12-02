@@ -36,7 +36,7 @@ class TmlInfoHandler(base.RequestHandler):
             if user_data['user_auth'] in utils._can_read:
                 msg.data_mark.extend(list(rqmsg.data_mark))
                 # 验证用户可操作的设备id
-                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
+                if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     tml_ids = [rqmsg.tml_id]
                 else:
                     tml_ids = self.check_tml_r(user_uuid, [rqmsg.tml_id])
@@ -290,9 +290,10 @@ class TmlInfoHandler(base.RequestHandler):
                                         info.slu_saving_mode = d[19]
                                         info.slu_pwm_rate = d[20]
                                         info.slu_off_line = d[21]
-
+                                if d[22] is None:
+                                    continue
                                 iteminfo = msgws.TmlInfo.SluItemInfo()
-                                iteminfo.sluitem_idx = d[22]
+                                iteminfo.sluitem_barcode = d[22]
                                 iteminfo.sluitem_loop_num = d[40]
                                 iteminfo.sluitem_name = d[45]
                                 iteminfo.sluitem_id = d[46]
@@ -449,7 +450,7 @@ class QuerydataRtuHandler(base.RequestHandler):
                 msg.type = rqmsg.type
                 if rqmsg.type == 0:  # 最新数据
                     # 验证用户可操作的设备id
-                    if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
+                    if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                         tml_ids = rqmsg.tml_id[0]
                     else:
                         tml_ids = self.check_tml_r(user_uuid, [rqmsg.tml_id[0]])
@@ -543,8 +544,7 @@ class QuerydataRtuHandler(base.RequestHandler):
 
                     if rebuild_cache:
                         # 验证用户可操作的设备id
-                        if user_data['user_auth'] in utils._can_admin or user_data[
-                                'is_buildin'] == 1:
+                        if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                             tml_ids = list(rqmsg.tml_id)
                         else:
                             if len(rqmsg.tml_id) == 0:
@@ -647,7 +647,7 @@ class QuerydataRtuHandler(base.RequestHandler):
 @mxweb.route()
 class RtuDataGetHandler(base.RequestHandler):
 
-    # @green.green
+    @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqRtuDataGet(), None)
@@ -655,7 +655,7 @@ class RtuDataGetHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 # 验证用户可操作的设备id
-                if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
+                if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     if len(rqmsg.phy_id) > 0:
                         rtu_ids = ','.join([str(a) for a in rqmsg.phy_id])
                     else:
@@ -697,7 +697,7 @@ class RtuCtlHandler(base.RequestHandler):
                     tcsdata = dict()
 
                     # 验证用户可操作的设备id
-                    if user_data['user_auth'] in utils._can_admin or user_data['is_buildin'] == 1:
+                    if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
                         if len(x.phy_id) > 0:
                             rtu_ids = ','.join([str(a) for a in x.phy_id])
                         else:

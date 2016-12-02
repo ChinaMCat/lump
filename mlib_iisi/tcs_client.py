@@ -150,7 +150,7 @@ class TcsClient(threading.Thread):
                     self.sock.connect(self.address)
                     self.fileno = self.sock.fileno()
                     self.is_connect = True
-                    self.save_log('success conect to tcs server: {0}'.format(self.address), 40)
+                    self.save_log('success connect to tcs server: {0}'.format(self.address), 40)
                     m_send_queue.put_nowait(SENDWHOIS)
                     self.epoll.register(self.fileno, WRITE)
                 except Exception as ex:

@@ -5,27 +5,28 @@ __author__ = 'minamoto'
 __ver__ = '0.1'
 __doc__ = 'user handler'
 
-import base
-import time
 import base64
 import time
-import os
-import json
 import uuid
+import xml.dom.minidom as xmld
+from urllib import urlencode
+
+import mxpsu as mx
+import mxweb
+from tornado import gen
+from tornado.httpclient import AsyncHTTPClient
+
+import base
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import protobuf3.msg_with_ctrl_pb2 as msgctrl
-import mxpsu as mx
 import utils
-from greentor import green
-from tornado import gen
-import mxweb
 
 
 @mxweb.route()
 class UserLoginJKHandler(base.RequestHandler):
 
-    @green.green
+    thc = AsyncHTTPClient()
+
     @gen.coroutine
     def post(self):
         pb2 = self.get_argument('pb2')
@@ -41,16 +42,16 @@ class UserLoginJKHandler(base.RequestHandler):
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
         where user_name="{1}" and user_password="{2}"'.format(utils.m_jkdb_name, rqmsg.user,
                                                               rqmsg.pwd)
-        cur = self.mysql_generator(strsql)
-        try:
-            d = cur.next()
-        except:
-            d = None
-        if d is None:
+        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+            strsql,
+            need_fetch=1,
+            need_paging=0)
+        if record_total is None or record_total == 0:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
             msg.head.if_st = 40
             msg.head.if_msg = 'Wrong username or password'
         else:
+            d = cur[0]
             # 判断用户是否已经登录
             if len(utils.cache_user) > 0:
                 a = utils.cache_user.keys()
@@ -77,32 +78,32 @@ class UserLoginJKHandler(base.RequestHandler):
             _area_x = []
             strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
                 utils.m_jkdb_name, rqmsg.user)
-            cur1 = self.mysql_generator(strsql)
-            while True:
-                try:
-                    x = cur1.next()
-                except:
-                    break
-                if x[3] == 1:
-                    user_auth = 15
-                    _area_r = [0]
-                    _area_w = [0]
-                    _area_x = [0]
-                else:
-                    user_auth = 0
-                    if x[0] is not None:
-                        if len(x[0].split(';')[:-1]) > 0:
-                            user_auth += 4
-                            _area_r = [int(a) for a in x[0].split(';')[:-1]]
-                    if x[1] is not None:
-                        if len(x[1].split(';')[:-1]) > 0:
-                            user_auth += 2
-                            _area_w = [int(a) for a in x[1].split(';')[:-1]]
-                    if x[2] is not None:
-                        if len(x[2].split(';')[:-1]) > 0:
-                            user_auth += 1
-                            _area_x = [int(a) for a in x[2].split(';')[:-1]]
-            cur1.close()
+            record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = self.mydata_collector(
+                strsql,
+                need_fetch=1,
+                need_paging=0)
+                
+            if record_total1 > 0:
+                for d in cur1:
+                    if d[3] == 1:
+                        user_auth = 15
+                        _area_r = [0]
+                        _area_w = [0]
+                        _area_x = [0]
+                    else:
+                        user_auth = 0
+                        if d[0] is not None:
+                            if len(d[0].split(';')[:-1]) > 0:
+                                user_auth += 4
+                                _area_r = [int(a) for a in d[0].split(';')[:-1]]
+                        if d[1] is not None:
+                            if len(d[1].split(';')[:-1]) > 0:
+                                user_auth += 2
+                                _area_w = [int(a) for a in d[1].split(';')[:-1]]
+                        if d[2] is not None:
+                            if len(d[2].split(';')[:-1]) > 0:
+                                user_auth += 1
+                                _area_x = [int(a) for a in d[2].split(';')[:-1]]
             del cur1
 
             msg.auth = user_auth
@@ -123,33 +124,39 @@ class UserLoginJKHandler(base.RequestHandler):
                                                area_x=set(_area_x),
                                                is_buildin=0)
             del _area_r, _area_w, _area_x
-        cur.close()
+
         del cur, strsql
 
-        # # 登录工作流
-        if rqmsg.dev == 3 and msg.head.if_st == 1:
+        # 登录工作流
+        if rqmsg.dev == 3:
             retry = False
+            args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
+            url = '{0}/mobileLogin?{1}'.format(utils.m_fs_url, urlencode(args))
             try:
-                baseurl = '{0}/FlowService.asmx/mobileLogin'.format(utils.m_fs_url)
-                args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
-                rep = utils.m_httpclinet_pool.request('GET',
-                                                      baseurl,
-                                                      fields=args,
-                                                      timeout=7.0,
-                                                      retries=False)
-                msg.remark = rep.data
+                rep = yield self.thc.fetch(url, raise_error=True, request_timeout=10)
+                # rep = utils.m_httpclinet_pool.request('GET',
+                #                                       baseurl,
+                #                                       fields=args,
+                #                                       timeout=2.0,
+                #                                       retries=False)
+                dom = xmld.parseString(rep.body)
+                root = dom.documentElement
+                msg.flow_data = root.firstChild.wholeText
+                del dom, root
             except Exception as ex:
+                print(ex)
                 if not retry:
                     retry = True
-                    baseurl = '{0}/FlowService.asmx/mobileLogin'.format(utils.m_fs_url)
-                    args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
-                    rep = utils.m_httpclinet_pool.request('GET',
-                                                          baseurl,
-                                                          fields=args,
-                                                          timeout=2.0,
-                                                          retries=False)
-                    msg.remark = rep.data
+                    try:
+                        rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+                        dom = xmld.parseString(rep.body)
+                        root = dom.documentElement
+                        msg.flow_data = root.firstChild.wholeText
+                        del dom, root
+                    except:
+                        msg.flow_data = ''
                 else:
+                    msg.flow_data = ''
                     print(str(ex))
 
         self.write(mx.convertProtobuf(msg))
@@ -161,7 +168,6 @@ class UserLoginJKHandler(base.RequestHandler):
 @mxweb.route()
 class UserLoginHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def post(self):
         pb2 = self.get_argument('pb2')
@@ -177,16 +183,16 @@ class UserLoginHandler(base.RequestHandler):
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
         where user_name="{1}" and user_password="{2}"'.format(utils.m_jkdb_name, rqmsg.user,
                                                               rqmsg.pwd)
-        cur = self.mysql_generator(strsql)
-        try:
-            d = cur.next()
-        except:
-            d = None
-        if d is None:
+        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+            strsql,
+            need_fetch=1,
+            need_paging=0)
+        if record_total is None or record_total == 0:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
             msg.head.if_st = 40
             msg.head.if_msg = 'Wrong username or password'
         else:
+            d = cur[0]
             # 判断用户是否已经登录
             if len(utils.cache_user) > 0:
                 a = utils.cache_user.keys()
@@ -213,32 +219,31 @@ class UserLoginHandler(base.RequestHandler):
             _area_x = []
             strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
                 utils.m_jkdb_name, rqmsg.user)
-            cur1 = self.mysql_generator(strsql)
-            while True:
-                try:
-                    x = cur1.next()
-                except:
-                    break
-                if x[3] == 1:
-                    user_auth = 15
-                    _area_r = [0]
-                    _area_w = [0]
-                    _area_x = [0]
-                else:
-                    user_auth = 0
-                    if x[0] is not None:
-                        if len(x[0].split(';')[:-1]) > 0:
-                            user_auth += 4
-                            _area_r = [int(a) for a in x[0].split(';')[:-1]]
-                    if x[1] is not None:
-                        if len(x[1].split(';')[:-1]) > 0:
-                            user_auth += 2
-                            _area_w = [int(a) for a in x[1].split(';')[:-1]]
-                    if x[2] is not None:
-                        if len(x[2].split(';')[:-1]) > 0:
-                            user_auth += 1
-                            _area_x = [int(a) for a in x[2].split(';')[:-1]]
-            cur1.close()
+            record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = self.mydata_collector(
+                strsql,
+                need_fetch=1,
+                need_paging=0)
+            if record_total1 > 0:
+                for d in cur1:
+                    if d[3] == 1:
+                        user_auth = 15
+                        _area_r = [0]
+                        _area_w = [0]
+                        _area_x = [0]
+                    else:
+                        user_auth = 0
+                        if d[0] is not None:
+                            if len(d[0].split(';')[:-1]) > 0:
+                                user_auth += 4
+                                _area_r = [int(a) for a in d[0].split(';')[:-1]]
+                        if d[1] is not None:
+                            if len(d[1].split(';')[:-1]) > 0:
+                                user_auth += 2
+                                _area_w = [int(a) for a in d[1].split(';')[:-1]]
+                        if d[2] is not None:
+                            if len(d[2].split(';')[:-1]) > 0:
+                                user_auth += 1
+                                _area_x = [int(a) for a in d[2].split(';')[:-1]]
             del cur1
 
             msg.auth = user_auth
@@ -259,7 +264,7 @@ class UserLoginHandler(base.RequestHandler):
                                                area_x=set(_area_x),
                                                is_buildin=0)
             del _area_r, _area_w, _area_x
-        cur.close()
+
         del cur, strsql
 
         self.write(mx.convertProtobuf(msg))
@@ -271,14 +276,13 @@ class UserLoginHandler(base.RequestHandler):
 @mxweb.route()
 class UserLogoutHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def post(self):
         contents = ''
         env = False
 
         user_data, rqmsg, msg, user_uuid = self.check_arguments(None, None)
-
+        user_uuid = self.get_argument('uuid')
         if user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to logout.'
@@ -302,18 +306,11 @@ class UserLogoutHandler(base.RequestHandler):
         if env:
             self.write_event(122, contents, 2, user_name=user_data['user_name'])
         del msg, rqmsg, user_data
-        try:
-            baseurl = 'http://{0}/cleaningwork'.format(self.request.host)
-            rep = utils.m_httpclinet_pool.request('GET', baseurl, timeout=1.0, retries=False)
-            del rep
-        except Exception as ex:
-            print(str(ex))
 
 
 @mxweb.route()
 class UserRenewHandler(base.RequestHandler):
 
-    # @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserRenew(), None)
@@ -321,18 +318,11 @@ class UserRenewHandler(base.RequestHandler):
         self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data
-        try:
-            baseurl = 'http://{0}/cleaningwork'.format(self.request.host)
-            rep = utils.m_httpclinet_pool.request('GET', baseurl, timeout=1.0, retries=False)
-            del rep
-        except Exception as ex:
-            print(str(ex))
 
 
 @mxweb.route()
 class UserAddHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserAdd(), None)
@@ -351,21 +341,22 @@ class UserAddHandler(base.RequestHandler):
                     # 判断用户是否存在
                     strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
                         utils.m_jkdb_name, rqmsg.user, rqmsg.pwd)
-                    cur = self.mysql_generator(strsql, 0)
-                    if cur.next() > 0:
+                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                        strsql,
+                        need_fetch=0)
+                    if record_total > 0:
                         msg.head.if_st = 45
                         msg.head.if_msg = 'User already exists'
                     else:
                         strsql = 'insert into {0}.user_list (user_name, user_real_name, user_password, user_phonenumber, user_operator_code, date_create, date_update, date_access) \
                         values ("{1}","{2}","{3}","{4}","{5}",{6},{7},{8})'.format(
                             utils.m_jkdb_name, rqmsg.user, rqmsg.fullname, rqmsg.pwd, rqmsg.tel,
-                            rqmsg.code, int(time.time()), int(time.time()), int(time.time()))
-                        cur1 = self.mysql_generator(strsql, 0)
+                            rqmsg.code, mx.switchStamp(int(time.time())),
+                            mx.switchStamp(int(time.time())), mx.switchStamp(int(time.time())))
+                        self.mydata_collector(strsql, need_fetch=0)
                         env = True
                         contents = 'add user {0}'.format(rqmsg.user)
-                        cur1.close()
-                        del cur1
-                    cur.close()
+
                     del cur, strsql
 
         self.write(mx.convertProtobuf(msg))
@@ -378,7 +369,6 @@ class UserAddHandler(base.RequestHandler):
 @mxweb.route()
 class UserDelHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserDel(), None)
@@ -398,18 +388,19 @@ class UserDelHandler(base.RequestHandler):
                     try:
                         strsql = 'select * from {0}.user_list where user_name="{1}"'.format(
                             utils.m_jkdb_name, rqmsg.user_name)
-                        cur = self.mysql_generator(strsql, 0)
-                        if cur.next() > 0:
+                        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            strsql,
+                            need_fetch=0)
+                        if record_total > 0:
                             strsql = 'delete from {0}.user_list where user_name="{1}"'.format(
                                 utils.m_jkdb_name, rqmsg.user_name)
-                            cur1 = self.mysql_generator(strsql, 0)
-                            cur1.close()
+                            self.mydata_collector(strsql, need_fetch=0)
                             env = True
                             contents = 'del user {0}'.format(rqmsg.user_name)
                         else:
                             msg.head.if_st = 46
                             msg.head.if_msg = 'no such user'
-                        cur.close()
+
                         del cur, strsql
                     except Exception as ex:
                         msg.head.if_st = 0
@@ -425,7 +416,6 @@ class UserDelHandler(base.RequestHandler):
 @mxweb.route()
 class UserEditHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(rqUserEdit(), None)
@@ -440,9 +430,10 @@ class UserEditHandler(base.RequestHandler):
             if user_data is not None:
                 strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
                     utils.m_jkdb_name, rqmsg.user_name, rqmsg.pwd_old)
-                cur = self.mysql_generator(strsql, 0)
-                if cur.next() > 0:
-                    cur1 = None
+                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                    strsql,
+                    need_fetch=0)
+                if record_total > 0:
                     if user_data['user_name'] == rqmsg.user_name:
                         if user_data['user_auth'] in utils._can_write:
                             strsql = 'update {0}.user_list set user_real_name="{1}", \
@@ -452,9 +443,7 @@ class UserEditHandler(base.RequestHandler):
                                         where user_name="{5}"'.format(
                                 utils.m_jkdb_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
                                 rqmsg.user_name)
-                            cur1 = self.mysql_generator(strsql, 0)
-                            cur1.close()
-                            del cur1
+                            self.mydata_collector(strsql, 0)
                         else:
                             msg.head.if_st = 11
                             msg.head.if_msg = 'You do not have permission to modify the information'
@@ -467,16 +456,14 @@ class UserEditHandler(base.RequestHandler):
                                         where user_name="{5}"'.format(
                                 utils.m_jkdb_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
                                 rqmsg.user_name)
-                            cur1 = self.mysql_generator(strsql, 0)
-                            cur1.close()
-                            del cur1
+                            self.mydata_collector(strsql, 0)
                         else:
                             msg.head.if_st = 11
                             msg.head.if_msg = 'You do not have permission to modify the information to others'
                 else:
                     msg.head.if_st = 46
                     msg.head.if_msg = 'User old password error'
-                cur.close()
+
                 del cur, strsql
         self.write(mx.convertProtobuf(msg))
         self.finish()
@@ -486,7 +473,6 @@ class UserEditHandler(base.RequestHandler):
 @mxweb.route()
 class UserInfoHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserInfo(),
@@ -501,39 +487,44 @@ class UserInfoHandler(base.RequestHandler):
         else:
             if user_data is not None:
                 try:
-                    sqlstr = ''
+                    strsql = ''
                     if user_data['user_auth'] < 4:
                         msg.head.if_st = 11
-                    elif user_data['user_auth'] in utils._can_read:
-                        sqlstr = 'select user_name, user_real_name, user_password, user_auth, user_phonenumber, user_operator_code, area_id from {0}.user_list where user_name="{1}"'.format(
-                            utils.m_jkdb_name, rqmsg.user_name)
-                    elif user_data['user_auth'] in utils._can_admin:
-                        if len(rqmsg.user_name) == 0:
-                            sqlstr = 'select user_name, user_real_name, user_password, user_auth, user_phonenumber, user_operator_code, area_id from {0}.user_list'.format(
-                                user_data['user_db'])
-                        else:
-                            sqlstr = 'select user_name, user_real_name, user_password, user_auth, user_phonenumber, user_operator_code, area_id from {0}.user_list where user_name="{1}"'.format(
-                                utils.m_jkdb_name, rqmsg.user_name)
-                    if len(sqlstr) > 0:
-                        cur = self.mysql_generator(strsql)
-                        while True:
-                            try:
-                                d = cur.next()
-                            except:
-                                break
-                            for a in d:
-                                userview = msgws.UserInfo.UserView()
-                                userview.user = a[0]
-                                userview.fullname = a[1]
-                                userview.pwd = a[2]
-                                userview.auth = a[3]
-                                userview.tel = a[4]
-                                userview.code = a[5]
-                                userview.area_id = a[6]
-                                msg.user_view.extend([userview])
-                                del userview
-                            cur.close()
-                            del cur
+                    else:
+                        if user_data['user_auth'] in utils._can_admin:
+                            if len(rqmsg.user_name) == 0:
+                                strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list'.format(
+                                    user_data['user_db'])
+                            else:
+                                strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
+                                    utils.m_jkdb_name, rqmsg.user_name)
+                        elif user_data['user_auth'] in utils._can_read:
+                            strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
+                                utils.m_jkdb_name, user_data['user_name'])
+                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                        strsql,
+                        need_fetch=1,
+                        need_paging=0)
+                    if record_total is None:
+                        msg.head.if_st = 45
+                    else:
+                        msg.head.paging_record_total = record_total
+                        msg.head.paging_buffer_tag = buffer_tag
+                        msg.head.paging_idx = paging_idx
+                        msg.head.paging_total = paging_total
+                        for d in cur:
+                            userview = msgws.UserInfo.UserView()
+                            userview.user = d[0]
+                            userview.fullname = d[1] if d[1] is not None else ''
+                            userview.pwd = d[2]
+                            # userview.auth = d[3]
+                            userview.tel = d[3] if d[3] is not None else ''
+                            userview.code = d[4] if d[4] is not None else ''
+                            # userview.area_id = d[5]
+                            msg.user_view.extend([userview])
+                            del userview
+
+                    del cur
                 except Exception as ex:
                     msg.head.if_st = 0
                     msg.head.if_msg = str(ex)

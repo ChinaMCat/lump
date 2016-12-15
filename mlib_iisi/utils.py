@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import mxpsu as mx
-import protobuf3.msg_with_ctrl_pb2 as msgctrl
+import base64
 import codecs
+import json
 import os
 import time
-import base64
-import json
+
+import mxpsu as mx
+import protobuf3.msg_with_ctrl_pb2 as msgctrl
 import zmq
 
 m_confdir, m_logdir, m_cachedir = mx.get_dirs('dclms', 'iisi')
@@ -17,6 +18,7 @@ m_zmq_pub = None
 m_send_queue = mx.PriorityQueue(maxsize=5000)
 
 m_tcs = None
+
 # _wait4ans = dict()
 # _ans_queue = dict()
 
@@ -206,6 +208,7 @@ class Conf():
             'dgdb_name': 'dgdb10001',
             'dz_url': 'http://id.dz.tt/index.php',
             'fs_url': 'http://192.168.50.80:33819/ws_common',
+            'db_url': ''
         }
 
     def saveConf(self):
@@ -241,6 +244,8 @@ class Conf():
         conf.append('dz_url={0}'.format(self.conf_data['dz_url']))
         conf.append(u'# 工作流接口地址')
         conf.append('fs_url={0}'.format(self.conf_data['fs_url']))
+        conf.append(u'# 数据接口地址')
+        conf.append('db_url={0}'.format(self.conf_data['db_url']))
 
         with codecs.open(self.conf_file, 'w', encoding='utf-8') as f:
             try:
@@ -265,6 +270,7 @@ class Conf():
                             v = c.split('=')[1].strip()
                             self.conf_data[a] = v
                 f.close()
+            self.saveConf()
 
 
 m_config = Conf()

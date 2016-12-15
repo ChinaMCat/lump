@@ -5,19 +5,17 @@ __author__ = 'minamoto'
 __ver__ = '1.0.161111'
 __doc__ = u'''交互式综合服务接口（Interactive Integrated Services Interface）'''
 
+import sys
+import os
+import tornado.web
+import tornado.httpserver
+import threading
 import argparse
 import logging
-import os
-import sys
-import threading
-import time
-
-import mxpsu as mx
-import tornado.httpserver
-import tornado.web
 import zmq
+import time
 from tornado.options import options
-
+import mxpsu as mx
 import mlib_iisi as libiisi
 
 USER_AUTH = {}
@@ -84,18 +82,12 @@ if __name__ == '__main__':
             loglevel = 'info'
         options.parse_command_line(args=['', '--logging={0}'.format(
             loglevel), '--log_to_stderr', '--log_file_prefix={0}'.format(os.path.join(
-                libiisi.m_logdir, 'iisi{0}.debug.log'.format(libiisi.m_config.conf_data[
+                libiisi.m_logdir, 'iisi-db{0}.debug.log'.format(libiisi.m_config.conf_data[
                     'bind_port'])))],
                                    final=True)
 
     if results.hp:
         tornado.process.fork_processes(0)
-
-    # 开启后台线程
-    ip, port = libiisi.m_config.conf_data['tcs_server'].split(':')
-    libiisi.m_tcs = libiisi.TcsClient(ip, int(port))
-    libiisi.m_tcs.setDaemon(True)
-    libiisi.m_tcs.start()
 
     settings = dict(static_path=os.path.join(mx.SCRIPT_DIR, 'static'),
                     template_path=os.path.join(mx.SCRIPT_DIR, 'templates'),
@@ -106,10 +98,9 @@ if __name__ == '__main__':
                     # login_url='/userloginjk', 
                     )
 
-    from handler import handler_iisi, handler_err  # , handler_iisi_db
+    from handler import handler_iisi_db, handler_err
     lst_handler = []
-    lst_handler.extend(handler_iisi)
-    # lst_handler.extend(handler_iisi_db)
+    lst_handler.extend(handler_iisi_db)
     lst_handler.extend(handler_err)
     application = tornado.web.Application(handlers=lst_handler, **settings)
     application.listen(results.port)

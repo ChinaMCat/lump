@@ -2,13 +2,13 @@
 
 __author__ = 'minamoto'
 __ver__ = '0.1'
-__doc__ = 'rtu handler'
+__doc__ = 'dz handler'
 
 import base
 import tornado
-import tornado.httpclient as thc
 from tornado import gen
 import mxweb
+from tornado.httpclient import AsyncHTTPClient
 
 dz_url = 'http://id.dz.tt/index.php'
 
@@ -18,16 +18,13 @@ class DZProxyHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        client = thc.AsyncHTTPClient()
         url = self.request.uri.replace('/dzproxy', utils.m_dz_url)
-
-        rep = yield client.fetch(url)
-        if rep.code == 200:
-            self.write(rep.body)
-        else:
-            self.write('There\'s something wrong.')
+        thc = AsyncHTTPClient()
+        rep = yield thc.fetch(url, raise_error=False, request_timeout=5)
+        # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
+        self.write(rep.body)
         self.finish()
-        del client, url, rep
+        del url, rep
 
     @gen.coroutine
     def post(self):

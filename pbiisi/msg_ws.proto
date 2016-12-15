@@ -44,7 +44,7 @@ message UserLogin {
     string user_db = 5;  // 用户关联数据库名称
     int32 user_area = 6;  // 用户的区域id(暂不用)
     string zmq = 7;  // 信息推送服务地址(zmp端口号)
-    string remark = 8; // 备注信息,如工作流系统登录的返回信息
+    string flow_data = 8; // 备注信息,如工作流系统登录的返回信息
     repeated int32 area_r = 9 [packed=true];  // 可读区域
     repeated int32 area_w = 10 [packed=true];  // 可写区域
     repeated int32 area_x = 11 [packed=true];  // 可操作区域
@@ -390,11 +390,11 @@ message rqIpcCtl {
 // CommAns应答
 
 // 日出日落查询
-message rqQueryDataSunriset {
+message rqSunrisetInfo {
     Head head = 1;
 }
 // 应答
-message QueryDataSunriset {
+message SunrisetInfo {
     message DataSunrisetView {
         int32 month = 1;  //月
         int32 day = 2;  // 日
@@ -539,7 +539,23 @@ message QueryDataSlu {
         double lamp_runtime_count = 10;  // 软件计算的运行时间,单位分钟
         double lamp_saving = 7;  // 节能档位0-100%
     }
-    message SluitemPhyView {
+    message DataSluitemAssistView {
+        message SluitemLampData {
+            double max_voltage = 1;  // 最大电压
+            double max_current = 2;  // 最大电流
+            double electricity = 3;  // 累计电流
+        }
+        message SluitemAssistData {
+            int32 sluitem_id = 3;  // 控制器id
+            int64 dt_cache = 4;  // 数据缓存时间
+            double leackage_current = 5;  // 漏电流
+            repeated SluitemLampData sluitem_lamp_data = 6;  // 灯头数据
+        }
+        int32 tml_id = 1;
+        int64 dt_receive = 2;  // 数据接收时间
+        repeated SluitemAssistData sluitem_assist_data =3;
+    }
+    message DataSluitemPhyView {
         int32 tml_id = 1;
         int32 phy_id = 2;
         int64 dt_receive = 3;  // 数据接收时间
@@ -560,6 +576,8 @@ message QueryDataSlu {
     int32 data_mark = 2;  // 数据类型标示,同请求
     repeated DataSluView data_slu_view = 3;  // 当data_mark=0时返回
     repeated DataSluitemView data_sluitem_view = 4; // 当data_mark=7时返回
+    repeated DataSluitemAssistView data_sluitem_assist_view = 5;  // 当data_mark=6时返回
+    repeated DataSluitemPhyView sluitem_phy_view = 6;  // 当data_mark=4时返回
 }
 
 // 设备参数
@@ -797,6 +815,6 @@ message rqSubmitAlarm {
         int64 dt_remove = 8;  // 故障消除时间
         int32 is_alarm = 9;  // 1-报警,0-消警
     }
-    Head head = 1;
+    // Head head = 1;
     repeated AlarmView alarm_view = 2;
 }

@@ -5,28 +5,48 @@ __author__ = 'minamoto'
 __ver__ = '0.1'
 __doc__ = 'main handler'
 
-import base
-import tornado
-import utils
-import time
 import gc
-import mlib_iisi as libiisi
-from tornado import gen, web
-from greentor import green
+import os
+import time
+
 import mxweb
+from tornado import gen
+
+import base
+import mlib_iisi as libiisi
+import utils
+
+
+@mxweb.route()
+class TestHandler(base.RequestHandler):
+
+    @gen.coroutine
+    def get(self):
+        self.write('start: ' + str(time.localtime()) + '<br/>')
+        self.write('Done.' + str(time.localtime()) + '<br/>')
+
+        # self.write(str(self.request.method) + '<br/><br/>')
+        self.write(str(dir(self.request)) + '<br/><br/>')
+        self.write(str(self.url_pattern) + '<br/>')
+        self.finish()
+
+    @gen.coroutine
+    def post(self):
+        self.write(self.request.uri + '\r\n')
+        self.write(str(self.request.arguments) + '\r\n')
+        self.finish()
 
 
 @mxweb.route()
 class ServiceCheckHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def get(self):
         try:
             jobs = self.get_arguments('do')
             for do in jobs:
                 if do == 'testconfig':
-                    self.write('<br/>=== test config ===<br/>')
+                    self.write('=== test config ===<br/>')
                     if libiisi.m_tcs is None:
                         self.write('TCS server status ... disconnected.<br/>')
                     else:
@@ -39,15 +59,14 @@ class ServiceCheckHandler(base.RequestHandler):
                         dg_isok = False
                         strsql = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME in ("{0}","{1}");'.format(
                             utils.m_jkdb_name, utils.m_dgdb_name)
-                        cur = self.mysql_generator(strsql)
-                        while True:
-                            try:
-                                d = cur.next()
-                            except:
-                                break
-                            if d is None:
-                                break
-                            else:
+                        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            strsql,
+                            need_fetch=1)
+                        if record_total is None:
+                            jk_isok = False
+                            dg_isok = False
+                        else:
+                            for d in cur:
                                 if d[0] == utils.m_jkdb_name:
                                     jk_isok = True
                                 elif d[0] == utils.m_dgdb_name:
@@ -64,48 +83,38 @@ class ServiceCheckHandler(base.RequestHandler):
                     except:
                         self.write('Test jkdb config ... failed.<br/>')
                         self.write('Test dgdb config ... failed.<br/>')
+                    self.write('<br/>')
+                    self.flush()
 
                 if do == 'showhandlers':
-                    self.write('<br/>=== show handlers ===<br/>')
+                    self.write('=== show handlers ===<br/>')
                     x = self.application.handlers[0][1]
                     for a in x:
-                        if '%s' not in a._path:
+                        if '%s' not in a._path and '.*' not in a._path:
                             self.write(a._path + '<br/>')
+                    self.write('<br/>')
+                    self.flush()
         except:
             pass
         self.finish()
 
 
 @mxweb.route()
-class TestHandler(base.RequestHandler):
-    # @web.asynchronous
-    # @gen.coroutine
-    @green.green
-    def get(self):
-        self.write('start: ' + str(time.localtime()) + '<br/>')
-        # strsql = 'SELECT * FROM mydb_dy_data.data_rtu_view limit 100000'
-        # cur = self.mysql_generator(strsql, is_jk=1)
-        # while 1:
-        #     try:
-        #         result = cur.next()
-        #     except:
-        #         break
-        #     print(result)
-        # del cur
-        self.write('Done.' + str(time.localtime()) + '<br/>')
-
-        self.write(str(self.request.host) + '<br/><br/>')
-        self.write(str(dir(self.request)) + '<br/><br/>')
-        self.write(str(dir(self)) + '<br/>')
-        self.finish()
-
-
-@mxweb.route()
 class CleaningWorkHandler(base.RequestHandler):
 
-    # @green.green
     @gen.coroutine
     def get(self):
+        t = time.time()
+
+        # 清理缓存文件
+        lstcache = os.listdir(self.cache_dir)
+        for c in lstcache:
+            if t - os.path.getctime(os.path.join(self.cache_dir, c)) > 60 * 60 * 24:
+                try:
+                    os.remove(c)
+                except:
+                    pass
+
         # 清理
         k = set(utils.cache_user.keys())
         r = set(self._cache_tml_r.keys())
@@ -115,41 +124,42 @@ class CleaningWorkHandler(base.RequestHandler):
             if a in utils.cache_buildin_users:
                 continue
             b = utils.cache_user.get(a)
-            if time.time() - b['active_time'] > 60 * 60:
+            if t - b['active_time'] > 60 * 60:
                 del utils.cache_user[a]
                 k.remove(a)
 
-        for a in r.difference(k):
+        z = r.difference(k)
+        for a in z:
             try:
                 del self._cache_tml_r[a]
             except:
                 pass
-        for a in w.difference(k):
+        z = w.difference(k)
+        for a in z:
             try:
                 del self._cache_tml_w[a]
             except:
                 pass
-        for a in x.difference(k):
+        z = x.difference(k)
+        for a in z:
             try:
                 del self._cache_tml_x[a]
             except:
                 pass
+        
+        del t, k, r, w, x, lstcache
         gc.collect()
-        # print('cleaning work done.')
-        # self.write('cleaning work done.')
         self.finish()
 
 
 @mxweb.route()
 class MainHandler(base.RequestHandler):
 
-    # @green.green
     @gen.coroutine
     def get(self):
         self.render('index.html')
         # self.finish()
 
-        # @green.green
     @gen.coroutine
     def post(self):
         self.write('post test ok.')

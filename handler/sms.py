@@ -5,84 +5,59 @@ __author__ = 'minamoto'
 __ver__ = '0.1'
 __doc__ = 'sms handler'
 
-import base
-import tornado
-import mlib_iisi as libiisi
-import utils
-import base64
-import time
 import logging
-import json
+import time
+
 import mxpsu as mx
-import pbiisi.msg_ws_pb2 as msgws
-import protobuf3.msg_with_ctrl_pb2 as msgtcs
-from tornado import gen
-from greentor import green
 import mxweb
+from tornado import gen
+
+import base
+import mlib_iisi as libiisi
+import pbiisi.msg_ws_pb2 as msgws
+import utils
 
 
 @mxweb.route()
 class QuerySmsRecordHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(rqSubmitSms(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
-                xquery = msgws.QuerySmsRecord()
-                rebuild_cache = False
-                if rqmsg.head.paging_buffer_tag > 0:
-                    s = self.get_cache('querysmsrecord', rqmsg.head.paging_buffer_tag)
-                    if s is not None:
-                        xquery.ParseFromString(s)
-                        total, idx, lstdata = self.update_msg_cache(
-                            list(xquery.sms_record), msg.head.paging_idx, msg.head.paging_num)
-                        msg.head.paging_idx = idx
-                        msg.head.paging_total = total
-                        msg.head.paging_record_total = len(xquery.sms_record)
-                        msg.sms_record.extend(lstdata)
-                    else:
-                        rebuild_cache = True
+                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                if len(rqmsg.tels) > 0:
+                    str_tels = ' and send_msg in ({0})'.format(','.join(list(rqmsg.tels)))
                 else:
-                    rebuild_cache = True
+                    str_tels = ''
+                strsql = 'select send_date,send_number,send_msg from {0}.record_msg_log \
+                                where send_date>={1} and send_date<={2} and send_msg like "%{3}%" \
+                                {4}'.format(utils.m_jkdb_name, sdt, edt, rqmsg.msg, str_tels)
 
-                if rebuild_cache:
-                    sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
-                    if len(rqmsg.tels) > 0:
-                        str_tels = ' and send_msg in ({0})'.format(','.join(list(rqmsg.tels)))
-                    else:
-                        str_tels = ''
-                    strsql = 'select send_date,send_number,send_msg from {0}.record_msg_log \
-                                    where send_date>={1} and send_date<={2} and send_msg like "%{3}%" \
-                                    {4}'.format(utils.m_jkdb_name, sdt, edt, rqmsg.msg, str_tels)
-                    cur = self.mysql_generator(strsql)
-                    while True:
-                        try:
-                            d = cur.next()
-                        except:
-                            break
+                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                    strsql,
+                    need_fetch=1,
+                    buffer_tag=msg.head.paging_buffer_tag,
+                    paging_idx=msg.head.paging_idx,
+                    paging_num=msg.head.paging_num)
+                if record_total is None:
+                    msg.head.if_st = 45
+                else:
+                    msg.head.paging_record_total = record_total
+                    msg.head.paging_buffer_tag = buffer_tag
+                    msg.head.paging_idx = paging_idx
+                    msg.head.paging_total = paging_total
+                    for d in cur:
                         smsr = msgws.QuerySmsRecord.SmsRecord()
                         smsr.dt_send = mx.switchStamp(d[0])
                         smsr.tel = d[1]
                         smsr.msg = d[2]
-                        xquery.sms_record.extend([smsr])
+                        msg.sms_record.extend([smsr])
                         del smsr
-                    cur.close()
-                    del cur, strsql
 
-                    l = len(xquery.sms_record)
-                    if l > 0:
-                        buffer_tag = self.set_cache('querysmsrecord', xquery, l,
-                                                    msg.head.paging_num)
-                        msg.head.paging_buffer_tag = buffer_tag
-                        msg.head.paging_record_total = l
-                        paging_idx, paging_total, lstdata = self.update_msg_cache(
-                            list(xquery.sms_record), msg.head.paging_idx, msg.head.paging_num)
-                        msg.head.paging_idx = paging_idx
-                        msg.head.paging_total = paging_total
-                        msg.sms_record.extend(lstdata)
+                del cur, strsql
 
         self.write(mx.convertProtobuf(msg))
         self.finish()

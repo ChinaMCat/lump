@@ -79,6 +79,7 @@ if __name__ == '__main__':
         os.system('xcopy templates ..\\mwsc\\dist\\pytcs-win\\templates\\ /E /C /Y')
         os.system('copy dist\\iisi-win\\iisi.exe ..\\mwsc\\dist\\pytcs-win\\ /Y')
         os.system('copy dist\\iisi-win\\_multiprocessing.pyd ..\\mwsc\\dist\\pytcs-win\\ /Y')
+        os.system('copy dist\\iisi-win\\_mysql.pyd ..\\mwsc\\dist\\pytcs-win\\ /Y')
         os.system('copy dist\\iisi-win\\mxweb.pyd ..\\mwsc\\dist\\pytcs-win\\ /Y')
         os.system('copy lic.dll ..\\mwsc\\dist\\pytcs-win\\ /Y')
         os.system('rmdir /Q /S dist\\iisi-win\\certifi\\')

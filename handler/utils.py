@@ -6,14 +6,24 @@ import mxpsu as mx
 import os
 import time
 import json
-import urllib3
+from MySQLdb.constants import FIELD_TYPE
 
-m_httpclinet_pool = urllib3.PoolManager(num_pools=10)
+m_conv = {FIELD_TYPE.LONG: int,
+          FIELD_TYPE.DOUBLE: float,
+          FIELD_TYPE.INT24: int,
+          FIELD_TYPE.TINY: int,
+          FIELD_TYPE.FLOAT: float,
+          FIELD_TYPE.LONGLONG: int,
+          FIELD_TYPE.SHORT: int}
 
 m_jkdb_name = libiisi.m_config.conf_data['jkdb_name']
 m_dgdb_name = libiisi.m_config.conf_data['dgdb_name']
 m_dz_url = libiisi.m_config.conf_data['dz_url']
-m_fs_url = libiisi.m_config.conf_data['fs_url']
+m_fs_url = '{0}/FlowService.asmx'.format(libiisi.m_config.conf_data['fs_url'])
+if len(libiisi.m_config.conf_data['db_url']) > 0:
+    m_db_url = '{0}/databaseprocess?pb2='.format(libiisi.m_config.conf_data['db_url'])
+else:
+    m_db_url = ''
 
 m_jkdb_user = libiisi.m_config.conf_data['db_user'].split(':')[0]
 m_jkdb_pwd = libiisi.m_config.conf_data['db_pwd']
@@ -116,6 +126,9 @@ if os.path.isfile(os.path.join(mx.SCRIPT_DIR, '.profile')):
                 x['login_time'] = time.time()
                 x['active_time'] = time.time()
                 x['is_buildin'] = 1
+                x['area_r'] = set([0])
+                x['area_w'] = set([0])
+                x['area_x'] = set([0])
                 cache_user[uuid] = x
         except:
             pass

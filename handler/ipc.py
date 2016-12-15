@@ -5,25 +5,24 @@ __author__ = 'minamoto'
 __ver__ = '0.1'
 __doc__ = 'Environmental Meteorology handler'
 
-import base
-import mlib_iisi as libiisi
-import utils
 import logging
-import base64
 import time
 from datetime import datetime, timedelta
+
 import mxpsu as mx
-import pbiisi.msg_ws_pb2 as msgws
-from greentor import green
-from tornado import gen
 import mxweb
+from tornado import gen
+
+import base
+import mlib_iisi as libiisi
+import pbiisi.msg_ws_pb2 as msgws
+import utils
 
 
 # 气象数据提交
 @mxweb.route()
 class IpcUplinkHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def post(self):
         legal, rqmsg, msg = self.check_arguments(msgws.rqIpcUplink(), msgws.CommAns(), use_scode=1)
@@ -43,22 +42,22 @@ class IpcUplinkHandler(base.RequestHandler):
                     strsql = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES \
                         where TABLE_SCHEMA="{0}" and TABLE_NAME like "{1}"'.format(
                         utils.m_dgdb_name, '%sens_data_%_month_%')
-                    cur = self.mysql_generator(strsql)
-                    while True:
-                        try:
-                            d = cur.next()
-                        except:
-                            break
-                        for z in d:
+                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                        strsql,
+                        need_fetch=1,
+                        buffer_tag=msg.head.paging_buffer_tag,
+                        paging_idx=msg.head.paging_idx,
+                        paging_num=msg.head.paging_num)
+                    if record_total is not None:
+                        for z in cur:
                             db_names.discard(z[0])
-                    # cur.close()
                     del cur
                     for z in db_names:
-                        createsql += utils.sqlstr_create_emtable.format(z) + '\r\n'
+                        createsql += utils.sqlstr_create_emtable.format(z) + ';'
                     if len(createsql) > 0:
                         createsql = 'use {0};'.format(utils.m_dgdb_name) + createsql
-                        cur = self.mysql_generator(createsql)
-                        cur.close()
+                        self.mydata_collector(createsql, need_fetch=0)
+
                     t = int(time.time())
                     for i in range(len(utils.qudata_sxhb)):
                         try:
@@ -67,7 +66,8 @@ class IpcUplinkHandler(base.RequestHandler):
                         except:
                             pass
                     if len(insertsql) > 0:
-                        cur = self.mysql_generator(insertsql, 0)
+                        self.mydata_collector(insertsql, need_fetch=0)
+
                 elif raw_string.startswith('QH:'):  # 读取支持的指令
                     msgpub = self.init_msgws(msgws.rqIpcCtl(), 'ipc.lscmd.get')
                     msgpub.dev_id.extend([devid])
@@ -115,7 +115,7 @@ class IpcUplinkHandler(base.RequestHandler):
             msg.head.if_msg = 'Security code error'
             logging.error(utils.format_log(self.request.remote_ip, msg.head.if_msg,
                                            self.request.path, 0))
-        # print(str(msg))
+
         self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, legal
@@ -124,7 +124,6 @@ class IpcUplinkHandler(base.RequestHandler):
 @mxweb.route()
 class IpcCtlHandler(base.RequestHandler):
 
-    # @green.green
     @gen.coroutine
     def post(self):
         legal, rqmsg, msg = self.check_arguments(msgws.rqIpcCtl(), None, use_scode=1)
@@ -166,7 +165,6 @@ class IpcCtlHandler(base.RequestHandler):
 @mxweb.route()
 class QueryEMDataHandler(base.RequestHandler):
 
-    @green.green
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryEMData(),
@@ -195,48 +193,38 @@ class QueryEMDataHandler(base.RequestHandler):
                 xquery = msgws.QueryEMData()
 
                 if devid.startswith('901001'):
-                    if rqmsg.head.paging_buffer_tag > 0:
-                        s = self.get_cache('queryemdata', rqmsg.head.paging_buffer_tag)
-                        if s is not None:
-                            xquery.ParseFromString(s)
-                            idx, total, lstdata = self.update_msg_cache(
-                                list(xquery.qudata), msg.head.paging_idx, msg.head.paging_num)
-                            msg.head.paging_idx = idx
-                            msg.head.paging_total = total
-                            msg.head.paging_record_total = len(xquery.qudata)
-                            msg.qudata.extend(lstdata)
+                    for ym in yms:
+                        strsql = 'select t{0}.dev_id,t{0}.date_create '.format(utils.qudata_sxhb[0])
+                        for x in utils.qudata_sxhb:
+                            strsql += ', t{0}.dev_data as d{0}'.format(x)
+                        strsql += ' from {0}.sens_data_{1}_month_{2} as t{1}'.format(
+                            utils.m_dgdb_name, utils.qudata_sxhb[0], ym)
+                        for i in range(1, len(utils.qudata_sxhb)):
+                            strsql += ' left join {0}.sens_data_{1}_month_{2} as t{1} on t{3}.dev_id=t{1}.dev_id and t{3}.date_create=t{1}.date_create'.format(
+                                utils.m_dgdb_name, utils.qudata_sxhb[i], ym, utils.qudata_sxhb[0])
+
+                        if sdt == 0 and edt == 0:
+                            # no, no2, co, co2, pm25, temp, rehu, pm10, o3, tvoc, h2s, so2 = utils.qudata_sxhb
+                            strsql += ' where t{0}.dev_id="{1}" order by t{0}.date_create desc limit 1'.format(
+                                utils.qudata_sxhb[0], devid)
                         else:
-                            rebuild_cache = True
-                    else:
-                        rebuild_cache = True
-                    if rebuild_cache:
-                        for ym in yms:
-                            strsql = 'select t{0}.dev_id,t{0}.date_create '.format(
-                                utils.qudata_sxhb[0])
-                            for x in utils.qudata_sxhb:
-                                strsql += ', t{0}.dev_data as d{0}'.format(x)
-                            strsql += ' from {0}.sens_data_{1}_month_{2} as t{1}'.format(
-                                utils.m_dgdb_name, utils.qudata_sxhb[0], ym)
-                            for i in range(1, len(utils.qudata_sxhb)):
-                                strsql += ' left join {0}.sens_data_{1}_month_{2} as t{1} on t{3}.dev_id=t{1}.dev_id and t{3}.date_create=t{1}.date_create'.format(
-                                    utils.m_dgdb_name, utils.qudata_sxhb[i], ym,
-                                    utils.qudata_sxhb[0])
+                            strsql += ' where t{0}.dev_id="{1}" and t{0}.date_create>={2} and t{0}.date_create<={3} order by t{0}.date_create'.format(
+                                utils.qudata_sxhb[0], devid, sdt, edt)
 
-                            if sdt == 0 and edt == 0:
-                                # no, no2, co, co2, pm25, temp, rehu, pm10, o3, tvoc, h2s, so2 = utils.qudata_sxhb
-                                strsql += ' where t{0}.dev_id="{1}" order by t{0}.date_create desc limit 1'.format(
-                                    utils.qudata_sxhb[0], devid)
-                            else:
-                                strsql += ' where t{0}.dev_id="{1}" and t{0}.date_create>={2} and t{0}.date_create<={3} order by t{0}.date_create'.format(
-                                    utils.qudata_sxhb[0], devid, sdt, edt)
-
-                            cur = self.mysql_generator(strsql)
-                            lstqudata = []
-                            while True:
-                                try:
-                                    d = cur.next()
-                                except:
-                                    break
+                        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            strsql,
+                            need_fetch=1,
+                            buffer_tag=msg.head.paging_buffer_tag,
+                            paging_idx=msg.head.paging_idx,
+                            paging_num=msg.head.paging_num)
+                        if record_total is None:
+                            msg.head.if_st = 45
+                        else:
+                            msg.head.paging_record_total = record_total
+                            msg.head.paging_buffer_tag = buffer_tag
+                            msg.head.paging_idx = paging_idx
+                            msg.head.paging_total = paging_total
+                            for d in cur:
                                 qudata = msgws.QueryEMData.Qudata()
                                 qudata.no = float(d[2])
                                 qudata.no2 = float(d[3])
@@ -251,26 +239,9 @@ class QueryEMDataHandler(base.RequestHandler):
                                 qudata.h2s = float(d[12])
                                 qudata.so2 = float(d[13])
                                 qudata.dt_data = d[1]
-                                lstqudata.append(qudata)
+                                msg.qudata.extend([qudata])
                                 del qudata
-                            xquery.qudata.extend(lstqudata)
-                            del lstqudata
-                            cur.close()
-                            del cur
-
-                        l = len(xquery.qudata)
-                        if l > 0:
-                            buffer_tag = self.set_cache('queryemdata', xquery, l,
-                                                        msg.head.paging_num)
-                            msg.head.if_st = 1
-                            msg.head.if_msg = ''
-                            msg.head.paging_buffer_tag = buffer_tag
-                            msg.head.paging_record_total = l
-                            paging_idx, paging_total, lstdata = self.update_msg_cache(
-                                list(xquery.qudata), msg.head.paging_idx, msg.head.paging_num)
-                            msg.head.paging_idx = paging_idx
-                            msg.head.paging_total = paging_total
-                            msg.qudata.extend(lstdata)
+                        del cur, strsql
 
         self.write(mx.convertProtobuf(msg))
         self.finish()

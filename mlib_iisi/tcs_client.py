@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import mxpsu as mx
-import threading
-import socket
-import select
 import os
+import select
+import socket
+import threading
 import time
+
+import mxpsu as mx
+from mxhpss_comm import _EPOLLERR, _EPOLLHUP, _EPOLLIN, _EPOLLOUT, READ, WRITE
 from mxlog import getLogger
-from utils import m_send_queue, SENDWHOIS, m_logdir, m_cachedir
-from mxhpss_comm import READ, WRITE, _EPOLLHUP, _EPOLLERR, _EPOLLIN, _EPOLLOUT
+
+from utils import SENDWHOIS, m_cachedir, m_logdir, m_send_queue
 
 
 class TcsClient(threading.Thread):
@@ -55,17 +57,17 @@ class TcsClient(threading.Thread):
                 pass
             self.ans_live = time.time()
 
-            # 清理缓存
-        if time.time() - self.clean_cache > 60 * 60:
-            t = time.time()
-            self.clean_cache = t
-            lstcache = os.listdir(m_cachedir)
-            for c in lstcache:
-                if t - os.path.getctime(os.path.join(m_cachedir, c)) > 60 * 60 * 24:
-                    try:
-                        os.remove(c)
-                    except:
-                        pass
+        # # 清理缓存
+        # if time.time() - self.clean_cache > 60 * 60:
+        #     t = time.time()
+        #     self.clean_cache = t
+        #     lstcache = os.listdir(m_cachedir)
+        #     for c in lstcache:
+        #         if t - os.path.getctime(os.path.join(m_cachedir, c)) > 60 * 60 * 24:
+        #             try:
+        #                 os.remove(c)
+        #             except:
+        #                 pass
 
     def run(self):
         if os.name == 'nt':
@@ -116,7 +118,8 @@ class TcsClient(threading.Thread):
                         s = m_send_queue.get_nowait()
                         self.sock.send(s)
                         self.ka_live = time.time()
-                        self.save_log('send:{0}'.format(s), 20)
+                        if len(s) > 2:
+                            self.save_log('send:{0}'.format(s), 20)
                     except Exception as ex:
                         self.save_log('tcs socket send error: {0}'.format(ex.message), 40)
                         self.is_connect = False
@@ -203,7 +206,8 @@ class TcsClient(threading.Thread):
                                 s = m_send_queue.get_nowait()
                                 self.sock.send(s)
                                 self.ka_live = time.time()
-                                self.save_log('send:{0}'.format(s), 20)
+                                if len(s) > 2:
+                                    self.save_log('send:{0}'.format(s), 20)
                             except Exception as ex:
                                 self.save_log('tcs socket send error: {0}'.format(ex.message), 40)
                                 self.is_connect = False

@@ -48,7 +48,7 @@ class QueryDataErrHandler(base.RequestHandler):
                     else:
                         str_tmls = 'a. rtu_id in ({0}) '.format(','.join([str(a) for a in tml_ids]))
                 if rqmsg.type == 0:  # 现存故障
-                    strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create, \
+                    strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_create, \
                     c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count \
                     from {0}_data.info_fault_exist as a left join {0}.fault_types as b \
                     on a.fault_id=b.fault_id left join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
@@ -62,7 +62,7 @@ class QueryDataErrHandler(base.RequestHandler):
                     strsql += ' order by a.date_create desc'
                 else:  # 历史故障
                     strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_remove, \
-                    c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark \
+                    c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id \
                     from {0}_data.info_fault_history as a left join {0}.fault_types as b \
                     on a.fault_id=b.fault_id left join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
                     where a.date_create <={1} and a.date_create >={2}'.format(utils.m_jkdb_name,
@@ -92,12 +92,13 @@ class QueryDataErrHandler(base.RequestHandler):
                         errview.err_name = d[1]
                         errview.tml_id = d[2]
                         errview.dt_create = mx.switchStamp(d[3])
-                        errview.phy_id = d[4]
-                        errview.tml_name = d[5]
-                        errview.tml_sub_id1 = d[6]
-                        errview.tml_sub_id2 = d[7]
-                        errview.remark = d[8]
-                        errview.err_count = d[9]
+                        errview.dt_create = mx.switchStamp(d[4])
+                        errview.phy_id = d[5]
+                        errview.tml_name = d[6]
+                        errview.tml_sub_id1 = d[7]
+                        errview.tml_sub_id2 = d[8]
+                        errview.remark = d[9]
+                        errview.err_count = d[10]
                         msg.err_view.extend([errview])
                         del errview
                 del cur, strsql

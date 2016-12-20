@@ -16,20 +16,20 @@ m_conv = {FIELD_TYPE.LONG: int,
           FIELD_TYPE.LONGLONG: int,
           FIELD_TYPE.SHORT: int}
 
-m_jkdb_name = libiisi.m_config.conf_data['jkdb_name']
-m_dgdb_name = libiisi.m_config.conf_data['dgdb_name']
-m_dz_url = libiisi.m_config.conf_data['dz_url']
-m_fs_url = '{0}/FlowService.asmx'.format(libiisi.m_config.conf_data['fs_url'])
-if len(libiisi.m_config.conf_data['db_url']) > 0:
-    m_db_url = '{0}/databaseprocess?pb2='.format(libiisi.m_config.conf_data['db_url'])
+m_jkdb_name = libiisi.m_config.getData('jkdb_name')
+m_dgdb_name = libiisi.m_config.getData('dgdb_name')
+m_dz_url = libiisi.m_config.getData('dz_url')
+m_fs_url = '{0}/FlowService.asmx'.format(libiisi.m_config.getData('fs_url'))
+if len(libiisi.m_config.getData('db_url')) > 10:
+    m_db_url = '{0}/databaseprocess?pb2='.format(libiisi.m_config.getData('db_url'))
 else:
     m_db_url = ''
 
-m_jkdb_user = libiisi.m_config.conf_data['db_user'].split(':')[0]
-m_jkdb_pwd = libiisi.m_config.conf_data['db_pwd']
-m_jkdb_host = libiisi.m_config.conf_data['db_host'].split(':')[0]
-m_jkdb_port = 3306 if len(libiisi.m_config.conf_data['db_host'].split(':')) == 1 else int(
-    libiisi.m_config.conf_data['db_host'].split(':')[1])
+m_jkdb_user = libiisi.m_config.getData('db_user').split(':')[0]
+m_jkdb_pwd = libiisi.m_config.getData('db_pwd')
+m_jkdb_host = libiisi.m_config.getData('db_host').split(':')[0]
+m_jkdb_port = 3306 if len(libiisi.m_config.getData('db_host').split(':')) == 1 else int(
+    libiisi.m_config.getData('db_host').split(':')[1])
 
 _can_read = (4, 5, 7, 15)
 _can_write = (2, 3, 6, 7, 15)

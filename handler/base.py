@@ -13,6 +13,7 @@ import mxpsu as mx
 import mxweb
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
+import tornado.web
 
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
@@ -147,11 +148,15 @@ class RequestHandler(mxweb.MXRequestHandler):
             except:
                 pass
 
-        if len(utils.m_db_url) == 0:
-            cur = self.mysql_generator_sql_mysql(strsql, need_fetch)
-        else:
-            cur = self.mysql_generator_http(strsql, need_fetch)
-
+        cur = None
+        cur = self._mysql_generator_sql_mysql(strsql, need_fetch, buffer_tag, paging_idx,
+                                              paging_num, need_paging, multi_record)
+        # if len(utils.m_db_url) == 0:
+        #     return self._mysql_generator_sql_mysql(strsql, need_fetch, buffer_tag, paging_idx, paging_num, need_paging, multi_record)
+        # else:
+        #     return self._mysql_generator_http(strsql, need_fetch, buffer_tag, paging_idx, paging_num, need_paging, multi_record)
+        #     d = cur.next()
+        #
         if not isinstance(cur, types.GeneratorType):
             return (None, None, None, None, None)
         else:
@@ -209,156 +214,79 @@ class RequestHandler(mxweb.MXRequestHandler):
                 else:
                     return (n, buffer_tag, paging_idx, paging_total, cache_data.values())
             else:
+                try:
+                    d = cur.next()
+                except:
+                    pass
                 return (0, None, None, None, None)
 
-                # c = cur.next()
-                # if c == -1:
-                #     return (None, None, None, None, None)
-                # else:
-                #     if need_fetch:
-                #         x1 = time.time()
-                #         rep = []
-                #         cache_data = dict()
-                #         if need_paging:
-                #             paging_total = c / paging_num if c % paging_num == 0 else c / paging_num + 1
-                #             if paging_idx > paging_total:
-                #                 paging_idx = paging_total
-                #             x = (paging_idx - 1) * paging_num
-                #             y = paging_idx * paging_num if paging_idx * paging_num < c else c
-                #             if x > c:
-                #                 x == c
-                #         else:
-                #             paging_total = 1
-                #             x = 0
-                #             y = 0
-                #         i = 0
-                #         n = 0
-                #         old_record = [0] * len(multi_record)
-                #         if len(multi_record) > 0:
-                #             while i < c:
-                #                 d = cur.next()
-                #                 if n < y and n >= x:
-                #                     rep.append(d)
-                #                 got_change = False
-                #                 for a in multi_record:
-                #                     if d[a] != old_record[a]:
-                #                         got_change = True
-                #                         old_record[a] = d[a]
-                #                 if got_change:
-                #                     n += 1
-                #                 cache_data[i] = d
-                #                 i += 1
-                #         else:
-                #             while i < c:
-                #                 d = cur.next()
-                #                 if i < y and i >= x:
-                #                     rep.append(d)
-                #                 cache_data[i] = d
-                #                 i += 1
-                #         print('fetch', time.time() - x1)
-                #         cur.close()
-                #         del cur
-                #         buffer_tag = int(time.time() * 1000000)
-                #         if need_paging:
-                #             if paging_total > 1:
-                #                 t = threading.Thread(target=self.write_cache,
-                #                                      args=(os.path.join(self.cache_dir, '{0}{1}'.format(
-                #                                          cache_head, buffer_tag)),
-                #                                            cache_data, ))
-                #                 t.start()
-                #             return (c, buffer_tag, paging_idx, paging_total, rep)
-                #         else:
-                #             return (c, buffer_tag, paging_idx, paging_total, cache_data.values())
-                #     else:
-                #         return (c, None, None, None, None)
-
-    def mysql_generator(self, strsql, need_fetch=1):
-        if len(utils.m_db_url) == 0:
-            return self.mysql_generator_sql_mysql(strsql, need_fetch)
-        else:
-            return self.mysql_generator_http(strsql, need_fetch)
-
-    def mysql_generator_http(self, strsql, need_fetch=1):
-        if len(strsql) == 0:
-            yield -1
-        else:
-            thc = AsyncHTTPClient()
-            rqmsg = msgws.CommAns()
-            rqmsg.head.if_name = self.url_pattern
-            rqmsg.head.if_msg = strsql
-            try:
-                rep = yield thc.fetch('{0}{1}'.format(utils.m_db_url,
-                                                      base64.b64decode(rqmsg.SerializeToString())),
-                                      request_timeout=100)
-                cur = json.loads(rep.body)
-                # yield len(cur.keys())
-                if need_fetch:
-                    for i in cur.keys():
-                        yield cur.get(i)
-            except:
-                yield -1
-            del rep, cur, thc, rqmsg
-
-    def mysql_generator_sql_mysql(self, strsql, need_fetch=1):
-        if len(strsql) == 0:
-            yield -1
-        else:
-            conn = mysql.connect(host=utils.m_jkdb_host,
-                                 user=utils.m_jkdb_user,
-                                 passwd=utils.m_jkdb_pwd,
-                                 port=utils.m_jkdb_port,
-                                 compress=1,
-                                 #  charset='utf8',
-                                 conv=utils.m_conv,
-                                 connect_timeout=5)
-            conn.set_character_set('utf8')
-
-            try:
-                conn.query(strsql)
-            except:
-                yield -1
-            else:
-                # cur = conn.store_result()
-                cur = conn.use_result()
-                if need_fetch:
-                    while True:
-                        d = cur.fetch_row()
-                        if len(d) == 0:
-                            break
-                        else:
-                            yield d[0]
-            conn.close()
-            del conn, cur
-
-    def mysql_generator_sql(self, strsql, need_fetch=1):
-        if len(strsql) == 0:
-            yield -1
-        else:
-            conn = mysql.connect(host=utils.m_jkdb_host,
-                                 user=utils.m_jkdb_user,
-                                 passwd=utils.m_jkdb_pwd,
-                                 port=utils.m_jkdb_port,
-                                 compress=1,
-                                 charset='utf8',
-                                 connect_timeout=5)
-            cur = conn.cursor()
-            try:
-                cur.execute(strsql, ())
-            except:
-                yield -1
-            else:
-                x = cur.rowcount
-                yield x
-                if need_fetch:
-                    i = 0
-                    while i < x:
-                        i += 1
-                        yield cur.fetchone()
-                else:
-                    pass
+        if isinstance(cur, types.GeneratorType):
             cur.close()
-            conn.close()
-            del conn, cur
+        del cur
+
+    def _mysql_generator_sql_mysql(self,
+                                   strsql,
+                                   need_fetch=1,
+                                   buffer_tag=0,
+                                   paging_idx=1,
+                                   paging_num=100,
+                                   need_paging=1,
+                                   multi_record=[]):
+        conn = mysql.connect(host=utils.m_jkdb_host,
+                             user=utils.m_jkdb_user,
+                             passwd=utils.m_jkdb_pwd,
+                             port=utils.m_jkdb_port,
+                             compress=1,
+                             #  charset='utf8',
+                             conv=utils.m_conv,
+                             connect_timeout=5)
+        conn.set_character_set('utf8')
+        try:
+            conn.query(strsql)
+        except Exception as ex:
+            logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
+        else:
+            cur = conn.use_result()
+            if need_fetch and cur is not None:
+                while True:
+                    d = cur.fetch_row(619)
+                    if len(d) == 0:
+                        break
+                    else:
+                        for i in d:
+                            yield i
+        conn.close()
+        del conn
+
+    # def mysql_generator_sql(self, strsql, need_fetch=1):
+    #     if len(strsql) == 0:
+    #         yield -1
+    #     else:
+    #         conn = mysql.connect(host=utils.m_jkdb_host,
+    #                              user=utils.m_jkdb_user,
+    #                              passwd=utils.m_jkdb_pwd,
+    #                              port=utils.m_jkdb_port,
+    #                              compress=1,
+    #                              charset='utf8',
+    #                              connect_timeout=5)
+    #         cur = conn.cursor()
+    #         try:
+    #             cur.execute(strsql, ())
+    #         except:
+    #             yield -1
+    #         else:
+    #             x = cur.rowcount
+    #             yield x
+    #             if need_fetch:
+    #                 i = 0
+    #                 while i < x:
+    #                     i += 1
+    #                     yield cur.fetchone()
+    #             else:
+    #                 pass
+    #         cur.close()
+    #         conn.close()
+    #         del conn, cur
 
     def init_msgws(self, msgpb, if_name=''):
         msgpb.head.idx = 0
@@ -518,7 +446,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                 rqmsg = None
         else:
             rqmsg = None
-            msg = None
+            msg = self.init_msgws(msgws.CommAns())
 
         return (leage, rqmsg, msg)
 

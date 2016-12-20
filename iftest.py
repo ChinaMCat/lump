@@ -11,12 +11,14 @@ import protobuf3.msg_with_ctrl_pb2 as msgtcs
 import mxpsu as mx
 import tornado.httpclient as thc
 from tornado.httputil import url_concat
+import gevent
+import timeit
 
 baseurl = 'http://192.168.50.55:10006/'
-baseurl = 'http://192.168.122.43:63800/'
+# baseurl = 'http://192.168.122.43:63800/'
 # baseurl = 'http://180.153.108.83:20525/'
 # baseurl = 'http://192.168.50.80:33819/ws_common/FlowService.asmx'
-pm = urllib3.PoolManager(num_pools=10)
+pm = urllib3.PoolManager(num_pools=100)
 user_id = 'ef61022b553911e6832074d435009085'
 
 
@@ -30,7 +32,7 @@ def init_head(msg):
 def test_userlogin():
     global user_id
     print('=== login ===')
-    url = baseurl + 'userloginjk'
+    url = baseurl + 'userlogin'
     rqmsg = init_head(msgif.rqUserLogin())
     rqmsg.dev = 3
     rqmsg.unique = 'asdfhaskdfkaf'
@@ -357,9 +359,10 @@ def test_tmlinfo():
     print('=== query rty info ===')
     url = baseurl + 'tmlinfo'
     rqmsg = msgif.rqTmlInfo()
-    rqmsg.data_mark.extend([11])
-
+    rqmsg.data_mark.extend([2])
+    rqmsg.tml_id.extend([0])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    # data = {'uuid': user_id, 'pb2': 'CgsQyOQJoAbTgM7CBSoCAwIyAQA='}
     r = pm.request('POST', url, fields=data, timeout=3.0, retries=False)
     msg = msgif.TmlInfo()
     msg.ParseFromString(base64.b64decode(r.data))
@@ -419,7 +422,7 @@ def test_sysinfo():
     print('=== sys info ===')
     url = baseurl + 'sysinfo'
     rqmsg = msgif.rqSysInfo()
-    rqmsg.data_mark.extend([1, 2, 3, 4,5,6,7,8,9,10,11])
+    rqmsg.data_mark.extend([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     print(r.data)
@@ -470,7 +473,33 @@ def test_test():
     time.sleep(0)
 
 
+def test_submitsms():
+    global user_id
+    print('=== sms submit ===')
+    url = baseurl + 'submitsms'
+    scode = mx.getMD5('{0}3a533ba0'.format(mx.stamp2time(time.time(), format_type='%Y%m%d%H')))
+    rqmsg = msgif.rqSubmitSms()
+    rqmsg.tels.extend([18916788720])
+    rqmsg.msg = u'tessdf第三方法ta'
+    print(scode, base64.b64encode(rqmsg.SerializeToString()))
+    data = {'scode': scode, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    print(r.data)
+    msg = msgif.CommAns()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    print('ipc submit finish')
+    time.sleep(0)
+
+
 if __name__ == '__main__':
+    # test_submitsms()
+    # a = time.time()
+    # t = []
+    # for i in range(0):
+    #     t.append(gevent.spawn(test_submitsms))
+    # gevent.joinall(t)
+    # print('sms finish ', time.time() - a)
     # test_test()
     # exit()
     # test_userlogin()
@@ -481,7 +510,7 @@ if __name__ == '__main__':
     # test_areainfo()
     # test_grpinfo()
     # test_ipcqueue()
-    test_rtudataquery()
+    # test_rtudataquery()
     # test_userrenew()
     # test_tmlinfo()
     # test_errinfo()

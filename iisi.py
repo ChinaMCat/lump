@@ -72,27 +72,27 @@ if __name__ == '__main__':
     libiisi.m_config.loadConfig(results.conf)
 
     if options.log_file_prefix is None:
-        if libiisi.m_config.conf_data['log_level'] == '10':
+        if libiisi.m_config.getData('log_level') == '10':
             loglevel = 'debug'
-        elif libiisi.m_config.conf_data['log_level'] == '20':
+        elif libiisi.m_config.getData('log_level') == '20':
             loglevel = 'info'
-        elif libiisi.m_config.conf_data['log_level'] == '30':
+        elif libiisi.m_config.getData('log_level') == '30':
             loglevel = 'warring'
-        elif libiisi.m_config.conf_data['log_level'] == '40':
+        elif libiisi.m_config.getData('log_level') == '40':
             loglevel = 'error'
         else:
             loglevel = 'info'
         options.parse_command_line(args=['', '--logging={0}'.format(
             loglevel), '--log_to_stderr', '--log_file_prefix={0}'.format(os.path.join(
-                libiisi.m_logdir, 'iisi{0}.debug.log'.format(libiisi.m_config.conf_data[
-                    'bind_port'])))],
+                libiisi.m_logdir, 'iisi{0}.debug.log'.format(libiisi.m_config.getData(
+                    'bind_port'))))],
                                    final=True)
 
     if results.hp:
         tornado.process.fork_processes(0)
 
     # 开启后台线程
-    ip, port = libiisi.m_config.conf_data['tcs_server'].split(':')
+    ip, port = libiisi.m_config.getData('tcs_server').split(':')
     libiisi.m_tcs = libiisi.TcsClient(ip, int(port))
     libiisi.m_tcs.setDaemon(True)
     libiisi.m_tcs.start()
@@ -106,10 +106,10 @@ if __name__ == '__main__':
                     # login_url='/userloginjk', 
                     )
 
-    from handler import handler_iisi, handler_err  # , handler_iisi_db
+    from handler import handler_iisi, handler_err, handler_iisi_db
     lst_handler = []
     lst_handler.extend(handler_iisi)
-    # lst_handler.extend(handler_iisi_db)
+    lst_handler.extend(handler_iisi_db)
     lst_handler.extend(handler_err)
     application = tornado.web.Application(handlers=lst_handler, **settings)
     application.listen(results.port)

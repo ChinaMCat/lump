@@ -82,7 +82,7 @@ class UserLoginJKHandler(base.RequestHandler):
                 strsql,
                 need_fetch=1,
                 need_paging=0)
-                
+
             if record_total1 > 0:
                 for d in cur1:
                     if d[3] == 1:
@@ -133,7 +133,7 @@ class UserLoginJKHandler(base.RequestHandler):
             args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
             url = '{0}/mobileLogin?{1}'.format(utils.m_fs_url, urlencode(args))
             try:
-                rep = yield self.thc.fetch(url, raise_error=True, request_timeout=10)
+                rep = yield self.thc.fetch(url, raise_error=True, request_timeout=1)
                 # rep = utils.m_httpclinet_pool.request('GET',
                 #                                       baseurl,
                 #                                       fields=args,
@@ -148,7 +148,7 @@ class UserLoginJKHandler(base.RequestHandler):
                 if not retry:
                     retry = True
                     try:
-                        rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+                        rep = yield self.thc.fetch(url, raise_error=False, request_timeout=7)
                         dom = xmld.parseString(rep.body)
                         root = dom.documentElement
                         msg.flow_data = root.firstChild.wholeText
@@ -187,6 +187,7 @@ class UserLoginHandler(base.RequestHandler):
             strsql,
             need_fetch=1,
             need_paging=0)
+
         if record_total is None or record_total == 0:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
             msg.head.if_st = 40
@@ -223,6 +224,7 @@ class UserLoginHandler(base.RequestHandler):
                 strsql,
                 need_fetch=1,
                 need_paging=0)
+
             if record_total1 > 0:
                 for d in cur1:
                     if d[3] == 1:

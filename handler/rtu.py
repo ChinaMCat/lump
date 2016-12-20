@@ -107,7 +107,7 @@ class TmlInfoHandler(base.RequestHandler):
                             if len(tml_ids) == 0:
                                 str_tmls = ''
                             else:
-                                str_tmls = ' where a.rtu_id in ({0})'.format(','.join([str(
+                                str_tmls = ' where rtu_id in ({0})'.format(','.join([str(
                                     a) for a in list(tml_ids)]))
 
                             strsql = 'select rtu_id, rtu_map_x,rtu_map_y,rtu_gis_x,rtu_gis_y \
@@ -508,7 +508,7 @@ class QuerydataRtuHandler(base.RequestHandler):
             if user_data['user_auth'] in utils._can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.type = rqmsg.type
-                
+
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     tml_ids = list(rqmsg.tml_id)
@@ -521,8 +521,7 @@ class QuerydataRtuHandler(base.RequestHandler):
                 if len(tml_ids) == 0:
                     str_tmls = ''
                 else:
-                    str_tmls = ' and a.rtu_id in ({0}) '.format(','.join([str(a) for a in
-                                                                          tml_ids]))
+                    str_tmls = ' and a.rtu_id in ({0}) '.format(','.join([str(a) for a in tml_ids]))
 
                 if rqmsg.type == 0:  # 最新数据
                     strsql = r'''select a.date_create,a.rtu_id,a.rtu_voltage_a,a.rtu_voltage_b,a.rtu_voltage_c,
@@ -604,8 +603,7 @@ a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range,
 c.loop_name from {0}_data.data_rtu_view as a 
 left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id 
 where a.date_create>={1} and a.date_create<={2} {3} 
-order by a.rtu_id,a.date_create desc,a.loop_id'''.format(
-                        utils.m_jkdb_name, sdt, edt, str_tmls)
+order by a.rtu_id,a.date_create desc,a.loop_id'''.format(utils.m_jkdb_name, sdt, edt, str_tmls)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
                     strsql,

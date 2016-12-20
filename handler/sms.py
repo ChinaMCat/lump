@@ -73,13 +73,11 @@ class SubmitSmsHandler(base.RequestHandler):
         legal, rqmsg, msg = self.check_arguments(msgws.rqSubmitSms(), msgws.CommAns(), use_scode=1)
         if legal:
             strsql = ''
-            t = time.time()
+            t = int(time.time())
             for tel in rqmsg.tels:
                 strsql += 'insert into {0}_data.record_msg_new (date_create,rtu_name,user_phone_number,is_alarm) values ({1},"{2}",{3},2);'.format(
-                    libiisi.m_jkdb_name, t, rqmsg.msg, tel)
-            if len(strsql) > 0:
-                cur = self.mysql_generator(strsql, 0)
-                del cur, strsql
+                    utils.m_jkdb_name, t, rqmsg.msg, tel)
+            self.mydata_collector(strsql, need_fetch=0)
         else:
             msg.head.if_st = 0
             msg.head.if_msg = 'Security code error'
@@ -88,4 +86,4 @@ class SubmitSmsHandler(base.RequestHandler):
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, user_data
+        del msg, rqmsg

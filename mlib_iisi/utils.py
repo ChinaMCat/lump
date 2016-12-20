@@ -190,90 +190,19 @@ def sendServerMsg(msg, cmd):
 
 SENDWHOIS = '`{0}`'.format(sendServerMsg('', 'wlst.sys.whois'))
 
-
-class Conf():
-
-    def __init__(self):
-        self.conf_file = ''
-        self.conf_data = {
-            'log_level': '10',
-            'tcs_server': '127.0.0.1:10007',
-            'reconnect_time': '10',
-            'bind_port': '10006',
-            'zmq_pub': '10008',
-            'db_host': '192.168.50.83:3306',
-            'db_user': 'root',
-            'db_pwd': 'lp1234xy',
-            'jkdb_name': 'mydb10001',
-            'dgdb_name': 'dgdb10001',
-            'dz_url': 'http://id.dz.tt/index.php',
-            'fs_url': 'http://192.168.50.80:33819/ws_common',
-            'db_url': ''
-        }
-
-    def saveConf(self):
-        if self.conf_file == '':
-            return
-
-        conf = []
-        if mx.Platform.isWin():
-            lineend = '\r\n'
-        elif mx.Platform.isLinux():
-            lineend = '\n'
-        conf.append(u'# 日志记录等级, 10-debug, 20-info, 30-warring, 40-error')
-        conf.append('log_level={0}'.format(self.conf_data['log_level']))
-        conf.append(u'# 接口中间件服务器地址, ip:port')
-        conf.append('tcs_server={0}'.format(self.conf_data['tcs_server']))
-        conf.append(u'# 连接断开重新发起连接间隔,默认10s')
-        conf.append('reconnect_time={0}'.format(self.conf_data['reconnect_time']))
-        conf.append(u'# 本地监听端口')
-        conf.append('bind_port={0}'.format(self.conf_data['bind_port']))
-        conf.append(u'# ZMQ PUB 端口')
-        conf.append('zmq_pub={0}'.format(self.conf_data['zmq_pub']))
-        conf.append(u'# 监控数据库服务地址, ip:port, 端口默认3306')
-        conf.append('db_host={0}'.format(self.conf_data['db_host']))
-        conf.append(u'# 监控数据库服务用户名')
-        conf.append('db_user={0}'.format(self.conf_data['db_user']))
-        conf.append(u'# 监控数据库服务密码')
-        conf.append('db_pwd={0}'.format(self.conf_data['db_pwd']))
-        conf.append(u'# 监控数据库名称')
-        conf.append('jkdb_name={0}'.format(self.conf_data['jkdb_name']))
-        conf.append(u'# 灯杆数据库名称')
-        conf.append('dgdb_name={0}'.format(self.conf_data['dgdb_name']))
-        conf.append(u'# 电桩接口地址')
-        conf.append('dz_url={0}'.format(self.conf_data['dz_url']))
-        conf.append(u'# 工作流接口地址')
-        conf.append('fs_url={0}'.format(self.conf_data['fs_url']))
-        conf.append(u'# 数据接口地址')
-        conf.append('db_url={0}'.format(self.conf_data['db_url']))
-
-        with codecs.open(self.conf_file, 'w', encoding='utf-8') as f:
-            try:
-                f.writelines([c + lineend if c.startswith('#') else c + lineend * 2 for c in conf])
-            except:
-                pass
-            f.close()
-
-    def loadConfig(self, conf_file):
-        self.conf_file = conf_file
-        if not os.path.isfile(self.conf_file):
-            self.saveConf()
-        else:
-            with codecs.open(self.conf_file, 'r', encoding='utf-8') as f:
-                conf = f.readlines()
-                for c in conf:
-                    if c.strip().startswith('#') or len(c.strip()) == 0:
-                        continue
-                    if c.find('=') > 0:
-                        a = c.split('=')[0].strip()
-                        if a in self.conf_data.keys():
-                            v = c.split('=')[1].strip()
-                            self.conf_data[a] = v
-                f.close()
-            self.saveConf()
-
-
-m_config = Conf()
+m_config = mx.ConfigFile(dict(log_level=('10', u'日志记录等级, 10-debug, 20-info, 30-warring, 40-error'),
+                              tcs_server=('127.0.0.1:10001', u'接口中间件服务器地址, ip:port'),
+                              reconnect_time=('10', u'连接断开重新发起连接间隔,默认10s'),
+                              bind_port=('10005', u'本地监听端口'),
+                              zmq_pub=('10007', u'ZMQ PUB 端口'),
+                              db_host=('192.168.50.83:3306', u'监控数据库服务地址, ip:port, 端口默认3306'),
+                              db_user=('root', u'监控数据库服务用户名'),
+                              db_pwd=('lp1234xy', u'监控数据库服务密码'),
+                              jkdb_name=('mydb10001', u'监控数据库名称'),
+                              dgdb_name=('dgdb10001', u'灯杆数据库名称'),
+                              dz_url=('http://id.dz.tt/index.php', u'电桩接口地址'),
+                              fs_url=('http://192.168.50.80:33819/ws_common', u'工作流接口地址'),
+                              db_url=('', u'数据访问接口地址'), ))
 
 
 def send_to_zmq_pub(sfilter, msg):
@@ -283,7 +212,7 @@ def send_to_zmq_pub(sfilter, msg):
         m_zmq_ctx = zmq.Context.instance()
         m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
         try:
-            m_zmq_pub.bind('tcp://*:{0}'.format(m_config.conf_data['zmq_pub']))
+            m_zmq_pub.bind('tcp://*:{0}'.format(m_config.getData('zmq_pub')))
             time.sleep(0.5)
             m_zmq_pub.send_multipart(['ka', '3a533ba0'.decode('hex')])
         except Exception as ex:

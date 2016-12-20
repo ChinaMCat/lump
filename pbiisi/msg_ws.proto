@@ -407,9 +407,9 @@ message SunrisetInfo {
 }
 
 // 短信告警
-message rqSmsSubmit {
+message rqSubmitSms {
     Head head = 1;
-    repeated int32 tels = 2 [packed=true];  // 目标号码，长度11位，可填写多个
+    repeated int64 tels = 2 [packed=true];  // 目标号码，长度11位，可填写多个
     string msg = 3;  // 短信内容，长度超过340个字符会被拆分
 }
 // CommAns应答
@@ -787,7 +787,7 @@ message TmlInfo {
 // 短信发送记录查询
 message rqQuerySmsRecord {
     Head head = 1;
-    repeated int32 tels = 3 [packed=true];  // 查询号码,长度11,可填写多个,可选
+    repeated int64 tels = 3 [packed=true];  // 查询号码,长度11,可填写多个,可选
     string msg = 4;  // 查询内容,可模糊查询,可选
     int64 dt_start = 5;  // 查询起始日期
     int64 dt_end = 6;  // 查询结束日期
@@ -796,7 +796,7 @@ message rqQuerySmsRecord {
 message QuerySmsRecord {
     message SmsRecord {
         int64 dt_send = 1;  // 发送日期
-        int32 tel = 2;  // 发送号码
+        int64 tel = 2;  // 发送号码
         string msg = 3;  // 发送内容
     }
     Head head = 1;

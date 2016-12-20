@@ -22,19 +22,19 @@ class TestHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        self.write('start: ' + str(time.localtime()) + '<br/>')
-        self.write('Done.' + str(time.localtime()) + '<br/>')
-
-        # self.write(str(self.request.method) + '<br/><br/>')
-        self.write(str(dir(self.request)) + '<br/><br/>')
-        self.write(str(self.url_pattern) + '<br/>')
-        self.finish()
+        # self.write('start: ' + str(time.localtime()) + '<br/>')
+        # self.write('Done.' + str(time.localtime()) + '<br/>')
+        # 
+        # # self.write(str(self.request.method) + '<br/><br/>')
+        # self.write(str(dir(self.request)) + '<br/><br/>')
+        # self.write(str(self.url_pattern) + '<br/>')
+        self.finish('get test done.')
 
     @gen.coroutine
     def post(self):
-        self.write(self.request.uri + '\r\n')
-        self.write(str(self.request.arguments) + '\r\n')
-        self.finish()
+        # self.write(self.request.uri + '\r\n')
+        # self.write(str(self.request.arguments) + '\r\n')
+        self.finish('post test done.')
 
 
 @mxweb.route()
@@ -146,7 +146,7 @@ class CleaningWorkHandler(base.RequestHandler):
                 del self._cache_tml_x[a]
             except:
                 pass
-        
+
         del t, k, r, w, x, lstcache
         gc.collect()
         self.finish()

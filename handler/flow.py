@@ -517,3 +517,45 @@ class doTransitionHandler(base.RequestHandler):
             self.write(ex)
         self.finish()
         del url, rep, x, data
+
+
+@mxweb.route()
+class GetDictValuesWithFilterHandler(base.RequestHandler):
+
+    keep_name_case = True
+    thc = AsyncHTTPClient()
+
+    @gen.coroutine
+    def get(self):
+        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        try:
+            # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
+
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            self.write(rep.body)
+        except Exception as ex:
+            self.write(ex)
+        self.finish()
+        del url, rep
+
+    @gen.coroutine
+    def post(self):
+        x = self.request.arguments
+        data = dict()
+        for k in x.keys():
+            data[k] = x.get(k)[0]
+        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        try:
+            # rep = utils.m_httpclinet_pool.request('GET',
+            #                                       url,
+            #                                       fields=data,
+            #                                       timeout=7.0,
+            #                                       retries=False)
+            url += '?{0}'.format(urlencode(data))
+
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            self.write(rep.body)
+        except Exception as ex:
+            self.write(ex)
+        self.finish()
+        del url, rep, x, data

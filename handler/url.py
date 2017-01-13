@@ -34,13 +34,13 @@ handler_iisi = []
 # lst_lic = mxweb.load_lic_for_nt()
 for x in hs:
     # if x[0] in lst_lic or x[2] == 'handler.main' or '/all' in lst_lic:
-    handler_iisi.append((x[0], x[1]))
+    handler_iisi.append((x[0], x[1], dict(help_doc=x[3])))
 
 handler_iisi_db = []
 hs = mxweb.load_handler_module(db)
 for x in hs:
     # if x[0] in lst_lic or x[2] == 'handler.main' or '/all' in lst_lic:
-    handler_iisi_db.append((x[0], x[1]))
+    handler_iisi_db.append((x[0], x[1], dict(help_doc=x[3])))
 
 handler_err = [('/.*', Err404Handler)]
 

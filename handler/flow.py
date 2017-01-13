@@ -18,6 +18,10 @@ import utils
 @mxweb.route()
 class mobileLoginHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -27,10 +31,10 @@ class mobileLoginHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -49,10 +53,10 @@ class mobileLoginHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -60,6 +64,10 @@ class mobileLoginHandler(base.RequestHandler):
 @mxweb.route()
 class getFormHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -69,10 +77,10 @@ class getFormHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -91,10 +99,10 @@ class getFormHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -102,6 +110,10 @@ class getFormHandler(base.RequestHandler):
 @mxweb.route()
 class getFilterBoxHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -111,10 +123,10 @@ class getFilterBoxHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -133,10 +145,10 @@ class getFilterBoxHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -144,6 +156,10 @@ class getFilterBoxHandler(base.RequestHandler):
 @mxweb.route()
 class listRecordHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -153,10 +169,10 @@ class listRecordHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -175,10 +191,10 @@ class listRecordHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -186,6 +202,10 @@ class listRecordHandler(base.RequestHandler):
 @mxweb.route()
 class listTaskHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -195,10 +215,10 @@ class listTaskHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -217,10 +237,10 @@ class listTaskHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -228,6 +248,10 @@ class listTaskHandler(base.RequestHandler):
 @mxweb.route()
 class listTaskRecordHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -237,10 +261,10 @@ class listTaskRecordHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -259,10 +283,10 @@ class listTaskRecordHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -270,6 +294,10 @@ class listTaskRecordHandler(base.RequestHandler):
 @mxweb.route()
 class listTaskAllHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -279,10 +307,10 @@ class listTaskAllHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -301,10 +329,10 @@ class listTaskAllHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -312,6 +340,10 @@ class listTaskAllHandler(base.RequestHandler):
 @mxweb.route()
 class listDoneHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -321,10 +353,10 @@ class listDoneHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -343,10 +375,10 @@ class listDoneHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -354,6 +386,10 @@ class listDoneHandler(base.RequestHandler):
 @mxweb.route()
 class getFormHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -363,10 +399,10 @@ class getFormHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -385,10 +421,10 @@ class getFormHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -396,6 +432,10 @@ class getFormHandler(base.RequestHandler):
 @mxweb.route()
 class getLogHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -405,10 +445,10 @@ class getLogHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -427,10 +467,10 @@ class getLogHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -438,6 +478,10 @@ class getLogHandler(base.RequestHandler):
 @mxweb.route()
 class doFetchHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -447,10 +491,10 @@ class doFetchHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -469,10 +513,10 @@ class doFetchHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -480,6 +524,10 @@ class doFetchHandler(base.RequestHandler):
 @mxweb.route()
 class doTransitionHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -489,10 +537,10 @@ class doTransitionHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -511,10 +559,10 @@ class doTransitionHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data
 
@@ -522,6 +570,10 @@ class doTransitionHandler(base.RequestHandler):
 @mxweb.route()
 class GetDictValuesWithFilterHandler(base.RequestHandler):
 
+    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
     keep_name_case = True
     thc = AsyncHTTPClient()
 
@@ -531,10 +583,10 @@ class GetDictValuesWithFilterHandler(base.RequestHandler):
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep
 
@@ -553,9 +605,9 @@ class GetDictValuesWithFilterHandler(base.RequestHandler):
             #                                       retries=False)
             url += '?{0}'.format(urlencode(data))
 
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=5)
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=12)
             self.write(rep.body)
         except Exception as ex:
-            self.write(ex)
+            self.write(str(ex))
         self.finish()
         del url, rep, x, data

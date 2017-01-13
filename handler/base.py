@@ -19,11 +19,7 @@ import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
 import utils
 
-# try:
 import _mysql as mysql
-
-# except:
-#     import MySQLdb as mysql
 
 
 class RequestHandler(mxweb.MXRequestHandler):
@@ -33,6 +29,7 @@ class RequestHandler(mxweb.MXRequestHandler):
     _cache_tml_x = dict()
 
     _tml_phy = dict()
+    _help_doc = ''
 
     cache_dir = libiisi.m_cachedir
 
@@ -42,50 +39,10 @@ class RequestHandler(mxweb.MXRequestHandler):
 
     def prepare(self):
         if self.request.method == 'POST':
-            logging.info(self.format_log(self.request.remote_ip, ','.join(self.get_arguments(
-                'pb2')), self.request.path, 'REQ'))
-    # 
-    # def update_msg_cache(self, cache_msg, paging_idx, paging_num):
-    #     paging_total = len(cache_msg) / paging_num if len(cache_msg) % paging_num == 0 else len(
-    #         cache_msg) / paging_num + 1
-    #     if paging_idx > paging_total:
-    #         paging_idx = paging_total
-    #     pos_start = paging_num * (paging_idx - 1)
-    #     pos_end = paging_num * paging_idx
-    # 
-    #     return paging_idx, paging_total, cache_msg[pos_start:pos_end]
-    # 
-    # def get_cache(self, cache_head, buffer_tag):
-    #     cache_head = ''.join(['{0:x}'.format(ord(a)) for a in cache_head])
-    #     cache_file = os.path.join(self.cache_dir, '{0}{1}'.format(cache_head, buffer_tag))
-    #     if os.path.isfile(cache_file):
-    #         f = open(cache_file, 'rb')
-    #         s = f.read()
-    #         f.close()
-    #         del f
-    #         return s
-    #     else:
-    #         return None
-    # 
-    # def set_cache_in_thread(self, cache_head, cache_msg, record_total, paging_num):
-    #     buffer_tag = int(time.time() * 1000000)
-    #     t = threading.Thread(target=self.set_cache,
-    #                          args=(cache_head, cache_msg, record_total, paging_num, buffer_tag))
-    #     # t.setDaemon(True)
-    #     t.start()
-    #     return buffer_tag
-    # 
-    # def set_cache(self, cache_head, cache_msg, record_total, paging_num, buffer_tag=0):
-    #     cache_head = ''.join(['{0:x}'.format(ord(a)) for a in cache_head])
-    #     buffer_tag = int(time.time() * 1000000) if buffer_tag == 0 else buffer_tag
-    #     paging_idx = 1
-    #     cache_file = os.path.join(self.cache_dir, '{0}{1}'.format(cache_head, buffer_tag))
-    #     s = cache_msg.SerializeToString()
-    #     f = open(cache_file, 'wb')
-    #     f.write(s)
-    #     f.close()
-    #     del f
-    #     return buffer_tag  # , s
+            pb2str = ','.join(self.get_arguments('pb2'))
+            if len(pb2str) > 0:
+                logging.info(self.format_log(self.request.remote_ip, pb2str, self.request.path,
+                                             'REQ'))
 
     def write_cache(self, cache_name, msg):
         with open(cache_name, 'wb') as f:
@@ -151,12 +108,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         cur = None
         cur = self._mysql_generator_sql_mysql(strsql, need_fetch, buffer_tag, paging_idx,
                                               paging_num, need_paging, multi_record)
-        # if len(utils.m_db_url) == 0:
-        #     return self._mysql_generator_sql_mysql(strsql, need_fetch, buffer_tag, paging_idx, paging_num, need_paging, multi_record)
-        # else:
-        #     return self._mysql_generator_http(strsql, need_fetch, buffer_tag, paging_idx, paging_num, need_paging, multi_record)
-        #     d = cur.next()
-        #
+
         if not isinstance(cur, types.GeneratorType):
             return (None, None, None, None, None)
         else:
@@ -176,7 +128,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                     while True:
                         try:
                             d = cur.next()
-                        except:
+                        except Exception as ex:
                             break
                         if n < y and n >= x:
                             rep.append(d)
@@ -195,7 +147,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                     while True:
                         try:
                             d = cur.next()
-                        except:
+                        except Exception as ex:
                             break
                         if n < y and n >= x:
                             rep.append(d)
@@ -236,10 +188,12 @@ class RequestHandler(mxweb.MXRequestHandler):
                              user=utils.m_jkdb_user,
                              passwd=utils.m_jkdb_pwd,
                              port=utils.m_jkdb_port,
-                             compress=1,
-                             #  charset='utf8',
+                            #  compress=1,
+                             client_flag=32 | 65536,  # compress,multi_statements
                              conv=utils.m_conv,
-                             connect_timeout=5)
+                             connect_timeout=5,
+                             #  charset='utf8',
+                             )
         conn.set_character_set('utf8')
         try:
             conn.query(strsql)
@@ -257,36 +211,6 @@ class RequestHandler(mxweb.MXRequestHandler):
                             yield i
         conn.close()
         del conn
-
-    # def mysql_generator_sql(self, strsql, need_fetch=1):
-    #     if len(strsql) == 0:
-    #         yield -1
-    #     else:
-    #         conn = mysql.connect(host=utils.m_jkdb_host,
-    #                              user=utils.m_jkdb_user,
-    #                              passwd=utils.m_jkdb_pwd,
-    #                              port=utils.m_jkdb_port,
-    #                              compress=1,
-    #                              charset='utf8',
-    #                              connect_timeout=5)
-    #         cur = conn.cursor()
-    #         try:
-    #             cur.execute(strsql, ())
-    #         except:
-    #             yield -1
-    #         else:
-    #             x = cur.rowcount
-    #             yield x
-    #             if need_fetch:
-    #                 i = 0
-    #                 while i < x:
-    #                     i += 1
-    #                     yield cur.fetchone()
-    #             else:
-    #                 pass
-    #         cur.close()
-    #         conn.close()
-    #         del conn, cur
 
     def init_msgws(self, msgpb, if_name=''):
         msgpb.head.idx = 0
@@ -315,29 +239,34 @@ class RequestHandler(mxweb.MXRequestHandler):
         return sdt, edt
 
     def get_phy_cache(self):
-        strsql = 'select rtu_id, rtu_phy_id from {0}.para_base_equipment'.format(utils.m_jkdb_name)
+        strsql = 'select rtu_id,rtu_phy_id,rtu_fid,rtu_name from {0}.para_base_equipment'.format(
+            utils.m_jkdb_name)
         record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
             strsql,
             need_fetch=1,
             need_paging=0)
         if record_total is not None:
             for d in cur:
-                self._tml_phy[d[0]] = d[1]
-        cur.close()
-        del cur, c
+                self._tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
+        del cur
 
-    def set_phy_list(self, rtu_id, phy_id):
-        self._tml_phy[rtu_id] = phy_id
+    def set_phy_list(self, rtu_id, rtu_info):
+        self._tml_phy[rtu_id] = rtu_info
 
     def get_phy_list(self, tml_list):
         if len(self._tml_phy) == 0:
             self.get_phy_cache()
         x = []
         for a in tml_list:
-            b = self._tml_phy.get(a)
+            b = self._tml_phy.get(a)[0]
             if b is not None:
                 x.append(b)
         return x
+
+    def get_phy_info(self, tml_id):
+        if len(self._tml_phy) == 0:
+            self.get_phy_cache()
+        return self._thl_phy.get(tml_id)
 
     def get_tml_cache(self, tml_type, user_uuid):
         if tml_type == 'r':
@@ -433,15 +362,29 @@ class RequestHandler(mxweb.MXRequestHandler):
                     msg.head.if_msg = 'Missing argument pb2'
                     return (False, None, msg)
                 pb2 = args.get('pb2')[0]
+
                 try:
                     rqmsg.ParseFromString(base64.b64decode(pb2))
-                    msg.head.idx = rqmsg.head.idx
-                    msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
-                    msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
-                    msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
+                    if 'submit' not in self.url_pattern:
+                        msg.head.idx = rqmsg.head.idx
+                        msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
+                        msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
+                        msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
                 except Exception as ex:
-                    msg.head.if_st = 46
-                    # print(str(ex))
+                    if ' ' in pb2:
+                        try:
+                            rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
+                            if 'submit' not in self.url_pattern:
+                                msg.head.idx = rqmsg.head.idx
+                                msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
+                                msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
+                                msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
+                        except:
+                            msg.head.if_st = 46
+                            return (None, None, msg, '')
+                    else:
+                        msg.head.if_st = 46
+                        return (None, None, msg, '')
             else:
                 rqmsg = None
         else:
@@ -481,7 +424,19 @@ class RequestHandler(mxweb.MXRequestHandler):
                 msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
                 msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
             except:
-                msg.head.if_st = 46
+                if ' ' in pb2:
+                    try:
+                        rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
+                        msg.head.idx = rqmsg.head.idx
+                        msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
+                        msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
+                        msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
+                    except:
+                        msg.head.if_st = 46
+                        return (None, None, msg, '')
+                else:
+                    msg.head.if_st = 46
+                    return (None, None, msg, '')
         else:
             rqmsg = None
 

@@ -6,15 +6,16 @@ import mxpsu as mx
 import os
 import time
 import json
-from MySQLdb.constants import FIELD_TYPE
-
-m_conv = {FIELD_TYPE.LONG: int,
-          FIELD_TYPE.DOUBLE: float,
-          FIELD_TYPE.INT24: int,
-          FIELD_TYPE.TINY: int,
-          FIELD_TYPE.FLOAT: float,
-          FIELD_TYPE.LONGLONG: int,
-          FIELD_TYPE.SHORT: int}
+# from MySQLdb.constants import FIELD_TYPE
+# 
+# m_conv = {FIELD_TYPE.LONG: int,
+#           FIELD_TYPE.DOUBLE: float,
+#           FIELD_TYPE.INT24: int,
+#           FIELD_TYPE.TINY: int,
+#           FIELD_TYPE.FLOAT: float,
+#           FIELD_TYPE.LONGLONG: int,
+#           FIELD_TYPE.SHORT: int}
+m_conv = {1: int, 2: int, 3: int, 4: float, 5: float, 8: int, 9: int}
 
 m_jkdb_name = libiisi.m_config.getData('jkdb_name')
 m_dgdb_name = libiisi.m_config.getData('dgdb_name')

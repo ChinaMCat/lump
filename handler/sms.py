@@ -11,28 +11,38 @@ import time
 import mxpsu as mx
 import mxweb
 from tornado import gen
-
+import types
 import base
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
 import utils
+import _mysql as mysql
 
 
 @mxweb.route()
 class QuerySmsRecordHandler(base.RequestHandler):
 
+    _help_doc = u'''短信发送记录查询 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqQuerySmsRecord()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;QuerySmsRecord()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(rqSubmitSms(), None)
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQuerySmsRecord(),
+                                                                msgws.QuerySmsRecord())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 if len(rqmsg.tels) > 0:
-                    str_tels = ' and send_msg in ({0})'.format(','.join(list(rqmsg.tels)))
+                    str_tels = ' and send_number in ({0})'.format(','.join([str(t) for t in
+                                                                            rqmsg.tels]))
                 else:
                     str_tels = ''
-                strsql = 'select send_date,send_number,send_msg from {0}.record_msg_log \
+                strsql = 'select send_date,send_number,send_msg from {0}_data.record_msg_log \
                                 where send_date>={1} and send_date<={2} and send_msg like "%{3}%" \
                                 {4}'.format(utils.m_jkdb_name, sdt, edt, rqmsg.msg, str_tels)
 
@@ -51,8 +61,8 @@ class QuerySmsRecordHandler(base.RequestHandler):
                     msg.head.paging_total = paging_total
                     for d in cur:
                         smsr = msgws.QuerySmsRecord.SmsRecord()
-                        smsr.dt_send = mx.switchStamp(d[0])
-                        smsr.tel = d[1]
+                        smsr.dt_send = mx.switchStamp(int(d[0]))
+                        smsr.tel = int(d[1])
                         smsr.msg = d[2]
                         msg.sms_record.extend([smsr])
                         del smsr
@@ -61,22 +71,30 @@ class QuerySmsRecordHandler(base.RequestHandler):
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, user_data, user_uuid, xquery
+        del msg, rqmsg, user_data, user_uuid
 
 
 # sms数据提交
 @mxweb.route()
 class SubmitSmsHandler(base.RequestHandler):
 
+    _help_doc = u'''自定义短信提交 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;scode - 动态运算的安全码<br/>
+    &nbsp;&nbsp;pb2 - rqSubmitSms()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         legal, rqmsg, msg = self.check_arguments(msgws.rqSubmitSms(), msgws.CommAns(), use_scode=1)
         if legal:
             strsql = ''
-            t = int(time.time())
+            t = mx.switchStamp(int(time.time()))
             for tel in rqmsg.tels:
-                strsql += 'insert into {0}_data.record_msg_new (date_create,rtu_name,user_phone_number,is_alarm) values ({1},"{2}",{3},2);'.format(
-                    utils.m_jkdb_name, t, rqmsg.msg, tel)
+                if isinstance(tel, types.IntType):
+                    strsql += 'insert into {0}_data.record_msg_new (date_create,rtu_name,user_phone_number,is_alarm) values ({1},"{2}",{3},2);'.format(
+                        utils.m_jkdb_name, t, u'{0}'.format(str(rqmsg.msg).strip()), tel)
             self.mydata_collector(strsql, need_fetch=0)
         else:
             msg.head.if_st = 0

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import base64
 import codecs
 import json
 import os
@@ -37,7 +36,7 @@ def get_tcs_queue():
 
 def set_to_send(tcsmsg, w4a, usepb2=True):
     if usepb2:
-        m_send_queue.put_nowait('`{0}`'.format(base64.b64encode(mx.convertProtobuf(tcsmsg))))
+        m_send_queue.put_nowait('`{0}`'.format(mx.convertProtobuf(tcsmsg)))
         # for d in tcsmsg.args.addr:
         #     _wait4ans[int(time.time() * 100000)] = '{0}.{1}.{2}'.format(tcsmsg.head.cmd, d, w4a)
     else:
@@ -167,7 +166,7 @@ def initRtuJson(mod,
     # return s
 
 
-def initRtuProtobuf(cmd, addr, ip, port=0, cid=1, tra=1):
+def initRtuProtobuf(cmd, addr, ip=[], port=0, cid=1, tra=1):
     svrmsg = msgctrl.MsgWithCtrl()
     svrmsg.head.mod = 2
     svrmsg.head.src = 2
@@ -178,6 +177,7 @@ def initRtuProtobuf(cmd, addr, ip, port=0, cid=1, tra=1):
     svrmsg.args.addr.extend(addr)
     svrmsg.args.ip.extend(ip)
     svrmsg.args.port = port
+    svrmsg.args.cid = cid
     return svrmsg
 
 
@@ -190,34 +190,51 @@ def sendServerMsg(msg, cmd):
 
 SENDWHOIS = '`{0}`'.format(sendServerMsg('', 'wlst.sys.whois'))
 
-m_config = mx.ConfigFile(dict(log_level=('10', u'日志记录等级, 10-debug, 20-info, 30-warring, 40-error'),
-                              tcs_server=('127.0.0.1:10001', u'接口中间件服务器地址, ip:port'),
-                              reconnect_time=('10', u'连接断开重新发起连接间隔,默认10s'),
-                              bind_port=('10005', u'本地监听端口'),
-                              zmq_pub=('10007', u'ZMQ PUB 端口'),
-                              db_host=('192.168.50.83:3306', u'监控数据库服务地址, ip:port, 端口默认3306'),
-                              db_user=('root', u'监控数据库服务用户名'),
-                              db_pwd=('lp1234xy', u'监控数据库服务密码'),
-                              jkdb_name=('mydb10001', u'监控数据库名称'),
-                              dgdb_name=('dgdb10001', u'灯杆数据库名称'),
-                              dz_url=('http://id.dz.tt/index.php', u'电桩接口地址'),
-                              fs_url=('http://192.168.50.80:33819/ws_common', u'工作流接口地址'),
-                              db_url=('', u'数据访问接口地址'), ))
+# m_config = mx.ConfigFile(dict(log_level=('10', u'日志记录等级, 10-debug, 20-info, 30-warring, 40-error'),
+#                               tcs_server=('127.0.0.1:10001', u'接口中间件服务器地址, ip:port'),
+#                               reconnect_time=('10', u'连接断开重新发起连接间隔,默认10s'),
+#                               bind_port=('10005', u'本地监听端口'),
+#                               zmq_pub=('10007', u'ZMQ PUB 端口'),
+#                               db_host=('127.0.0.1:3306', u'监控数据库服务地址, ip:port, 端口默认3306'),
+#                               db_user=('root', u'监控数据库服务用户名'),
+#                               db_pwd=('lp1234xy', u'监控数据库服务密码'),
+#                               jkdb_name=('mydb1024', u'监控数据库名称'),
+#                               dgdb_name=('dgdb10001', u'灯杆数据库名称'),
+#                               dz_url=('http://id.dz.tt/index.php', u'电桩接口地址'),
+#                               fs_url=('http://127.0.0.1:33819/ws_common', u'工作流接口地址'),
+#                               db_url=('', u'数据访问接口地址'), ))
+m_config = mx.ConfigFile()
+m_config.setData('log_level', 10, u'日志记录等级, 10-debug, 20-info, 30-warring, 40-error')
+m_config.setData('tcs_server', '127.0.0.1:10001', u'接口中间件服务器地址, ip:port')
+m_config.setData('reconnect_time', 10, u'连接断开重新发起连接间隔,默认10s')
+m_config.setData('db_host', '127.0.0.1:3306', u'监控数据库服务地址, ip:port, 端口默认3306')
+m_config.setData('db_user', 'root', u'监控数据库服务用户名')
+m_config.setData('db_pwd', 'lp1234xy', u'监控数据库服务密码')
+m_config.setData('jkdb_name', 'mydb1024', u'监控数据库名称')
+m_config.setData('dgdb_name', 'dgdb10001', u'灯杆数据库名称')
+m_config.setData('dz_url', 'http://id.dz.tt/index.php', u'电桩接口地址')
+m_config.setData('fs_url', 'http://127.0.0.1:33819/ws_common', u'工作流接口地址')
+m_config.setData('db_url', '', u'数据访问接口地址')
+m_config.setData('bind_port', 10005, u'本地监听端口')
+m_config.setData('zmq_pub', 10006, u'ZMQ PUB 端口')
 
 
 def send_to_zmq_pub(sfilter, msg):
     global m_zmq_pub
+    try:
+        if m_zmq_pub is None:
+            if int(m_config.getData('zmq_pub')) > 0:
+                m_zmq_ctx = zmq.Context.instance()
+                m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
+                try:
+                    m_zmq_pub.bind('tcp://*:{0}'.format(m_config.getData('zmq_pub')))
+                    time.sleep(0.5)
+                    m_zmq_pub.send_multipart(['ka', '3a533ba0'.decode('hex')])
+                except Exception as ex:
+                    print(ex)
+                    m_zmq_pub = None
 
-    if m_zmq_pub is None:
-        m_zmq_ctx = zmq.Context.instance()
-        m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
-        try:
-            m_zmq_pub.bind('tcp://*:{0}'.format(m_config.getData('zmq_pub')))
-            time.sleep(0.5)
-            m_zmq_pub.send_multipart(['ka', '3a533ba0'.decode('hex')])
-        except Exception as ex:
-            print(ex)
-            m_zmq_pub = None
-
-    if m_zmq_pub is not None:
-        m_zmq_pub.send_multipart([sfilter, msg])
+        if m_zmq_pub is not None:
+            m_zmq_pub.send_multipart([sfilter, msg])
+    except Exception as ex:
+        print('zmq pub err:{0}'.format(ex))

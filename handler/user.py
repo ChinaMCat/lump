@@ -25,6 +25,12 @@ import utils
 @mxweb.route()
 class UserLoginJKHandler(base.RequestHandler):
 
+    _help_doc = u'''监控用户登录,移动版,同时登录工作流 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;pb2 - rqUserLogin()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;UserLogin()结构序列化并经过base64编码后的字符串'''
+
     thc = AsyncHTTPClient()
 
     @gen.coroutine
@@ -70,7 +76,7 @@ class UserLoginJKHandler(base.RequestHandler):
             user_uuid = uuid.uuid1().hex
             msg.uuid = user_uuid
             msg.fullname = d[1] if d[1] is not None else ''
-            msg.zmq = libiisi.m_config.conf_data['zmq_pub']
+            msg.zmq = libiisi.m_config.getData('zmq_pub')
 
             user_auth = 0
             _area_r = []
@@ -85,7 +91,7 @@ class UserLoginJKHandler(base.RequestHandler):
 
             if record_total1 > 0:
                 for d in cur1:
-                    if d[3] == 1:
+                    if int(d[3]) == 1:
                         user_auth = 15
                         _area_r = [0]
                         _area_w = [0]
@@ -110,6 +116,7 @@ class UserLoginJKHandler(base.RequestHandler):
             msg.area_r.extend(_area_r)
             msg.area_w.extend(_area_w)
             msg.area_x.extend(_area_x)
+
             # 加入用户缓存{uuid:dict()}
             utils.cache_user[user_uuid] = dict(user_name=rqmsg.user,
                                                user_auth=user_auth,
@@ -133,7 +140,7 @@ class UserLoginJKHandler(base.RequestHandler):
             args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
             url = '{0}/mobileLogin?{1}'.format(utils.m_fs_url, urlencode(args))
             try:
-                rep = yield self.thc.fetch(url, raise_error=True, request_timeout=1)
+                rep = yield self.thc.fetch(url, raise_error=True, request_timeout=10)
                 # rep = utils.m_httpclinet_pool.request('GET',
                 #                                       baseurl,
                 #                                       fields=args,
@@ -148,7 +155,7 @@ class UserLoginJKHandler(base.RequestHandler):
                 if not retry:
                     retry = True
                     try:
-                        rep = yield self.thc.fetch(url, raise_error=False, request_timeout=7)
+                        rep = yield self.thc.fetch(url, raise_error=False, request_timeout=3)
                         dom = xmld.parseString(rep.body)
                         root = dom.documentElement
                         msg.flow_data = root.firstChild.wholeText
@@ -167,6 +174,12 @@ class UserLoginJKHandler(base.RequestHandler):
 
 @mxweb.route()
 class UserLoginHandler(base.RequestHandler):
+
+    _help_doc = u'''监控用户登录 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;pb2 - rqUserLogin()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;UserLogin()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -212,7 +225,7 @@ class UserLoginHandler(base.RequestHandler):
             user_uuid = uuid.uuid1().hex
             msg.uuid = user_uuid
             msg.fullname = d[1] if d[1] is not None else ''
-            msg.zmq = libiisi.m_config.conf_data['zmq_pub']
+            msg.zmq = libiisi.m_config.getData('zmq_pub')
 
             user_auth = 0
             _area_r = []
@@ -227,7 +240,7 @@ class UserLoginHandler(base.RequestHandler):
 
             if record_total1 > 0:
                 for d in cur1:
-                    if d[3] == 1:
+                    if int(d[3]) == 1:
                         user_auth = 15
                         _area_r = [0]
                         _area_w = [0]
@@ -278,6 +291,12 @@ class UserLoginHandler(base.RequestHandler):
 @mxweb.route()
 class UserLogoutHandler(base.RequestHandler):
 
+    _help_doc = u'''用户注销 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         contents = ''
@@ -313,6 +332,13 @@ class UserLogoutHandler(base.RequestHandler):
 @mxweb.route()
 class UserRenewHandler(base.RequestHandler):
 
+    _help_doc = u'''用户续签 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqUserRenew()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserRenew(), None)
@@ -324,6 +350,13 @@ class UserRenewHandler(base.RequestHandler):
 
 @mxweb.route()
 class UserAddHandler(base.RequestHandler):
+
+    _help_doc = u'''用户添加 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 管理员的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqUserAdd()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;UserAdd()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -371,6 +404,13 @@ class UserAddHandler(base.RequestHandler):
 @mxweb.route()
 class UserDelHandler(base.RequestHandler):
 
+    _help_doc = u'''删除用户 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 管理员的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqUserDel()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;UserDel()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserDel(), None)
@@ -412,11 +452,18 @@ class UserDelHandler(base.RequestHandler):
         self.finish()
         if env:
             self.write_event(156, contents, 2, user_name=user_data['user_name'])
-        del msg, rqmsg, user_data, user_uuid, pb2
+        del msg, rqmsg, user_data, user_uuid
 
 
 @mxweb.route()
 class UserEditHandler(base.RequestHandler):
+
+    _help_doc = u'''修改用户信息 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqUserEdit()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;UserEdit()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -474,6 +521,13 @@ class UserEditHandler(base.RequestHandler):
 
 @mxweb.route()
 class UserInfoHandler(base.RequestHandler):
+
+    _help_doc = u'''用户信息获取 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqUserInfo()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;UserInfo()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):

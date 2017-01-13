@@ -22,6 +22,12 @@ import utils
 @mxweb.route()
 class SubmitAlarmHandler(base.RequestHandler):
 
+    _help_doc = u'''监控故障报警信息提交 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;scode - 动态运算的安全码<br/>
+    &nbsp;&nbsp;pb2 - rqSubmitAlarm()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b>无'''
+
     @gen.coroutine
     def post(self):
         legal, rqmsg, msg = self.check_arguments(msgws.rqSubmitAlarm(),
@@ -31,8 +37,8 @@ class SubmitAlarmHandler(base.RequestHandler):
             try:
                 for av in rqmsg.alarm_view:
                     try:
-                        sfilter = 'jkdb.rep.alarm.{0}.{1}.{2}'.format(av.is_alarm, av.err_id,
-                                                                      av.tml_id)
+                        sfilter = 'jkdb.rep.alarm.{0}.{1}.{2}.{3}'.format(av.dt_create, av.is_alarm,
+                                                                          av.err_id, av.tml_id)
                         libiisi.send_to_zmq_pub(sfilter, av.SerializeToString())
                     except Exception as ex:
                         pass
@@ -52,6 +58,12 @@ class SubmitAlarmHandler(base.RequestHandler):
 # tcs数据提交
 @mxweb.route()
 class SubmitTcsHandler(base.RequestHandler):
+
+    _help_doc = u'''监控终端应答数据提交 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;scode - 动态运算的安全码<br/>
+    &nbsp;&nbsp;pb2 - rqSubmitTcs()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b>无'''
 
     @gen.coroutine
     def post(self):

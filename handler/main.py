@@ -22,13 +22,24 @@ class TestHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        # self.write('start: ' + str(time.localtime()) + '<br/>')
-        # self.write('Done.' + str(time.localtime()) + '<br/>')
+        # print(dir(self))
+        print(dir(self.application))
+        for h in self.application.handlers[0][1]:
+            # print(dir(h))
+            print(h.kwargs.get('help_doc'))
+        self.flush()
+        # self.write('{0}<br/>'.format(utils.m_jkdb_name))
+        # self.write('{0}<br/>'.format(utils.m_dgdb_name))
         # 
-        # # self.write(str(self.request.method) + '<br/><br/>')
-        # self.write(str(dir(self.request)) + '<br/><br/>')
-        # self.write(str(self.url_pattern) + '<br/>')
-        self.finish('get test done.')
+        # strsql = 'select * from {0}.user_list'.format(
+        #     utils.m_jkdb_name)
+        # self.write('{0}<br/>'.format(strsql))
+        # record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+        #     strsql,
+        #     need_fetch=1)
+        # for d in cur:
+        #     self.write('{0}<br/>'.format(str(d)))
+        self.finish('<br/>get test done.')
 
     @gen.coroutine
     def post(self):
@@ -40,13 +51,17 @@ class TestHandler(base.RequestHandler):
 @mxweb.route()
 class ServiceCheckHandler(base.RequestHandler):
 
+    _help_doc = u'''服务状态检查<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;do - [testconfig|showhandlers]<br/>'''
+
     @gen.coroutine
     def get(self):
         try:
             jobs = self.get_arguments('do')
             for do in jobs:
                 if do == 'testconfig':
-                    self.write('=== test config ===<br/>')
+                    self.write('<b><u>===== test config =====</u></b><br/>')
                     if libiisi.m_tcs is None:
                         self.write('TCS server status ... disconnected.<br/>')
                     else:
@@ -57,7 +72,7 @@ class ServiceCheckHandler(base.RequestHandler):
                     try:
                         jk_isok = False
                         dg_isok = False
-                        strsql = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME in ("{0}","{1}");'.format(
+                        strsql = 'select schema_name from information_schema.schemata where schema_name in ("{0}","{1}");'.format(
                             utils.m_jkdb_name, utils.m_dgdb_name)
                         record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
                             strsql,
@@ -87,11 +102,13 @@ class ServiceCheckHandler(base.RequestHandler):
                     self.flush()
 
                 if do == 'showhandlers':
-                    self.write('=== show handlers ===<br/>')
+                    self.write('<b><u>===== show handlers =====</u></b><br/>')
                     x = self.application.handlers[0][1]
                     for a in x:
-                        if '%s' not in a._path and '.*' not in a._path:
-                            self.write(a._path + '<br/>')
+                        if a._path not in ('/.*', '/test', '/cleaningwork') and '%' not in a._path:
+                            self.write('<b>------- {0} -------</b><br/>'.format(a._path[1:]))
+                            self.write(a.kwargs.get('help_doc') + '<br/><br/>')
+                            # self.write('---<br/><br/>')
                     self.write('<br/>')
                     self.flush()
         except:
@@ -101,6 +118,8 @@ class ServiceCheckHandler(base.RequestHandler):
 
 @mxweb.route()
 class CleaningWorkHandler(base.RequestHandler):
+
+    _help_doc = u'''资源清理'''
 
     @gen.coroutine
     def get(self):
@@ -121,12 +140,15 @@ class CleaningWorkHandler(base.RequestHandler):
         w = set(self._cache_tml_w.keys())
         x = set(self._cache_tml_x.keys())
         for a in k:
-            if a in utils.cache_buildin_users:
-                continue
-            b = utils.cache_user.get(a)
-            if t - b['active_time'] > 60 * 60:
-                del utils.cache_user[a]
-                k.remove(a)
+            try:
+                if a in utils.cache_buildin_users:
+                    continue
+                b = utils.cache_user.get(a)
+                if t - b['active_time'] > 60 * 60:
+                    del utils.cache_user[a]
+                    # k.remove(a)
+            except:
+                pass
 
         z = r.difference(k)
         for a in z:
@@ -147,7 +169,7 @@ class CleaningWorkHandler(base.RequestHandler):
             except:
                 pass
 
-        del t, k, r, w, x, lstcache
+        del z, t, k, r, w, x, lstcache
         gc.collect()
         self.finish()
 

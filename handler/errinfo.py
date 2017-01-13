@@ -19,6 +19,13 @@ import utils
 @mxweb.route()
 class QueryDataErrHandler(base.RequestHandler):
 
+    _help_doc = u'''故障数据查询 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqQueryDataErr()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;QueryDataErr()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataErr(),
@@ -88,17 +95,17 @@ class QueryDataErrHandler(base.RequestHandler):
                     msg.head.paging_total = paging_total
                     for d in cur:
                         errview = msgws.QueryDataErr.ErrView()
-                        errview.err_id = d[0]
-                        errview.err_name = d[1]
-                        errview.tml_id = d[2]
-                        errview.dt_create = mx.switchStamp(d[3])
-                        errview.dt_create = mx.switchStamp(d[4])
-                        errview.phy_id = d[5]
+                        errview.err_id = int(d[0])
+                        errview.err_name = d[1] if d[1] is not None else ''
+                        errview.tml_id = int(d[2])
+                        errview.dt_create = mx.switchStamp(int(d[3]))
+                        errview.dt_create = mx.switchStamp(int(d[4]))
+                        errview.phy_id = int(d[5])
                         errview.tml_name = d[6]
-                        errview.tml_sub_id1 = d[7]
-                        errview.tml_sub_id2 = d[8]
+                        errview.tml_sub_id1 = int(d[7])
+                        errview.tml_sub_id2 = int(d[8])
                         errview.remark = d[9]
-                        errview.err_count = d[10]
+                        errview.err_count = int(d[10])
                         msg.err_view.extend([errview])
                         del errview
                 del cur, strsql
@@ -110,6 +117,13 @@ class QueryDataErrHandler(base.RequestHandler):
 
 @mxweb.route()
 class ErrInfoHandler(base.RequestHandler):
+
+    _help_doc = u'''故障基础信息获取 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqErrInfo()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;ErrInfo()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -134,19 +148,20 @@ class ErrInfoHandler(base.RequestHandler):
                     msg.head.paging_idx = paging_idx
                     msg.head.paging_total = paging_total
                     for d in cur:
-                        errinfoview = msgws.ErrInfo.ErrInfoView()
-                        errinfoview.err_id = d[0]
-                        errinfoview.err_name = d[1]
-                        errinfoview.err_name_custome = d[2]
-                        errinfoview.enable_alarm = d[3]
-                        errinfoview.err_remark = d[4]
-                        # errinfoview.err_level = d[5]
-                        errinfoview.err_check_keyword = d[5]
-                        # errinfoview.err_time_set = d[7]
-                        # errinfoview.dt_err_custome_start = mx.switchStamp(d[8])
-                        # errinfoview.dt_err_custome_end = mx.switchStamp(d[9])
-                        msg.err_info_view.extend([errinfoview])
-                        del errinfoview
+                        if d[1] is not None:
+                            errinfoview = msgws.ErrInfo.ErrInfoView()
+                            errinfoview.err_id = int(d[0])
+                            errinfoview.err_name = d[1] if d[1] is not None else ''
+                            errinfoview.err_name_custome = d[2] if d[2] is not None else ''
+                            errinfoview.enable_alarm = int(d[3])
+                            errinfoview.err_remark = d[4]
+                            # errinfoview.err_level = d[5]
+                            errinfoview.err_check_keyword = d[5]
+                            # errinfoview.err_time_set = d[7]
+                            # errinfoview.dt_err_custome_start = mx.switchStamp(d[8])
+                            # errinfoview.dt_err_custome_end = mx.switchStamp(d[9])
+                            msg.err_info_view.extend([errinfoview])
+                            del errinfoview
 
                 del cur, strsql
         self.write(mx.convertProtobuf(msg))

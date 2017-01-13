@@ -65,11 +65,14 @@ if __name__ == '__main__':
     results = arg.parse_args()
 
     # 检查输入参数
-    if results.conf is None or results.port is None:
+    if results.conf is None:
         arg.print_help()
         sys.exit(0)
 
     libiisi.m_config.loadConfig(results.conf)
+    if results.port is not None:
+        libiisi.m_config.setData('bind_port', results.port)
+        libiisi.m_config.setData('zmq_pub', int(results.port) + 1)
 
     if options.log_file_prefix is None:
         if libiisi.m_config.getData('log_level') == '10':
@@ -82,11 +85,13 @@ if __name__ == '__main__':
             loglevel = 'error'
         else:
             loglevel = 'info'
-        options.parse_command_line(args=['', '--logging={0}'.format(
-            loglevel), '--log_to_stderr', '--log_file_prefix={0}'.format(os.path.join(
-                libiisi.m_logdir, 'iisi{0}.debug.log'.format(libiisi.m_config.getData(
-                    'bind_port'))))],
-                                   final=True)
+        opt_args = ['', '--logging={0}'.format(loglevel), '--log_file_prefix={0}'.format(os.path.join(
+            libiisi.m_logdir, 'iisi{0}.debug.log'.format(results.port)))]
+        if results.debug:
+            opt_args.append('--log_to_stderr')
+        options.parse_command_line(
+            args=opt_args,
+            final=True)
 
     if results.hp:
         tornado.process.fork_processes(0)
@@ -109,7 +114,7 @@ if __name__ == '__main__':
     from handler import handler_iisi, handler_err, handler_iisi_db
     lst_handler = []
     lst_handler.extend(handler_iisi)
-    lst_handler.extend(handler_iisi_db)
+    # lst_handler.extend(handler_iisi_db)
     lst_handler.extend(handler_err)
     application = tornado.web.Application(handlers=lst_handler, **settings)
     application.listen(results.port)

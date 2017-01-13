@@ -18,6 +18,13 @@ import utils
 @mxweb.route()
 class QueryDataSluHandler(base.RequestHandler):
 
+    _help_doc = u'''单灯运行数据查询 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqQueryDataSlu()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;QueryDataSlu()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataSlu(),
@@ -45,24 +52,24 @@ class QueryDataSluHandler(base.RequestHandler):
                                                                               tml_ids]))
                     if rqmsg.type == 0:
                         strsql = '''select a.rtu_id,a.date_create,
-a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm,
-a.is_power_on,a.is_gprs,  a.is_concentrator_args_error,a.is_ctrl_args_error,
-a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error,
-a.is_timer_error,a.unknow_ctrl_count,a.communication_channel 
-from {0}_data.data_slu as a 
-where EXISTS 
-(select rtu_id,date_create from 
-(select rtu_id,max(date_create) as date_create from {0}_data.data_slu group by rtu_id) as t
-where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.rtu_id'''.format(
+                        a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm,
+                        a.is_power_on,a.is_gprs,a.is_concentrator_args_error,a.is_ctrl_args_error,
+                        a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error,
+                        a.is_timer_error,a.unknow_ctrl_count,a.communication_channel 
+                        from {0}_data.data_slu as a 
+                        where EXISTS 
+                        (select rtu_id,date_create from 
+                        (select rtu_id,max(date_create) as date_create from {0}_data.data_slu group by rtu_id) as t
+                        where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.rtu_id'''.format(
                             utils.m_jkdb_name, str_tmls)
                     elif rqmsg.type == 1:
                         strsql = '''select a.rtu_id,a.date_create,
-a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm,
-a.is_power_on,a.is_gprs,a.is_concentrator_args_error,a.is_ctrl_args_error,
-a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error,
-a.is_timer_error,a.unknow_ctrl_count,a.communication_channel 
-from {0}_data.data_slu as a 
-where a.date_create>={1} and a.date_create<={2} {3} order by a.date_create desc'''.format(
+                        a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm,
+                        a.is_power_on,a.is_gprs,a.is_concentrator_args_error,a.is_ctrl_args_error,
+                        a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error,
+                        a.is_timer_error,a.unknow_ctrl_count,a.communication_channel 
+                        from {0}_data.data_slu as a 
+                        where a.date_create>={1} and a.date_create<={2} {3} order by a.date_create desc'''.format(
                             utils.m_jkdb_name, sdt, edt, str_tmls)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
@@ -81,14 +88,17 @@ where a.date_create>={1} and a.date_create<={2} {3} order by a.date_create desc'
                         for d in cur:
                             dv = msgws.QueryDataSlu.DataSluView()
                             if d[1] is not None:
-                                dv.tml_id = d[0]
-                                dv.dt_receive = mx.switchStamp(d[1])
-                                dv.reset_times.extend([d[2], d[3], d[4], d[5]])
-                                dv.st_running.extend([d[6], d[7], d[8], d[9]])
-                                dv.st_argv.extend([d[10], d[11]])
-                                dv.unknow_sluitem_num = d[12]
-                                dv.zigbee_channel.extend([int(a)
-                                                          for a in '{0:016b}'.format(d[13])[::-1]])
+                                dv.tml_id = int(d[0])
+                                dv.dt_receive = mx.switchStamp(int(d[1]))
+                                dv.reset_times.extend([int(d[2]), int(d[3]), int(d[4]), int(d[5])])
+                                dv.st_running.extend([int(d[6]), int(d[7]), int(d[8]), int(d[9]), 0
+                                                      ])
+                                dv.st_argv.extend([int(d[10]), int(d[11]), 0])
+                                dv.st_hw.extend([int(d[12]), int(d[13]), int(d[14]), int(d[15]),
+                                                 int(d[16])])
+                                dv.unknow_sluitem_num = int(d[17])
+                                dv.zigbee_channel.extend([int(
+                                    a) for a in '{0:016b}'.format(int(d[18]))[::-1]])
                                 msg.data_slu_view.extend([dv])
                                 del dv
                     del cur, strsql
@@ -110,16 +120,17 @@ where a.date_create>={1} and a.date_create<={2} {3} order by a.date_create desc'
                                                                               tml_ids]))
                     if rqmsg.type == 0:
                         strsql = '''select a.slu_id,a.date_create,a.ctrl_id,a.date_data_happen,a.leackage_current,a.light_data_filed 
-from {0}_data.data_slu_ctrl_assist as a 
-where EXISTS 
-(select slu_id,date_create from 
-(select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_assist group by slu_id) as t 
-where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.slu_id'''.format(
+                        from {0}_data.data_slu_ctrl_assist as a 
+                        where EXISTS 
+                        (select slu_id,date_create from 
+                        (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_assist group by slu_id) as t 
+                        where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.slu_id'''.format(
                             utils.m_jkdb_name, str_tmls)
                     elif rqmsg.type == 1:
                         strsql = '''select a.slu_id,a.date_create,a.ctrl_id,a.date_data_happen,a.leackage_current,a.light_data_filed 
-from {0}_data.data_slu_ctrl_assist as a where a.date_create >={1} and a.date_create<= {2} {3} 
-order by a.date_create desc,a.slu_id,a.ctrl_id'''.format(utils.m_jkdb_name, sdt, edt, str_tmls)
+                        from {0}_data.data_slu_ctrl_assist as a where a.date_create >={1} and a.date_create<= {2} {3} 
+                        order by a.date_create desc,a.slu_id,a.ctrl_id'''.format(utils.m_jkdb_name,
+                                                                                 sdt, edt, str_tmls)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
                         strsql,
@@ -138,16 +149,16 @@ order by a.date_create desc,a.slu_id,a.ctrl_id'''.format(utils.m_jkdb_name, sdt,
                         msg.head.paging_idx = paging_idx
                         msg.head.paging_total = paging_total
                         for d in cur:
-                            if dv.tml_id != d[0] or dv.dt_receive != mx.switchStamp(d[1]):
+                            if dv.tml_id != int(d[0]) or dv.dt_receive != mx.switchStamp(int(d[1])):
                                 if dv.tml_id > 0:
                                     msg.data_sluitem_assist_view.extend([dv])
                                     dv = msgws.QueryDataSlu.DataSluitemAssistView()
-                                dv.tml_id = d[0]
-                                dv.dt_receive = mx.switchStamp(d[1])
+                                dv.tml_id = int(d[0])
+                                dv.dt_receive = mx.switchStamp(int(d[1]))
                             dva = msgws.QueryDataSlu.DataSluitemAssistView.SluitemAssistData()
-                            dva.sluitem_id = d[2]
-                            dva.dt_cache = d[3]
-                            dva.leackage_current = d[4]
+                            dva.sluitem_id = int(d[2])
+                            dva.dt_cache = int(d[3])
+                            dva.leackage_current = float(d[4])
                             x = d[5].split(';')[:-1]
                             for a in x:
                                 dlv = msgws.QueryDataSlu.DataSluitemAssistView.SluitemLampData()
@@ -178,28 +189,28 @@ order by a.date_create desc,a.slu_id,a.ctrl_id'''.format(utils.m_jkdb_name, sdt,
                                                                               tml_ids]))
                     if rqmsg.type == 0:
                         strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
-d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
-d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
-a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
-a.electricity,a.electricity_total,a.active_time,a.active_time_total,
-a.power_level from {0}_data.data_slu_ctrl_lamp as a 
-left join {0}_data.data_slu_ctrl as d on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id 
-where EXISTS
-(select slu_id,date_create from
-(select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_lamp group by slu_id) as t
-where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.slu_id,a.ctrl_id,a.lamp_id, a.date_create desc'''.format(
+                        d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
+                        d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
+                        a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                        a.electricity,a.electricity_total,a.active_time,a.active_time_total,
+                        a.power_level from {0}_data.data_slu_ctrl_lamp as a 
+                        left join {0}_data.data_slu_ctrl as d on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id 
+                        where EXISTS
+                        (select slu_id,date_create from
+                        (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_lamp group by slu_id) as t
+                        where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.slu_id,a.ctrl_id,a.lamp_id, a.date_create desc'''.format(
                             utils.m_jkdb_name, str_tmls)
                     elif rqmsg.type == 1:
                         strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
-d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
-d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
-a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
-a.electricity,a.electricity_total,a.active_time,a.active_time_total,
-a.power_level from {0}_data.data_slu_ctrl_lamp as a 
-left join {0}_data.data_slu_ctrl as d on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id 
-where a.date_create>={1} and a.date_create<={2} {3} 
-order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id'''.format(utils.m_jkdb_name, sdt, edt,
-                                                                   str_tmls)
+                        d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
+                        d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
+                        a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                        a.electricity,a.electricity_total,a.active_time,a.active_time_total,
+                        a.power_level from {0}_data.data_slu_ctrl_lamp as a 
+                        left join {0}_data.data_slu_ctrl as d on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id 
+                        where a.date_create>={1} and a.date_create<={2} {3} 
+                        order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id'''.format(
+                            utils.m_jkdb_name, sdt, edt, str_tmls)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
                         strsql,
@@ -218,28 +229,30 @@ order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id'''.format(utils.m_jkdb_
                         msg.head.paging_idx = paging_idx
                         msg.head.paging_total = paging_total
                         for d in cur:
-                            if dv.sluitem_id != d[0] or dv.dt_receive != mx.switchStamp(d[1]):
+                            if dv.sluitem_id != int(d[0]) or dv.dt_receive != mx.switchStamp(int(d[
+                                    1])):
                                 if dv.sluitem_id > 0:
                                     msg.data_sluitem_view.extend([dv])
                                     dv = msgws.QueryDataSlu.DataSluitemView()
-                                dv.tml_id = d[2]
-                                dv.sluitem_id = d[0]
-                                dv.dt_receive = mx.switchStamp(d[1])
-                                dv.dt_cache = mx.switchStamp(d[3])
-                                dv.st_sluitem.extend([d[4], d[5], d[6], d[7], d[8], d[9], d[10]])
-                                dv.temperature = d[11]
+                                dv.tml_id = int(d[2])
+                                dv.sluitem_id = int(d[0])
+                                dv.dt_receive = mx.switchStamp(int(d[1]))
+                                dv.dt_cache = mx.switchStamp(int(d[3]))
+                                dv.st_sluitem.extend([int(d[4]), int(d[5]), int(d[6]), int(d[7]),
+                                                      int(d[8]), int(d[9]), int(d[10])])
+                                dv.temperature = int(d[11])
 
                             dvs = msgws.QueryDataSlu.DataLampView()
-                            dvs.lamp_id = d[12]
-                            dvs.st_lamp.extend([d[13], d[14], d[15], d[16]])
-                            dvs.lamp_voltage = d[17]
-                            dvs.lamp_current = d[18]
-                            dvs.lamp_power = d[19]
-                            dvs.lamp_electricity = d[20]
-                            dvs.lamp_electricity_count = d[21]
-                            dvs.lamp_runtime = d[22]
-                            dvs.lamp_runtime_count = d[23]
-                            dvs.lamp_saving = d[24]
+                            dvs.lamp_id = int(d[12])
+                            dvs.st_lamp.extend([int(d[13]), int(d[14]), int(d[15]), int(d[16])])
+                            dvs.lamp_voltage = float(d[17])
+                            dvs.lamp_current = float(d[18])
+                            dvs.lamp_power = float(d[19])
+                            dvs.lamp_electricity = float(d[20])
+                            dvs.lamp_electricity_count = float(d[21])
+                            dvs.lamp_runtime = float(d[22])
+                            dvs.lamp_runtime_count = float(d[23])
+                            dvs.lamp_saving = float(d[24])
                             dv.data_lamp_view.extend([dvs])
                             del dvs
                         if dv.sluitem_id > 0:
@@ -255,6 +268,13 @@ order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id'''.format(utils.m_jkdb_
 @mxweb.route()
 class SluDataGetHandler(base.RequestHandler):
 
+    _help_doc = u'''单灯集中器即时选测 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSluDataGet()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluDataGet(), None)
@@ -263,24 +283,34 @@ class SluDataGetHandler(base.RequestHandler):
             if user_data['user_auth'] in utils._can_read:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
-                    if len(rqmsg.phy_id) > 0:
-                        rtu_ids = list(rqmsg.tml_id)
-                    else:
-                        rtu_ids = self.get_phy_list(rqmsg.tml_id)
+                    rtu_ids = rqmsg.tml_id
                 else:
-                    rtu_ids = self.get_phy_list(self.check_tml_r(user_uuid, list(rqmsg.tml_id)))
+                    rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 46
                 else:
-                    tcsmsg = libiisi.initRtuProtobuf('wlst.slu.7300', rtu_ids, [])
-                    tcsmsg.wlst_tml.wlst_slu_7300.cmd_idx = rqmsg.cmd_idx
-                    tcsmsg.wlst_tml.wlst_slu_7300.sluitem_start = rqmsg.sluitem_idx
-                    tcsmsg.wlst_tml.wlst_slu_7300.sluitem_count = rqmsg.sluitem_num
-                    tcsmsg.wlst_tml.wlst_slu_7300.data_mark = rqmsg.data_mark
-                    libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                    libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
-                                            tcsmsg.SerializeToString())
+                    for tml_id in rtu_ids:
+                        phy_id, fid = self.get_phy_info(tml_id)
+                        if fid > 0:
+                            addr = self.get_phy_info([fid])
+                            cid = phy_id
+                            tra = 2
+                        else:
+                            addr = phy_id
+                            cid = 1
+                            tra = 1
+                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7300',
+                                                         addr=addr,
+                                                         cid=cid,
+                                                         tra=tra)
+                        tcsmsg.wlst_tml.wlst_slu_7300.cmd_idx = rqmsg.cmd_idx
+                        tcsmsg.wlst_tml.wlst_slu_7300.sluitem_start = rqmsg.sluitem_idx
+                        tcsmsg.wlst_tml.wlst_slu_7300.sluitem_count = rqmsg.sluitem_num
+                        tcsmsg.wlst_tml.wlst_slu_7300.data_mark = rqmsg.data_mark
+                        libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
@@ -291,6 +321,13 @@ class SluDataGetHandler(base.RequestHandler):
 @mxweb.route()
 class SluitemDataGetHandler(base.RequestHandler):
 
+    _help_doc = u'''单灯控制器即时选测 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSluitemDataGet()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluitemDataGet(), None)
@@ -299,24 +336,34 @@ class SluitemDataGetHandler(base.RequestHandler):
             if user_data['user_auth'] in utils._can_read:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
-                    if len(rqmsg.phy_id) > 0:
-                        rtu_ids = list(rqmsg.tml_id)
-                    else:
-                        rtu_ids = self.get_phy_list(rqmsg.tml_id)
+                    rtu_ids = rqmsg.tml_id
                 else:
-                    rtu_ids = self.get_phy_list(self.check_tml_r(user_uuid, list(rqmsg.tml_id)))
+                    rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 46
                 else:
-                    tcsmsg = libiisi.initRtuProtobuf('wlst.slu.7a00', list(rqmsg.tml_id), [])
-                    tcsmsg.wlst_tml.wlst_slu_7a00.cmd_idx = rqmsg.cmd_idx
-                    tcsmsg.wlst_tml.wlst_slu_7a00.sluitem_idx = rqmsg.sluitem_idx
-                    tcsmsg.wlst_tml.wlst_slu_7a00.data_mark.ParseFromString(
-                        rqmsg.data_mark.SerializeToString())
-                    libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                    libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
-                                            tcsmsg.SerializeToString())
+                    for tml_id in rtu_ids:
+                        phy_id, fid = self.get_phy_info(tml_id)
+                        if fid > 0:
+                            addr = self.get_phy_info([fid])
+                            cid = phy_id
+                            tra = 2
+                        else:
+                            addr = phy_id
+                            cid = 1
+                            tra = 1
+                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7a00',
+                                                         addr=addr,
+                                                         cid=cid,
+                                                         tra=tra)
+                        tcsmsg.wlst_tml.wlst_slu_7a00.cmd_idx = rqmsg.cmd_idx
+                        tcsmsg.wlst_tml.wlst_slu_7a00.sluitem_idx = rqmsg.sluitem_idx
+                        tcsmsg.wlst_tml.wlst_slu_7a00.data_mark.ParseFromString(
+                            rqmsg.data_mark.SerializeToString())
+                        libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
@@ -325,11 +372,18 @@ class SluitemDataGetHandler(base.RequestHandler):
 
 
 @mxweb.route()
-class SluTimerSetHandler(base.RequestHandler):
+class SluTimerCtlHandler(base.RequestHandler):
+
+    _help_doc = u'''单灯集中器时钟设置/召测 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSluTimerCtl()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluTimerSet(), None)
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluTimerCtl(), None)
         env = False
         contents = ''
         if user_data is not None:
@@ -338,31 +392,50 @@ class SluTimerSetHandler(base.RequestHandler):
                 contents = 'user from {0} set slu timer'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
-                    if len(rqmsg.phy_id) > 0:
-                        rtu_ids = list(rqmsg.tml_id)
-                    else:
-                        rtu_ids = self.get_phy_list(rqmsg.tml_id)
+                    rtu_ids = rqmsg.tml_id
                 else:
-                    rtu_ids = self.get_phy_list(self.check_tml_r(user_uuid, list(rqmsg.tml_id)))
+                    rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 46
                 else:
-                    tcsmsg = libiisi.initRtuProtobuf('wlst.slu.7100', list(rqmsg.tml_id), [])
-                    libiisi.set_to_send(tcsmsg, 0)
-                    libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
-                                            tcsmsg.SerializeToString())
+                    for tml_id in rtu_ids:
+                        phy_id, fid = self.get_phy_info(tml_id)
+                        if fid > 0:
+                            addr = self.get_phy_info([fid])
+                            cid = phy_id
+                            tra = 2
+                        else:
+                            addr = phy_id
+                            cid = 1
+                            tra = 1
+                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7100',
+                                                         addr=addr,
+                                                         cid=cid,
+                                                         tra=tra)
+                        tcsmsg.wlst_tml.wlst_slu_7100.opt_mark = rqmsg.data_mark
+                        tcsmsg.wlst_tml.wlst_slu_7100.force_timer = rqmsg.do_force
+                        libiisi.set_to_send(tcsmsg, 0)
+                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        if env:
+        if env and rqmsg.data_mark == 1:
             self.write_event(57, contents, 2, user_name=user_data['user_name'])
         del msg, rqmsg, user_data, user_uuid
 
 
 @mxweb.route()
 class SluCtlHandler(base.RequestHandler):
+
+    _help_doc = u'''单灯即时控制(开关灯) (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSluCtl()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -375,37 +448,96 @@ class SluCtlHandler(base.RequestHandler):
                 contents = 'user from {0} ctrl slu'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
-                    if len(rqmsg.phy_id) > 0:
-                        rtu_ids = list(rqmsg.tml_id)
-                    else:
-                        rtu_ids = self.get_phy_list(rqmsg.tml_id)
+                    rtu_ids = rqmsg.tml_id
                 else:
-                    rtu_ids = self.get_phy_list(self.check_tml_r(user_uuid, list(rqmsg.tml_id)))
+                    rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 46
                 else:
-                    tcsmsg = libiisi.initRtuProtobuf('wlst.slu.7400', list(rqmsg.tml_id), [])
-                    tcsmsg.wlst_tml.wlst_slu_7400.cmd_idx = rqmsg.cmd_idx
-                    tcsmsg.wlst_tml.wlst_slu_7400.operation_type = rqmsg.operation_type
-                    tcsmsg.wlst_tml.wlst_slu_7400.operation_order = rqmsg.operation_order
-                    tcsmsg.wlst_tml.wlst_slu_7400.addr_type = rqmsg.addr_type
-                    tcsmsg.wlst_tml.wlst_slu_7400.addrs.extend(list(rqmsg.addrs))
-                    tcsmsg.wlst_tml.wlst_slu_7400.week_set.extend(list(rqmsg.week_set))
-                    tcsmsg.wlst_tml.wlst_slu_7400.time_or_offset = rqmsg.time_or_offset
-                    tcsmsg.wlst_tml.wlst_slu_7400.cmd_type = rqmsg.cmd_type
-                    if rqmsg.cmd_type == 4:  # 混合控制
-                        tcsmsg.wlst_tml.wlst_slu_7400.cmd_mix.extend(list(rqmsg.cmd_mix))
-                    elif rqmsg.cmd_type == 5:  # pwm调节
-                        tcsmsg.wlst_tml.wlst_slu_7400.cmd_pwm.ParseFromString(
-                            rqmsg.cmd_pwm.SerializeToString())
-                    libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                    libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
-                                            tcsmsg.SerializeToString())
+                    for tml_id in rtu_ids:
+                        phy_id, fid = self.get_phy_info(tml_id)
+                        if fid > 0:
+                            addr = self.get_phy_info([fid])
+                            cid = phy_id
+                            tra = 2
+                        else:
+                            addr = phy_id
+                            cid = 1
+                            tra = 1
+                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7400',
+                                                         addr=addr,
+                                                         cid=cid,
+                                                         tra=tra)
+                        tcsmsg.wlst_tml.wlst_slu_7400.cmd_idx = rqmsg.cmd_idx
+                        tcsmsg.wlst_tml.wlst_slu_7400.operation_type = rqmsg.operation_type
+                        tcsmsg.wlst_tml.wlst_slu_7400.operation_order = rqmsg.operation_order
+                        tcsmsg.wlst_tml.wlst_slu_7400.addr_type = rqmsg.addr_type
+                        tcsmsg.wlst_tml.wlst_slu_7400.addrs.extend(list(rqmsg.addrs))
+                        tcsmsg.wlst_tml.wlst_slu_7400.week_set.extend(list(rqmsg.week_set))
+                        tcsmsg.wlst_tml.wlst_slu_7400.timer_or_offset = rqmsg.timer_or_offset
+                        tcsmsg.wlst_tml.wlst_slu_7400.cmd_type = rqmsg.cmd_type
+                        if rqmsg.cmd_type == 4:  # 混合控制
+                            tcsmsg.wlst_tml.wlst_slu_7400.cmd_mix.extend(list(rqmsg.cmd_mix))
+                        elif rqmsg.cmd_type == 5:  # pwm调节
+                            tcsmsg.wlst_tml.wlst_slu_7400.cmd_pwm.ParseFromString(
+                                rqmsg.cmd_pwm.SerializeToString())
+                        libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
             self.write_event(65, contents, 2, user_name=user_data['user_name'])
+        del msg, rqmsg, user_data, user_uuid
+
+
+@mxweb.route()
+class SluVerGetHandler(base.RequestHandler):
+
+    _help_doc = u'''单灯集中器版本信息获取 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSluVerGet()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
+    @gen.coroutine
+    def post(self):
+        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluDataGet(), None)
+
+        if user_data is not None:
+            if user_data['user_auth'] in utils._can_read:
+                # 验证用户可操作的设备id
+                if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
+                    rtu_ids = rqmsg.tml_id
+                else:
+                    rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+
+                if len(rtu_ids) == 0:
+                    msg.head.if_st = 46
+                else:
+                    for tml_id in rtu_ids:
+                        phy_id, fid = self.get_phy_info(tml_id)
+                        if fid > 0:
+                            addr = self.get_phy_info([fid])
+                            cid = phy_id
+                            tra = 2
+                        else:
+                            addr = phy_id
+                            cid = 1
+                            tra = 1
+                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.5000',
+                                                         addr=addr,
+                                                         cid=cid,
+                                                         tra=tra)
+                        libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
+                                                tcsmsg.SerializeToString())
+            else:
+                msg.head.if_st = 11
+        self.write(mx.convertProtobuf(msg))
+        self.finish()
         del msg, rqmsg, user_data, user_uuid

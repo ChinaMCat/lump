@@ -59,7 +59,7 @@ VSVersionInfo(
 
 def save_verfile(mainver, secver):
     t = time.localtime()
-    dver = '{0:02d}{1:02d}'.format(t[1], t[2])
+    dver = '{0}{1:02d}'.format(t[1], t[2])
     tver = t[3] * 60 * 60 + t[4] * 60 + t[5]
     with codecs.open('file_ver.txt', 'w', 'utf8') as f:
         f.write(file_version_info.format(mainver, secver, dver, tver, '.'.join([str(mainver), str(

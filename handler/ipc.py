@@ -23,6 +23,13 @@ import utils
 @mxweb.route()
 class IpcUplinkHandler(base.RequestHandler):
 
+    _help_doc = u'''工控机提交末端设备数据 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqIpcUplink()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         legal, rqmsg, msg = self.check_arguments(msgws.rqIpcUplink(), msgws.CommAns(), use_scode=1)
@@ -124,6 +131,13 @@ class IpcUplinkHandler(base.RequestHandler):
 @mxweb.route()
 class IpcCtlHandler(base.RequestHandler):
 
+    _help_doc = u'''向工控机发送控制指令 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;scode - 动态运算的安全码<br/>
+    &nbsp;&nbsp;pb2 - rqIpcCtl()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         legal, rqmsg, msg = self.check_arguments(msgws.rqIpcCtl(), None, use_scode=1)
@@ -164,6 +178,13 @@ class IpcCtlHandler(base.RequestHandler):
 
 @mxweb.route()
 class QueryEMDataHandler(base.RequestHandler):
+
+    _help_doc = u'''环境数据查询 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqQueryEMData()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;QueryEMData()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -238,7 +259,7 @@ class QueryEMDataHandler(base.RequestHandler):
                                 qudata.tvoc = float(d[11])
                                 qudata.h2s = float(d[12])
                                 qudata.so2 = float(d[13])
-                                qudata.dt_data = d[1]
+                                qudata.dt_data = int(d[1])
                                 msg.qudata.extend([qudata])
                                 del qudata
                         del cur, strsql

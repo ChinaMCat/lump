@@ -11,11 +11,13 @@ import protobuf3.msg_with_ctrl_pb2 as msgtcs
 import mxpsu as mx
 import tornado.httpclient as thc
 from tornado.httputil import url_concat
-import gevent
+# import gevent
 import timeit
 
 baseurl = 'http://192.168.50.55:10006/'
+# baseurl = 'http://192.168.50.55:63800/'
 # baseurl = 'http://192.168.122.43:63800/'
+# baseurl = 'http://222.186.103.162:6967/'
 # baseurl = 'http://180.153.108.83:20525/'
 # baseurl = 'http://192.168.50.80:33819/ws_common/FlowService.asmx'
 pm = urllib3.PoolManager(num_pools=100)
@@ -32,7 +34,7 @@ def init_head(msg):
 def test_userlogin():
     global user_id
     print('=== login ===')
-    url = baseurl + 'userlogin'
+    url = baseurl + 'userloginjk'
     rqmsg = init_head(msgif.rqUserLogin())
     rqmsg.dev = 3
     rqmsg.unique = 'asdfhaskdfkaf'
@@ -154,16 +156,16 @@ def test_rtuctl():
     print('=== rtuctl ===')
     url = baseurl + 'rtuctl'
     rqmsg = init_head(msgif.rqRtuCtl())
-    rtudo = msgif.rqRtuCtl.RtuDo()
-    rtudo.opt = 1
-    rtudo.tml_id.extend([1000002, 1000003])
-    rtudo.loop_do.extend([1, 1, 0, 0, 2, 2])
-    rqmsg.rtu_do.extend([rtudo])
-    rtudo = msgif.rqRtuCtl.RtuDo()
-    rtudo.opt = 1
-    rtudo.tml_id.extend([1000002, 1000003])
-    rtudo.loop_do.extend([2, 2, 1, 1, 2, 2])
-    rqmsg.rtu_do.extend([rtudo])
+    # rtudo = msgif.rqRtuCtl.RtuDo()
+    # rtudo.opt = 1
+    # rtudo.tml_id.extend([1000002, 1000003])
+    # rtudo.loop_do.extend([1, 1, 0, 0, 2, 2])
+    # rqmsg.rtu_do.extend([rtudo])
+    # rtudo = msgif.rqRtuCtl.RtuDo()
+    # rtudo.opt = 1
+    # rtudo.tml_id.extend([1000002, 1000003])
+    # rtudo.loop_do.extend([2, 2, 1, 1, 2, 2])
+    # rqmsg.rtu_do.extend([rtudo])
     rtudo = msgif.rqRtuCtl.RtuDo()
     rtudo.opt = 2
     rtudo.tml_id.extend([1000002, 1000003])
@@ -326,6 +328,26 @@ def test_errquery():
     rqmsg.dt_end = mx.time2stamp('2016-11-20 00:00:00')
     rqmsg.type = 0
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    data = {'uuid': user_id,
+            'pb2': '''CgsQyOQJoAaz6fHCBTCz6fHCBUqFCMGEPcKEPcOEPcSEPcWEPcaEPceEPciEPcmEPcqEPcuEPcyE
+    Pc2EPc6EPc+EPdCEPdGEPdKEPdOEPdSEPdWEPdaEPdeEPdiEPdmEPdqEPduEPdyEPd2EPd6EPd+E
+    PeCEPeGEPeKEPeOEPeSEPeWEPeaEPeeEPeiEPemEPeqEPeuEPeyEPe2EPe6EPe+EPfCEPfGEPfKE
+    PfOEPfSEPfWEPfaEPfeEPfiEPfmEPfqEPfuEPfyEPf2EPf6EPf+EPYCFPYGFPYKFPYOFPYSFPYWF
+    PYaFPYeFPYiFPYmFPYqFPYuFPYyFPY2FPY6FPY+FPZCFPZGFPZKFPZOFPZSFPZWFPZaFPZeFPZiF
+    PZmFPZqFPZuFPZyFPZ2FPZ6FPZ+FPaCFPaGFPaKFPaOFPaSFPaWFPaaFPaeFPaiFPamFPaqFPauF
+    PayFPa2FPa6FPa+FPbCFPbGFPbKFPbOFPbSFPbWFPbaFPbeFPbiFPbmFPbqFPbuFPbyFPb2FPb6F
+    Pb+FPcCFPcGFPcKFPcOFPcSFPcWFPcaFPceFPciFPcmFPcqFPcuFPcyFPc2FPc6FPc+FPdCFPdGF
+    PdKFPdOFPdSFPdWFPdaFPdeFPdiFPdmFPdqFPduFPdyFPd2FPd6FPd+FPeCFPeGFPeKFPeOFPeSF
+    PeWFPeaFPeeFPeiFPemFPeqFPeuFPeyFPe2FPe6FPe+FPfCFPfGFPfKFPfOFPfSFPfWFPfaFPfeF
+    PfiFPfmFPfqFPfuFPfyFPf2FPf6FPf+FPYCGPYGGPYKGPYOGPYSGPYWGPYaGPYeGPYiGPYmGPYqG
+    PYuGPYyGPY2GPY6GPY+GPZCGPZGGPZKGPZOGPZSGPZWGPZaGPZeGPZiGPZmGPZqGPZuGPZyGPZ2G
+    PaKGPaOGPaSGPaWGPaaGPaeGPaiGPamGPaqGPauGPayGPa2GPeGRQ+KRQ+ORQ+SRQ+WRQ+aRQ+eR
+    Q+iRQ+mRQ+qRQ+uRQ+yRQ+2RQ+6RQ++RQ/CRQ/GRQ/KRQ/ORQ/SRQ/WRQ/aRQ/eRQ/iRQ/mRQ/qR
+    Q/uRQ/yRQ/2RQ/6RQ/+RQ4CSQ4GSQ4KSQ46SQ4+SQ5CSQ5GSQ5KSQ5OSQ5SSQ5WSQ5aSQ5eSQ5iS
+    Q5mSQ5qSQ5uSQ5ySQ52SQ56SQ5+SQ6CSQ6GSQ6KSQ6OSQ6SSQ6WSQ6aSQ6eSQ6iSQ6mSQ6qSQ6uS
+    Q6ySQ62SQ66SQ6+SQ7CSQ7GSQ7KSQ7OSQ7SSQ7WSQ7aSQ7eSQ7iSQ7mSQ7qSQ7uSQ7ySQ72SQ76S
+    Q7+SQ8CSQ8GSQ8KSQ8G5VeLGW+PGW+TGW+XGW+bGW+fGW+jGW+nGW+rGW+vGW+zGW+3GW+7GW+/G
+    W/DGW/HGW/LGW/PGW/TGW/XGW/bGW/fGWw=='''}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     msg = msgif.QueryDataErr()
     msg.ParseFromString(base64.b64decode(r.data))
@@ -359,11 +381,12 @@ def test_tmlinfo():
     print('=== query rty info ===')
     url = baseurl + 'tmlinfo'
     rqmsg = msgif.rqTmlInfo()
-    rqmsg.data_mark.extend([2])
-    rqmsg.tml_id.extend([0])
+    rqmsg.data_mark.extend([6])
+    rqmsg.tml_id.extend([])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     # data = {'uuid': user_id, 'pb2': 'CgsQyOQJoAbTgM7CBSoCAwIyAQA='}
-    r = pm.request('POST', url, fields=data, timeout=3.0, retries=False)
+    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    print(len(r.data))
     msg = msgif.TmlInfo()
     msg.ParseFromString(base64.b64decode(r.data))
     print(msg)
@@ -382,6 +405,8 @@ def test_querysludata():
     rqmsg.data_mark = 0
     rqmsg.tml_id.extend([])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+
+    data = {'uuid': user_id, 'pb2': 'OABKA LGW1AH'}
     r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
     msg = msgif.QueryDataSlu()
     msg.ParseFromString(base64.b64decode(r.data))
@@ -433,6 +458,24 @@ def test_sysinfo():
     time.sleep(0)
 
 
+def test_querysms():
+    global user_id
+    print('=== querysms ===')
+    url = baseurl + 'querysmsrecord'
+    # rqmsg = msgif.rqSysInfo()
+    # rqmsg.data_mark.extend([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+    data = {'uuid': user_id,
+            'pb2':
+            'Ch0IARDI5AkaDnF1ZXJ5c21zcmVjb3JkoAaFnL3DBRoFoP7p4kYiCeS4nOWFq+i3ryjPmJilBTDPiafDBQ=='}
+    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    print(r.data)
+    msg = msgif.QuerySmsRecord()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    print('post finish')
+    time.sleep(0)
+
+
 def handle_response(response):
     if response.error:
         print "Error:", response.error
@@ -464,7 +507,8 @@ def test_test():
     rqmsg.data_mark.extend([3])
     data = {'user_name': 'admin', 'user_password': '123'}
     sdata = urllib.urlencode(data)
-    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    url = baseurl + '''listTask?process=D%3A\wwwroot\web_common\process\%E4%B8%80%E8%88%AC%E5%B7%A5%E5%8D%95.xml&user_id=78&json={}&per=999&page=1'''
+    r = pm.request('GET', url, fields={}, timeout=10.0, retries=False)
     print(r.data)
     # msg = msgif.SysInfo()
     # msg.ParseFromString(base64.b64decode(r.data))
@@ -483,6 +527,7 @@ def test_submitsms():
     rqmsg.msg = u'tessdf第三方法ta'
     print(scode, base64.b64encode(rqmsg.SerializeToString()))
     data = {'scode': scode, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    data = {'scode': scode, 'pb2': 'ChgIAhDI5AkaCXN1Ym1pdHNtc6AGwKfRwwUSCu62yro68vXwjkMaBTU1NTUK'}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     print(r.data)
     msg = msgif.CommAns()
@@ -492,8 +537,51 @@ def test_submitsms():
     time.sleep(0)
 
 
+def test_submittcs():
+    global user_id
+    print('=== sms submit ===')
+    url = baseurl + 'submittcs'
+    scode = mx.getMD5('{0}3a533ba0'.format(mx.stamp2time(time.time(), format_type='%Y%m%d%H')))
+    rqmsg = msgif.rqSubmitSms()
+    rqmsg.tels.extend([18916788720])
+    rqmsg.msg = u'tessdf第三方法ta'
+    print(scode, base64.b64encode(rqmsg.SerializeToString()))
+    data = {'scode': scode, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    data = {
+        'scode': scode,
+        'pb2':
+        'ChsIAhABGAEgASgBMAE6DXdsc3QucnR1LmEwMDASDwoFgYCA+AcQlU4aARQoAaIG5QGqAeEBCkDYXnvttdfoP9hee+211+g/11prrbXW6D/YXnvttdfoP9VUU0011eg/2WSTTTbZ6D/WVltttdXoP9VSSy211Og/EkC44YYbbrjRP7jhhhtuuNE/N9xwww03vD8ffPDBBx+8PwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGkCcccYZZ5zJP5RRRhlllMk/v/3222+/rT+fffbZZ5+tPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAII/YAij/AToIAAAAAAEBAQFCCAAAAAAAAAAA'
+    }
+    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    print(r.data)
+    msg = msgif.CommAns()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    print('ipc submit finish')
+    time.sleep(0)
+
+
+def test_querydatartuelec():
+    global user_id
+    print('=== query rtu data elec ===')
+    url = baseurl + 'querydatartuelec'
+    rqmsg = msgif.rqQueryDataRtuElec()
+    rqmsg.dt_start = mx.time2stamp('2016-12-10 00:00:00')
+    rqmsg.dt_end = mx.time2stamp('2017-01-20 00:00:00')
+    rqmsg.tml_id.extend([1000095])
+    data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    data = {'uuid': user_id, 'pb2': 'KICY26 LKzCAqNaDlSs='}
+    r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
+    msg = msgif.QueryDataRtuElec()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    print('post finish')
+    time.sleep(0)
+
+
 if __name__ == '__main__':
     # test_submitsms()
+    # test_submittcs()
     # a = time.time()
     # t = []
     # for i in range(0):
@@ -503,6 +591,9 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # test_userlogin()
+    test_querydatartuelec()
+    # test_querysms()
+    # test_querysludata()
     # test_sysinfo()
     # test_errquery()
     # test_querysludata()
@@ -518,6 +609,6 @@ if __name__ == '__main__':
     # test_rtuctl()
     # test_userinfo()
     # test_rtudataget()
-
+    # test_rtuctl()
     # test_userdel()
     # test_userlogout()

@@ -17,6 +17,12 @@ import utils
 @mxweb.route()
 class GroupInfoHandler(base.RequestHandler):
 
+    _help_doc = u'''监控分组信息获取 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;GroupInfo()结构序列化并经过base64编码后的字符串'''
+
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = self.check_arguments(None, msgws.GroupInfo())
@@ -43,10 +49,10 @@ class GroupInfoHandler(base.RequestHandler):
                         x = d[2].split(';')[:-1]
                         y = [int(b) for b in x]
                         av = msgws.GroupInfo.GroupView()
-                        av.grp_id = d[0]
+                        av.grp_id = int(d[0])
                         av.grp_name = d[1]
-                        av.grp_area = d[3]
-                        av.grp_order = d[4]
+                        av.grp_area = int(d[3])
+                        av.grp_order = int(d[4])
                         av.tml_id.extend(y)
                         msg.group_view.extend([av])
                         del av, x, y
@@ -60,6 +66,12 @@ class GroupInfoHandler(base.RequestHandler):
 
 @mxweb.route()
 class AreaInfoHandler(base.RequestHandler):
+
+    _help_doc = u'''监控区域信息获取 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;AreaInfo()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -87,23 +99,23 @@ class AreaInfoHandler(base.RequestHandler):
                         x = d[2].split(';')[:-1]
                         y = [int(b) for b in x]
                         av = msgws.AreaInfo.AreaView()
-                        av.area_id = d[0]
+                        av.area_id = int(d[0])
                         av.area_name = d[1]
                         av.tml_id.extend(y)
                         msg.area_view.extend([av])
-                        if d[0] in user_data[
+                        if int(d[0]) in user_data[
                                 'area_r']:  # or user_data['user_auth'] in utils._can_admin:
                             if user_uuid in self._cache_tml_r.keys():
                                 self._cache_tml_r[user_uuid].union(y)
                             else:
                                 self._cache_tml_r[user_uuid] = set(y)
-                        if d[0] in user_data[
+                        if int(d[0]) in user_data[
                                 'area_w']:  # or user_data['user_auth'] in utils._can_admin:
                             if user_uuid in self._cache_tml_w.keys():
                                 self._cache_tml_w[user_uuid].union(y)
                             else:
                                 self._cache_tml_w[user_uuid] = set(y)
-                        if d[0] in user_data[
+                        if int(d[0]) in user_data[
                                 'area_x']:  # or user_data['user_auth'] in utils._can_admin:
                             if user_uuid in self._cache_tml_x.keys():
                                 self._cache_tml_x[user_uuid].union(y)
@@ -120,6 +132,13 @@ class AreaInfoHandler(base.RequestHandler):
 
 @mxweb.route()
 class EventInfoHandler(base.RequestHandler):
+
+    _help_doc = u'''监控事件基础信息获取 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqEventInfo()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;EventInfo()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -150,7 +169,7 @@ class EventInfoHandler(base.RequestHandler):
                     msg.head.paging_total = paging_total
                     for d in cur:
                         envinfoview = msgws.EventInfo.EventInfoView()
-                        envinfoview.event_id = d[0]
+                        envinfoview.event_id = int(d[0])
                         envinfoview.event_name = d[1]
                         msg.event_info_view.extend([envinfoview])
                         del envinfoview
@@ -164,6 +183,13 @@ class EventInfoHandler(base.RequestHandler):
 
 @mxweb.route()
 class SunrisetInfoHandler(base.RequestHandler):
+
+    _help_doc = u'''监控日出日落信息获取 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSunrisetInfo()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;SunrisetInfo()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -186,10 +212,10 @@ class SunrisetInfoHandler(base.RequestHandler):
                     msg.head.paging_total = paging_total
                     for d in cur:
                         sunriset = msgws.SunrisetInfo.DataSunrisetView()
-                        sunriset.month = d[0]
-                        sunriset.day = d[1]
-                        sunriset.sunrise = d[2]
-                        sunriset.sunset = d[3]
+                        sunriset.month = int(d[0])
+                        sunriset.day = int(d[1])
+                        sunriset.sunrise = int(d[2])
+                        sunriset.sunset = int(d[3])
                         msg.data_sunriset_view.extend([sunriset])
                         del sunriset
 
@@ -202,6 +228,13 @@ class SunrisetInfoHandler(base.RequestHandler):
 
 @mxweb.route()
 class QueryDataEventsHandler(base.RequestHandler):
+
+    _help_doc = u'''监控事件记录查询 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqQueryDataEvents()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;QueryDataEvents()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -256,12 +289,12 @@ class QueryDataEventsHandler(base.RequestHandler):
                     msg.head.paging_total = paging_total
                     for d in cur:
                         env = msgws.QueryDataEvents.DataEventsView()
-                        env.events_id = d[2]
+                        env.events_id = int(d[2])
                         env.user_name = d[1]
                         env.tml_id = int(d[4])
                         env.events_msg = '{0} {1}'.format(d[5], d[6])
-                        env.dt_happen = mx.switchStamp(d[0])
-                        env.events_name = utils._events_def[d[2]]
+                        env.dt_happen = mx.switchStamp(int(d[0]))
+                        env.events_name = utils._events_def[int(d[2])]
                         xquery.data_events_view.extend([env])
                         del env
 
@@ -274,6 +307,13 @@ class QueryDataEventsHandler(base.RequestHandler):
 
 @mxweb.route()
 class SysEditHandler(base.RequestHandler):
+
+    _help_doc = u'''监控系统名称修改 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSysEdit()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;SysEdit()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -299,6 +339,13 @@ class SysEditHandler(base.RequestHandler):
 
 @mxweb.route()
 class SysInfoHandler(base.RequestHandler):
+
+    _help_doc = u'''监控系统信息获取 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSysInfo()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;SysInfo()结构序列化并经过base64编码后的字符串'''
 
     @gen.coroutine
     def post(self):
@@ -342,7 +389,7 @@ class SysInfoHandler(base.RequestHandler):
                     msg.head.paging_idx = paging_idx
                     msg.head.paging_total = paging_total
                     for d in cur:
-                        msg.tml_num.extend([d[0]])
+                        msg.tml_num.extend([int(d[0])])
                     # msg.tml_num.append(d[0][0])
 
                 del cur, strsql
@@ -365,7 +412,7 @@ class SysInfoHandler(base.RequestHandler):
                     msg.head.paging_idx = paging_idx
                     msg.head.paging_total = paging_total
                     for d in cur:
-                        msg.err_num.extend([d[0]])
+                        msg.err_num.extend([int(d[0])])
 
                 del cur, strsql
             if 4 in msg.data_mark:
@@ -390,7 +437,7 @@ class SysInfoHandler(base.RequestHandler):
                     msg.head.paging_idx = paging_idx
                     msg.head.paging_total = paging_total
                     for d in cur:
-                        msg.tml_type.extend([d[0]])
+                        msg.tml_type.extend([int(d[0])])
 
                 del cur, strsql
             if 7 in msg.data_mark:  # 暂不支持服务状态

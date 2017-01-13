@@ -176,7 +176,6 @@ message rqSysEdit {
 message rqSluDataGet {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
-    repeated int32 phy_id = 7 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
     int32 data_mark = 3;  // 选测内容标示, 0-选测集中器状态,4-选测控制器物理信息,6-选测控制器辅助数据,7-选测控制器基本数据
     int32 sluitem_idx = 4;  // 控制器起始地址
     int32 sluitem_num = 5;  // 控制器数量
@@ -188,7 +187,6 @@ message rqSluDataGet {
 message rqSluitemDataGet {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
-    repeated int32 phy_id = 6 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
     int32 sluitem_idx = 3;  // 控制器地址
     Data_mark data_mark = 4;  // 选测标示
     int32 cmd_idx = 5;  // 命令序号
@@ -209,7 +207,7 @@ message rqSluitemDataGet {
 message rqSluCtl {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
-    repeated int32 phy_id = 13 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
+    int32 subitem_id = 14;  // 对于485设备使用
     int32 cmd_idx = 3;  // 序号
     int32 operation_type = 4;  // 指令类型 0-清除，1-定时，2-经纬度，3-即时
     int32 operation_order = 5;  // 操作顺序 0-广播，1-依次
@@ -229,10 +227,11 @@ message rqSluCtl {
 // CommAns应答
 
 // 单灯对时
-message rqSluTimerSet {
+message rqSluTimerCtl {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
-    repeated int32 phy_id = 4 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
+    int32 data_mark = 3; // 0-设置时钟,1-召测时钟
+    int32 do_force = 4; // data_mark=0时有效,0-不强制对时,1-强制对时
 }
 // CommAns应答
 
@@ -240,7 +239,6 @@ message rqSluTimerSet {
 message rqRtuDataGet {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
-    repeated int32 phy_id = 4 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
 }
 // CommAns应答
 
@@ -249,7 +247,6 @@ message rqRtuCtl {
     message RtuDo {
         int32 opt = 1;  // 1-单回路开关,2-多回路开关,3-停运,4-解除停运
         repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
-        repeated int32 phy_id = 4 [packed=true];  // 要操作的设备物理地址列表,该列表中的终端均执行相同的操作(高优先级)
         repeated int32 loop_do = 3 [packed=true];  // 从回路1开始最大16,要操作的内容0-关,1-开,2-不变,如3005共6个输出需要开启1,4,关闭2,6,则填入[1,0,2,1,2,0](opt=3,4时无效)
     }
     Head head = 1;
@@ -817,4 +814,67 @@ message rqSubmitAlarm {
     }
     // Head head = 1;
     repeated AlarmView alarm_view = 2;
+}
+
+// 电表数据查询
+message rqQueryDataMru {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要查询的电表设备逻辑地址列表,留空表示查询所有设备
+    int64 dt_start = 3;  // 查询起始日期
+    int64 dt_end = 4;  // 查询结束日期, 若dt_start,dt_end 均为0,则表示查询最新一条数据
+}
+// 应答
+message QueryDataMru {
+    message DataMruView {
+        int64 dt_create = 1;  // 数据接收日期
+        int32 tml_id = 2;  // 设备逻辑地址
+        int32 data_mark = 3;  // 抄表类型,1-A相，2-B相，3-C相，4-总电量
+        int32 dt_mark = 4;  // 抄表时间段,0-当前，1-上月，2-上上月
+        double mru_value = 5;  // 抄表值
+    }
+    Head head = 1;
+    repeated DataMruView data_mru_view = 3;
+}
+
+// 电表即时抄表
+message rqMruDataGet {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要操作的电表设备逻辑地址列表
+    int32 data_mark = 3;  // 抄表类型,1-A相，2-B相，3-C相，4-总电量
+    int32 dt_mark = 4;  // 抄表时间段,0-当前，1-上月，2-上上月
+    int32 dev_ver = 5;  // 电表协议,1-1997协议,2-2007协议
+}
+
+// 终端估算电量查询
+message rqQueryDataRtuElec {
+    Head head = 1;
+    int64 dt_start = 5;  // 起始年月日时间,转换为long传输(1970-1-1开始的秒数)
+    int64 dt_end = 6;  // 结束年月日时间,转换为long传输(1970-1-1开始秒数)
+    repeated int32 tml_id = 9 [packed=true];  // 设备id,可多选,留空查询全部
+    int32 data_mark = 7;  // 0-查询原始数据，1-按终端回路返回时间段内能耗总和，此时，不填充dt_count字段
+}
+// 应答
+message QueryDataRtuElec {
+    message DataRtuElecView {
+        int64 dt_count = 1;  // 计算的日期,如2017-01-09表示从2017-01-08 12:00:00~2017-01-09 12:00:00的电量估算值
+        int64 tml_id = 2;  // 设备逻辑id
+        int32 loop_id = 3;  // 回路id
+        int32 data_lenght = 4;  // 开灯时长
+        double estimate_value = 5;  // 估算电量
+    }
+    Head head = 1;
+    repeated DataRtuElecView data_rtu_elec_view = 2;
+}
+
+// 终端时钟设置/召测
+message rqRtuTimerCtl {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
+    int32 data_mark = 3;  // 0-设置时钟,1-召测时钟
+}
+
+// 终端版本召测
+message rqRtuVerGet {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
 }

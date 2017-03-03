@@ -17,6 +17,7 @@ import json
 #           FIELD_TYPE.SHORT: int}
 m_conv = {1: int, 2: int, 3: int, 4: float, 5: float, 8: int, 9: int}
 
+m_tcs_port = libiisi.m_config.getData('tcs_port')
 m_jkdb_name = libiisi.m_config.getData('jkdb_name')
 m_dgdb_name = libiisi.m_config.getData('dgdb_name')
 m_dz_url = libiisi.m_config.getData('dz_url')

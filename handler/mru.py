@@ -26,8 +26,8 @@ class QueryDataMruHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataMru(),
-                                                                msgws.QueryDataMru())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataMru(),
+                                                                      msgws.QueryDataMru())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -43,7 +43,8 @@ class QueryDataMruHandler(base.RequestHandler):
                 (select rtu_id,max(date_create) as date_create from {0}_data.data_mru_record group by rtu_id) as t 
                 where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} order by a.rtu_id,a.date_create desc'''.format(
                     utils.m_jkdb_name, strdt)
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                print(strsql)
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     buffer_tag=msg.head.paging_buffer_tag,
@@ -61,8 +62,8 @@ class QueryDataMruHandler(base.RequestHandler):
                         dv.dt_create = mx.switchStamp(int(d[1]))
                         dv.tml_id = int(d[0])
                         dv.date_type_code = int(d[2])
-                        dv.mru_type_code = int(d[3])
-                        dv.mru_data = float(d[4])
+                        dv.data_mark = int(d[3])
+                        dv.mru_value = float(d[4])
                         msg.data_mru_view.extend([dv])
                 del cur, strsql
 
@@ -83,7 +84,7 @@ class MruDataGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqMruDataGet(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqMruDataGet(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -101,7 +102,7 @@ class MruDataGetHandler(base.RequestHandler):
                     b.mru_addr_1,b.mru_addr_2,b.mru_addr_3,b.mru_addr_4,b.mru_addr_5,b.mru_addr_6 
                     from {0}.para_base_equipment as a left join {0}.para_mru as b 
                     on a.rtu_id in ({1})'''.format(utils.m_jkdb_name, rtu_ids)
-                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1)
                     for d in cur:

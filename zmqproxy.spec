@@ -3,14 +3,11 @@
 block_cipher = pyi_crypto.PyiBlockCipher(key='Bye-bye my love.')
 
 
-a = Analysis(['iisi.py'],
+a = Analysis(['zmqproxy.py'],
              pathex=['/home/xy/work/python/lump'],
              binaries=None,
              datas=None,
-             hiddenimports=['Crypto.Cipher.AES',
-                                            'ConfigParser',
-                                            '_mysql',
-                                            'concurrent.futures',],
+             hiddenimports=['zmq'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -22,15 +19,15 @@ pyz = PYZ(a.pure, a.zipped_data,
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='iisi',
+          name='zmqproxy',
           debug=False,
           strip=False,
           upx=True,
-          console=True , version='file_ver.txt')
+          console=True )
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
                a.datas,
                strip=False,
                upx=True,
-               name='iisi')
+               name='zmqproxy')

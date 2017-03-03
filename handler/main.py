@@ -10,6 +10,7 @@ import os
 import time
 
 import mxweb
+import mxpsu as mx
 from tornado import gen
 
 import base
@@ -22,23 +23,7 @@ class TestHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        # print(dir(self))
-        print(dir(self.application))
-        for h in self.application.handlers[0][1]:
-            # print(dir(h))
-            print(h.kwargs.get('help_doc'))
-        self.flush()
-        # self.write('{0}<br/>'.format(utils.m_jkdb_name))
-        # self.write('{0}<br/>'.format(utils.m_dgdb_name))
-        # 
-        # strsql = 'select * from {0}.user_list'.format(
-        #     utils.m_jkdb_name)
-        # self.write('{0}<br/>'.format(strsql))
-        # record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
-        #     strsql,
-        #     need_fetch=1)
-        # for d in cur:
-        #     self.write('{0}<br/>'.format(str(d)))
+        # print(dir(self.executor))
         self.finish('<br/>get test done.')
 
     @gen.coroutine
@@ -53,66 +38,77 @@ class ServiceCheckHandler(base.RequestHandler):
 
     _help_doc = u'''服务状态检查<br/>
     <b>参数:</b><br/>
-    &nbsp;&nbsp;do - [testconfig|showhandlers]<br/>'''
+    &nbsp;&nbsp;do - [testconfig|showhandlers|timer]'''
 
     @gen.coroutine
     def get(self):
         try:
             jobs = self.get_arguments('do')
-            for do in jobs:
-                if do == 'testconfig':
-                    self.write('<b><u>===== test config =====</u></b><br/>')
-                    if libiisi.m_tcs is None:
-                        self.write('TCS server status ... disconnected.<br/>')
-                    else:
-                        if libiisi.m_tcs.is_connect:
-                            self.write('Test tcs config ... connected.<br/>')
-                        else:
+            if len(jobs) == 0:
+                self.write(self._help_doc)
+            else:
+                for do in jobs:
+                    if do == 'timer' or do == 'all':
+                        self.write('<b><u>===== show system timer =====</u></b><br/>')
+                        self.write('{0:.6f} ({1})<br/>'.format(time.time(), mx.stamp2time(time.time(
+                        ))))
+                        self.write('<br/>')
+                        self.flush()
+
+                    if do == 'testconfig' or do == 'all':
+                        self.write('<b><u>===== test config =====</u></b><br/>')
+                        if libiisi.m_tcs is None:
                             self.write('TCS server status ... disconnected.<br/>')
-                    try:
-                        jk_isok = False
-                        dg_isok = False
-                        strsql = 'select schema_name from information_schema.schemata where schema_name in ("{0}","{1}");'.format(
-                            utils.m_jkdb_name, utils.m_dgdb_name)
-                        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
-                            strsql,
-                            need_fetch=1)
-                        if record_total is None:
+                        else:
+                            if libiisi.m_tcs.is_connect:
+                                self.write('Test tcs config ... connected.<br/>')
+                            else:
+                                self.write('TCS server status ... disconnected.<br/>')
+                        try:
                             jk_isok = False
                             dg_isok = False
-                        else:
-                            for d in cur:
-                                if d[0] == utils.m_jkdb_name:
-                                    jk_isok = True
-                                elif d[0] == utils.m_dgdb_name:
-                                    dg_isok = True
-                        if jk_isok:
-                            self.write('Test jkdb config ... success.<br/>')
-                        else:
+                            strsql = 'select schema_name from information_schema.schemata where schema_name in ("{0}","{1}");'.format(
+                                utils.m_jkdb_name, utils.m_dgdb_name)
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                                strsql,
+                                need_fetch=1)
+                            if record_total is None:
+                                jk_isok = False
+                                dg_isok = False
+                            else:
+                                for d in cur:
+                                    if d[0] == utils.m_jkdb_name:
+                                        jk_isok = True
+                                    elif d[0] == utils.m_dgdb_name:
+                                        dg_isok = True
+                            if jk_isok:
+                                self.write('Test jkdb config ... success.<br/>')
+                            else:
+                                self.write('Test jkdb config ... failed.<br/>')
+                            if dg_isok:
+                                self.write('Test dgdb config ... success.<br/>')
+                            else:
+                                self.write('Test dgdb config ... failed.<br/>')
+                            del cur
+                        except:
                             self.write('Test jkdb config ... failed.<br/>')
-                        if dg_isok:
-                            self.write('Test dgdb config ... success.<br/>')
-                        else:
                             self.write('Test dgdb config ... failed.<br/>')
-                        del cur
-                    except:
-                        self.write('Test jkdb config ... failed.<br/>')
-                        self.write('Test dgdb config ... failed.<br/>')
-                    self.write('<br/>')
-                    self.flush()
+                        self.write('<br/>')
+                        self.flush()
 
-                if do == 'showhandlers':
-                    self.write('<b><u>===== show handlers =====</u></b><br/>')
-                    x = self.application.handlers[0][1]
-                    for a in x:
-                        if a._path not in ('/.*', '/test', '/cleaningwork') and '%' not in a._path:
-                            self.write('<b>------- {0} -------</b><br/>'.format(a._path[1:]))
-                            self.write(a.kwargs.get('help_doc') + '<br/><br/>')
-                            # self.write('---<br/><br/>')
-                    self.write('<br/>')
-                    self.flush()
+                    if do == 'showhandlers' or do == 'all':
+                        self.write('<b><u>===== show handlers =====</u></b><br/>')
+                        x = self.application.handlers[0][1]
+                        for a in x:
+                            if a._path not in ('/', '/.*', '/test',
+                                               '/cleaningwork') and '%' not in a._path:
+                                self.write('<b>------- {0} -------</b><br/>'.format(a._path[1:]))
+                                self.write(a.kwargs.get('help_doc') + '<br/><br/>')
+                                # self.write('---<br/><br/>')
+                        self.write('<br/>')
+                        self.flush()
         except:
-            pass
+            self.wirte(self._help_doc)
         self.finish()
 
 

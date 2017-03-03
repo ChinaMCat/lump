@@ -10,7 +10,7 @@ import time
 import mxpsu as mx
 import mxweb
 from tornado import gen
-
+import json
 import base
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
@@ -36,7 +36,8 @@ class TmlInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqTmlInfo(), msgws.TmlInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqTmlInfo(),
+                                                                      msgws.TmlInfo())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -62,7 +63,7 @@ class TmlInfoHandler(base.RequestHandler):
                             a.rtu_model,a.rtu_fid,a.date_create,a.rtu_remark,a.date_update,a.rtu_install_addr \
                             from {0}.para_base_equipment as a left join {0}.para_rtu_gprs as b \
                             on a.rtu_id=b.rtu_id {1}'.format(utils.m_jkdb_name, str_tmls)
-                            record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
                                 need_paging=0)
@@ -119,7 +120,7 @@ class TmlInfoHandler(base.RequestHandler):
 
                             strsql = 'select rtu_id, rtu_map_x,rtu_map_y,rtu_gis_x,rtu_gis_y \
                             from {0}.para_base_equipment {1}'.format(utils.m_jkdb_name, str_tmls)
-                            record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
                                 need_paging=0)
@@ -164,7 +165,7 @@ class TmlInfoHandler(base.RequestHandler):
                             on b.rtu_id=e.rtu_id and b.switch_output_id=e.switch_id where a.rtu_id>=1000000 and a.rtu_id<=1099999 {1} \
                             order by a.rtu_id'.format(utils.m_jkdb_name, str_tmls)
 
-                            record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
                                 need_paging=0)
@@ -232,7 +233,7 @@ class TmlInfoHandler(base.RequestHandler):
                             where  slu_id>=1500000 and slu_id<=1599999 {1} \
                             order by slu_id,grp_id'.format(utils.m_jkdb_name, str_tmls)
 
-                            record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
                                 need_paging=0)
@@ -291,7 +292,7 @@ class TmlInfoHandler(base.RequestHandler):
                             c.slu_id=b.rtu_id where a.rtu_id>=1500000 and a.rtu_id<=1599999 {1} order by a.rtu_id'.format(
                                 utils.m_jkdb_name, str_tmls)
 
-                            record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
                                 need_paging=0,
@@ -380,7 +381,7 @@ class TmlInfoHandler(base.RequestHandler):
                             from {0}.para_ldu_line as b left join {0}.para_base_equipment as a  \
                             on a.rtu_id=b.ldu_fid where a.rtu_id>=1100000 and a.rtu_id<=1199999 {1} order by a.rtu_id'.format(
                                 utils.m_jkdb_name, str_tmls)
-                            record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
                                 need_paging=0)
@@ -437,7 +438,7 @@ class TmlInfoHandler(base.RequestHandler):
                             left join {0}.para_base_equipment as a on a.rtu_id=b.rtu_id  \
                             where a.rtu_id>=1400000 and a.rtu_id<=1499999 {1} order by a.rtu_id'.format(
                                 utils.m_jkdb_name, str_tmls)
-                            record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
                                 need_paging=0)
@@ -473,7 +474,7 @@ class TmlInfoHandler(base.RequestHandler):
                             from {0}.para_mru as b left join {0}.para_base_equipment as a  \
                             on a.rtu_id=b.rtu_id where a.rtu_id>=1300000 and a.rtu_id<=1399999 {1} order by a.rtu_id'.format(
                                 utils.m_jkdb_name, str_tmls)
-                            record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
                                 need_paging=0)
@@ -519,8 +520,8 @@ class QueryDataRtuElecHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataRtuElec(),
-                                                                msgws.QueryDataRtuElec())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataRtuElec(),
+                                                                      msgws.QueryDataRtuElec())
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
@@ -545,13 +546,13 @@ class QueryDataRtuElecHandler(base.RequestHandler):
                     order by a.date_create desc,a.rtu_id,a.loop_id'''.format(utils.m_jkdb_name, sdt,
                                                                              edt, str_tmls)
                 else:
-                    strsql = '''select a.rtu_id,a.rtu_id,a.loop_id,sum(a.minutes_open) as m,sum(a.power) as p 
+                    strsql = '''select a.rtu_id,a.rtu_id,a.loop_id,sum(a.minutes_open) as m,sum(a.power) as p ``
                     from {0}_data.info_rtu_elec as a 
                     where a.date_create>={1} and a.date_create<={2} {3} 
                     group by a.rtu_id,a.loop_id 
                     order by a.rtu_id,a.loop_id'''.format(utils.m_jkdb_name, sdt, edt, str_tmls)
 
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     buffer_tag=msg.head.paging_buffer_tag,
@@ -595,8 +596,8 @@ class QueryDataRtuHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataRtu(),
-                                                                msgws.QueryDataRtu())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataRtu(),
+                                                                      msgws.QueryDataRtu())
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
@@ -700,7 +701,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                     order by a.rtu_id,a.date_create desc,a.loop_id'''.format(utils.m_jkdb_name, sdt,
                                                                              edt, str_tmls)
 
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     buffer_tag=msg.head.paging_buffer_tag,
@@ -768,7 +769,7 @@ class RtuDataGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqRtuDataGet(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqRtuDataGet(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -784,8 +785,8 @@ class RtuDataGetHandler(base.RequestHandler):
                 else:
                     tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2000',
                                                  self.request.remote_ip, 0, rtu_ids, dict())
-                    libiisi.set_to_send(tcsmsg, 0, False)
-                    libiisi.send_to_zmq_pub('tcs.req.wlst.rtu.2000',
+                    # libiisi.set_to_send(tcsmsg, 0, False)
+                    libiisi.send_to_zmq_pub('tcs.req.{0}.wlst.rtu.2000'.format(utils.m_tcs_port),
                                             json.dumps(tcsmsg,
                                                        separators=(',', ':')).lower())
             else:
@@ -807,7 +808,7 @@ class RtuCtlHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqRtuCtl(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqRtuCtl(), None)
 
         env = False
         if user_data is not None:
@@ -837,10 +838,11 @@ class RtuCtlHandler(base.RequestHandler):
                                 tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2210',
                                                              self.request.remote_ip, 0, rtu_ids,
                                                              tcsdata)
-                                libiisi.set_to_send(tcsmsg, 0, False)
-                                libiisi.send_to_zmq_pub('tcs.req.wlst.rtu.2210',
-                                                        json.dumps(tcsmsg,
-                                                                   separators=(',', ':')).lower())
+                                # libiisi.set_to_send(tcsmsg, 0, False)
+                                libiisi.send_to_zmq_pub(
+                                    'tcs.req.{0}.wlst.rtu.2210'.format(utils.m_tcs_port),
+                                    json.dumps(tcsmsg,
+                                               separators=(',', ':')).lower())
                             i += 1
                     elif x.opt == 2:  # 多回路操作
                         i = 1
@@ -851,24 +853,27 @@ class RtuCtlHandler(base.RequestHandler):
                             i += 1
                         tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.4b00',
                                                      self.request.remote_ip, 0, rtu_ids, tcsdata)
-                        libiisi.set_to_send(tcsmsg, 0, False)
-                        libiisi.send_to_zmq_pub('tcs.req.wlst.rtu.4b00',
-                                                json.dumps(tcsmsg,
-                                                           separators=(',', ':')).lower())
+                        # libiisi.set_to_send(tcsmsg, 0, False)
+                        libiisi.send_to_zmq_pub(
+                            'tcs.req.{0}.wlst.rtu.4b00'.format(utils.m_tcs_port),
+                            json.dumps(tcsmsg,
+                                       separators=(',', ':')).lower())
                     elif x.opt == 3:  # 停运
                         tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2800',
                                                      self.request.remote_ip, 0, rtu_ids, tcsdata)
-                        libiisi.set_to_send(tcsmsg, 0, False)
-                        libiisi.send_to_zmq_pub('tcs.req.wlst.rtu.2800',
-                                                json.dumps(tcsmsg,
-                                                           separators=(',', ':')).lower())
+                        # libiisi.set_to_send(tcsmsg, 0, False)
+                        libiisi.send_to_zmq_pub(
+                            'tcs.req.{0}.wlst.rtu.2800'.format(utils.m_tcs_port),
+                            json.dumps(tcsmsg,
+                                       separators=(',', ':')).lower())
                     elif x.opt == 4:  # 解除停运
                         tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2900',
                                                      self.request.remote_ip, 0, rtu_ids, tcsdata)
-                        libiisi.set_to_send(tcsmsg, 0, False)
-                        libiisi.send_to_zmq_pub('tcs.req.wlst.rtu.2900',
-                                                json.dumps(tcsmsg,
-                                                           separators=(',', ':')).lower())
+                        # libiisi.set_to_send(tcsmsg, 0, False)
+                        libiisi.send_to_zmq_pub(
+                            'tcs.req.{0}.wlst.rtu.2900'.format(utils.m_tcs_port),
+                            json.dumps(tcsmsg,
+                                       separators=(',', ':')).lower())
                 if not dosomething:
                     msg.head.if_st = 46
             else:
@@ -876,7 +881,7 @@ class RtuCtlHandler(base.RequestHandler):
         self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
-            self.write_event(65, contents, 2, user_name=user_data['user_name'])
+            cur = yield self.write_event(65, contents, 2, user_name=user_data['user_name'])
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -892,7 +897,7 @@ class RtuVerGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqRtuVerGet(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqRtuVerGet(), None)
 
         env = False
         if user_data is not None:
@@ -909,8 +914,8 @@ class RtuVerGetHandler(base.RequestHandler):
                 else:
                     tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.5c00',
                                                  self.request.remote_ip, 0, rtu_ids, dict())
-                    libiisi.set_to_send(tcsmsg, 0, False)
-                    libiisi.send_to_zmq_pub('tcs.req.wlst.rtu.5c00',
+                    # libiisi.set_to_send(tcsmsg, 0, False)
+                    libiisi.send_to_zmq_pub('tcs.req.{0}.wlst.rtu.5c00'.format(utils.m_tcs_port),
                                             json.dumps(tcsmsg,
                                                        separators=(',', ':')).lower())
             else:
@@ -932,7 +937,7 @@ class RtuTimerCtlHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqRtuTimerCtl(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqRtuTimerCtl(), None)
         env = False
         contents = ''
         if user_data is not None:
@@ -955,8 +960,8 @@ class RtuTimerCtlHandler(base.RequestHandler):
                         cmd = 'wlst.rtu.1300'
                     tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, cmd, self.request.remote_ip, 0,
                                                  rtu_ids, dict())
-                    libiisi.set_to_send(tcsmsg, 0, False)
-                    libiisi.send_to_zmq_pub('tcs.req.{0}'.format(cmd),
+                    # libiisi.set_to_send(tcsmsg, 0, False)
+                    libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(cmd, utils.m_tcs_port),
                                             json.dumps(tcsmsg,
                                                        separators=(',', ':')).lower())
             else:

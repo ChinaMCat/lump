@@ -27,8 +27,8 @@ class QueryDataSluHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataSlu(),
-                                                                msgws.QueryDataSlu())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataSlu(),
+                                                                      msgws.QueryDataSlu())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -72,7 +72,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         where a.date_create>={1} and a.date_create<={2} {3} order by a.date_create desc'''.format(
                             utils.m_jkdb_name, sdt, edt, str_tmls)
 
-                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
                         buffer_tag=msg.head.paging_buffer_tag,
@@ -132,7 +132,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         order by a.date_create desc,a.slu_id,a.ctrl_id'''.format(utils.m_jkdb_name,
                                                                                  sdt, edt, str_tmls)
 
-                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
                         buffer_tag=msg.head.paging_buffer_tag,
@@ -212,7 +212,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id'''.format(
                             utils.m_jkdb_name, sdt, edt, str_tmls)
 
-                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
                         buffer_tag=msg.head.paging_buffer_tag,
@@ -277,7 +277,7 @@ class SluDataGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluDataGet(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluDataGet(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -308,9 +308,10 @@ class SluDataGetHandler(base.RequestHandler):
                         tcsmsg.wlst_tml.wlst_slu_7300.sluitem_start = rqmsg.sluitem_idx
                         tcsmsg.wlst_tml.wlst_slu_7300.sluitem_count = rqmsg.sluitem_num
                         tcsmsg.wlst_tml.wlst_slu_7300.data_mark = rqmsg.data_mark
-                        libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
-                                                tcsmsg.SerializeToString())
+                        # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                        libiisi.send_to_zmq_pub(
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
@@ -330,7 +331,8 @@ class SluitemDataGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluitemDataGet(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluitemDataGet(),
+                                                                      None)
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -361,9 +363,10 @@ class SluitemDataGetHandler(base.RequestHandler):
                         tcsmsg.wlst_tml.wlst_slu_7a00.sluitem_idx = rqmsg.sluitem_idx
                         tcsmsg.wlst_tml.wlst_slu_7a00.data_mark.ParseFromString(
                             rqmsg.data_mark.SerializeToString())
-                        libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
-                                                tcsmsg.SerializeToString())
+                        # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                        libiisi.send_to_zmq_pub(
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
@@ -383,7 +386,7 @@ class SluTimerCtlHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluTimerCtl(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluTimerCtl(), None)
         env = False
         contents = ''
         if user_data is not None:
@@ -415,9 +418,10 @@ class SluTimerCtlHandler(base.RequestHandler):
                                                          tra=tra)
                         tcsmsg.wlst_tml.wlst_slu_7100.opt_mark = rqmsg.data_mark
                         tcsmsg.wlst_tml.wlst_slu_7100.force_timer = rqmsg.do_force
-                        libiisi.set_to_send(tcsmsg, 0)
-                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
-                                                tcsmsg.SerializeToString())
+                        # libiisi.set_to_send(tcsmsg, 0)
+                        libiisi.send_to_zmq_pub(
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
@@ -439,7 +443,7 @@ class SluCtlHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluCtl(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluCtl(), None)
         env = False
         contents = ''
         if user_data is not None:
@@ -482,9 +486,10 @@ class SluCtlHandler(base.RequestHandler):
                         elif rqmsg.cmd_type == 5:  # pwm调节
                             tcsmsg.wlst_tml.wlst_slu_7400.cmd_pwm.ParseFromString(
                                 rqmsg.cmd_pwm.SerializeToString())
-                        libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
-                                                tcsmsg.SerializeToString())
+                        # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                        libiisi.send_to_zmq_pub(
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
@@ -506,7 +511,7 @@ class SluVerGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSluDataGet(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluDataGet(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -533,9 +538,10 @@ class SluVerGetHandler(base.RequestHandler):
                                                          addr=addr,
                                                          cid=cid,
                                                          tra=tra)
-                        libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                        libiisi.send_to_zmq_pub('tcs.req.{0}'.format(tcsmsg.head.cmd),
-                                                tcsmsg.SerializeToString())
+                        # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                        libiisi.send_to_zmq_pub(
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))

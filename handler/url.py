@@ -10,6 +10,7 @@ import errinfo
 import flow
 import ipc
 import main
+import mru
 import rtu
 import slu
 import sms
@@ -22,6 +23,7 @@ hs.extend(mxweb.load_handler_module(dz))
 hs.extend(mxweb.load_handler_module(errinfo))
 hs.extend(mxweb.load_handler_module(ipc))
 hs.extend(mxweb.load_handler_module(main))
+hs.extend(mxweb.load_handler_module(mru))
 hs.extend(mxweb.load_handler_module(rtu))
 hs.extend(mxweb.load_handler_module(slu))
 hs.extend(mxweb.load_handler_module(sms))

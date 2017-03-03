@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protocol_rtu.proto',
   package='wlst.pb2',
   syntax='proto3',
-  serialized_pb=_b('\n\x12protocol_rtu.proto\x12\x08wlst.pb2\"!\n\rWlst_rtu_700a\x12\x10\n\x08\x63om_argv\x18\x01 \x03(\x05\"2\n\rWlst_rtu_7003\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x66tp_data\x18\x02 \x03(\x05\"G\n\rWlst_rtu_7006\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tall_count\x18\x02 \x01(\x05\x12\x12\n\ncache_name\x18\x03 \x01(\t\" \n\rWlst_rtu_7007\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\"^\n\rWlst_rtu_7087\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x17\n\x0f\x66\x61iled_packages\x18\x03 \x03(\x05\x12\x13\n\x0b\x62ytes_count\x18\x04 \x01(\x05\"o\n\rWlst_rtu_7008\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08upd_data\x18\x02 \x03(\t\x12\x12\n\ncache_name\x18\x03 \x01(\t\x12\r\n\x05\x63lean\x18\x04 \x01(\x05\x12\x18\n\x0cint_upd_data\x18\x05 \x03(\x05\x42\x02\x10\x01\"\xbc\x01\n\rWlst_rtu_7060\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08start_dt\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ys\x18\x03 \x01(\x05\x12\x33\n\tyear_ctrl\x18\x04 \x03(\x0b\x32 .wlst.pb2.Wlst_rtu_7060.YearCtrl\x1a\x45\n\x08YearCtrl\x12\x0f\n\x07loop_no\x18\x01 \x01(\x05\x12\x12\n\ntime_count\x18\x02 \x01(\x05\x12\x14\n\x08opt_time\x18\x03 \x03(\x05\x42\x02\x10\x01\"U\n\rWlst_rtu_7061\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08start_dt\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ys\x18\x03 \x01(\x05\x12\x13\n\x07loop_no\x18\x04 \x03(\x05\x42\x02\x10\x01\"0\n\rWlst_rtu_70e0\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\",\n\rWlst_rtu_7b00\x12\x0b\n\x03sim\x18\x01 \x01(\t\x12\x0e\n\x06signal\x18\x02 \x01(\x05\"\x1d\n\rWlst_rtu_1900\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\x05\"z\n\rWlst_rtu_4000\x12\x11\n\twork_mark\x18\x01 \x01(\x05\x12\x12\n\nkeep_alive\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x03 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x04 \x01(\x05\x12\x18\n\x0cx_loop_count\x18\x05 \x03(\x05\x42\x02\x10\x01\"W\n\rWlst_rtu_4101\x12\x12\n\nanalog_sum\x18\x01 \x01(\x05\x12\x15\n\rvoltage_range\x18\x02 \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x03 \x03(\x05\x42\x02\x10\x01\"`\n\rWlst_rtu_4104\x12\x14\n\x0cswitchin_sum\x18\x01 \x01(\x05\x12\x1b\n\x0fx_switch_vector\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x1c\n\x10x_switch_hopping\x18\x03 \x03(\x05\x42\x02\x10\x01\"&\n\rWlst_rtu_4110\x12\x15\n\rswitch_in_sum\x18\x01 \x01(\x05\"\xb0\x01\n\rWlst_rtu_4200\x12\x1b\n\x0fx_analog_vector\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nanalog_sum\x18\x04 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x05 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x06 \x01(\x05\"\xd7\x01\n\rWlst_rtu_4401\x12\x12\n\nanalog_sum\x18\x01 \x01(\x05\x12\x1b\n\x13upper_voltage_limit\x18\x02 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x03 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x04 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rvoltage_range\x18\x06 \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x07 \x03(\x05\x42\x02\x10\x01\"\xc5\x04\n\rWlst_rtu_da00\x12\x12\n\nkeep_alive\x18\x01 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x03 \x01(\x05\x12\x0c\n\x04\x61\x64\x64r\x18\x04 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x05 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x06 \x01(\x05\x12\x12\n\nanalog_sum\x18\x07 \x01(\x05\x12\x18\n\x10x_switching_time\x18\x08 \x03(\t\x12\x15\n\rcity_pay_time\x18\t \x01(\t\x12\x15\n\rself_pay_time\x18\n \x01(\t\x12\x1e\n\x12x_switch_out_count\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x19\n\x11switch_in_hopping\x18\x0c \x01(\x05\x12\x15\n\rvoltage_range\x18\r \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x0e \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x0f \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x10 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x0fx_analog_vector\x18\x11 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x13upper_voltage_limit\x18\x12 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x13 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x14 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x15 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08group_id\x18\x16 \x01(\x05\",\n\rWlst_rtu_6100\x12\x1b\n\x0fx_voltage_phase\x18\x01 \x03(\x05\x42\x02\x10\x01\"\x89\x02\n\rWlst_rtu_a000\x12\x1c\n\x10x_analog_voltage\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10x_analog_current\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x1a\n\x0ex_analog_power\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x14\n\x0cswitch_in_st\x18\x04 \x01(\x03\x12\x15\n\rswitch_out_st\x18\x05 \x01(\x05\x12\x0e\n\x06tml_st\x18\x06 \x01(\x05\x12\x1c\n\x10x_current_status\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x1c\n\x10x_voltage_status\x18\x08 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nfull_range\x18\t \x01(\x05\x12\x13\n\x0btemperature\x18\n \x01(\x05\"0\n\rWlst_rtu_a200\x12\x0c\n\x04k_no\x18\x01 \x01(\x05\x12\x11\n\toperation\x18\x02 \x01(\x05\"&\n\rWlst_rtu_4b00\x12\x15\n\toperation\x18\x01 \x03(\x05\x42\x02\x10\x01\"!\n\rWlst_rtu_9300\x12\x10\n\x08tml_date\x18\x01 \x01(\t\"\xf9\x01\n\rWlst_rtu_b200\x12\x15\n\rx_k1_opt_time\x18\x01 \x03(\t\x12\x15\n\rx_k2_opt_time\x18\x02 \x03(\t\x12\x15\n\rx_k3_opt_time\x18\x03 \x03(\t\x12\x17\n\x0fx_city_pay_time\x18\x04 \x03(\t\x12\x17\n\x0fx_self_pay_time\x18\x05 \x03(\t\x12\x15\n\rx_k4_opt_time\x18\x06 \x03(\t\x12\x15\n\rx_k5_opt_time\x18\x07 \x03(\t\x12\x15\n\rx_k6_opt_time\x18\x08 \x03(\t\x12\x15\n\rx_k7_opt_time\x18\t \x03(\t\x12\x15\n\rx_k8_opt_time\x18\n \x03(\t\"\xed\x01\n\rWlst_rtu_e600\x12\x12\n\nx_holidays\x18\x01 \x03(\t\x12\x11\n\tx_k1_time\x18\x02 \x03(\t\x12\x11\n\tx_k2_time\x18\x03 \x03(\t\x12\x11\n\tx_k3_time\x18\x04 \x03(\t\x12\x11\n\tx_k4_time\x18\x05 \x03(\t\x12\x11\n\tx_k5_time\x18\x06 \x03(\t\x12\x11\n\tx_k6_time\x18\x07 \x03(\t\x12\x11\n\tx_k7_time\x18\n \x03(\t\x12\x11\n\tx_k8_time\x18\x0b \x03(\t\x12\x17\n\x0fx_city_pay_time\x18\x08 \x03(\t\x12\x17\n\x0fx_self_pay_time\x18\t \x03(\t\"\x1f\n\rWlst_rtu_9800\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1c\n\rWlst_rtu_dc00\x12\x0b\n\x03ver\x18\x01 \x01(\tB\x02H\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x12protocol_rtu.proto\x12\x08wlst.pb2\"!\n\rWlst_rtu_700a\x12\x10\n\x08\x63om_argv\x18\x01 \x03(\x05\"C\n\rWlst_rtu_7010\x12\x11\n\tdata_mark\x18\x01 \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\x02 \x01(\x05\x12\x0e\n\x06status\x18\x03 \x01(\x05\"2\n\rWlst_rtu_7003\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x66tp_data\x18\x02 \x03(\x05\"G\n\rWlst_rtu_7006\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tall_count\x18\x02 \x01(\x05\x12\x12\n\ncache_name\x18\x03 \x01(\t\" \n\rWlst_rtu_7007\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\"^\n\rWlst_rtu_7087\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x17\n\x0f\x66\x61iled_packages\x18\x03 \x03(\x05\x12\x13\n\x0b\x62ytes_count\x18\x04 \x01(\x05\"o\n\rWlst_rtu_7008\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08upd_data\x18\x02 \x03(\t\x12\x12\n\ncache_name\x18\x03 \x01(\t\x12\r\n\x05\x63lean\x18\x04 \x01(\x05\x12\x18\n\x0cint_upd_data\x18\x05 \x03(\x05\x42\x02\x10\x01\"\xbc\x01\n\rWlst_rtu_7060\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08start_dt\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ys\x18\x03 \x01(\x05\x12\x33\n\tyear_ctrl\x18\x04 \x03(\x0b\x32 .wlst.pb2.Wlst_rtu_7060.YearCtrl\x1a\x45\n\x08YearCtrl\x12\x0f\n\x07loop_no\x18\x01 \x01(\x05\x12\x12\n\ntime_count\x18\x02 \x01(\x05\x12\x14\n\x08opt_time\x18\x03 \x03(\x05\x42\x02\x10\x01\"U\n\rWlst_rtu_7061\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08start_dt\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ys\x18\x03 \x01(\x05\x12\x13\n\x07loop_no\x18\x04 \x03(\x05\x42\x02\x10\x01\"0\n\rWlst_rtu_70e0\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\",\n\rWlst_rtu_7b00\x12\x0b\n\x03sim\x18\x01 \x01(\t\x12\x0e\n\x06signal\x18\x02 \x01(\x05\"\x1d\n\rWlst_rtu_1900\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\x05\"z\n\rWlst_rtu_4000\x12\x11\n\twork_mark\x18\x01 \x01(\x05\x12\x12\n\nkeep_alive\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x03 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x04 \x01(\x05\x12\x18\n\x0cx_loop_count\x18\x05 \x03(\x05\x42\x02\x10\x01\"W\n\rWlst_rtu_4101\x12\x12\n\nanalog_sum\x18\x01 \x01(\x05\x12\x15\n\rvoltage_range\x18\x02 \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x03 \x03(\x05\x42\x02\x10\x01\"`\n\rWlst_rtu_4104\x12\x14\n\x0cswitchin_sum\x18\x01 \x01(\x05\x12\x1b\n\x0fx_switch_vector\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x1c\n\x10x_switch_hopping\x18\x03 \x03(\x05\x42\x02\x10\x01\"&\n\rWlst_rtu_4110\x12\x15\n\rswitch_in_sum\x18\x01 \x01(\x05\"\xb0\x01\n\rWlst_rtu_4200\x12\x1b\n\x0fx_analog_vector\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nanalog_sum\x18\x04 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x05 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x06 \x01(\x05\"\xd7\x01\n\rWlst_rtu_4401\x12\x12\n\nanalog_sum\x18\x01 \x01(\x05\x12\x1b\n\x13upper_voltage_limit\x18\x02 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x03 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x04 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rvoltage_range\x18\x06 \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x07 \x03(\x05\x42\x02\x10\x01\"\xc5\x04\n\rWlst_rtu_da00\x12\x12\n\nkeep_alive\x18\x01 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x03 \x01(\x05\x12\x0c\n\x04\x61\x64\x64r\x18\x04 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x05 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x06 \x01(\x05\x12\x12\n\nanalog_sum\x18\x07 \x01(\x05\x12\x18\n\x10x_switching_time\x18\x08 \x03(\t\x12\x15\n\rcity_pay_time\x18\t \x01(\t\x12\x15\n\rself_pay_time\x18\n \x01(\t\x12\x1e\n\x12x_switch_out_count\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x19\n\x11switch_in_hopping\x18\x0c \x01(\x05\x12\x15\n\rvoltage_range\x18\r \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x0e \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x0f \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x10 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x0fx_analog_vector\x18\x11 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x13upper_voltage_limit\x18\x12 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x13 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x14 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x15 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08group_id\x18\x16 \x01(\x05\",\n\rWlst_rtu_6100\x12\x1b\n\x0fx_voltage_phase\x18\x01 \x03(\x05\x42\x02\x10\x01\"\x89\x02\n\rWlst_rtu_a000\x12\x1c\n\x10x_analog_voltage\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10x_analog_current\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x1a\n\x0ex_analog_power\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x14\n\x0cswitch_in_st\x18\x04 \x01(\x03\x12\x15\n\rswitch_out_st\x18\x05 \x01(\x05\x12\x0e\n\x06tml_st\x18\x06 \x01(\x05\x12\x1c\n\x10x_current_status\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x1c\n\x10x_voltage_status\x18\x08 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nfull_range\x18\t \x01(\x05\x12\x13\n\x0btemperature\x18\n \x01(\x05\"0\n\rWlst_rtu_a200\x12\x0c\n\x04k_no\x18\x01 \x01(\x05\x12\x11\n\toperation\x18\x02 \x01(\x05\"&\n\rWlst_rtu_4b00\x12\x15\n\toperation\x18\x01 \x03(\x05\x42\x02\x10\x01\"!\n\rWlst_rtu_9300\x12\x10\n\x08tml_date\x18\x01 \x01(\t\"\xf9\x01\n\rWlst_rtu_b200\x12\x15\n\rx_k1_opt_time\x18\x01 \x03(\t\x12\x15\n\rx_k2_opt_time\x18\x02 \x03(\t\x12\x15\n\rx_k3_opt_time\x18\x03 \x03(\t\x12\x17\n\x0fx_city_pay_time\x18\x04 \x03(\t\x12\x17\n\x0fx_self_pay_time\x18\x05 \x03(\t\x12\x15\n\rx_k4_opt_time\x18\x06 \x03(\t\x12\x15\n\rx_k5_opt_time\x18\x07 \x03(\t\x12\x15\n\rx_k6_opt_time\x18\x08 \x03(\t\x12\x15\n\rx_k7_opt_time\x18\t \x03(\t\x12\x15\n\rx_k8_opt_time\x18\n \x03(\t\"\xed\x01\n\rWlst_rtu_e600\x12\x12\n\nx_holidays\x18\x01 \x03(\t\x12\x11\n\tx_k1_time\x18\x02 \x03(\t\x12\x11\n\tx_k2_time\x18\x03 \x03(\t\x12\x11\n\tx_k3_time\x18\x04 \x03(\t\x12\x11\n\tx_k4_time\x18\x05 \x03(\t\x12\x11\n\tx_k5_time\x18\x06 \x03(\t\x12\x11\n\tx_k6_time\x18\x07 \x03(\t\x12\x11\n\tx_k7_time\x18\n \x03(\t\x12\x11\n\tx_k8_time\x18\x0b \x03(\t\x12\x17\n\x0fx_city_pay_time\x18\x08 \x03(\t\x12\x17\n\x0fx_self_pay_time\x18\t \x03(\t\"\x1f\n\rWlst_rtu_9800\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1c\n\rWlst_rtu_dc00\x12\x0b\n\x03ver\x18\x01 \x01(\tB\x02H\x01\x62\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -57,6 +57,51 @@ _WLST_RTU_700A = _descriptor.Descriptor(
 )
 
 
+_WLST_RTU_7010 = _descriptor.Descriptor(
+  name='Wlst_rtu_7010',
+  full_name='wlst.pb2.Wlst_rtu_7010',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='data_mark', full_name='wlst.pb2.Wlst_rtu_7010.data_mark', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7010.cmd_idx', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='wlst.pb2.Wlst_rtu_7010.status', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=67,
+  serialized_end=134,
+)
+
+
 _WLST_RTU_7003 = _descriptor.Descriptor(
   name='Wlst_rtu_7003',
   full_name='wlst.pb2.Wlst_rtu_7003',
@@ -90,8 +135,8 @@ _WLST_RTU_7003 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=67,
-  serialized_end=117,
+  serialized_start=136,
+  serialized_end=186,
 )
 
 
@@ -135,8 +180,8 @@ _WLST_RTU_7006 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=119,
-  serialized_end=190,
+  serialized_start=188,
+  serialized_end=259,
 )
 
 
@@ -166,8 +211,8 @@ _WLST_RTU_7007 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=192,
-  serialized_end=224,
+  serialized_start=261,
+  serialized_end=293,
 )
 
 
@@ -218,8 +263,8 @@ _WLST_RTU_7087 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=226,
-  serialized_end=320,
+  serialized_start=295,
+  serialized_end=389,
 )
 
 
@@ -277,8 +322,8 @@ _WLST_RTU_7008 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=322,
-  serialized_end=433,
+  serialized_start=391,
+  serialized_end=502,
 )
 
 
@@ -322,8 +367,8 @@ _WLST_RTU_7060_YEARCTRL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=555,
-  serialized_end=624,
+  serialized_start=624,
+  serialized_end=693,
 )
 
 _WLST_RTU_7060 = _descriptor.Descriptor(
@@ -373,8 +418,8 @@ _WLST_RTU_7060 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=436,
-  serialized_end=624,
+  serialized_start=505,
+  serialized_end=693,
 )
 
 
@@ -425,8 +470,8 @@ _WLST_RTU_7061 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=626,
-  serialized_end=711,
+  serialized_start=695,
+  serialized_end=780,
 )
 
 
@@ -463,8 +508,8 @@ _WLST_RTU_70E0 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=713,
-  serialized_end=761,
+  serialized_start=782,
+  serialized_end=830,
 )
 
 
@@ -501,8 +546,8 @@ _WLST_RTU_7B00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=763,
-  serialized_end=807,
+  serialized_start=832,
+  serialized_end=876,
 )
 
 
@@ -532,8 +577,8 @@ _WLST_RTU_1900 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=809,
-  serialized_end=838,
+  serialized_start=878,
+  serialized_end=907,
 )
 
 
@@ -591,8 +636,8 @@ _WLST_RTU_4000 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=840,
-  serialized_end=962,
+  serialized_start=909,
+  serialized_end=1031,
 )
 
 
@@ -636,8 +681,8 @@ _WLST_RTU_4101 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=964,
-  serialized_end=1051,
+  serialized_start=1033,
+  serialized_end=1120,
 )
 
 
@@ -681,8 +726,8 @@ _WLST_RTU_4104 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1053,
-  serialized_end=1149,
+  serialized_start=1122,
+  serialized_end=1218,
 )
 
 
@@ -712,8 +757,8 @@ _WLST_RTU_4110 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1151,
-  serialized_end=1189,
+  serialized_start=1220,
+  serialized_end=1258,
 )
 
 
@@ -778,8 +823,8 @@ _WLST_RTU_4200 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1192,
-  serialized_end=1368,
+  serialized_start=1261,
+  serialized_end=1437,
 )
 
 
@@ -851,8 +896,8 @@ _WLST_RTU_4401 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1371,
-  serialized_end=1586,
+  serialized_start=1440,
+  serialized_end=1655,
 )
 
 
@@ -1029,8 +1074,8 @@ _WLST_RTU_DA00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1589,
-  serialized_end=2170,
+  serialized_start=1658,
+  serialized_end=2239,
 )
 
 
@@ -1060,8 +1105,8 @@ _WLST_RTU_6100 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2172,
-  serialized_end=2216,
+  serialized_start=2241,
+  serialized_end=2285,
 )
 
 
@@ -1154,8 +1199,8 @@ _WLST_RTU_A000 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2219,
-  serialized_end=2484,
+  serialized_start=2288,
+  serialized_end=2553,
 )
 
 
@@ -1192,8 +1237,8 @@ _WLST_RTU_A200 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2486,
-  serialized_end=2534,
+  serialized_start=2555,
+  serialized_end=2603,
 )
 
 
@@ -1223,8 +1268,8 @@ _WLST_RTU_4B00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2536,
-  serialized_end=2574,
+  serialized_start=2605,
+  serialized_end=2643,
 )
 
 
@@ -1254,8 +1299,8 @@ _WLST_RTU_9300 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2576,
-  serialized_end=2609,
+  serialized_start=2645,
+  serialized_end=2678,
 )
 
 
@@ -1348,8 +1393,8 @@ _WLST_RTU_B200 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2612,
-  serialized_end=2861,
+  serialized_start=2681,
+  serialized_end=2930,
 )
 
 
@@ -1449,8 +1494,8 @@ _WLST_RTU_E600 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2864,
-  serialized_end=3101,
+  serialized_start=2933,
+  serialized_end=3170,
 )
 
 
@@ -1480,8 +1525,8 @@ _WLST_RTU_9800 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3103,
-  serialized_end=3134,
+  serialized_start=3172,
+  serialized_end=3203,
 )
 
 
@@ -1511,13 +1556,14 @@ _WLST_RTU_DC00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3136,
-  serialized_end=3164,
+  serialized_start=3205,
+  serialized_end=3233,
 )
 
 _WLST_RTU_7060_YEARCTRL.containing_type = _WLST_RTU_7060
 _WLST_RTU_7060.fields_by_name['year_ctrl'].message_type = _WLST_RTU_7060_YEARCTRL
 DESCRIPTOR.message_types_by_name['Wlst_rtu_700a'] = _WLST_RTU_700A
+DESCRIPTOR.message_types_by_name['Wlst_rtu_7010'] = _WLST_RTU_7010
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7003'] = _WLST_RTU_7003
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7006'] = _WLST_RTU_7006
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7007'] = _WLST_RTU_7007
@@ -1551,6 +1597,13 @@ Wlst_rtu_700a = _reflection.GeneratedProtocolMessageType('Wlst_rtu_700a', (_mess
   # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_700a)
   ))
 _sym_db.RegisterMessage(Wlst_rtu_700a)
+
+Wlst_rtu_7010 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7010', (_message.Message,), dict(
+  DESCRIPTOR = _WLST_RTU_7010,
+  __module__ = 'protocol_rtu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7010)
+  ))
+_sym_db.RegisterMessage(Wlst_rtu_7010)
 
 Wlst_rtu_7003 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7003', (_message.Message,), dict(
   DESCRIPTOR = _WLST_RTU_7003,

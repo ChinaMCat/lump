@@ -13,12 +13,11 @@ import threading
 import time
 
 import mxpsu as mx
+import mlib_iisi as libiisi
+
 import tornado.httpserver
 import tornado.web
-import zmq
 from tornado.options import options
-
-import mlib_iisi as libiisi
 
 USER_AUTH = {}
 SOCKET_POOL = None
@@ -85,22 +84,20 @@ if __name__ == '__main__':
             loglevel = 'error'
         else:
             loglevel = 'info'
-        opt_args = ['', '--logging={0}'.format(loglevel), '--log_file_prefix={0}'.format(os.path.join(
-            libiisi.m_logdir, 'iisi{0}.debug.log'.format(results.port)))]
+        opt_args = ['', '--logging={0}'.format(loglevel), '--log_file_prefix={0}'.format(
+            os.path.join(libiisi.m_logdir, 'iisi{0}.debug.log'.format(results.port)))]
         if results.debug:
             opt_args.append('--log_to_stderr')
-        options.parse_command_line(
-            args=opt_args,
-            final=True)
+        options.parse_command_line(args=opt_args, final=True)
 
     if results.hp:
         tornado.process.fork_processes(0)
 
     # 开启后台线程
-    ip, port = libiisi.m_config.getData('tcs_server').split(':')
-    libiisi.m_tcs = libiisi.TcsClient(ip, int(port))
-    libiisi.m_tcs.setDaemon(True)
-    libiisi.m_tcs.start()
+    # ip, port = libiisi.m_config.getData('tcs_server').split(':')
+    # libiisi.m_tcs = libiisi.TcsClient(ip, int(port))
+    # libiisi.m_tcs.setDaemon(True)
+    # libiisi.m_tcs.start()
 
     settings = dict(static_path=os.path.join(mx.SCRIPT_DIR, 'static'),
                     template_path=os.path.join(mx.SCRIPT_DIR, 'templates'),

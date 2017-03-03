@@ -81,6 +81,7 @@ if __name__ == '__main__':
         os.system('copy dist\\iisi-win\\_multiprocessing.pyd ..\\mwsc\\dist\\pytcs-win\\ /Y')
         os.system('copy dist\\iisi-win\\_mysql.pyd ..\\mwsc\\dist\\pytcs-win\\ /Y')
         os.system('copy dist\\iisi-win\\mxweb.pyd ..\\mwsc\\dist\\pytcs-win\\ /Y')
+        os.system('copy dist\\iisi-win\\tornado.speedups.pyd ..\\mwsc\\dist\\pytcs-win\\ /Y')
         os.system('copy lic.dll ..\\mwsc\\dist\\pytcs-win\\ /Y')
         os.system('rmdir /Q /S dist\\iisi-win\\certifi\\')
         os.system('rmdir /Q /S dist\\iisi-win\\zmq\\')
@@ -94,3 +95,5 @@ if __name__ == '__main__':
         os.system('cp -f -r static dist/iisi/')
         os.system('cp -f -r templates dist/iisi/')
         os.system('\\rm -rf dist/iisi/certifi/ dist/iisi/include/ dist/iisi/lib64')
+        os.system('pyinstaller -y zmqproxy.spec')
+        os.system('cp -f -r dist/zmqproxy/zmqproxy dist/iisi/')

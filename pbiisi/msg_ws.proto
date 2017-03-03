@@ -831,6 +831,7 @@ message QueryDataMru {
         int32 data_mark = 3;  // 抄表类型,1-A相，2-B相，3-C相，4-总电量
         int32 dt_mark = 4;  // 抄表时间段,0-当前，1-上月，2-上上月
         double mru_value = 5;  // 抄表值
+        int32 date_type_code = 6;  // 
     }
     Head head = 1;
     repeated DataMruView data_mru_view = 3;

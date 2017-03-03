@@ -184,7 +184,7 @@ def test_rtudataget():
     print('=== rtudataget ===')
     url = baseurl + 'rtudataget'
     rqmsg = init_head(msgif.rqRtuDataGet())
-    rqmsg.tml_id.extend([1000001, 1000002])
+    rqmsg.tml_id.extend([1000001,1000003])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     msg = msgif.CommAns()
@@ -566,13 +566,32 @@ def test_querydatartuelec():
     print('=== query rtu data elec ===')
     url = baseurl + 'querydatartuelec'
     rqmsg = msgif.rqQueryDataRtuElec()
-    rqmsg.dt_start = mx.time2stamp('2016-12-10 00:00:00')
-    rqmsg.dt_end = mx.time2stamp('2017-01-20 00:00:00')
-    rqmsg.tml_id.extend([1000095])
+    rqmsg.dt_start = mx.time2stamp('2016-12-1 00:00:00')
+    rqmsg.dt_end = mx.time2stamp('2016-12-31 00:00:00')
+    rqmsg.data_mark = 1
+    rqmsg.tml_id.extend([])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
-    data = {'uuid': user_id, 'pb2': 'KICY26 LKzCAqNaDlSs='}
+    # data = {'uuid': user_id, 'pb2': 'KICY26 LKzCAqNaDlSs='}
     r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
     msg = msgif.QueryDataRtuElec()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    print('post finish')
+    time.sleep(0)
+
+
+def test_querydatamru():
+    global user_id
+    print('=== query mru data ===')
+    url = baseurl + 'querydatamru'
+    rqmsg = msgif.rqQueryDataMru()
+    # rqmsg.dt_start = mx.time2stamp('2016-12-10 00:00:00')
+    # rqmsg.dt_end = mx.time2stamp('2017-01-20 00:00:00')
+    rqmsg.tml_id.extend([])
+    data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    # data = {'uuid': user_id, 'pb2': 'KICY26 LKzCAqNaDlSs='}
+    r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
+    msg = msgif.QueryDataMru()
     msg.ParseFromString(base64.b64decode(r.data))
     print(msg)
     print('post finish')
@@ -591,7 +610,8 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # test_userlogin()
-    test_querydatartuelec()
+    # test_querydatartuelec()
+    # test_querydatamru()
     # test_querysms()
     # test_querysludata()
     # test_sysinfo()
@@ -606,7 +626,7 @@ if __name__ == '__main__':
     # test_tmlinfo()
     # test_errinfo()
     # test_eventinfo()
-    # test_rtuctl()
+    test_rtuctl()
     # test_userinfo()
     # test_rtudataget()
     # test_rtuctl()

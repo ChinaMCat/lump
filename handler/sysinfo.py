@@ -25,7 +25,7 @@ class GroupInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(None, msgws.GroupInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(None, msgws.GroupInfo())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -34,7 +34,7 @@ class GroupInfoHandler(base.RequestHandler):
                 if user_data['user_auth'] not in utils._can_admin:
                     z = user_data['area_r'].union(user_data['area_w']).union(user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(','.join([str(a) for a in z]))
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     need_paging=0)
@@ -75,7 +75,7 @@ class AreaInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(None, msgws.AreaInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(None, msgws.AreaInfo())
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 strsql = 'select area_id,area_name,rtu_list from {0}.area_info'.format(
@@ -84,7 +84,7 @@ class AreaInfoHandler(base.RequestHandler):
                     z = user_data['area_r'].union(user_data['area_w']).union(user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(','.join([str(a) for a in z]))
 
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     need_paging=0)
@@ -142,15 +142,15 @@ class EventInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqEventInfo(),
-                                                                msgws.EventInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqEventInfo(),
+                                                                      msgws.EventInfo())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
 
                 strsql = 'select id, name from {0}_data.operator_id_assign'.format(
                     utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     need_paging=0)
@@ -193,13 +193,13 @@ class SunrisetInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataErr(),
-                                                                msgws.QueryDataErr())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataErr(),
+                                                                      msgws.QueryDataErr())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 strsql = 'select date_month, date_day, time_sunrise, time_sunset from {0}.time_sunriset_info order by date_month, date_day'
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     need_paging=0)
@@ -238,8 +238,8 @@ class QueryDataEventsHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataEvents(),
-                                                                msgws.QueryDataEvents())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataEvents(),
+                                                                      msgws.QueryDataEvents())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -274,7 +274,7 @@ class QueryDataEventsHandler(base.RequestHandler):
                     strsql += ' and {0}'.format(str_tmls)
                 if len(str_users) > 0:
                     strsql += ' and {0}'.format(str_users)
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     buffer_tag=msg.head.paging_buffer_tag,
@@ -317,7 +317,7 @@ class SysEditHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSysEdit(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSysEdit(), None)
         env = False
         contents = ''
         if user_data['user_auth'] in utils._can_write:
@@ -349,14 +349,15 @@ class SysInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqSysInfo(), msgws.SysInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSysInfo(),
+                                                                      msgws.SysInfo())
 
         if user_data['user_auth'] in utils._can_read:
             msg.data_mark.extend(rqmsg.data_mark)
             if 1 in msg.data_mark:
                 strsql = 'select value_value from {0}.key_value where key_key="system_title"'.format(
                     utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     need_paging=0)
@@ -376,7 +377,7 @@ class SysInfoHandler(base.RequestHandler):
                 strsql = 'select count(*) as a from {0}.para_base_equipment union all \
                 select count(*) as a from {0}.para_base_equipment where rtu_state=2'.format(
                     utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     need_paging=0)
@@ -399,7 +400,7 @@ class SysInfoHandler(base.RequestHandler):
                 select count(*) as a from {0}_data.info_fault_exist where rtu_id<1600000 and rtu_id>=1500000 union all\
                 select count(*) as a from {0}_data.info_fault_exist where rtu_id<1200000 and rtu_id>=1100000 \
                 '.format(utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     need_paging=0)
@@ -424,7 +425,7 @@ class SysInfoHandler(base.RequestHandler):
                                 select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1500000 and rtu_id<=1599999 union all \
                                 select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1600000 and rtu_id<=1699999 \
                                 '.format(utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     need_paging=0)

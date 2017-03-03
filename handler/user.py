@@ -48,7 +48,7 @@ class UserLoginJKHandler(base.RequestHandler):
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
         where user_name="{1}" and user_password="{2}"'.format(utils.m_jkdb_name, rqmsg.user,
                                                               rqmsg.pwd)
-        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
             need_fetch=1,
             need_paging=0)
@@ -84,7 +84,7 @@ class UserLoginJKHandler(base.RequestHandler):
             _area_x = []
             strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
                 utils.m_jkdb_name, rqmsg.user)
-            record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = self.mydata_collector(
+            record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
                 strsql,
                 need_fetch=1,
                 need_paging=0)
@@ -196,7 +196,7 @@ class UserLoginHandler(base.RequestHandler):
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
         where user_name="{1}" and user_password="{2}"'.format(utils.m_jkdb_name, rqmsg.user,
                                                               rqmsg.pwd)
-        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
             need_fetch=1,
             need_paging=0)
@@ -233,7 +233,7 @@ class UserLoginHandler(base.RequestHandler):
             _area_x = []
             strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
                 utils.m_jkdb_name, rqmsg.user)
-            record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = self.mydata_collector(
+            record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
                 strsql,
                 need_fetch=1,
                 need_paging=0)
@@ -302,7 +302,7 @@ class UserLogoutHandler(base.RequestHandler):
         contents = ''
         env = False
 
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(None, None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(None, None)
         user_uuid = self.get_argument('uuid')
         if user_uuid in utils.cache_buildin_users:
             msg.head.if_st = 0
@@ -341,7 +341,7 @@ class UserRenewHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserRenew(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserRenew(), None)
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
@@ -360,7 +360,7 @@ class UserAddHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserAdd(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserAdd(), None)
 
         env = False
         contents = ''
@@ -376,7 +376,7 @@ class UserAddHandler(base.RequestHandler):
                     # 判断用户是否存在
                     strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
                         utils.m_jkdb_name, rqmsg.user, rqmsg.pwd)
-                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=0)
                     if record_total > 0:
@@ -413,7 +413,7 @@ class UserDelHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserDel(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserDel(), None)
 
         env = False
         contents = ''
@@ -430,7 +430,7 @@ class UserDelHandler(base.RequestHandler):
                     try:
                         strsql = 'select * from {0}.user_list where user_name="{1}"'.format(
                             utils.m_jkdb_name, rqmsg.user_name)
-                        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
                             need_fetch=0)
                         if record_total > 0:
@@ -467,7 +467,7 @@ class UserEditHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(rqUserEdit(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(rqUserEdit(), None)
 
         env = False
         contents = ''
@@ -479,7 +479,7 @@ class UserEditHandler(base.RequestHandler):
             if user_data is not None:
                 strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
                     utils.m_jkdb_name, rqmsg.user_name, rqmsg.pwd_old)
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=0)
                 if record_total > 0:
@@ -531,7 +531,7 @@ class UserInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqUserInfo(),
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserInfo(),
                                                                 msgws.UserInfo())
 
         env = False
@@ -557,7 +557,7 @@ class UserInfoHandler(base.RequestHandler):
                         elif user_data['user_auth'] in utils._can_read:
                             strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
                                 utils.m_jkdb_name, user_data['user_name'])
-                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
                         need_paging=0)

@@ -14,16 +14,16 @@ import mxweb
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
 import tornado.web
-
+from tornado.concurrent import run_on_executor
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
 import utils
-
 import _mysql as mysql
+from concurrent.futures import ThreadPoolExecutor
 
 
 class RequestHandler(mxweb.MXRequestHandler):
-
+    executor = ThreadPoolExecutor(200)
     _cache_tml_r = dict()
     _cache_tml_w = dict()
     _cache_tml_x = dict()
@@ -49,6 +49,7 @@ class RequestHandler(mxweb.MXRequestHandler):
             f.write(json.dumps(msg, separators=(',', ':')))
             f.close()
 
+    @run_on_executor
     def mydata_collector(self,
                          strsql,
                          need_fetch=1,
@@ -209,6 +210,8 @@ class RequestHandler(mxweb.MXRequestHandler):
                     else:
                         for i in d:
                             yield i
+            else:
+                yield -1
         conn.close()
         del conn
 
@@ -241,13 +244,17 @@ class RequestHandler(mxweb.MXRequestHandler):
     def get_phy_cache(self):
         strsql = 'select rtu_id,rtu_phy_id,rtu_fid,rtu_name from {0}.para_base_equipment'.format(
             utils.m_jkdb_name)
-        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
-            strsql,
-            need_fetch=1,
-            need_paging=0)
-        if record_total is not None:
+        cur = self._mysql_generator_sql_mysql(strsql, need_fetch=1, need_paging=0)
+        if isinstance(cur, types.GeneratorType):
             for d in cur:
                 self._tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
+        # record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+        #     strsql,
+        #     need_fetch=1,
+        #     need_paging=0)
+        # if record_total is not None:
+        #     for d in cur:
+        #         self._tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
         del cur
 
     def set_phy_list(self, rtu_id, rtu_info):
@@ -257,16 +264,18 @@ class RequestHandler(mxweb.MXRequestHandler):
         if len(self._tml_phy) == 0:
             self.get_phy_cache()
         x = []
-        for a in tml_list:
-            b = self._tml_phy.get(a)[0]
-            if b is not None:
-                x.append(b)
+
+        if len(self._tml_phy) > 0:
+            for a in tml_list:
+                b = self._tml_phy.get(a)[0]
+                if b is not None:
+                    x.append(b)
         return x
 
     def get_phy_info(self, tml_id):
         if len(self._tml_phy) == 0:
             self.get_phy_cache()
-        return self._thl_phy.get(tml_id)
+        return self._tml_phy.get(tml_id)
 
     def get_tml_cache(self, tml_type, user_uuid):
         if tml_type == 'r':
@@ -282,11 +291,13 @@ class RequestHandler(mxweb.MXRequestHandler):
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
                 utils.m_jkdb_name,
                 ','.join([str(a) for a in utils.cache_user[user_uuid]['area_x']]))
-        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
-            strsql,
-            need_fetch=1,
-            need_paging=0)
-        if record_total is not None:
+        cur = self._mysql_generator_sql_mysql(strsql, need_fetch=1, need_paging=0)
+        # record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+        #     strsql,
+        #     need_fetch=1,
+        #     need_paging=0)
+        # if record_total is not None:
+        if isinstance(cur, types.GeneratorType):
             for d in cur:
                 if tml_type == 'r':
                     for a in d:
@@ -314,6 +325,7 @@ class RequestHandler(mxweb.MXRequestHandler):
             self.get_tml_cache('x', user_uuid)
         return self._cache_tml_x[user_uuid].intersection(settml)
 
+    @run_on_executor
     def write_event(self, event_id, contents, is_client_snd, **kwords):
         user_name = kwords['user_name'] if 'user_name' in kwords.keys() else ''
         device_ids = kwords['device_ids'] if 'device_ids' in kwords.keys() else ''
@@ -323,12 +335,14 @@ class RequestHandler(mxweb.MXRequestHandler):
         #     int(time.time()), user_name, event_id, is_client_snd, device_ids, contents, remark)
         # libiisi.SQL_DATA.execute(strsql)
         strsql = 'insert into {0}_data.record_operator (date_create,user_name, operator_id, is_client_snd, device_ids, contents, remark) \
-                        values ({1},"{2}",{3},{4},"{5}","{6}","{7}")'.format(
-            utils.m_jkdb_name, int(time.time()) * 10000000 + 621356256000000000, user_name,
-            event_id, is_client_snd, device_ids, contents, remark)
+                        values ({1},"{2}",{3},{4},"{5}","{6}","{7}");'.format(
+            utils.m_jkdb_name, mx.switchStamp(time.time()), user_name, event_id, is_client_snd,
+            device_ids, contents, remark)
+
         cur = self.mydata_collector(strsql, need_fetch=0)
         del cur, strsql
 
+    @run_on_executor
     def check_arguments(self, pb2rq=None, pb2msg=None, use_scode=0):
         if use_scode:
             return self.check_scode(pb2rq, pb2msg)

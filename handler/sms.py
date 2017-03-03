@@ -31,8 +31,8 @@ class QuerySmsRecordHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQuerySmsRecord(),
-                                                                msgws.QuerySmsRecord())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQuerySmsRecord(),
+                                                                      msgws.QuerySmsRecord())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -46,7 +46,7 @@ class QuerySmsRecordHandler(base.RequestHandler):
                                 where send_date>={1} and send_date<={2} and send_msg like "%{3}%" \
                                 {4}'.format(utils.m_jkdb_name, sdt, edt, rqmsg.msg, str_tels)
 
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     buffer_tag=msg.head.paging_buffer_tag,
@@ -87,7 +87,9 @@ class SubmitSmsHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg = self.check_arguments(msgws.rqSubmitSms(), msgws.CommAns(), use_scode=1)
+        legal, rqmsg, msg = yield self.check_arguments(msgws.rqSubmitSms(),
+                                                       msgws.CommAns(),
+                                                       use_scode=1)
         if legal:
             strsql = ''
             t = mx.switchStamp(int(time.time()))

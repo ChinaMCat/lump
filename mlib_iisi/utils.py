@@ -35,6 +35,7 @@ def get_tcs_queue():
 
 
 def set_to_send(tcsmsg, w4a, usepb2=True):
+    return
     if usepb2:
         m_send_queue.put_nowait('`{0}`'.format(mx.convertProtobuf(tcsmsg)))
         # for d in tcsmsg.args.addr:
@@ -205,7 +206,7 @@ SENDWHOIS = '`{0}`'.format(sendServerMsg('', 'wlst.sys.whois'))
 #                               db_url=('', u'数据访问接口地址'), ))
 m_config = mx.ConfigFile()
 m_config.setData('log_level', 10, u'日志记录等级, 10-debug, 20-info, 30-warring, 40-error')
-m_config.setData('tcs_server', '127.0.0.1:10001', u'接口中间件服务器地址, ip:port')
+m_config.setData('tcs_port', '10001', u'通讯服务程序端口')
 m_config.setData('reconnect_time', 10, u'连接断开重新发起连接间隔,默认10s')
 m_config.setData('db_host', '127.0.0.1:3306', u'监控数据库服务地址, ip:port, 端口默认3306')
 m_config.setData('db_user', 'root', u'监控数据库服务用户名')
@@ -216,23 +217,29 @@ m_config.setData('dz_url', 'http://id.dz.tt/index.php', u'电桩接口地址')
 m_config.setData('fs_url', 'http://127.0.0.1:33819/ws_common', u'工作流接口地址')
 m_config.setData('db_url', '', u'数据访问接口地址')
 m_config.setData('bind_port', 10005, u'本地监听端口')
-m_config.setData('zmq_pub', 10006, u'ZMQ PUB 端口')
+m_config.setData('zmq_pub', '10006', u'ZMQ PUB 端口，采用ip:port格式时连接远程ZMQ服务,采用port格式时本地发布ZMQ服务')
 
 
 def send_to_zmq_pub(sfilter, msg):
     global m_zmq_pub
+
     try:
         if m_zmq_pub is None:
-            if int(m_config.getData('zmq_pub')) > 0:
-                m_zmq_ctx = zmq.Context.instance()
-                m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
-                try:
-                    m_zmq_pub.bind('tcp://*:{0}'.format(m_config.getData('zmq_pub')))
-                    time.sleep(0.5)
-                    m_zmq_pub.send_multipart(['ka', '3a533ba0'.decode('hex')])
-                except Exception as ex:
-                    print(ex)
-                    m_zmq_pub = None
+            zmq_conf = m_config.getData('zmq_pub')
+            m_zmq_ctx = zmq.Context.instance()
+            try:
+                if zmq_conf.find(':') > -1:
+                    m_zmq_pub = m_zmq_ctx.socket(zmq.PUSH)
+                    m_zmq_pub.connect('tcp://{0}'.format(zmq_conf))
+                else:
+                    m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
+                    m_zmq_pub.bind('tcp://*:{0}'.format(zmq_conf))
+            except Exception as ex:
+                print(ex)
+                m_zmq_pub = None
+            else:
+                time.sleep(0.5)
+                m_zmq_pub.send_multipart(['ka', '3a533ba0'.decode('hex')])
 
         if m_zmq_pub is not None:
             m_zmq_pub.send_multipart([sfilter, msg])

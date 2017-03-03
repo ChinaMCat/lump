@@ -111,7 +111,7 @@ if __name__ == "__main__":
         #     p = os.path.join(p, "dclms")
 
         print(showtext["start_i"])
-        os.system("tar -Jxvf {1}/{2} -C /tmp/{0}/ > /tmp/0".format(x, SCRIPT_DIR, pkgfile))
+        os.system("tar -Jxvf {1}/{2} -C /tmp/{0}/ > /tmp/.0".format(x, SCRIPT_DIR, pkgfile))
         # os.system("7z x -y -plkjfdsa -o/tmp/{0}/ {1}/{2} > /tmp/0".format(x, SCRIPT_DIR, pkgfile))
         t = stamp2time(os.path.getmtime(r"/tmp/{0}/iisi/iisi".format(x)), format_type="%y%m%d")
 
@@ -124,6 +124,8 @@ mkdir -p /etc/dclms
 chmod +x {0}/iisi{3}/iisi
 ln -sf {0}/iisi{3}/iisi /usr/local/bin/iisi
 ln -sf {0}/iisi{3}/iisi /usr/bin/iisi
+ln -sf {0}/iisi{3}/zmqproxy /usr/local/bin/zmqproxy
+ln -sf {0}/iisi{3}/zmqproxy /usr/bin/zmqproxy
     """.format(p, x, username, t)
         with open("/tmp/{0}/tmp.sh".format(x), "w") as f:
             f.write(s)

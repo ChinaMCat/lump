@@ -32,7 +32,9 @@ class IpcUplinkHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg = self.check_arguments(msgws.rqIpcUplink(), msgws.CommAns(), use_scode=1)
+        legal, rqmsg, msg = yield self.check_arguments(msgws.rqIpcUplink(),
+                                                       msgws.CommAns(),
+                                                       use_scode=1)
         if legal:
             devid = rqmsg.dev_id
             raw_string = rqmsg.raw_string.replace('\r\n', '')
@@ -49,7 +51,7 @@ class IpcUplinkHandler(base.RequestHandler):
                     strsql = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES \
                         where TABLE_SCHEMA="{0}" and TABLE_NAME like "{1}"'.format(
                         utils.m_dgdb_name, '%sens_data_%_month_%')
-                    record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
                         buffer_tag=msg.head.paging_buffer_tag,
@@ -63,7 +65,7 @@ class IpcUplinkHandler(base.RequestHandler):
                         createsql += utils.sqlstr_create_emtable.format(z) + ';'
                     if len(createsql) > 0:
                         createsql = 'use {0};'.format(utils.m_dgdb_name) + createsql
-                        self.mydata_collector(createsql, need_fetch=0)
+                        yield self.mydata_collector(createsql, need_fetch=0)
 
                     t = int(time.time())
                     for i in range(len(utils.qudata_sxhb)):
@@ -73,7 +75,7 @@ class IpcUplinkHandler(base.RequestHandler):
                         except:
                             pass
                     if len(insertsql) > 0:
-                        self.mydata_collector(insertsql, need_fetch=0)
+                        yield self.mydata_collector(insertsql, need_fetch=0)
 
                 elif raw_string.startswith('QH:'):  # 读取支持的指令
                     msgpub = self.init_msgws(msgws.rqIpcCtl(), 'ipc.lscmd.get')
@@ -140,7 +142,7 @@ class IpcCtlHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg = self.check_arguments(msgws.rqIpcCtl(), None, use_scode=1)
+        legal, rqmsg, msg = yield self.check_arguments(msgws.rqIpcCtl(), None, use_scode=1)
         if legal:
             scmd = rqmsg.ctl_cmd
             sdownlink = ''
@@ -188,8 +190,8 @@ class QueryEMDataHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryEMData(),
-                                                                msgws.QueryEMData())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryEMData(),
+                                                                      msgws.QueryEMData())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -232,7 +234,7 @@ class QueryEMDataHandler(base.RequestHandler):
                             strsql += ' where t{0}.dev_id="{1}" and t{0}.date_create>={2} and t{0}.date_create<={3} order by t{0}.date_create'.format(
                                 utils.qudata_sxhb[0], devid, sdt, edt)
 
-                        record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
                             need_fetch=1,
                             buffer_tag=msg.head.paging_buffer_tag,

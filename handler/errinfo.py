@@ -28,7 +28,7 @@ class QueryDataErrHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqQueryDataErr(),
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataErr(),
                                                                 msgws.QueryDataErr())
 
         if user_data is not None:
@@ -80,7 +80,7 @@ class QueryDataErrHandler(base.RequestHandler):
                         strsql += ' and {0}'.format(str_errs)
                     strsql += ' order by a.date_create desc'
 
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     buffer_tag=msg.head.paging_buffer_tag,
@@ -127,14 +127,14 @@ class ErrInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = self.check_arguments(msgws.rqErrInfo(), msgws.ErrInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqErrInfo(), msgws.ErrInfo())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 # ,akarn_time_set,alarm_time_start,alarm_time_end
                 strsql = 'select fault_id,fault_name,fault_name_define,is_enable,fault_remark, \
                             fault_check_keyword from {0}.fault_types'.format(utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = self.mydata_collector(
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
                     buffer_tag=msg.head.paging_buffer_tag,

@@ -11,4 +11,5 @@ class Err404Handler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
+        # self.redirect('/cleaningwork')
         self.render('404.html')

@@ -36,14 +36,27 @@ class QueryDataMruHandler(base.RequestHandler):
                     strdt = ' and a.date_create>={0} and a.date_create<={1}'.format(sdt, edt)
                 else:
                     strdt = ''
+                # 验证用户可操作的设备id
+                if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
+                    tml_ids = list(rqmsg.tml_id)
+                else:
+                    if len(rqmsg.tml_id) == 0:
+                        tml_ids = self._cache_tml_r[user_uuid]
+                    else:
+                        tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+
+                if len(tml_ids) == 0:
+                    str_tmls = ''
+                else:
+                    str_tmls = ' and a.rtu_id in ({0}) '.format(','.join([str(a) for a in tml_ids]))
                 strsql = '''select a.rtu_id,a.date_create,a.date_type_code,a.mru_type_code,a.mru_data 
                 from {0}_data.data_mru_record as a 
                 where EXISTS 
                 (select rtu_id,date_create from 
                 (select rtu_id,max(date_create) as date_create from {0}_data.data_mru_record group by rtu_id) as t 
-                where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} order by a.rtu_id,a.date_create desc'''.format(
-                    utils.m_jkdb_name, strdt)
-                print(strsql)
+                where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} {2} order by a.rtu_id,a.date_create desc'''.format(
+                    utils.m_jkdb_name, strdt, str_tmls)
+
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -130,9 +143,10 @@ class MruDataGetHandler(base.RequestHandler):
                                                                date=rqmsg.dt_mark,
                                                                br=rqmsg.baud_rate))
                         libiisi.set_to_send(tcsmsg, 0, False)
-                        libiisi.send_to_zmq_pub('tcs.req.wlst.mru.9100',
-                                                json.dumps(tcsmsg,
-                                                           separators=(',', ':')).lower())
+                        libiisi.send_to_zmq_pub(
+                            'tcs.req.{0}.wlst.mru.9100'.format(utils.m_tcs_port),
+                            json.dumps(tcsmsg,
+                                       separators=(',', ':')).lower())
             else:
                 msg.head.if_st = 11
 

@@ -35,9 +35,6 @@ class UserLoginJKHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        pb2 = self.get_argument('pb2')
-        rqmsg = msgws.rqUserLogin()
-        rqmsg.ParseFromString(base64.b64decode(pb2))
         msg = msgws.UserLogin()
         msg.head.idx = rqmsg.head.idx
         msg.head.if_st = 1
@@ -76,7 +73,11 @@ class UserLoginJKHandler(base.RequestHandler):
             user_uuid = uuid.uuid1().hex
             msg.uuid = user_uuid
             msg.fullname = d[1] if d[1] is not None else ''
-            msg.zmq = libiisi.m_config.getData('zmq_pub')
+            zmq_addr = libiisi.m_config.getData('zmq_port')
+            if zmq_addr.find(':') > -1:
+                msg.zmq = str(int(zmq_addr.split(':')[1]) + 1)
+            else:
+                msg.zmq = str(int(zmq_addr) + 1)
 
             user_auth = 0
             _area_r = []
@@ -125,6 +126,7 @@ class UserLoginJKHandler(base.RequestHandler):
                                                user_db=utils.m_jkdb_name,
                                                area_id=0,
                                                source_dev=rqmsg.dev,
+                                               unique=rqmsg.unique,
                                                remote_ip=self.request.remote_ip,
                                                area_r=set(_area_r),
                                                area_w=set(_area_w),
@@ -168,7 +170,7 @@ class UserLoginJKHandler(base.RequestHandler):
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        self.write_event(121, contents, 2, user_name=rqmsg.user)
+        # self.write_event(121, contents, 2, user_name=rqmsg.user)
         del rqmsg, msg
 
 
@@ -181,16 +183,21 @@ class UserLoginHandler(base.RequestHandler):
     <b>返回:</b><br/>
     &nbsp;&nbsp;UserLogin()结构序列化并经过base64编码后的字符串'''
 
+    thc = AsyncHTTPClient()
+
     @gen.coroutine
     def post(self):
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserLogin()
-        rqmsg.ParseFromString(base64.b64decode(pb2))
         msg = msgws.UserLogin()
-        msg.head.idx = rqmsg.head.idx
-        msg.head.if_st = 1
         msg.head.ver = 160328
         msg.head.if_dt = int(time.time())
+        try:
+            rqmsg.ParseFromString(base64.b64decode(pb2))
+            msg.head.idx = rqmsg.head.idx
+            msg.head.if_st = 1
+        except:
+            msg.head.if_st = 46
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
@@ -225,7 +232,11 @@ class UserLoginHandler(base.RequestHandler):
             user_uuid = uuid.uuid1().hex
             msg.uuid = user_uuid
             msg.fullname = d[1] if d[1] is not None else ''
-            msg.zmq = libiisi.m_config.getData('zmq_pub')
+            zmq_addr = libiisi.m_config.getData('zmq_port')
+            if zmq_addr.find(':') > -1:
+                msg.zmq = str(int(zmq_addr.split(':')[1]) + 1)
+            else:
+                msg.zmq = str(int(zmq_addr) + 1)
 
             user_auth = 0
             _area_r = []
@@ -273,6 +284,7 @@ class UserLoginHandler(base.RequestHandler):
                                                user_db=utils.m_jkdb_name,
                                                area_id=0,
                                                source_dev=rqmsg.dev,
+                                               unique=rqmsg.unique,
                                                remote_ip=self.request.remote_ip,
                                                area_r=set(_area_r),
                                                area_w=set(_area_w),
@@ -281,6 +293,43 @@ class UserLoginHandler(base.RequestHandler):
             del _area_r, _area_w, _area_x
 
         del cur, strsql
+
+        # 登录工作流
+        if rqmsg.dev == 3:
+            retry = False
+            args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
+            url = '{0}/mobileLogin?{1}'.format(utils.m_fs_url, urlencode(args))
+            try:
+                rep = yield self.thc.fetch(url, raise_error=True, request_timeout=10)
+                # rep = utils.m_httpclinet_pool.request('GET',
+                #                                       baseurl,
+                #                                       fields=args,
+                #                                       timeout=2.0,
+                #                                       retries=False)
+                dom = xmld.parseString(rep.body)
+                root = dom.documentElement
+                msg.flow_data = root.firstChild.wholeText
+                del dom, root
+            except Exception as ex:
+                print(ex)
+                if not retry:
+                    retry = True
+                    try:
+                        rep = yield self.thc.fetch(url, raise_error=False, request_timeout=3)
+                        dom = xmld.parseString(rep.body)
+                        root = dom.documentElement
+                        msg.flow_data = root.firstChild.wholeText
+                        del dom, root
+                    except:
+                        msg.flow_data = ''
+                else:
+                    msg.flow_data = ''
+                    print(str(ex))
+
+        self.write(mx.convertProtobuf(msg))
+        self.finish()
+        # self.write_event(121, contents, 2, user_name=rqmsg.user)
+        del rqmsg, msg
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
@@ -482,7 +531,7 @@ class UserEditHandler(base.RequestHandler):
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=0)
-                if record_total > 0:
+                if record_total > 0 or user_data['user_auth'] in utils._can_admin:
                     if user_data['user_name'] == rqmsg.user_name:
                         if user_data['user_auth'] in utils._can_write:
                             strsql = 'update {0}.user_list set user_real_name="{1}", \
@@ -496,24 +545,39 @@ class UserEditHandler(base.RequestHandler):
                         else:
                             msg.head.if_st = 11
                             msg.head.if_msg = 'You do not have permission to modify the information'
-                    else:
-                        if user_data['user_auth'] in utils._can_admin:
-                            strsql = 'update {0}.user_list set user_real_name="{1}", \
-                                        user_password="{2}", \
-                                        user_phonenumber="{3}", \
-                                        user_operator_code="{4}" \
-                                        where user_name="{5}"'.format(
-                                utils.m_jkdb_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
-                                rqmsg.user_name)
-                            self.mydata_collector(strsql, 0)
-                        else:
-                            msg.head.if_st = 11
-                            msg.head.if_msg = 'You do not have permission to modify the information to others'
+                    # else:
+                    #     if user_data['user_auth'] in utils._can_admin:
+                    #         strsql = 'update {0}.user_list set user_real_name="{1}", \
+                    #                     user_password="{2}", \
+                    #                     user_phonenumber="{3}", \
+                    #                     user_operator_code="{4}" \
+                    #                     where user_name="{5}"'.format(
+                    #             utils.m_jkdb_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
+                    #             rqmsg.user_name)
+                    #         self.mydata_collector(strsql, 0)
+                    #     else:
+                    #         msg.head.if_st = 11
+                    #         msg.head.if_msg = 'You do not have permission to modify the information to others'
                 else:
                     msg.head.if_st = 46
                     msg.head.if_msg = 'User old password error'
-
                 del cur, strsql
+
+        if msg.head.if_st == 1 and rqmsg.user_sz_id > 0:
+            thc = AsyncHTTPClient()
+            url = '{0}/{1}'.format(utils.m_fs_url, 'UpdatePassword')
+            data = {'user_now': rqmsg.user_sz_id, 'old_pwd': rqmsg.pwd_old, 'new_pwd': rqmsg.pwd}
+            r = pm.request('GET', url, fields=data, timeout=20.0, retries=False)
+            if 'false' in r.data:
+                msg.head.if_st = 43
+                msg.head.if_msg = 'sz UpdatePassword error.'
+                # strsql = 'update {0}.user_list set \
+                #             user_password="{1}", \
+                #             where user_name="{2}"'.format(utils.m_jkdb_name, rqmsg.old_pwd,
+                #                                           rqmsg.user_name)
+                # self.mydata_collector(strsql, 0)
+                del strsql
+
         self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data
@@ -532,7 +596,7 @@ class UserInfoHandler(base.RequestHandler):
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserInfo(),
-                                                                msgws.UserInfo())
+                                                                      msgws.UserInfo())
 
         env = False
         contents = ''

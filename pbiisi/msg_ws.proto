@@ -7,6 +7,7 @@ message Head {
     int64 idx = 1;  // 序号(必填)
     int32 ver = 2;  // 协议版本(必填,默认为协议发布日期6位整型)。当前版本为 160328
     string if_name = 3;  // 接口名称(可选)
+    string unique = 5;  // 移动设备唯一标示(移动设备填充,可以由服务器配置文件设置是否校验)
     int64 if_dt = 100;  // 请求或返回时间(必填)
     int32 if_st = 101;  // 接口操作状态(必填)
                             // 1-操作成功, 0-操作失败, 原因参考msg, 10-用户未登录或超时(1h),请求被拒绝, 11-用户权限不足
@@ -90,12 +91,13 @@ message rqUserEdit {
     Head head = 1;
     string user_name = 2;  // 要修改的用户id
     string fullname = 3;  // 新用户全名
-    string pwd = 4;  // 新用户密码(md5序列化后传输)如为空值表示不改密码
+    string pwd = 4;  // 新用户密码,如为空值表示不改密码
     int32 area_id = 5;  // 新用户所属区域id
     int32 auth = 6;  // 新用户权限值
     string tel = 7;  // 新用户手机号
     string code = 8;  // 新用户移动设备操作码(开关灯操作时输入)
     string pwd_old = 9;  // 旧密码(uuid为管理员时不需要)
+    int32 user_sz_id = 10;  // 市政用户id(若移动用户填充该值,则自动尝试调用市政的用户密码修改接口,同步密码修改)
 }
 
 // CommAns应答
@@ -123,6 +125,9 @@ message UserInfo {
 }
 
 // 请求区域信息应答
+message rqAreaInfo {
+    Head head = 1;
+}
 message AreaInfo {
     message AreaView {
         int32 area_id = 1;  // 区域id
@@ -134,6 +139,9 @@ message AreaInfo {
 }
 
 // 请求分组信息应答
+message rqGroupInfo {
+    Head head = 1;
+}
 message GroupInfo {
     message GroupView {
         int32 grp_id = 1;  // 分组id

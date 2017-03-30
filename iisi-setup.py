@@ -18,7 +18,7 @@ else:
     pkgfile = "_imps.so"
 
 zh = {"root": u"安装程序需要root权限，安装过程中止。",
-      "path": u"请输入安装路径，默认安装在 '/opt/dclms'（留空使用默认目录）:",
+      "path": u"请输入安装路径，默认安装在 '/opt/oahu'（留空使用默认目录）:",
       "start_i": u"安装正在进行，请稍候...",
       "end_i": u"安装完成，输入 'iisi' 运行程序。",
       "start_u": u"升级正在进行，请稍候...",
@@ -30,7 +30,7 @@ zh = {"root": u"安装程序需要root权限，安装过程中止。",
 en = {
     "root": u"This program must be run as root. Aborting.",
     "path":
-    u"Please enter the installation path, the default is '/opt/dclms' (just press Enter to use the default directory):",
+    u"Please enter the installation path, the default is '/opt/oahu' (just press Enter to use the default directory):",
     "start_i": u"Installation is in progress, please wait...",
     "end_i": u"Installation is complete, type 'iisi' to run the program.",
     "start_u": u"Upgrade is in progress, please wait...",
@@ -106,9 +106,9 @@ if __name__ == "__main__":
         # print(showtext["path"])
         # p = raw_input("")
         # if len(p) == 0:
-        p = os.path.join(defaultpath, "dclms")
+        p = os.path.join(defaultpath, "oahu")
         # else:
-        #     p = os.path.join(p, "dclms")
+        #     p = os.path.join(p, "oahu")
 
         print(showtext["start_i"])
         os.system("tar -Jxvf {1}/{2} -C /tmp/{0}/ > /tmp/.0".format(x, SCRIPT_DIR, pkgfile))
@@ -118,8 +118,9 @@ if __name__ == "__main__":
         s = """#!/bin/bash
 mkdir -p {0}/iisi{3}
 cp -rf /tmp/{1}/iisi/* {0}/iisi{3}/
+cp -rf /tmp/{1}/iisi/.profile {0}/iisi{3}/
 
-mkdir -p /etc/dclms
+mkdir -p /etc/oahu
 
 chmod +x {0}/iisi{3}/iisi
 ln -sf {0}/iisi{3}/iisi /usr/local/bin/iisi
@@ -171,8 +172,8 @@ cp -f /tmp/{1}/dpv4/*.pyc /usr/lib64/python2.7/site-packages/dpv4/
 cp -f /tmp/{1}/protobuf3/*.pyc /usr/lib64/python2.7/site-packages/protobuf3/
 find /usr/lib64/python2.7/site-packages/dpv4 -name "*.py" | xargs rm -vf
 find /usr/lib64/python2.7/site-packages/protobuf3 -name "*.py" | xargs rm -vf
-mkdir -p /etc/dclms
-rm -rf /var/cache/dclms/tcs.d/tcs-updated-*
+mkdir -p /etc/oahu
+rm -rf /var/cache/oahu/tcs.d/tcs-updated-*
     """.format("", x)
         with open("/tmp/{0}/tmp.sh".format(x), "w") as f:
             f.write(s)

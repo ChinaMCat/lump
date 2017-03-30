@@ -25,7 +25,7 @@ class GroupInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(None, msgws.GroupInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqGroupInfo(), msgws.GroupInfo())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -75,7 +75,7 @@ class AreaInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(None, msgws.AreaInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqAreaInfo(), msgws.AreaInfo())
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 strsql = 'select area_id,area_name,rtu_list from {0}.area_info'.format(

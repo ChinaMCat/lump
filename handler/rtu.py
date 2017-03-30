@@ -546,7 +546,7 @@ class QueryDataRtuElecHandler(base.RequestHandler):
                     order by a.date_create desc,a.rtu_id,a.loop_id'''.format(utils.m_jkdb_name, sdt,
                                                                              edt, str_tmls)
                 else:
-                    strsql = '''select a.rtu_id,a.rtu_id,a.loop_id,sum(a.minutes_open) as m,sum(a.power) as p ``
+                    strsql = '''select a.rtu_id,a.rtu_id,a.loop_id,sum(a.minutes_open) as m,sum(a.power) as p 
                     from {0}_data.info_rtu_elec as a 
                     where a.date_create>={1} and a.date_create<={2} {3} 
                     group by a.rtu_id,a.loop_id 

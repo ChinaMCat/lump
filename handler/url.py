@@ -15,7 +15,7 @@ import rtu
 import slu
 import sms
 import sysinfo
-import tcssubmit
+import submit
 from error import Err404Handler
 
 hs = []
@@ -28,7 +28,7 @@ hs.extend(mxweb.load_handler_module(rtu))
 hs.extend(mxweb.load_handler_module(slu))
 hs.extend(mxweb.load_handler_module(sms))
 hs.extend(mxweb.load_handler_module(sysinfo))
-hs.extend(mxweb.load_handler_module(tcssubmit))
+hs.extend(mxweb.load_handler_module(submit))
 hs.extend(mxweb.load_handler_module(user))
 hs.extend(mxweb.load_handler_module(flow))
 

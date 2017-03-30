@@ -8,11 +8,11 @@ __doc__ = 'main handler'
 import gc
 import os
 import time
-
+import zmq
 import mxweb
 import mxpsu as mx
 from tornado import gen
-
+from tornado.httpclient import AsyncHTTPClient
 import base
 import mlib_iisi as libiisi
 import utils
@@ -23,18 +23,19 @@ class TestHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        # print(dir(self.executor))
+        print('test get')
         self.finish('<br/>get test done.')
 
     @gen.coroutine
     def post(self):
+        print('test post')
         # self.write(self.request.uri + '\r\n')
         # self.write(str(self.request.arguments) + '\r\n')
         self.finish('post test done.')
 
 
 @mxweb.route()
-class ServiceCheckHandler(base.RequestHandler):
+class StatusHandler(base.RequestHandler):
 
     _help_doc = u'''服务状态检查<br/>
     <b>参数:</b><br/>
@@ -57,13 +58,41 @@ class ServiceCheckHandler(base.RequestHandler):
 
                     if do == 'testconfig' or do == 'all':
                         self.write('<b><u>===== test config =====</u></b><br/>')
-                        if libiisi.m_tcs is None:
-                            self.write('TCS server status ... disconnected.<br/>')
+
+                        ctx = zmq.Context()
+                        sub = ctx.socket(zmq.SUB)
+                        sub.setsockopt(zmq.RCVTIMEO, 1000)
+                        sub.setsockopt(zmq.SUBSCRIBE, b'')
+
+                        push = ctx.socket(zmq.PUSH)
+                        push.setsockopt(zmq.SNDTIMEO, 500)
+
+                        zmq_addr = libiisi.m_config.getData('zmq_port')
+                        if zmq_addr.find(':') == -1:
+                            ip = '127.0.0.1'
+                            port = zmq_addr
                         else:
-                            if libiisi.m_tcs.is_connect:
-                                self.write('Test tcs config ... connected.<br/>')
-                            else:
-                                self.write('TCS server status ... disconnected.<br/>')
+                            ip, port = zmq_addr.split(':')
+                            
+                        sub.connect('tcp://{0}:{1}'.format(ip, int(port) + 1))
+                        push.connect('tcp://{0}:{1}'.format(ip, port))
+                        try:
+                            push.send_multipart(['zmq.filter', 'zmq test message.'])
+                            f, m = sub.recv_multipart()
+                            self.write('Test zmq config ... success. zmq config:{0}<br/>'.format(zmq_addr))
+                        except:
+                            self.write('Test zmq config ... failed.<br/>')               
+
+                        thc = AsyncHTTPClient()
+                        url = '{0}'.format(utils.m_fs_url)
+                        try:
+                            rep = yield thc.fetch(url, raise_error=True, request_timeout=12)
+                            self.write('Test flow config ... success.<br/>')
+                        except Exception as ex:
+                            self.write('Test flow config ... failed.<br/>')
+
+                        del url, thc
+
                         try:
                             jk_isok = False
                             dg_isok = False
@@ -108,7 +137,7 @@ class ServiceCheckHandler(base.RequestHandler):
                         self.write('<br/>')
                         self.flush()
         except:
-            self.wirte(self._help_doc)
+            self.write(self._help_doc)
         self.finish()
 
 

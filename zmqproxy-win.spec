@@ -3,16 +3,11 @@
 block_cipher = pyi_crypto.PyiBlockCipher(key='Bye-bye my love.')
 
 
-a = Analysis(['iisi.py'],
+a = Analysis(['zmqproxy.py'],
              pathex=['/home/xy/work/python/lump'],
              binaries=None,
              datas=None,
-             hiddenimports=['Crypto.Cipher.AES',
-                                            'ConfigParser',
-                                            'wmi',
-                                            '_mysql',
-                                            'concurrent.futures',
-                                            'zmq'],
+             hiddenimports=['zmq'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -24,15 +19,15 @@ pyz = PYZ(a.pure, a.zipped_data,
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='iisi',
+          name='zmqproxy',
           debug=False,
           strip=False,
           upx=False,
-          console=True , icon='static\\image\\cat.ico', version='file_ver.txt')
+          console=True , icon='static\\image\\bats.ico', version='file_ver_zp.txt')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
                a.datas,
                strip=False,
                upx=False,
-               name='iisi-win')
+               name='zmqproxy-win')

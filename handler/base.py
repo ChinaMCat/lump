@@ -48,6 +48,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         with open(cache_name, 'wb') as f:
             f.write(json.dumps(msg, separators=(',', ':')))
             f.close()
+        del f
 
     @run_on_executor
     def mydata_collector(self,
@@ -422,7 +423,7 @@ class RequestHandler(mxweb.MXRequestHandler):
             pb2msg = msgws.CommAns()
         msg = self.init_msgws(pb2msg)
         msg.head.if_st = 1
-
+        
         if pb2rq is not None:
             rqmsg = pb2rq
             if 'pb2' not in args.keys():
@@ -459,7 +460,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         # 检查uuid长度
         if len(user_uuid) != 32:
             msg.head.if_st = 46
-
+            
         # 检查uuid是否合法
         if user_uuid in utils.cache_user.keys():
             user_data = utils.cache_user.get(user_uuid)
@@ -468,12 +469,13 @@ class RequestHandler(mxweb.MXRequestHandler):
                 utils.cache_user[user_uuid] = user_data
             else:
                 if user_data['remote_ip'] != self.request.remote_ip:
-                    del user_data[user_uuid]
-                    contents = 'User source ip is illegal'
-                    msg.head.if_st = 12
-                    msg.head.if_msg = contents
-                    self.write_event(123, contents, 1, user_name=user_data['user_name'])
-                    user_data = None
+                    if not (rqmsg is not None and user_data['source_dev'] == 3 and user_data['unique'] == rqmsg.head.unique):
+                        del utils.cache_user[user_uuid]
+                        contents = 'User source ip is illegal'
+                        msg.head.if_st = 12
+                        msg.head.if_msg = contents
+                        self.write_event(123, contents, 1, user_name=user_data['user_name'])
+                        user_data = None
                 elif time.time() - user_data['active_time'] > 60 * 30:
                     del utils.cache_user[user_uuid]
                     contents = 'User login timed out'

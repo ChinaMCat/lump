@@ -9,7 +9,7 @@ import argparse
 import logging
 import os
 import sys
-import threading
+import thread
 import time
 
 import mxpsu as mx
@@ -23,6 +23,9 @@ USER_AUTH = {}
 SOCKET_POOL = None
 
 if __name__ == '__main__':
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+
     if '--history' in sys.argv:
         showOurHistory()
         sys.argv.remove('--history')
@@ -71,7 +74,8 @@ if __name__ == '__main__':
     libiisi.m_config.loadConfig(results.conf)
     if results.port is not None:
         libiisi.m_config.setData('bind_port', results.port)
-        libiisi.m_config.setData('zmq_pub', int(results.port) + 1)
+        libiisi.m_config.setData('zmq_port', int(results.port) + 1)
+    iisi_port = libiisi.m_config.getData('bind_port')
 
     if options.log_file_prefix is None:
         if libiisi.m_config.getData('log_level') == '10':
@@ -85,7 +89,7 @@ if __name__ == '__main__':
         else:
             loglevel = 'info'
         opt_args = ['', '--logging={0}'.format(loglevel), '--log_file_prefix={0}'.format(
-            os.path.join(libiisi.m_logdir, 'iisi{0}.debug.log'.format(results.port)))]
+            os.path.join(libiisi.m_logdir, 'iisi{0}.debug.log'.format(iisi_port)))]
         if results.debug:
             opt_args.append('--log_to_stderr')
         options.parse_command_line(args=opt_args, final=True)
@@ -95,7 +99,7 @@ if __name__ == '__main__':
 
     # 开启后台线程
     # ip, port = libiisi.m_config.getData('tcs_server').split(':')
-    # libiisi.m_tcs = libiisi.TcsClient(ip, int(port))
+    thread.start_new_thread(libiisi.zmq_proxy, ())
     # libiisi.m_tcs.setDaemon(True)
     # libiisi.m_tcs.start()
 
@@ -113,7 +117,12 @@ if __name__ == '__main__':
     lst_handler.extend(handler_iisi)
     # lst_handler.extend(handler_iisi_db)
     lst_handler.extend(handler_err)
-    application = tornado.web.Application(handlers=lst_handler, **settings)
-    application.listen(results.port)
-    logging.error('======= start the service on port {0} ======='.format(results.port))
-    tornado.ioloop.IOLoop.instance().start()
+    try:
+        application = tornado.web.Application(handlers=lst_handler, **settings)
+        application.listen(int(iisi_port))
+        logging.error('======= start the service on port {0} ======='.format(iisi_port))
+        print('======= start the service on port {0} ======='.format(iisi_port))
+        tornado.ioloop.IOLoop.instance().start()
+    except Exception as ex:
+        print(ex)
+        raw_input('press any key to exit...')

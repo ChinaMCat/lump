@@ -190,82 +190,81 @@ class QueryEMDataHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryEMData(),
-                                                                      msgws.QueryEMData())
+        legal, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryEMData(),
+                                                                      msgws.QueryEMData(), use_scode=1)
 
-        if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
-                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=0)
-                devid = rqmsg.dev_id
-                msg.dev_id = devid
-                yms = []
-                if sdt > 0:
-                    # ym = mx.stamp2time(sdt, format_type='%y%m')
-                    sym = mx.stamp2time(sdt, format_type='%y%m')
-                    eym = mx.stamp2time(edt, format_type='%y%m')
-                    while int(sym) <= int(eym):
-                        yms.append(sym)
-                        if sym[2:] == '12':
-                            sym = str(int(sym[:2]) + 1) + '01'
-                        else:
-                            sym = sym[:2] + str(int(sym[2:]) + 1)
-                else:
-                    yms = [mx.stamp2time(time.time(), format_type='%y%m')]
+        if legal:
+            sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=0)
+            devid = rqmsg.dev_id
+            msg.dev_id = devid
+            yms = []
+            if sdt > 0:
+                # ym = mx.stamp2time(sdt, format_type='%y%m')
+                sym = mx.stamp2time(sdt, format_type='%y%m')
+                eym = mx.stamp2time(edt, format_type='%y%m')
+                while int(sym) <= int(eym):
+                    yms.append(sym)
+                    if sym[2:] == '12':
+                        sym = str(int(sym[:2]) + 1) + '01'
+                    else:
+                        sym = sym[:2] + '{0:02d}'.format(int(sym[2:]) + 1)
+            else:
+                yms = [mx.stamp2time(time.time(), format_type='%y%m')]
 
-                rebuild_cache = False
-                xquery = msgws.QueryEMData()
+            rebuild_cache = False
+            xquery = msgws.QueryEMData()
 
-                if devid.startswith('901001'):
-                    for ym in yms:
-                        strsql = 'select t{0}.dev_id,t{0}.date_create '.format(utils.qudata_sxhb[0])
-                        for x in utils.qudata_sxhb:
-                            strsql += ', t{0}.dev_data as d{0}'.format(x)
-                        strsql += ' from {0}.sens_data_{1}_month_{2} as t{1}'.format(
-                            utils.m_dgdb_name, utils.qudata_sxhb[0], ym)
-                        for i in range(1, len(utils.qudata_sxhb)):
-                            strsql += ' left join {0}.sens_data_{1}_month_{2} as t{1} on t{3}.dev_id=t{1}.dev_id and t{3}.date_create=t{1}.date_create'.format(
-                                utils.m_dgdb_name, utils.qudata_sxhb[i], ym, utils.qudata_sxhb[0])
+            if devid.startswith('901001'):
+                for ym in yms:
+                    strsql = 'select t{0}.dev_id,t{0}.date_create '.format(utils.qudata_sxhb[0])
+                    for x in utils.qudata_sxhb:
+                        strsql += ', t{0}.dev_data as d{0}'.format(x)
+                    strsql += ' from {0}.sens_data_{1}_month_{2} as t{1}'.format(
+                        utils.m_dgdb_name, utils.qudata_sxhb[0], ym)
+                    for i in range(1, len(utils.qudata_sxhb)):
+                        strsql += ' left join {0}.sens_data_{1}_month_{2} as t{1} on t{3}.dev_id=t{1}.dev_id and t{3}.date_create=t{1}.date_create'.format(
+                            utils.m_dgdb_name, utils.qudata_sxhb[i], ym, utils.qudata_sxhb[0])
 
-                        if sdt == 0 and edt == 0:
-                            # no, no2, co, co2, pm25, temp, rehu, pm10, o3, tvoc, h2s, so2 = utils.qudata_sxhb
-                            strsql += ' where t{0}.dev_id="{1}" order by t{0}.date_create desc limit 1'.format(
-                                utils.qudata_sxhb[0], devid)
-                        else:
-                            strsql += ' where t{0}.dev_id="{1}" and t{0}.date_create>={2} and t{0}.date_create<={3} order by t{0}.date_create'.format(
-                                utils.qudata_sxhb[0], devid, sdt, edt)
-
-                        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                            strsql,
-                            need_fetch=1,
-                            buffer_tag=msg.head.paging_buffer_tag,
-                            paging_idx=msg.head.paging_idx,
-                            paging_num=msg.head.paging_num)
-                        if record_total is None:
-                            msg.head.if_st = 45
-                        else:
-                            msg.head.paging_record_total = record_total
-                            msg.head.paging_buffer_tag = buffer_tag
-                            msg.head.paging_idx = paging_idx
-                            msg.head.paging_total = paging_total
-                            for d in cur:
-                                qudata = msgws.QueryEMData.Qudata()
-                                qudata.no = float(d[2])
-                                qudata.no2 = float(d[3])
-                                qudata.co = float(d[4])
-                                qudata.co2 = float(d[5])
-                                qudata.pm25 = float(d[6])
-                                qudata.temp = float(d[7])
-                                qudata.rehu = float(d[8])
-                                qudata.pm10 = float(d[9])
-                                qudata.o3 = float(d[10])
-                                qudata.tvoc = float(d[11])
-                                qudata.h2s = float(d[12])
-                                qudata.so2 = float(d[13])
-                                qudata.dt_data = int(d[1])
-                                msg.qudata.extend([qudata])
-                                del qudata
-                        del cur, strsql
+                    if sdt == 0 and edt == 0:
+                        # no, no2, co, co2, pm25, temp, rehu, pm10, o3, tvoc, h2s, so2 = utils.qudata_sxhb
+                        strsql += ' where t{0}.dev_id="{1}" order by t{0}.date_create desc limit 1'.format(
+                            utils.qudata_sxhb[0], devid)
+                    else:
+                        strsql += ' where t{0}.dev_id="{1}" and t{0}.date_create>={2} and t{0}.date_create<={3} order by t{0}.date_create'.format(
+                            utils.qudata_sxhb[0], devid, sdt, edt)
+                    # print(strsql)
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                        strsql,
+                        need_fetch=1,
+                        buffer_tag=msg.head.paging_buffer_tag,
+                        paging_idx=msg.head.paging_idx,
+                        paging_num=msg.head.paging_num)
+                    if record_total is None:
+                        msg.head.if_st = 45
+                    else:
+                        msg.head.paging_record_total = record_total
+                        msg.head.paging_buffer_tag = buffer_tag
+                        msg.head.paging_idx = paging_idx
+                        msg.head.paging_total = paging_total
+                        for d in cur:
+                            qudata = msgws.QueryEMData.Qudata()
+                            qudata.no = float(d[2]) if d[2] is not None else 0.0
+                            qudata.no2 = float(d[3]) if d[3] is not None else 0.0
+                            qudata.co = float(d[4]) if d[4] is not None else 0.0
+                            qudata.co2 = float(d[5]) if d[5] is not None else 0.0
+                            qudata.pm25 = float(d[6]) if d[6] is not None else 0.0
+                            qudata.temp = float(d[7]) if d[7] is not None else 0.0
+                            qudata.rehu = float(d[8]) if d[8] is not None else 0.0
+                            qudata.pm10 = float(d[9]) if d[9] is not None else 0.0
+                            qudata.o3 = float(d[10]) if d[10] is not None else 0.0
+                            qudata.tvoc = float(d[11]) if d[11] is not None else 0.0
+                            qudata.h2s = float(d[12]) if d[12] is not None else 0.0
+                            qudata.so2 = float(d[13]) if d[13] is not None else 0.0
+                            qudata.dt_data = int(d[1]) if d[1] is not None else 0.0
+                            msg.qudata.extend([qudata])
+                            del qudata
+                    del cur, strsql
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, user_data
+        del msg, rqmsg, legal

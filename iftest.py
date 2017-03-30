@@ -14,18 +14,19 @@ from tornado.httputil import url_concat
 # import gevent
 import timeit
 
-baseurl = 'http://192.168.50.55:10006/'
-# baseurl = 'http://192.168.50.55:63800/'
-# baseurl = 'http://192.168.122.43:63800/'
-# baseurl = 'http://222.186.103.162:6967/'
+baseurl = 'http://192.168.122.185:10005/'
+baseurl = 'http://192.168.50.55:10001/'
+# baseurl = 'http://192.168.50.55:63810/'
+# baseurl = 'http://180.168.198.218:63000/'
 # baseurl = 'http://180.153.108.83:20525/'
-# baseurl = 'http://192.168.50.80:33819/ws_common/FlowService.asmx'
+# baseurl = 'http://192.168.50.80:33819/ws_BT/FlowService.asmx'
 pm = urllib3.PoolManager(num_pools=100)
 user_id = 'ef61022b553911e6832074d435009085'
 
 
 def init_head(msg):
     # msg.head.idx = 1
+    msg.head.unique = 'asdfhaskdfkaf'
     msg.head.ver = 160328
     msg.head.if_dt = int(time.time())
     return msg
@@ -38,10 +39,10 @@ def test_userlogin():
     rqmsg = init_head(msgif.rqUserLogin())
     rqmsg.dev = 3
     rqmsg.unique = 'asdfhaskdfkaf'
-    rqmsg.user = 'wsread'
+    rqmsg.user = u'wsread'
     rqmsg.pwd = 'okmijnuhb'
-    rqmsg.user = 'admin'
-    rqmsg.pwd = '1234'
+    # rqmsg.user = '管理员'
+    # rqmsg.pwd = '123'
 
     data = {'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
@@ -155,7 +156,7 @@ def test_rtuctl():
     global user_id
     print('=== rtuctl ===')
     url = baseurl + 'rtuctl'
-    rqmsg = init_head(msgif.rqRtuCtl())
+    rqmsg = msgif.rqRtuCtl()
     # rtudo = msgif.rqRtuCtl.RtuDo()
     # rtudo.opt = 1
     # rtudo.tml_id.extend([1000002, 1000003])
@@ -168,7 +169,7 @@ def test_rtuctl():
     # rqmsg.rtu_do.extend([rtudo])
     rtudo = msgif.rqRtuCtl.RtuDo()
     rtudo.opt = 2
-    rtudo.tml_id.extend([1000002, 1000003])
+    rtudo.tml_id.extend([1000003])
     rtudo.loop_do.extend([0, 0, 0, 0, 2, 2])
     rqmsg.rtu_do.extend([rtudo])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
@@ -271,12 +272,14 @@ def test_ipcqueue():
     print('=== query em data ===')
     url = baseurl + 'queryemdata'
     rqmsg = msgif.rqQueryEMData()
-    rqmsg.head.paging_num = 10
-    rqmsg.head.paging_buffer_tag = 1478230469047982
-    rqmsg.head.paging_idx = 30
-    rqmsg.dev_id = '901001000001'
-    rqmsg.dt_start = mx.time2stamp('2016-11-01 0:0:0')
-    rqmsg.dt_end = mx.time2stamp('2016-11-03 23:59:59')
+    rqmsg.head.paging_num = 100
+    # rqmsg.head.paging_buffer_tag = 1478230469047982
+    # rqmsg.head.paging_idx = 30
+    rqmsg.dev_id = '901001000999'
+    # rqmsg.dt_start = 1489021647
+    # rqmsg.dt_end = 1489108047
+    rqmsg.dt_start = mx.time2stamp('2017-03-23 0:0:0')
+    rqmsg.dt_end = mx.time2stamp('2017-03-28 23:59:59')
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     msg = msgif.QueryEMData()
@@ -308,7 +311,7 @@ def test_eventinfo():
     global user_id
     print('=== query event info ===')
     url = baseurl + 'eventinfo'
-    rqmsg = msgif.rqEventInfo()
+    rqmsg = init_head(msgif.rqEventInfo())
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     print(r.data)
@@ -323,31 +326,31 @@ def test_errquery():
     global user_id
     print('=== query err data ===')
     url = baseurl + 'querydataerr'
-    rqmsg = msgif.rqQueryDataErr()
+    rqmsg = init_head(msgif.rqQueryDataErr())
     rqmsg.dt_start = mx.time2stamp('2015-09-10 00:00:00')
     rqmsg.dt_end = mx.time2stamp('2016-11-20 00:00:00')
     rqmsg.type = 0
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
-    data = {'uuid': user_id,
-            'pb2': '''CgsQyOQJoAaz6fHCBTCz6fHCBUqFCMGEPcKEPcOEPcSEPcWEPcaEPceEPciEPcmEPcqEPcuEPcyE
-    Pc2EPc6EPc+EPdCEPdGEPdKEPdOEPdSEPdWEPdaEPdeEPdiEPdmEPdqEPduEPdyEPd2EPd6EPd+E
-    PeCEPeGEPeKEPeOEPeSEPeWEPeaEPeeEPeiEPemEPeqEPeuEPeyEPe2EPe6EPe+EPfCEPfGEPfKE
-    PfOEPfSEPfWEPfaEPfeEPfiEPfmEPfqEPfuEPfyEPf2EPf6EPf+EPYCFPYGFPYKFPYOFPYSFPYWF
-    PYaFPYeFPYiFPYmFPYqFPYuFPYyFPY2FPY6FPY+FPZCFPZGFPZKFPZOFPZSFPZWFPZaFPZeFPZiF
-    PZmFPZqFPZuFPZyFPZ2FPZ6FPZ+FPaCFPaGFPaKFPaOFPaSFPaWFPaaFPaeFPaiFPamFPaqFPauF
-    PayFPa2FPa6FPa+FPbCFPbGFPbKFPbOFPbSFPbWFPbaFPbeFPbiFPbmFPbqFPbuFPbyFPb2FPb6F
-    Pb+FPcCFPcGFPcKFPcOFPcSFPcWFPcaFPceFPciFPcmFPcqFPcuFPcyFPc2FPc6FPc+FPdCFPdGF
-    PdKFPdOFPdSFPdWFPdaFPdeFPdiFPdmFPdqFPduFPdyFPd2FPd6FPd+FPeCFPeGFPeKFPeOFPeSF
-    PeWFPeaFPeeFPeiFPemFPeqFPeuFPeyFPe2FPe6FPe+FPfCFPfGFPfKFPfOFPfSFPfWFPfaFPfeF
-    PfiFPfmFPfqFPfuFPfyFPf2FPf6FPf+FPYCGPYGGPYKGPYOGPYSGPYWGPYaGPYeGPYiGPYmGPYqG
-    PYuGPYyGPY2GPY6GPY+GPZCGPZGGPZKGPZOGPZSGPZWGPZaGPZeGPZiGPZmGPZqGPZuGPZyGPZ2G
-    PaKGPaOGPaSGPaWGPaaGPaeGPaiGPamGPaqGPauGPayGPa2GPeGRQ+KRQ+ORQ+SRQ+WRQ+aRQ+eR
-    Q+iRQ+mRQ+qRQ+uRQ+yRQ+2RQ+6RQ++RQ/CRQ/GRQ/KRQ/ORQ/SRQ/WRQ/aRQ/eRQ/iRQ/mRQ/qR
-    Q/uRQ/yRQ/2RQ/6RQ/+RQ4CSQ4GSQ4KSQ46SQ4+SQ5CSQ5GSQ5KSQ5OSQ5SSQ5WSQ5aSQ5eSQ5iS
-    Q5mSQ5qSQ5uSQ5ySQ52SQ56SQ5+SQ6CSQ6GSQ6KSQ6OSQ6SSQ6WSQ6aSQ6eSQ6iSQ6mSQ6qSQ6uS
-    Q6ySQ62SQ66SQ6+SQ7CSQ7GSQ7KSQ7OSQ7SSQ7WSQ7aSQ7eSQ7iSQ7mSQ7qSQ7uSQ7ySQ72SQ76S
-    Q7+SQ8CSQ8GSQ8KSQ8G5VeLGW+PGW+TGW+XGW+bGW+fGW+jGW+nGW+rGW+vGW+zGW+3GW+7GW+/G
-    W/DGW/HGW/LGW/PGW/TGW/XGW/bGW/fGWw=='''}
+    # data = {'uuid': user_id,
+    #         'pb2': '''CgsQyOQJoAaz6fHCBTCz6fHCBUqFCMGEPcKEPcOEPcSEPcWEPcaEPceEPciEPcmEPcqEPcuEPcyE
+    # Pc2EPc6EPc+EPdCEPdGEPdKEPdOEPdSEPdWEPdaEPdeEPdiEPdmEPdqEPduEPdyEPd2EPd6EPd+E
+    # PeCEPeGEPeKEPeOEPeSEPeWEPeaEPeeEPeiEPemEPeqEPeuEPeyEPe2EPe6EPe+EPfCEPfGEPfKE
+    # PfOEPfSEPfWEPfaEPfeEPfiEPfmEPfqEPfuEPfyEPf2EPf6EPf+EPYCFPYGFPYKFPYOFPYSFPYWF
+    # PYaFPYeFPYiFPYmFPYqFPYuFPYyFPY2FPY6FPY+FPZCFPZGFPZKFPZOFPZSFPZWFPZaFPZeFPZiF
+    # PZmFPZqFPZuFPZyFPZ2FPZ6FPZ+FPaCFPaGFPaKFPaOFPaSFPaWFPaaFPaeFPaiFPamFPaqFPauF
+    # PayFPa2FPa6FPa+FPbCFPbGFPbKFPbOFPbSFPbWFPbaFPbeFPbiFPbmFPbqFPbuFPbyFPb2FPb6F
+    # Pb+FPcCFPcGFPcKFPcOFPcSFPcWFPcaFPceFPciFPcmFPcqFPcuFPcyFPc2FPc6FPc+FPdCFPdGF
+    # PdKFPdOFPdSFPdWFPdaFPdeFPdiFPdmFPdqFPduFPdyFPd2FPd6FPd+FPeCFPeGFPeKFPeOFPeSF
+    # PeWFPeaFPeeFPeiFPemFPeqFPeuFPeyFPe2FPe6FPe+FPfCFPfGFPfKFPfOFPfSFPfWFPfaFPfeF
+    # PfiFPfmFPfqFPfuFPfyFPf2FPf6FPf+FPYCGPYGGPYKGPYOGPYSGPYWGPYaGPYeGPYiGPYmGPYqG
+    # PYuGPYyGPY2GPY6GPY+GPZCGPZGGPZKGPZOGPZSGPZWGPZaGPZeGPZiGPZmGPZqGPZuGPZyGPZ2G
+    # PaKGPaOGPaSGPaWGPaaGPaeGPaiGPamGPaqGPauGPayGPa2GPeGRQ+KRQ+ORQ+SRQ+WRQ+aRQ+eR
+    # Q+iRQ+mRQ+qRQ+uRQ+yRQ+2RQ+6RQ++RQ/CRQ/GRQ/KRQ/ORQ/SRQ/WRQ/aRQ/eRQ/iRQ/mRQ/qR
+    # Q/uRQ/yRQ/2RQ/6RQ/+RQ4CSQ4GSQ4KSQ46SQ4+SQ5CSQ5GSQ5KSQ5OSQ5SSQ5WSQ5aSQ5eSQ5iS
+    # Q5mSQ5qSQ5uSQ5ySQ52SQ56SQ5+SQ6CSQ6GSQ6KSQ6OSQ6SSQ6WSQ6aSQ6eSQ6iSQ6mSQ6qSQ6uS
+    # Q6ySQ62SQ66SQ6+SQ7CSQ7GSQ7KSQ7OSQ7SSQ7WSQ7aSQ7eSQ7iSQ7mSQ7qSQ7uSQ7ySQ72SQ76S
+    # Q7+SQ8CSQ8GSQ8KSQ8G5VeLGW+PGW+TGW+XGW+bGW+fGW+jGW+nGW+rGW+vGW+zGW+3GW+7GW+/G
+    # W/DGW/HGW/LGW/PGW/TGW/XGW/bGW/fGWw=='''}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     msg = msgif.QueryDataErr()
     msg.ParseFromString(base64.b64decode(r.data))
@@ -485,12 +488,13 @@ def handle_response(response):
 
 def test_ws():
     client = thc.HTTPClient()
-    baseurl = 'http://192.168.50.80:33819/ws_common/FlowService.asmx/mobileLogin'
-    args = {'user_name': 'admin', 'user_password': '123'}
-    url = url_concat(baseurl, args)
+    url = baseurl + 'setGps'
+    # baseurl = 'http://192.168.50.80:33819/ws_common/FlowService.asmx/mobileLogin'
+    args = {'user_id': '78', 'lon': '121.41110644', 'lat':'31.24478767'}
+    url = url_concat(url, args)
     print(url)
     rep = client.fetch(url)
-    print(dir(rep))
+    # print(dir(rep))
     print(repr(rep.body))
 
 
@@ -587,7 +591,7 @@ def test_querydatamru():
     rqmsg = msgif.rqQueryDataMru()
     # rqmsg.dt_start = mx.time2stamp('2016-12-10 00:00:00')
     # rqmsg.dt_end = mx.time2stamp('2017-01-20 00:00:00')
-    rqmsg.tml_id.extend([])
+    rqmsg.tml_id.extend([1300135])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     # data = {'uuid': user_id, 'pb2': 'KICY26 LKzCAqNaDlSs='}
     r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
@@ -599,6 +603,12 @@ def test_querydatamru():
 
 
 if __name__ == '__main__':
+    # test_ws()
+    # url = baseurl + '/UpdatePassword'
+    # data = {'user_now':78, 'old_pwd':'123', 'new_pwd':'123'}
+    # r = pm.request('GET', url, fields=data, timeout = 20.0, retries=False)
+    # print(r.data)
+    # exit()
     # test_submitsms()
     # test_submittcs()
     # a = time.time()
@@ -609,7 +619,7 @@ if __name__ == '__main__':
     # print('sms finish ', time.time() - a)
     # test_test()
     # exit()
-    # test_userlogin()
+    test_userlogin()
     # test_querydatartuelec()
     # test_querydatamru()
     # test_querysms()
@@ -626,9 +636,8 @@ if __name__ == '__main__':
     # test_tmlinfo()
     # test_errinfo()
     # test_eventinfo()
-    test_rtuctl()
+    # test_rtuctl()
     # test_userinfo()
     # test_rtudataget()
-    # test_rtuctl()
     # test_userdel()
     # test_userlogout()

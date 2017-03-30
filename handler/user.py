@@ -35,11 +35,17 @@ class UserLoginJKHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
+        pb2 = self.get_argument('pb2')
+        rqmsg = msgws.rqUserLogin()
         msg = msgws.UserLogin()
-        msg.head.idx = rqmsg.head.idx
-        msg.head.if_st = 1
         msg.head.ver = 160328
         msg.head.if_dt = int(time.time())
+        try:
+            rqmsg.ParseFromString(base64.b64decode(pb2))
+            msg.head.idx = rqmsg.head.idx
+            msg.head.if_st = 1
+        except:
+            msg.head.if_st = 46
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
@@ -49,6 +55,7 @@ class UserLoginJKHandler(base.RequestHandler):
             strsql,
             need_fetch=1,
             need_paging=0)
+
         if record_total is None or record_total == 0:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
             msg.head.if_st = 40
@@ -117,7 +124,6 @@ class UserLoginJKHandler(base.RequestHandler):
             msg.area_r.extend(_area_r)
             msg.area_w.extend(_area_w)
             msg.area_x.extend(_area_x)
-
             # 加入用户缓存{uuid:dict()}
             utils.cache_user[user_uuid] = dict(user_name=rqmsg.user,
                                                user_auth=user_auth,
@@ -170,7 +176,7 @@ class UserLoginJKHandler(base.RequestHandler):
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        # self.write_event(121, contents, 2, user_name=rqmsg.user)
+        self.write_event(121, contents, 2, user_name=rqmsg.user)
         del rqmsg, msg
 
 
@@ -325,11 +331,6 @@ class UserLoginHandler(base.RequestHandler):
                 else:
                     msg.flow_data = ''
                     print(str(ex))
-
-        self.write(mx.convertProtobuf(msg))
-        self.finish()
-        # self.write_event(121, contents, 2, user_name=rqmsg.user)
-        del rqmsg, msg
 
         self.write(mx.convertProtobuf(msg))
         self.finish()

@@ -16,6 +16,7 @@ import slu
 import sms
 import sysinfo
 import submit
+import uas
 from error import Err404Handler
 
 hs = []
@@ -31,6 +32,7 @@ hs.extend(mxweb.load_handler_module(sysinfo))
 hs.extend(mxweb.load_handler_module(submit))
 hs.extend(mxweb.load_handler_module(user))
 hs.extend(mxweb.load_handler_module(flow))
+hs.extend(mxweb.load_handler_module(uas))
 
 handler_iisi = []
 # lst_lic = mxweb.load_lic_for_nt()

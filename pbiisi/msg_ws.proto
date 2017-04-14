@@ -32,7 +32,7 @@ message rqUserLogin {
     int32 dev = 2;  // 设备类型,1-pc,2-web,3-移动设备,不同设备同一用户可同时登录,同种设备同一用户互斥
     string unique = 3;  // 移动设备唯一标示(移动设备填充,可以由服务器配置文件设置是否校验)
     string user = 4;  // 用户名
-    string pwd = 5;  // 密码(md5加密传输)
+    string pwd = 5;  // 密码
     double lon = 6; // 登录设备经度(选填)
     double lat = 7;  // 登录设备纬度(选填)
 }
@@ -49,6 +49,11 @@ message UserLogin {
     repeated int32 area_r = 9 [packed=true];  // 可读区域
     repeated int32 area_w = 10 [packed=true];  // 可写区域
     repeated int32 area_x = 11 [packed=true];  // 可操作区域
+    int32 user_id = 12;  // 用户id
+    int32 mobile = 13;  // 用户手机
+    string tel = 14;  // 用户电话
+    string email = 15; // 用户邮箱
+    string remark = 16; // 备注
 }
 
 // 用户注销 
@@ -70,10 +75,15 @@ message rqUserAdd {
     string fullname = 3;  // 新用户全名
     string pwd = 4;  // 新用户密码
     int32 area_id = 5;  // 新用户所属区域id
-    int32 auth = 6;  // 新用户权限值,
-    string tel = 7;  // 新用户手机号
+    int32 auth = 6;  // 新用户权限值
     string code = 8;  // 新用户移动设备操作码(开关灯操作时输入)
     string dbname = 9;  // 用户管理的数据库名称
+    int32 mobile = 7;  // 用户手机
+    string tel = 14;  // 用户电话
+    string email = 15; // 用户邮箱
+    string remark = 16; // 备注
+    string login_user = 17;  // 当前登录用户名
+    string login_pwd = 18;  // 当前登录用户密码
 }
 
 // CommAns应答
@@ -81,7 +91,9 @@ message rqUserAdd {
 // 删除用户
 message rqUserDel {
     Head head = 1;
-    string user_name = 3;  // 要删除的用户名
+    string user = 3;  // 要删除的用户名
+    int32 user_id = 4;  // 要删除的用户id
+    string pwd = 5;  // 用户密码
 }
 
 // CommAns应答
@@ -89,15 +101,19 @@ message rqUserDel {
 // 修改用户参数
 message rqUserEdit {
     Head head = 1;
-    string user_name = 2;  // 要修改的用户id
+    string user = 2;  // 要修改的用户id
     string fullname = 3;  // 新用户全名
     string pwd = 4;  // 新用户密码,如为空值表示不改密码
     int32 area_id = 5;  // 新用户所属区域id
     int32 auth = 6;  // 新用户权限值
-    string tel = 7;  // 新用户手机号
     string code = 8;  // 新用户移动设备操作码(开关灯操作时输入)
     string pwd_old = 9;  // 旧密码(uuid为管理员时不需要)
     int32 user_sz_id = 10;  // 市政用户id(若移动用户填充该值,则自动尝试调用市政的用户密码修改接口,同步密码修改)
+    int32 mobile = 7;  // 用户手机
+    string tel = 14;  // 用户电话
+    string email = 15; // 用户邮箱
+    string remark = 16; // 备注
+    int32 user_id = 17; // 要修改的用户id
 }
 
 // CommAns应答

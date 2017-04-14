@@ -19,7 +19,7 @@ import utils
 @mxweb.route()
 class QueryDataErrHandler(base.RequestHandler):
 
-    _help_doc = u'''故障数据查询 (post方式访问)<br/>
+    help_doc = u'''故障数据查询 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqQueryDataErr()结构序列化并经过base64编码后的字符串<br/>
@@ -118,7 +118,7 @@ class QueryDataErrHandler(base.RequestHandler):
 @mxweb.route()
 class ErrInfoHandler(base.RequestHandler):
 
-    _help_doc = u'''故障基础信息获取 (post方式访问)<br/>
+    help_doc = u'''故障基础信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqErrInfo()结构序列化并经过base64编码后的字符串<br/>

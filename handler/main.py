@@ -37,7 +37,7 @@ class TestHandler(base.RequestHandler):
 @mxweb.route()
 class StatusHandler(base.RequestHandler):
 
-    _help_doc = u'''服务状态检查<br/>
+    help_doc = u'''服务状态检查<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;do - [testconfig|showhandlers|timer]'''
 
@@ -46,7 +46,7 @@ class StatusHandler(base.RequestHandler):
         try:
             jobs = self.get_arguments('do')
             if len(jobs) == 0:
-                self.write(self._help_doc)
+                self.write(self.help_doc)
             else:
                 for do in jobs:
                     if do == 'timer' or do == 'all':
@@ -73,20 +73,21 @@ class StatusHandler(base.RequestHandler):
                             port = zmq_addr
                         else:
                             ip, port = zmq_addr.split(':')
-                            
+
                         sub.connect('tcp://{0}:{1}'.format(ip, int(port) + 1))
                         push.connect('tcp://{0}:{1}'.format(ip, port))
                         try:
                             push.send_multipart(['zmq.filter', 'zmq test message.'])
                             f, m = sub.recv_multipart()
-                            self.write('Test zmq config ... success. zmq config:{0}<br/>'.format(zmq_addr))
+                            self.write('Test zmq config ... success. zmq config:{0}<br/>'.format(
+                                zmq_addr))
                         except:
-                            self.write('Test zmq config ... failed.<br/>')               
+                            self.write('Test zmq config ... failed.<br/>')
 
                         thc = AsyncHTTPClient()
                         url = '{0}'.format(utils.m_fs_url)
                         try:
-                            rep = yield thc.fetch(url, raise_error=True, request_timeout=12)
+                            rep = yield thc.fetch(url, raise_error=True, request_timeout=20)
                             self.write('Test flow config ... success.<br/>')
                         except Exception as ex:
                             self.write('Test flow config ... failed.<br/>')
@@ -137,14 +138,14 @@ class StatusHandler(base.RequestHandler):
                         self.write('<br/>')
                         self.flush()
         except:
-            self.write(self._help_doc)
+            self.write(self.help_doc)
         self.finish()
 
 
 @mxweb.route()
 class CleaningWorkHandler(base.RequestHandler):
 
-    _help_doc = u'''资源清理'''
+    help_doc = u'''资源清理'''
 
     @gen.coroutine
     def get(self):

@@ -25,7 +25,7 @@ import utils
 @mxweb.route()
 class UserLoginJKHandler(base.RequestHandler):
 
-    _help_doc = u'''监控用户登录,移动版,同时登录工作流 (post方式访问)<br/>
+    help_doc = u'''监控用户登录,移动版,同时登录工作流 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;pb2 - rqUserLogin()结构序列化并经过base64编码后的字符串<br/>
     <b>返回:</b><br/>
@@ -183,7 +183,7 @@ class UserLoginJKHandler(base.RequestHandler):
 @mxweb.route()
 class UserLoginHandler(base.RequestHandler):
 
-    _help_doc = u'''监控用户登录 (post方式访问)<br/>
+    help_doc = u'''监控用户登录 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;pb2 - rqUserLogin()结构序列化并经过base64编码后的字符串<br/>
     <b>返回:</b><br/>
@@ -341,7 +341,7 @@ class UserLoginHandler(base.RequestHandler):
 @mxweb.route()
 class UserLogoutHandler(base.RequestHandler):
 
-    _help_doc = u'''用户注销 (post方式访问)<br/>
+    help_doc = u'''用户注销 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     <b>返回:</b><br/>
@@ -382,7 +382,7 @@ class UserLogoutHandler(base.RequestHandler):
 @mxweb.route()
 class UserRenewHandler(base.RequestHandler):
 
-    _help_doc = u'''用户续签 (post方式访问)<br/>
+    help_doc = u'''用户续签 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqUserRenew()结构序列化并经过base64编码后的字符串<br/>
@@ -401,7 +401,7 @@ class UserRenewHandler(base.RequestHandler):
 @mxweb.route()
 class UserAddHandler(base.RequestHandler):
 
-    _help_doc = u'''用户添加 (post方式访问)<br/>
+    help_doc = u'''用户添加 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 管理员的uuid<br/>
     &nbsp;&nbsp;pb2 - rqUserAdd()结构序列化并经过base64编码后的字符串<br/>
@@ -454,7 +454,7 @@ class UserAddHandler(base.RequestHandler):
 @mxweb.route()
 class UserDelHandler(base.RequestHandler):
 
-    _help_doc = u'''删除用户 (post方式访问)<br/>
+    help_doc = u'''删除用户 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 管理员的uuid<br/>
     &nbsp;&nbsp;pb2 - rqUserDel()结构序列化并经过base64编码后的字符串<br/>
@@ -508,7 +508,7 @@ class UserDelHandler(base.RequestHandler):
 @mxweb.route()
 class UserEditHandler(base.RequestHandler):
 
-    _help_doc = u'''修改用户信息 (post方式访问)<br/>
+    help_doc = u'''修改用户信息 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqUserEdit()结构序列化并经过base64编码后的字符串<br/>
@@ -587,7 +587,7 @@ class UserEditHandler(base.RequestHandler):
 @mxweb.route()
 class UserInfoHandler(base.RequestHandler):
 
-    _help_doc = u'''用户信息获取 (post方式访问)<br/>
+    help_doc = u'''用户信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqUserInfo()结构序列化并经过base64编码后的字符串<br/>

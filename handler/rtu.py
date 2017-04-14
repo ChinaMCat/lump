@@ -27,7 +27,7 @@ class TmlInfoHandler(base.RequestHandler):
     # 1500000~1599999 - 单灯
     # 1600000~1699999 - 漏电
 
-    _help_doc = u'''监控设备基础信息获取 (post方式访问)<br/>
+    help_doc = u'''监控设备基础信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqTmlInfo()结构序列化并经过base64编码后的字符串<br/>
@@ -511,7 +511,7 @@ class TmlInfoHandler(base.RequestHandler):
 @mxweb.route()
 class QueryDataRtuElecHandler(base.RequestHandler):
 
-    _help_doc = u'''终端估算电量数据查询 (post方式访问)<br/>
+    help_doc = u'''终端估算电量数据查询 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqQueryDataRtuElec()结构序列化并经过base64编码后的字符串<br/>
@@ -587,7 +587,7 @@ class QueryDataRtuElecHandler(base.RequestHandler):
 @mxweb.route()
 class QueryDataRtuHandler(base.RequestHandler):
 
-    _help_doc = u'''终端运行数据查询 (post方式访问)<br/>
+    help_doc = u'''终端运行数据查询 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqQueryDataRtu()结构序列化并经过base64编码后的字符串<br/>
@@ -760,7 +760,7 @@ class QueryDataRtuHandler(base.RequestHandler):
 @mxweb.route()
 class RtuDataGetHandler(base.RequestHandler):
 
-    _help_doc = u'''终端即时选测 (post方式访问)<br/>
+    help_doc = u'''终端即时选测 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqRtuDataGet()结构序列化并经过base64编码后的字符串<br/>
@@ -799,7 +799,7 @@ class RtuDataGetHandler(base.RequestHandler):
 @mxweb.route()
 class RtuCtlHandler(base.RequestHandler):
 
-    _help_doc = u'''终端即时控制(开关灯/停运/启用) (post方式访问)<br/>
+    help_doc = u'''终端即时控制(开关灯/停运/启用) (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqRtuCtl()结构序列化并经过base64编码后的字符串<br/>
@@ -888,7 +888,7 @@ class RtuCtlHandler(base.RequestHandler):
 @mxweb.route()
 class RtuVerGetHandler(base.RequestHandler):
 
-    _help_doc = u'''获取终端版本信息 (post方式访问)<br/>
+    help_doc = u'''获取终端版本信息 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqRtuVerGet()结构序列化并经过base64编码后的字符串<br/>
@@ -928,7 +928,7 @@ class RtuVerGetHandler(base.RequestHandler):
 @mxweb.route()
 class RtuTimerCtlHandler(base.RequestHandler):
 
-    _help_doc = u'''获取终端版本信息 (post方式访问)<br/>
+    help_doc = u'''获取终端版本信息 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqRtuVerGet()结构序列化并经过base64编码后的字符串<br/>

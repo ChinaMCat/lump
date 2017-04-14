@@ -18,7 +18,7 @@ import utils
 @mxweb.route()
 class QueryDataSluHandler(base.RequestHandler):
 
-    _help_doc = u'''单灯运行数据查询 (post方式访问)<br/>
+    help_doc = u'''单灯运行数据查询 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqQueryDataSlu()结构序列化并经过base64编码后的字符串<br/>
@@ -268,7 +268,7 @@ class QueryDataSluHandler(base.RequestHandler):
 @mxweb.route()
 class SluDataGetHandler(base.RequestHandler):
 
-    _help_doc = u'''单灯集中器即时选测 (post方式访问)<br/>
+    help_doc = u'''单灯集中器即时选测 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqSluDataGet()结构序列化并经过base64编码后的字符串<br/>
@@ -291,17 +291,19 @@ class SluDataGetHandler(base.RequestHandler):
                     msg.head.if_st = 46
                 else:
                     for tml_id in rtu_ids:
-                        phy_id, fid = self.get_phy_info(tml_id)
+                        phy_id, fid, tml_name = self.get_phy_info(tml_id)
+                        if phy_id == -1:
+                            continue
                         if fid > 0:
-                            addr = self.get_phy_info([fid])
+                            addr = self.get_phy_list([fid])
                             cid = phy_id
                             tra = 2
                         else:
-                            addr = phy_id
+                            addr = [phy_id]
                             cid = 1
                             tra = 1
                         tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7300',
-                                                         addr=addr,
+                                                         addr=list(addr),
                                                          cid=cid,
                                                          tra=tra)
                         tcsmsg.wlst_tml.wlst_slu_7300.cmd_idx = rqmsg.cmd_idx
@@ -322,7 +324,7 @@ class SluDataGetHandler(base.RequestHandler):
 @mxweb.route()
 class SluitemDataGetHandler(base.RequestHandler):
 
-    _help_doc = u'''单灯控制器即时选测 (post方式访问)<br/>
+    help_doc = u'''单灯控制器即时选测 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqSluitemDataGet()结构序列化并经过base64编码后的字符串<br/>
@@ -346,17 +348,19 @@ class SluitemDataGetHandler(base.RequestHandler):
                     msg.head.if_st = 46
                 else:
                     for tml_id in rtu_ids:
-                        phy_id, fid = self.get_phy_info(tml_id)
+                        phy_id, fid, tml_name = self.get_phy_info(tml_id)
+                        if phy_id == -1:
+                            continue
                         if fid > 0:
-                            addr = self.get_phy_info([fid])
+                            addr = self.get_phy_list([fid])
                             cid = phy_id
                             tra = 2
                         else:
-                            addr = phy_id
+                            addr = [phy_id]
                             cid = 1
                             tra = 1
                         tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7a00',
-                                                         addr=addr,
+                                                         addr=list(addr),
                                                          cid=cid,
                                                          tra=tra)
                         tcsmsg.wlst_tml.wlst_slu_7a00.cmd_idx = rqmsg.cmd_idx
@@ -377,7 +381,7 @@ class SluitemDataGetHandler(base.RequestHandler):
 @mxweb.route()
 class SluTimerCtlHandler(base.RequestHandler):
 
-    _help_doc = u'''单灯集中器时钟设置/召测 (post方式访问)<br/>
+    help_doc = u'''单灯集中器时钟设置/召测 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqSluTimerCtl()结构序列化并经过base64编码后的字符串<br/>
@@ -403,17 +407,19 @@ class SluTimerCtlHandler(base.RequestHandler):
                     msg.head.if_st = 46
                 else:
                     for tml_id in rtu_ids:
-                        phy_id, fid = self.get_phy_info(tml_id)
+                        phy_id, fid, tml_name = self.get_phy_info(tml_id)
+                        if phy_id == -1:
+                            continue
                         if fid > 0:
-                            addr = self.get_phy_info([fid])
+                            addr = self.get_phy_list([fid])
                             cid = phy_id
                             tra = 2
                         else:
-                            addr = phy_id
+                            addr = [phy_id]
                             cid = 1
                             tra = 1
                         tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7100',
-                                                         addr=addr,
+                                                         addr=list(addr),
                                                          cid=cid,
                                                          tra=tra)
                         tcsmsg.wlst_tml.wlst_slu_7100.opt_mark = rqmsg.data_mark
@@ -434,7 +440,7 @@ class SluTimerCtlHandler(base.RequestHandler):
 @mxweb.route()
 class SluCtlHandler(base.RequestHandler):
 
-    _help_doc = u'''单灯即时控制(开关灯) (post方式访问)<br/>
+    help_doc = u'''单灯即时控制(开关灯) (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqSluCtl()结构序列化并经过base64编码后的字符串<br/>
@@ -460,17 +466,19 @@ class SluCtlHandler(base.RequestHandler):
                     msg.head.if_st = 46
                 else:
                     for tml_id in rtu_ids:
-                        phy_id, fid = self.get_phy_info(tml_id)
+                        phy_id, fid, tml_name = self.get_phy_info(tml_id)
+                        if phy_id == -1:
+                            continue
                         if fid > 0:
-                            addr = self.get_phy_info([fid])
+                            addr = self.get_phy_list([fid])
                             cid = phy_id
                             tra = 2
                         else:
-                            addr = phy_id
+                            addr = [phy_id]
                             cid = 1
                             tra = 1
                         tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7400',
-                                                         addr=addr,
+                                                         addr=list(addr),
                                                          cid=cid,
                                                          tra=tra)
                         tcsmsg.wlst_tml.wlst_slu_7400.cmd_idx = rqmsg.cmd_idx
@@ -502,7 +510,7 @@ class SluCtlHandler(base.RequestHandler):
 @mxweb.route()
 class SluVerGetHandler(base.RequestHandler):
 
-    _help_doc = u'''单灯集中器版本信息获取 (post方式访问)<br/>
+    help_doc = u'''单灯集中器版本信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqSluVerGet()结构序列化并经过base64编码后的字符串<br/>
@@ -525,17 +533,19 @@ class SluVerGetHandler(base.RequestHandler):
                     msg.head.if_st = 46
                 else:
                     for tml_id in rtu_ids:
-                        phy_id, fid = self.get_phy_info(tml_id)
+                        phy_id, fid, tml_name = self.get_phy_info(tml_id)
+                        if phy_id == -1:
+                            continue
                         if fid > 0:
-                            addr = self.get_phy_info([fid])
+                            addr = self.get_phy_list([fid])
                             cid = phy_id
                             tra = 2
                         else:
-                            addr = phy_id
+                            addr = [phy_id]
                             cid = 1
                             tra = 1
                         tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.5000',
-                                                         addr=addr,
+                                                         addr=list(addr),
                                                          cid=cid,
                                                          tra=tra)
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)

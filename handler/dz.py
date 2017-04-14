@@ -16,7 +16,7 @@ dz_url = 'http://id.dz.tt/index.php'
 @mxweb.route()
 class DZProxyHandler(base.RequestHandler):
 
-    _help_doc = u'''封装电桩接口,具体访问参数参考电桩文档'''
+    help_doc = u'''封装电桩接口,具体访问参数参考电桩文档'''
 
     @gen.coroutine
     def get(self):

@@ -22,7 +22,7 @@ import _mysql as mysql
 @mxweb.route()
 class QuerySmsRecordHandler(base.RequestHandler):
 
-    _help_doc = u'''短信发送记录查询 (post方式访问)<br/>
+    help_doc = u'''短信发送记录查询 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqQuerySmsRecord()结构序列化并经过base64编码后的字符串<br/>
@@ -78,7 +78,7 @@ class QuerySmsRecordHandler(base.RequestHandler):
 @mxweb.route()
 class SubmitSmsHandler(base.RequestHandler):
 
-    _help_doc = u'''自定义短信提交 (post方式访问)<br/>
+    help_doc = u'''自定义短信提交 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;scode - 动态运算的安全码<br/>
     &nbsp;&nbsp;pb2 - rqSubmitSms()结构序列化并经过base64编码后的字符串<br/>

@@ -17,7 +17,7 @@ import utils
 @mxweb.route()
 class GroupInfoHandler(base.RequestHandler):
 
-    _help_doc = u'''监控分组信息获取 (post方式访问)<br/>
+    help_doc = u'''监控分组信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     <b>返回:</b><br/>
@@ -67,7 +67,7 @@ class GroupInfoHandler(base.RequestHandler):
 @mxweb.route()
 class AreaInfoHandler(base.RequestHandler):
 
-    _help_doc = u'''监控区域信息获取 (post方式访问)<br/>
+    help_doc = u'''监控区域信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     <b>返回:</b><br/>
@@ -133,7 +133,7 @@ class AreaInfoHandler(base.RequestHandler):
 @mxweb.route()
 class EventInfoHandler(base.RequestHandler):
 
-    _help_doc = u'''监控事件基础信息获取 (post方式访问)<br/>
+    help_doc = u'''监控事件基础信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqEventInfo()结构序列化并经过base64编码后的字符串<br/>
@@ -184,7 +184,7 @@ class EventInfoHandler(base.RequestHandler):
 @mxweb.route()
 class SunrisetInfoHandler(base.RequestHandler):
 
-    _help_doc = u'''监控日出日落信息获取 (post方式访问)<br/>
+    help_doc = u'''监控日出日落信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqSunrisetInfo()结构序列化并经过base64编码后的字符串<br/>
@@ -229,7 +229,7 @@ class SunrisetInfoHandler(base.RequestHandler):
 @mxweb.route()
 class QueryDataEventsHandler(base.RequestHandler):
 
-    _help_doc = u'''监控事件记录查询 (post方式访问)<br/>
+    help_doc = u'''监控事件记录查询 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqQueryDataEvents()结构序列化并经过base64编码后的字符串<br/>
@@ -308,7 +308,7 @@ class QueryDataEventsHandler(base.RequestHandler):
 @mxweb.route()
 class SysEditHandler(base.RequestHandler):
 
-    _help_doc = u'''监控系统名称修改 (post方式访问)<br/>
+    help_doc = u'''监控系统名称修改 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqSysEdit()结构序列化并经过base64编码后的字符串<br/>
@@ -340,7 +340,7 @@ class SysEditHandler(base.RequestHandler):
 @mxweb.route()
 class SysInfoHandler(base.RequestHandler):
 
-    _help_doc = u'''监控系统信息获取 (post方式访问)<br/>
+    help_doc = u'''监控系统信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqSysInfo()结构序列化并经过base64编码后的字符串<br/>

@@ -23,7 +23,7 @@ import utils
 @mxweb.route()
 class IpcUplinkHandler(base.RequestHandler):
 
-    _help_doc = u'''工控机提交末端设备数据 (post方式访问)<br/>
+    help_doc = u'''工控机提交末端设备数据 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqIpcUplink()结构序列化并经过base64编码后的字符串<br/>
@@ -133,7 +133,7 @@ class IpcUplinkHandler(base.RequestHandler):
 @mxweb.route()
 class IpcCtlHandler(base.RequestHandler):
 
-    _help_doc = u'''向工控机发送控制指令 (post方式访问)<br/>
+    help_doc = u'''向工控机发送控制指令 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;scode - 动态运算的安全码<br/>
     &nbsp;&nbsp;pb2 - rqIpcCtl()结构序列化并经过base64编码后的字符串<br/>
@@ -181,7 +181,7 @@ class IpcCtlHandler(base.RequestHandler):
 @mxweb.route()
 class QueryEMDataHandler(base.RequestHandler):
 
-    _help_doc = u'''环境数据查询 (post方式访问)<br/>
+    help_doc = u'''环境数据查询 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqQueryEMData()结构序列化并经过base64编码后的字符串<br/>

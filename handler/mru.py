@@ -17,7 +17,7 @@ import utils
 @mxweb.route()
 class QueryDataMruHandler(base.RequestHandler):
 
-    _help_doc = u'''电表数据查询 (post方式访问)<br/>
+    help_doc = u'''电表数据查询 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqQueryDataMru()结构序列化并经过base64编码后的字符串<br/>
@@ -88,7 +88,7 @@ class QueryDataMruHandler(base.RequestHandler):
 @mxweb.route()
 class MruDataGetHandler(base.RequestHandler):
 
-    _help_doc = u'''电表设备即时抄表 (post方式访问)<br/>
+    help_doc = u'''电表设备即时抄表 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
     &nbsp;&nbsp;pb2 - rqErrInfo()结构序列化并经过base64编码后的字符串<br/>

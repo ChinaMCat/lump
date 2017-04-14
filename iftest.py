@@ -15,8 +15,9 @@ from tornado.httputil import url_concat
 import timeit
 
 baseurl = 'http://192.168.122.185:10005/'
-baseurl = 'http://192.168.50.55:10001/'
-# baseurl = 'http://192.168.50.55:63810/'
+baseurl = 'http://192.168.50.83:10020/'
+# baseurl = 'http://192.168.50.55:10001/'
+baseurl = 'http://192.168.50.55:63800/'
 # baseurl = 'http://180.168.198.218:63000/'
 # baseurl = 'http://180.153.108.83:20525/'
 # baseurl = 'http://192.168.50.80:33819/ws_BT/FlowService.asmx'
@@ -210,7 +211,23 @@ def test_sludataget():
     print(msg)
     time.sleep(0)
 
-
+def test_sluctl():
+    global user_id
+    print('=== sluctl ===')
+    url = baseurl + 'sluctl'
+    rqmsg = init_head(msgif.rqSluCtl())
+    rqmsg.tml_id.extend([1500040])
+    rqmsg.addr_type = 4
+    rqmsg.cmd_type=4
+    rqmsg.addrs.extend([1,2,3])
+    rqmsg.cmd_mix.extend([1,0,0,0])
+    data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    msg = msgif.CommAns()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    time.sleep(0)
+    
 def test_rtusubmitt():
     global user_id
     print('=== rtu submit ===')
@@ -366,8 +383,8 @@ def test_rtudataquery():
     rqmsg = msgif.rqQueryDataRtu()
     rqmsg.dt_start = 0  # mx.time2stamp('2015-10-20 00:00:00')
     rqmsg.dt_end = mx.time2stamp('2016-12-20 00:00:00')
-    rqmsg.type = 1
-    rqmsg.tml_id.extend([])
+    rqmsg.type = 0
+    rqmsg.tml_id.extend([1000003])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
     msg = msgif.QueryDataRtu()
@@ -384,7 +401,7 @@ def test_tmlinfo():
     print('=== query rty info ===')
     url = baseurl + 'tmlinfo'
     rqmsg = msgif.rqTmlInfo()
-    rqmsg.data_mark.extend([6])
+    rqmsg.data_mark.extend([9])
     rqmsg.tml_id.extend([])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     # data = {'uuid': user_id, 'pb2': 'CgsQyOQJoAbTgM7CBSoCAwIyAQA='}
@@ -619,6 +636,7 @@ if __name__ == '__main__':
     # print('sms finish ', time.time() - a)
     # test_test()
     # exit()
+    # test_sluctl()
     test_userlogin()
     # test_querydatartuelec()
     # test_querydatamru()
@@ -633,7 +651,7 @@ if __name__ == '__main__':
     # test_ipcqueue()
     # test_rtudataquery()
     # test_userrenew()
-    # test_tmlinfo()
+    test_tmlinfo()
     # test_errinfo()
     # test_eventinfo()
     # test_rtuctl()

@@ -18,7 +18,53 @@ import utils
 @mxweb.route()
 class mobileLoginHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考工作流相关文档'''
+
+    keep_name_case = True
+    thc = AsyncHTTPClient()
+
+    @gen.coroutine
+    def get(self):
+        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        try:
+            # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
+
+            rep = yield self.thc.fetch(url, raise_error=True, request_timeout=12)
+            self.write(rep.body)
+        except Exception as ex:
+            self.write(str(ex))
+        self.finish()
+        del url
+
+    @gen.coroutine
+    def post(self):
+        x = self.request.arguments
+        data = dict()
+        for k in x.keys():
+            data[k] = x.get(k)[0]
+        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        try:
+            # rep = utils.m_httpclinet_pool.request('GET',
+            #                                       url,
+            #                                       fields=data,
+            #                                       timeout=7.0,
+            #                                       retries=False)
+            url += '?{0}'.format(urlencode(data))
+
+            rep = yield self.thc.fetch(url, raise_error=True, request_timeout=12)
+            self.write(rep.body)
+        except Exception as ex:
+            self.write(str(ex))
+        self.finish()
+        del url, x, data
+
+
+@mxweb.route()
+class getAssetHandler(base.RequestHandler):
+
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -64,7 +110,7 @@ class mobileLoginHandler(base.RequestHandler):
 @mxweb.route()
 class getFormHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -110,7 +156,7 @@ class getFormHandler(base.RequestHandler):
 @mxweb.route()
 class setGpsHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -156,7 +202,7 @@ class setGpsHandler(base.RequestHandler):
 @mxweb.route()
 class getFilterBoxHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -202,7 +248,7 @@ class getFilterBoxHandler(base.RequestHandler):
 @mxweb.route()
 class listRecordHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -248,7 +294,7 @@ class listRecordHandler(base.RequestHandler):
 @mxweb.route()
 class listTaskHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -294,7 +340,7 @@ class listTaskHandler(base.RequestHandler):
 @mxweb.route()
 class listTaskRecordHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -340,7 +386,7 @@ class listTaskRecordHandler(base.RequestHandler):
 @mxweb.route()
 class listTaskAllHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -386,7 +432,7 @@ class listTaskAllHandler(base.RequestHandler):
 @mxweb.route()
 class listDoneHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -432,7 +478,7 @@ class listDoneHandler(base.RequestHandler):
 @mxweb.route()
 class getFormHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -478,7 +524,7 @@ class getFormHandler(base.RequestHandler):
 @mxweb.route()
 class getLogHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -524,7 +570,7 @@ class getLogHandler(base.RequestHandler):
 @mxweb.route()
 class doFetchHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -570,7 +616,7 @@ class doFetchHandler(base.RequestHandler):
 @mxweb.route()
 class doTransitionHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 
@@ -616,7 +662,7 @@ class doTransitionHandler(base.RequestHandler):
 @mxweb.route()
 class GetDictValuesWithFilterHandler(base.RequestHandler):
 
-    _help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
+    help_doc = u'''工作流接口封装 (get/post方式访问)<br/>
     <b>参数:</b></br>
     &nbsp;&nbsp;参考工作流相关文档'''
 

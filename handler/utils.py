@@ -17,12 +17,12 @@ import json
 #           FIELD_TYPE.SHORT: int}
 m_conv = {1: int, 2: int, 3: int, 4: float, 5: float, 8: int, 9: int}
 
-m_tcs_port = libiisi.m_config.getData('tcs_port')
-m_jkdb_name = libiisi.m_config.getData('jkdb_name')
-m_dgdb_name = libiisi.m_config.getData('dgdb_name')
-m_dz_url = libiisi.m_config.getData('dz_url')
-m_fs_url = '{0}/FlowService.asmx'.format(libiisi.m_config.getData('fs_url'))
-if len(libiisi.m_config.getData('db_url')) > 10:
+m_tcs_port = libiisi.m_config.getData('tcs_port')  # 监控通讯层端口号
+m_jkdb_name = libiisi.m_config.getData('jkdb_name')  # 监控数据库名称
+m_dgdb_name = libiisi.m_config.getData('dgdb_name')  # 灯杆数据库名称
+m_dz_url = libiisi.m_config.getData('dz_url')  # 电桩接口地址
+m_fs_url = '{0}/FlowService.asmx'.format(libiisi.m_config.getData('fs_url'))  # 市政工作流接口地址
+if len(libiisi.m_config.getData('db_url')) > 10:  # 异步数据库访问地址（暂不用）
     m_db_url = '{0}/databaseprocess?pb2='.format(libiisi.m_config.getData('db_url'))
 else:
     m_db_url = ''
@@ -33,12 +33,12 @@ m_jkdb_host = libiisi.m_config.getData('db_host').split(':')[0]
 m_jkdb_port = 3306 if len(libiisi.m_config.getData('db_host').split(':')) == 1 else int(
     libiisi.m_config.getData('db_host').split(':')[1])
 
-_can_read = (4, 5, 7, 15)
-_can_write = (2, 3, 6, 7, 15)
-_can_exec = (1, 3, 5, 7, 15)
-_can_admin = (15, )
+_can_read = (4, 5, 7, 15)  # 可读权限值
+_can_write = (2, 3, 6, 7, 15)  # 可写权限值
+_can_exec = (1, 3, 5, 7, 15)  # 可操作权限值
+_can_admin = (15, )  # 管理员权限值
 
-_events_def = dict()
+_events_def = dict()  # 事件信息字典（废弃）
 _events_def[11] = u'终端时间同步',
 _events_def[12] = u'终端工作参数',
 _events_def[13] = u'终端矢量参数',
@@ -97,6 +97,7 @@ _events_def[60] = u'设置集中器报警参数',
 _events_def[61] = u'蓝牙连接请求',
 _events_def[65] = u'混合或调光操作',
 
+# 气象数据id定义
 qudata_sxhb = [503,  # no
                504,  # no2
                505,  # co
@@ -112,9 +113,10 @@ qudata_sxhb = [503,  # no
                ]
 # {uuid:dict(user_id, user_name,user_auth,login_time, ative_time, area_id, user_db,source_dev)}
 
-cache_user = dict()
-cache_buildin_users = set()
+cache_user = dict()  # 用户信息缓存
+cache_buildin_users = set()  # 内建用户信息缓存
 
+# 判断是否存在内建用户，并读取
 if os.path.isfile(os.path.join(mx.SCRIPT_DIR, '.profile')):
     with open(os.path.join(mx.SCRIPT_DIR, '.profile'), 'r') as f:
         z = f.readlines()
@@ -135,6 +137,7 @@ if os.path.isfile(os.path.join(mx.SCRIPT_DIR, '.profile')):
         except:
             pass
 
+# 气象数据表创建脚本
 sqlstr_create_emtable = '''CREATE TABLE `{0}` (
     `dev_id` CHAR(12) NOT NULL,
     `dev_data` DECIMAL(9,6) NULL DEFAULT NULL,

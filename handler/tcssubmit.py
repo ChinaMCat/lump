@@ -22,7 +22,7 @@ import utils
 @mxweb.route()
 class SubmitAlarmHandler(base.RequestHandler):
 
-    _help_doc = u'''监控故障报警信息提交 (post方式访问)<br/>
+    help_doc = u'''监控故障报警信息提交 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;scode - 动态运算的安全码<br/>
     &nbsp;&nbsp;pb2 - rqSubmitAlarm()结构序列化并经过base64编码后的字符串<br/>
@@ -59,7 +59,7 @@ class SubmitAlarmHandler(base.RequestHandler):
 @mxweb.route()
 class SubmitTcsHandler(base.RequestHandler):
 
-    _help_doc = u'''监控数据提交 (post方式访问)<br/>
+    help_doc = u'''监控数据提交 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;scode - 动态运算的安全码<br/>
     &nbsp;&nbsp;pb2 - MsgWithCtrl()结构序列化并经过base64编码后的字符串<br/>
@@ -95,7 +95,7 @@ class SubmitTcsHandler(base.RequestHandler):
 @mxweb.route()
 class SubmitTcsJsonHandler(base.RequestHandler):
 
-    _help_doc = u'''监控Josn数据提交 (post方式访问)<br/>
+    help_doc = u'''监控Josn数据提交 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;scode - 动态运算的安全码<br/>
     &nbsp;&nbsp;pb2 - MsgWithCtrl()结构序列化并经过base64编码后的字符串<br/>

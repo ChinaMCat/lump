@@ -112,7 +112,7 @@ class SubmitTcsJsonHandler(base.RequestHandler):
         else:
             scode = args.get('scode')[0]
 
-            leage = self.computing_security_code(scode)
+            legal = self.computing_security_code(scode)
 
             if legal:
                 try:
@@ -129,7 +129,7 @@ class SubmitTcsJsonHandler(base.RequestHandler):
             else:
                 logging.error(base.format_log(self.request.remote_ip, 'Security code error',
                                               self.request.path, 0))
-
+                                              
         # self.write('Done.')
         self.finish()
-        del legal, rqmsg, msg
+        del rqmsg, msg

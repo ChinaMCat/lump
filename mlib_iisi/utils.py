@@ -5,12 +5,11 @@ import codecs
 import json
 import os
 import time
-
 import mxpsu as mx
 import protobuf3.msg_with_ctrl_pb2 as msgctrl
 import zmq
 
-m_confdir, m_logdir, m_cachedir = mx.get_dirs('oahu', 'iisi')
+m_confdir, m_logdir, m_cachedir = mx.get_dirs('oahu')
 
 m_zmq_pub = None
 m_zmq_pull = None
@@ -19,6 +18,7 @@ m_send_queue = mx.PriorityQueue(maxsize=5000)
 
 m_tcs = None
 
+m_sql = None
 # _wait4ans = dict()
 # _ans_queue = dict()
 
@@ -206,17 +206,17 @@ SENDWHOIS = '`{0}`'.format(sendServerMsg('', 'wlst.sys.whois'))
 #                               fs_url=('http://127.0.0.1:33819/ws_common', u'工作流接口地址'),
 #                               db_url=('', u'数据访问接口地址'), ))
 m_config = mx.ConfigFile()
+m_config.setData('uas_url', 'http://127.0.0.1:10009/uas', '统一验证服务地址')
 m_config.setData('log_level', 10, '日志记录等级, 10-debug, 20-info, 30-warring, 40-error')
-m_config.setData('tcs_port', '10001', '通讯服务程序端口')
-m_config.setData('reconnect_time', 10, '连接断开重新发起连接间隔,默认10s')
-m_config.setData('db_host', '127.0.0.1:3306', '监控数据库服务地址, ip:port, 端口默认3306')
-m_config.setData('db_user', 'root', '监控数据库服务用户名')
-m_config.setData('db_pwd', 'lp1234xy', '监控数据库服务密码')
-m_config.setData('jkdb_name', 'mydb1024', '监控数据库名称')
-m_config.setData('dgdb_name', 'dgdb10001', '灯杆数据库名称')
+m_config.setData('tcs_port', '10001', '对应通讯服务程序端口')
+m_config.setData('db_host', '127.0.0.1:3306', '数据库服务地址, ip:port, 端口默认3306')
+m_config.setData('db_user', 'root', '数据库服务用户名')
+m_config.setData('db_pwd', 'lp1234xy', '数据库服务密码')
+m_config.setData('db_name_jk', 'mydb1024', '监控数据库名称')
+m_config.setData('db_name_dg', 'mydb_dg_10001', '灯杆数据库名称')
+m_config.setData('db_name_uas', 'uas', '统一验证数据库名称')
 m_config.setData('dz_url', 'http://id.dz.tt/index.php', '电桩接口地址')
 m_config.setData('fs_url', 'http://127.0.0.1:33819/ws_common', '工作流接口地址')
-m_config.setData('db_url', '', '数据访问接口地址')
 m_config.setData('bind_port', 10005, '本地监听端口')
 m_config.setData('zmq_port', '10006',
                  'ZMQ端口，采用ip:port格式时连接远程ZMQ-PULL服务,采用port格式时为发布本地PULL服务,PUB服务端口号+1')

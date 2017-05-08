@@ -11,10 +11,8 @@ import os
 import sys
 import thread
 import time
-
 import mxpsu as mx
 import mlib_iisi as libiisi
-
 import tornado.httpserver
 import tornado.web
 from tornado.options import options
@@ -97,6 +95,14 @@ if __name__ == '__main__':
     if results.hp:
         tornado.process.fork_processes(0)
 
+    libiisi.m_sql = libiisi.MXMariadb(
+        host=libiisi.m_config.getData('db_host').split(':')[0],
+        port=3306 if len(libiisi.m_config.getData('db_host').split(':')) == 1 else int(
+            libiisi.m_config.getData('db_host').split(':')[1]),
+        user=libiisi.m_config.getData('db_user'),
+        pwd=libiisi.m_config.getData('db_pwd'))
+    libiisi.m_sql.set_debug(results.debug)
+
     # 开启后台线程
     # ip, port = libiisi.m_config.getData('tcs_server').split(':')
     thread.start_new_thread(libiisi.zmq_proxy, ())
@@ -112,12 +118,11 @@ if __name__ == '__main__':
                     # login_url='/userloginjk', 
                     )
 
-    from handler import handler_iisi, handler_err, handler_iisi_db
-    lst_handler = []
-    lst_handler.extend(handler_iisi)
-    # lst_handler.extend(handler_iisi_db)
-    lst_handler.extend(handler_err)
     try:
+        from handler import handler_iisi, handler_err
+        lst_handler = []
+        lst_handler.extend(handler_iisi)
+        lst_handler.extend(handler_err)
         application = tornado.web.Application(handlers=lst_handler, **settings)
         application.listen(int(iisi_port))
         logging.error('======= start the service on port {0} ======='.format(iisi_port))

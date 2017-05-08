@@ -8,10 +8,11 @@ __doc__ = 'slu handler'
 import mxpsu as mx
 import mxweb
 from tornado import gen
-
+import mlib_iisi as libiisi
 import base
 import pbiisi.msg_ws_pb2 as msgws
 import utils
+import json
 
 
 @mxweb.route()
@@ -55,7 +56,7 @@ class QueryDataMruHandler(base.RequestHandler):
                 (select rtu_id,date_create from 
                 (select rtu_id,max(date_create) as date_create from {0}_data.data_mru_record group by rtu_id) as t 
                 where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} {2} order by a.rtu_id,a.date_create desc'''.format(
-                    utils.m_jkdb_name, strdt, str_tmls)
+                    utils.m_dbname_jk, strdt, str_tmls)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
@@ -100,7 +101,7 @@ class MruDataGetHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqMruDataGet(), None)
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in utils._can_read & utils._can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = ','.join([str(a) for a in rqmsg.tml_id])
@@ -114,7 +115,7 @@ class MruDataGetHandler(base.RequestHandler):
                     strsql = '''select a.rtu_id,a.rtu_fid,
                     b.mru_addr_1,b.mru_addr_2,b.mru_addr_3,b.mru_addr_4,b.mru_addr_5,b.mru_addr_6 
                     from {0}.para_base_equipment as a left join {0}.para_mru as b 
-                    on a.rtu_id in ({1})'''.format(utils.m_jkdb_name, rtu_ids)
+                    on a.rtu_id in ({1})'''.format(utils.m_dbname_jk, rtu_ids)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1)

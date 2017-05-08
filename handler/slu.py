@@ -61,7 +61,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         (select rtu_id,date_create from 
                         (select rtu_id,max(date_create) as date_create from {0}_data.data_slu group by rtu_id) as t
                         where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.rtu_id'''.format(
-                            utils.m_jkdb_name, str_tmls)
+                            utils.m_dbname_jk, str_tmls)
                     elif rqmsg.type == 1:
                         strsql = '''select a.rtu_id,a.date_create,
                         a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm,
@@ -70,7 +70,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         a.is_timer_error,a.unknow_ctrl_count,a.communication_channel 
                         from {0}_data.data_slu as a 
                         where a.date_create>={1} and a.date_create<={2} {3} order by a.date_create desc'''.format(
-                            utils.m_jkdb_name, sdt, edt, str_tmls)
+                            utils.m_dbname_jk, sdt, edt, str_tmls)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
@@ -125,11 +125,11 @@ class QueryDataSluHandler(base.RequestHandler):
                         (select slu_id,date_create from 
                         (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_assist group by slu_id) as t 
                         where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.slu_id'''.format(
-                            utils.m_jkdb_name, str_tmls)
+                            utils.m_dbname_jk, str_tmls)
                     elif rqmsg.type == 1:
                         strsql = '''select a.slu_id,a.date_create,a.ctrl_id,a.date_data_happen,a.leackage_current,a.light_data_filed 
                         from {0}_data.data_slu_ctrl_assist as a where a.date_create >={1} and a.date_create<= {2} {3} 
-                        order by a.date_create desc,a.slu_id,a.ctrl_id'''.format(utils.m_jkdb_name,
+                        order by a.date_create desc,a.slu_id,a.ctrl_id'''.format(utils.m_dbname_jk,
                                                                                  sdt, edt, str_tmls)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
@@ -199,7 +199,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         (select slu_id,date_create from
                         (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_lamp group by slu_id) as t
                         where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.slu_id,a.ctrl_id,a.lamp_id, a.date_create desc'''.format(
-                            utils.m_jkdb_name, str_tmls)
+                            utils.m_dbname_jk, str_tmls)
                     elif rqmsg.type == 1:
                         strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
                         d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
@@ -210,7 +210,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         left join {0}_data.data_slu_ctrl as d on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id 
                         where a.date_create>={1} and a.date_create<={2} {3} 
                         order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id'''.format(
-                            utils.m_jkdb_name, sdt, edt, str_tmls)
+                            utils.m_dbname_jk, sdt, edt, str_tmls)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
@@ -280,7 +280,7 @@ class SluDataGetHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluDataGet(), None)
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in utils._can_read & utils._can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = rqmsg.tml_id
@@ -337,7 +337,7 @@ class SluitemDataGetHandler(base.RequestHandler):
                                                                       None)
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in utils._can_read & utils._can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = rqmsg.tml_id
@@ -394,7 +394,11 @@ class SluTimerCtlHandler(base.RequestHandler):
         env = False
         contents = ''
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_exec:
+            if rqmsg.data_mark == 0:
+                user_auth = utils._can_exec & utils._can_write
+            else:
+                user_auth =  utils._can_exec & utils._can_read
+            if user_data['user_auth'] in user_auth:
                 env = True
                 contents = 'user from {0} set slu timer'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id

@@ -49,7 +49,7 @@ class UserLoginJKHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(utils.m_jkdb_name, rqmsg.user,
+        where user_name="{1}" and user_password="{2}"'.format(utils.m_dbname_jk, rqmsg.user,
                                                               rqmsg.pwd)
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
@@ -91,7 +91,7 @@ class UserLoginJKHandler(base.RequestHandler):
             _area_w = []
             _area_x = []
             strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
-                utils.m_jkdb_name, rqmsg.user)
+                utils.m_dbname_jk, rqmsg.user)
             record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
                 strsql,
                 need_fetch=1,
@@ -129,7 +129,7 @@ class UserLoginJKHandler(base.RequestHandler):
                                                user_auth=user_auth,
                                                login_time=time.time(),
                                                active_time=time.time(),
-                                               user_db=utils.m_jkdb_name,
+                                               user_db=utils.m_dbname_jk,
                                                area_id=0,
                                                source_dev=rqmsg.dev,
                                                unique=rqmsg.unique,
@@ -207,7 +207,7 @@ class UserLoginHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(utils.m_jkdb_name, rqmsg.user,
+        where user_name="{1}" and user_password="{2}"'.format(utils.m_dbname_jk, rqmsg.user,
                                                               rqmsg.pwd)
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
@@ -249,7 +249,7 @@ class UserLoginHandler(base.RequestHandler):
             _area_w = []
             _area_x = []
             strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
-                utils.m_jkdb_name, rqmsg.user)
+                utils.m_dbname_jk, rqmsg.user)
             record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
                 strsql,
                 need_fetch=1,
@@ -287,7 +287,7 @@ class UserLoginHandler(base.RequestHandler):
                                                user_auth=user_auth,
                                                login_time=time.time(),
                                                active_time=time.time(),
-                                               user_db=utils.m_jkdb_name,
+                                               user_db=utils.m_dbname_jk,
                                                area_id=0,
                                                source_dev=rqmsg.dev,
                                                unique=rqmsg.unique,
@@ -326,11 +326,11 @@ class UserLoginHandler(base.RequestHandler):
                         root = dom.documentElement
                         msg.flow_data = root.firstChild.wholeText
                         del dom, root
-                    except:
+                    except Exception as ex:
+                        print(str(ex))
                         msg.flow_data = ''
                 else:
                     msg.flow_data = ''
-                    print(str(ex))
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
@@ -425,20 +425,20 @@ class UserAddHandler(base.RequestHandler):
                 else:
                     # 判断用户是否存在
                     strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                        utils.m_jkdb_name, rqmsg.user, rqmsg.pwd)
+                        utils.m_dbname_jk, rqmsg.user, rqmsg.pwd)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
-                        need_fetch=0)
+                        need_fetch=1)
                     if record_total > 0:
                         msg.head.if_st = 45
                         msg.head.if_msg = 'User already exists'
                     else:
                         strsql = 'insert into {0}.user_list (user_name, user_real_name, user_password, user_phonenumber, user_operator_code, date_create, date_update, date_access) \
                         values ("{1}","{2}","{3}","{4}","{5}",{6},{7},{8})'.format(
-                            utils.m_jkdb_name, rqmsg.user, rqmsg.fullname, rqmsg.pwd, rqmsg.tel,
+                            utils.m_dbname_jk, rqmsg.user, rqmsg.fullname, rqmsg.pwd, rqmsg.tel,
                             rqmsg.code, mx.switchStamp(int(time.time())),
                             mx.switchStamp(int(time.time())), mx.switchStamp(int(time.time())))
-                        self.mydata_collector(strsql, need_fetch=0)
+                        yield self.mydata_collector(strsql, need_fetch=0)
                         env = True
                         contents = 'add user {0}'.format(rqmsg.user)
 
@@ -479,14 +479,14 @@ class UserDelHandler(base.RequestHandler):
                     # 删除用户
                     try:
                         strsql = 'select * from {0}.user_list where user_name="{1}"'.format(
-                            utils.m_jkdb_name, rqmsg.user_name)
+                            utils.m_dbname_jk, rqmsg.user_name)
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
-                            need_fetch=0)
+                            need_fetch=1)
                         if record_total > 0:
                             strsql = 'delete from {0}.user_list where user_name="{1}"'.format(
-                                utils.m_jkdb_name, rqmsg.user_name)
-                            self.mydata_collector(strsql, need_fetch=0)
+                                utils.m_dbname_jk, rqmsg.user_name)
+                            yield self.mydata_collector(strsql, need_fetch=0)
                             env = True
                             contents = 'del user {0}'.format(rqmsg.user_name)
                         else:
@@ -517,7 +517,7 @@ class UserEditHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(rqUserEdit(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserEdit(), None)
 
         env = False
         contents = ''
@@ -528,10 +528,10 @@ class UserEditHandler(base.RequestHandler):
         else:
             if user_data is not None:
                 strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                    utils.m_jkdb_name, rqmsg.user_name, rqmsg.pwd_old)
+                    utils.m_dbname_jk, rqmsg.user_name, rqmsg.pwd_old)
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
-                    need_fetch=0)
+                    need_fetch=1)
                 if record_total > 0 or user_data['user_auth'] in utils._can_admin:
                     if user_data['user_name'] == rqmsg.user_name:
                         if user_data['user_auth'] in utils._can_write:
@@ -540,7 +540,7 @@ class UserEditHandler(base.RequestHandler):
                                         user_phonenumber="{3}", \
                                         user_operator_code="{4}" \
                                         where user_name="{5}"'.format(
-                                utils.m_jkdb_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
+                                utils.m_dbname_jk, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
                                 rqmsg.user_name)
                             self.mydata_collector(strsql, 0)
                         else:
@@ -553,7 +553,7 @@ class UserEditHandler(base.RequestHandler):
                     #                     user_phonenumber="{3}", \
                     #                     user_operator_code="{4}" \
                     #                     where user_name="{5}"'.format(
-                    #             utils.m_jkdb_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
+                    #             utils.m_dbname_jk, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
                     #             rqmsg.user_name)
                     #         self.mydata_collector(strsql, 0)
                     #     else:
@@ -568,16 +568,16 @@ class UserEditHandler(base.RequestHandler):
             thc = AsyncHTTPClient()
             url = '{0}/{1}'.format(utils.m_fs_url, 'UpdatePassword')
             data = {'user_now': rqmsg.user_sz_id, 'old_pwd': rqmsg.pwd_old, 'new_pwd': rqmsg.pwd}
-            r = pm.request('GET', url, fields=data, timeout=20.0, retries=False)
-            if 'false' in r.data:
+            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=20)
+            if 'false' in rep.body:
                 msg.head.if_st = 43
                 msg.head.if_msg = 'sz UpdatePassword error.'
                 # strsql = 'update {0}.user_list set \
                 #             user_password="{1}", \
-                #             where user_name="{2}"'.format(utils.m_jkdb_name, rqmsg.old_pwd,
+                #             where user_name="{2}"'.format(utils.m_dbname_jk, rqmsg.old_pwd,
                 #                                           rqmsg.user_name)
                 # self.mydata_collector(strsql, 0)
-                del strsql
+                # del strsql
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
@@ -618,10 +618,10 @@ class UserInfoHandler(base.RequestHandler):
                                     user_data['user_db'])
                             else:
                                 strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
-                                    utils.m_jkdb_name, rqmsg.user_name)
+                                    utils.m_dbname_jk, rqmsg.user_name)
                         elif user_data['user_auth'] in utils._can_read:
                             strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
-                                utils.m_jkdb_name, user_data['user_name'])
+                                utils.m_dbname_jk, user_data['user_name'])
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -637,7 +637,7 @@ class UserInfoHandler(base.RequestHandler):
                             userview = msgws.UserInfo.UserView()
                             userview.user = d[0]
                             userview.fullname = d[1] if d[1] is not None else ''
-                            userview.pwd = d[2]
+                            # userview.pwd = d[2]
                             # userview.auth = d[3]
                             userview.tel = d[3] if d[3] is not None else ''
                             userview.code = d[4] if d[4] is not None else ''

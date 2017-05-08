@@ -54,6 +54,7 @@ message UserLogin {
     string tel = 14;  // 用户电话
     string email = 15; // 用户邮箱
     string remark = 16; // 备注
+    string user = 17;  // 用户名
 }
 
 // 用户注销 
@@ -82,18 +83,20 @@ message rqUserAdd {
     string tel = 14;  // 用户电话
     string email = 15; // 用户邮箱
     string remark = 16; // 备注
-    string login_user = 17;  // 当前登录用户名
-    string login_pwd = 18;  // 当前登录用户密码
+    string admin_pwd = 17;  // 当前登录用户密码
 }
-
-// CommAns应答
+message UserAdd {
+    Head head = 1;
+    int32 user_id = 2;  // 新增用户的user_id
+}
 
 // 删除用户
 message rqUserDel {
     Head head = 1;
-    string user = 3;  // 要删除的用户名
-    int32 user_id = 4;  // 要删除的用户id
-    string pwd = 5;  // 用户密码
+    string user = 2;  // 要删除的用户名
+    string pwd = 3;  // 用户密码
+    string admin_pwd = 4; // admin密码
+    string user_id = 5;  // 要删除的用户id
 }
 
 // CommAns应答
@@ -101,7 +104,7 @@ message rqUserDel {
 // 修改用户参数
 message rqUserEdit {
     Head head = 1;
-    string user = 2;  // 要修改的用户id
+    string user = 2;  // 要修改的用户名(该字段用于匹配,不可修改)
     string fullname = 3;  // 新用户全名
     string pwd = 4;  // 新用户密码,如为空值表示不改密码
     int32 area_id = 5;  // 新用户所属区域id
@@ -113,7 +116,8 @@ message rqUserEdit {
     string tel = 14;  // 用户电话
     string email = 15; // 用户邮箱
     string remark = 16; // 备注
-    int32 user_id = 17; // 要修改的用户id
+    string admin_pwd = 17;  // admin密码
+    int32 user_id = 18;  // 用户id
 }
 
 // CommAns应答
@@ -121,7 +125,7 @@ message rqUserEdit {
 // 请求用户信息
 message rqUserInfo {
     Head head = 1;
-    string user_name = 2;  // 要请求的用户名(-1-请求全部)
+    string user_name = 2;  // 要请求的用户名(留空-请求全部)
 }
 
 message UserInfo {
@@ -135,6 +139,8 @@ message UserInfo {
         int32 user_id = 7;  // 用户id
         int32 area_id = 8;  // 所属区域id
         string db_name = 9;  // 所属数据库名称
+        string remark = 10;  // 备注
+        int32 mobile = 11;  // 手机号
     }
     Head head = 1;
     repeated UserView user_view = 2;
@@ -286,6 +292,8 @@ message rqQueryDataEvents {
     repeated int32 events_id = 7 [packed=true];  // 待定义
     repeated string user_id = 8;  // 用户名,可多选
     repeated int32 tml_id = 9 [packed=true];  // 设备id,可多选
+    repeated int32 project_id = 10 [packed=true];  // 项目id,可多选（集控用）
+    int32 remote_ip = 11;  // 远端ip,（集控用）
 }
 // 应答
 message QueryDataEvents {
@@ -296,6 +304,8 @@ message QueryDataEvents {
         string events_msg = 4;  // 事件内容
         int64 dt_happen = 5;  // 事件发生时间
         string events_name = 6;  // 事件名称
+        string project_name = 7;  // 项目名称（集控用）
+        int32 remote_ip = 8;  // 远端ip（集控用）
     }
     Head head = 1;
     repeated DataEventsView data_events_view = 2;
@@ -902,4 +912,64 @@ message rqRtuTimerCtl {
 message rqRtuVerGet {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
+}
+
+// 项目信息获取
+message rqProjectInfo {
+    Head head = 1;  // 协议头信息
+    repeated int32 project_id = 2 [packed=true];  // 要查询的项目id,留空查询该用户有读权限的全部项目
+}
+message ProjectInfo {
+    message ProjectView {
+        int32 project_id = 1;  // 项目id
+        string project_name = 2;  // 项目名称
+        string project_address = 3;  // 项目访问地址 http://ip:port/root_path 格式
+        int32 area_id = 4;  //  项目所属区域
+        string project_remark = 5;  // 备注
+    }
+    Head head = 1;  // 协议头信息
+    repeated ProjectView project_view = 2;
+}
+
+// 项目添加
+message rqProjectAdd {
+    Head head = 1;  // 协议头信息
+    string project_name = 2;  // 新的项目名称
+    string project_ip = 3;  // 新的项目接口ip
+    int32 project_port = 4;  // 新的项目接口端口号
+    string project_root = 5;  // 新的项目接口路径
+    int32 area_id = 6;  // 新的项目所属区域
+    string project_remark = 7;  // 新的备注
+    string admin_pwd = 8;  // admin密码
+}
+
+// 项目修改
+message rqProjectEdit {
+    Head head = 1;  // 协议头信息
+    string project_name = 2;  // 修改后的项目名称
+    string project_ip = 3;  // 修改后的项目接口ip
+    int32 project_port = 4;  // 修改后的项目接口端口号
+    string project_root = 5;  // 修改后的项目接口路径
+    int32 area_id = 6;  // 修改后的项目所属区域
+    string project_remark = 7;  // 修改后的备注
+    int32 project_id = 8;  // 项目id
+}
+
+// 项目删除
+message rqProjectDel {
+    Head head = 1;  // 协议头信息
+    int32 project_id = 2;  // 项目id
+    string admin_pwd = 3;  // admin密码
+}
+
+// 权限设置
+message rqUserAuthSet {
+    message ProjectAuth {
+        int32 project_id = 1;  // 项目id
+        int32 user_auth = 2;  // 用户权限值
+    }
+    Head head = 1;  // 协议头信息
+    int32 user_id = 2;  // 用户id
+    repeated ProjectAuth project_auth = 3;
+    string admin_pwd = 4;  // admin密码
 }

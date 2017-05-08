@@ -25,12 +25,13 @@ class GroupInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqGroupInfo(), msgws.GroupInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqGroupInfo(),
+                                                                      msgws.GroupInfo())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 strsql = 'select grp_id,grp_name,rtu_list,area_id,orderx from {0}.area_equipment_group'.format(
-                    utils.m_jkdb_name)
+                    utils.m_dbname_jk)
                 if user_data['user_auth'] not in utils._can_admin:
                     z = user_data['area_r'].union(user_data['area_w']).union(user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(','.join([str(a) for a in z]))
@@ -75,11 +76,12 @@ class AreaInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqAreaInfo(), msgws.AreaInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqAreaInfo(),
+                                                                      msgws.AreaInfo())
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 strsql = 'select area_id,area_name,rtu_list from {0}.area_info'.format(
-                    utils.m_jkdb_name)
+                    utils.m_dbname_jk)
                 if user_data['user_auth'] not in utils._can_admin:
                     z = user_data['area_r'].union(user_data['area_w']).union(user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(','.join([str(a) for a in z]))
@@ -149,7 +151,7 @@ class EventInfoHandler(base.RequestHandler):
             if user_data['user_auth'] in utils._can_read:
 
                 strsql = 'select id, name from {0}_data.operator_id_assign'.format(
-                    utils.m_jkdb_name)
+                    utils.m_dbname_jk)
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -265,9 +267,9 @@ class QueryDataEventsHandler(base.RequestHandler):
                     str_users = ' user_name in ({0}, u"应答", u"上次未发送成功...", u"时间表:新建时间表", u"补开时间表:新建时间表") '.format(
                         user_data['user_name'])
 
-                str_sql = 'select date_create, user_name, operator_id, is_client_snd, device_ids, contents, remark \
+                strsql = 'select date_create, user_name, operator_id, is_client_snd, device_ids, contents, remark \
                                 from {0}_data.record_operator where date_create<={1} and date_create>={2}'.format(
-                    utils.m_jkdb_name, edt, sdt)
+                    utils.m_dbname_jk, edt, sdt)
                 if len(str_events) > 0:
                     strsql += ' and {0}'.format(str_events)
                 if len(str_tmls) > 0:
@@ -295,14 +297,14 @@ class QueryDataEventsHandler(base.RequestHandler):
                         env.events_msg = '{0} {1}'.format(d[5], d[6])
                         env.dt_happen = mx.switchStamp(int(d[0]))
                         env.events_name = utils._events_def[int(d[2])]
-                        xquery.data_events_view.extend([env])
+                        msg.data_events_view.extend([env])
                         del env
 
                 del cur, strsql
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        del msg, rqmsg, user_data, xquery
+        del msg, rqmsg, user_data
 
 
 @mxweb.route()
@@ -324,7 +326,7 @@ class SysEditHandler(base.RequestHandler):
             env = True
             contents = 'change sys name to {0}'.format(rqmsg.sys_name)
             strsql = 'update {0}.key_value set value_value="{1}" where key_key="system_title"'.format(
-                utils.m_jkdb_name, rqmsg.sys_name)
+                utils.m_dbname_jk, rqmsg.sys_name)
             self.mysql_generator(strsql, 0)
 
             del strsql
@@ -351,100 +353,100 @@ class SysInfoHandler(base.RequestHandler):
     def post(self):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSysInfo(),
                                                                       msgws.SysInfo())
+        if user_data is not None:
+            if user_data['user_auth'] in utils._can_read:
+                msg.data_mark.extend(rqmsg.data_mark)
+                if 1 in msg.data_mark:
+                    strsql = 'select value_value from {0}.key_value where key_key="system_title"'.format(
+                        utils.m_dbname_jk)
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                        strsql,
+                        need_fetch=1,
+                        need_paging=0)
+                    if record_total is None:
+                        msg.head.if_st = 45
+                        msg.head.if_msg = 'get system name error.'
+                    else:
+                        msg.head.paging_record_total = record_total
+                        msg.head.paging_buffer_tag = buffer_tag
+                        msg.head.paging_idx = paging_idx
+                        msg.head.paging_total = paging_total
+                        for d in cur:
+                            msg.sys_name = d[0]
 
-        if user_data['user_auth'] in utils._can_read:
-            msg.data_mark.extend(rqmsg.data_mark)
-            if 1 in msg.data_mark:
-                strsql = 'select value_value from {0}.key_value where key_key="system_title"'.format(
-                    utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                    strsql,
-                    need_fetch=1,
-                    need_paging=0)
-                if record_total is None:
-                    msg.head.if_st = 45
-                    msg.head.if_msg = 'get system name error.'
-                else:
-                    msg.head.paging_record_total = record_total
-                    msg.head.paging_buffer_tag = buffer_tag
-                    msg.head.paging_idx = paging_idx
-                    msg.head.paging_total = paging_total
-                    for d in cur:
-                        msg.sys_name = d[0]
+                    del cur, strsql
+                if 2 in msg.data_mark:  # 暂不支持在线数量
+                    strsql = 'select count(*) as a from {0}.para_base_equipment union all \
+                    select count(*) as a from {0}.para_base_equipment where rtu_state=2'.format(
+                        utils.m_dbname_jk)
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                        strsql,
+                        need_fetch=1,
+                        need_paging=0)
+                    if record_total is None:
+                        msg.head.if_st = 45
+                        msg.head.if_msg = 'get tmls number error.'
+                    else:
+                        msg.head.paging_record_total = record_total
+                        msg.head.paging_buffer_tag = buffer_tag
+                        msg.head.paging_idx = paging_idx
+                        msg.head.paging_total = paging_total
+                        for d in cur:
+                            msg.tml_num.extend([int(d[0])])
+                        # msg.tml_num.append(d[0][0])
 
-                del cur, strsql
-            if 2 in msg.data_mark:  # 暂不支持在线数量
-                strsql = 'select count(*) as a from {0}.para_base_equipment union all \
-                select count(*) as a from {0}.para_base_equipment where rtu_state=2'.format(
-                    utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                    strsql,
-                    need_fetch=1,
-                    need_paging=0)
-                if record_total is None:
-                    msg.head.if_st = 45
-                    msg.head.if_msg = 'get tmls number error.'
-                else:
-                    msg.head.paging_record_total = record_total
-                    msg.head.paging_buffer_tag = buffer_tag
-                    msg.head.paging_idx = paging_idx
-                    msg.head.paging_total = paging_total
-                    for d in cur:
-                        msg.tml_num.extend([int(d[0])])
-                    # msg.tml_num.append(d[0][0])
+                    del cur, strsql
+                if 3 in msg.data_mark:
+                    strsql = 'select count(*) as a from {0}_data.info_fault_exist union all \
+                    select count(*) as a from {0}_data.info_fault_exist where rtu_id<1100000 union all \
+                    select count(*) as a from {0}_data.info_fault_exist where rtu_id<1600000 and rtu_id>=1500000 union all\
+                    select count(*) as a from {0}_data.info_fault_exist where rtu_id<1200000 and rtu_id>=1100000 \
+                    '.format(utils.m_dbname_jk)
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                        strsql,
+                        need_fetch=1,
+                        need_paging=0)
+                    if record_total is None:
+                        msg.head.if_st = 45
+                        msg.head.if_msg = 'get error number error.'
+                    else:
+                        msg.head.paging_record_total = record_total
+                        msg.head.paging_buffer_tag = buffer_tag
+                        msg.head.paging_idx = paging_idx
+                        msg.head.paging_total = paging_total
+                        for d in cur:
+                            msg.err_num.extend([int(d[0])])
 
-                del cur, strsql
-            if 3 in msg.data_mark:
-                strsql = 'select count(*) as a from {0}_data.info_fault_exist union all \
-                select count(*) as a from {0}_data.info_fault_exist where rtu_id<1100000 union all \
-                select count(*) as a from {0}_data.info_fault_exist where rtu_id<1600000 and rtu_id>=1500000 union all\
-                select count(*) as a from {0}_data.info_fault_exist where rtu_id<1200000 and rtu_id>=1100000 \
-                '.format(utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                    strsql,
-                    need_fetch=1,
-                    need_paging=0)
-                if record_total is None:
-                    msg.head.if_st = 45
-                    msg.head.if_msg = 'get error number error.'
-                else:
-                    msg.head.paging_record_total = record_total
-                    msg.head.paging_buffer_tag = buffer_tag
-                    msg.head.paging_idx = paging_idx
-                    msg.head.paging_total = paging_total
-                    for d in cur:
-                        msg.err_num.extend([int(d[0])])
+                    del cur, strsql
+                if 4 in msg.data_mark:
+                    strsql = 'select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1000000 and rtu_id<=1099999 union all \
+                                    select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1100000 and rtu_id<=1199999 union all \
+                                    select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1200000 and rtu_id<=1299999 union all \
+                                    select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1300000 and rtu_id<=1399999 union all \
+                                    select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1400000 and rtu_id<=1499999 union all \
+                                    select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1500000 and rtu_id<=1599999 union all \
+                                    select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1600000 and rtu_id<=1699999 \
+                                    '.format(utils.m_dbname_jk)
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                        strsql,
+                        need_fetch=1,
+                        need_paging=0)
+                    if record_total is None:
+                        msg.head.if_st = 45
+                        msg.head.if_msg = 'get tml class number error.'
+                    else:
+                        msg.head.paging_record_total = record_total
+                        msg.head.paging_buffer_tag = buffer_tag
+                        msg.head.paging_idx = paging_idx
+                        msg.head.paging_total = paging_total
+                        for d in cur:
+                            msg.tml_type.extend([int(d[0])])
 
-                del cur, strsql
-            if 4 in msg.data_mark:
-                strsql = 'select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1000000 and rtu_id<=1099999 union all \
-                                select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1100000 and rtu_id<=1199999 union all \
-                                select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1200000 and rtu_id<=1299999 union all \
-                                select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1300000 and rtu_id<=1399999 union all \
-                                select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1400000 and rtu_id<=1499999 union all \
-                                select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1500000 and rtu_id<=1599999 union all \
-                                select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1600000 and rtu_id<=1699999 \
-                                '.format(utils.m_jkdb_name)
-                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                    strsql,
-                    need_fetch=1,
-                    need_paging=0)
-                if record_total is None:
-                    msg.head.if_st = 45
-                    msg.head.if_msg = 'get tml class number error.'
-                else:
-                    msg.head.paging_record_total = record_total
-                    msg.head.paging_buffer_tag = buffer_tag
-                    msg.head.paging_idx = paging_idx
-                    msg.head.paging_total = paging_total
-                    for d in cur:
-                        msg.tml_type.extend([int(d[0])])
-
-                del cur, strsql
-            if 7 in msg.data_mark:  # 暂不支持服务状态
-                msg.head.if_st = 99
-        else:
-            msg.head.if_st = 11
+                    del cur, strsql
+                if 7 in msg.data_mark:  # 暂不支持服务状态
+                    msg.head.if_st = 99
+            else:
+                msg.head.if_st = 11
         self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data

@@ -21,7 +21,7 @@ class DataBaseProcessHandler(base.RequestHandler):
         rqmsg.ParseFromString(base64.b64decode(pb2))
         name = rqmsg.head.if_name
         strsql = rqmsg.head.if_msg
-        cur = self._mysql_generator_sql_mysql(strsql, need_fetch=1)
+        cur = self._mysql_generator_sql_mysql(strsql)
         res = dict()
         i = 0
         while True:

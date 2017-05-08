@@ -18,9 +18,7 @@ from tornado.concurrent import run_on_executor
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
 import utils
-import _mysql as mysql
 from concurrent.futures import ThreadPoolExecutor
-
 
 class RequestHandler(mxweb.MXRequestHandler):
     executor = ThreadPoolExecutor(200)
@@ -106,6 +104,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                         i += 1
                 else:
                     while n < c:
+                        d = cur.get(n)
                         if n < y and n >= x:
                             rep.append(d)
                         n += 1
@@ -115,16 +114,16 @@ class RequestHandler(mxweb.MXRequestHandler):
             except:
                 pass
 
-        # 向数据库请求最新结果集
-        cur = None
-        cur = self._mysql_generator_sql_mysql(strsql, need_fetch, buffer_tag, paging_idx,
-                                              paging_num, need_paging, multi_record)
-
-        # 若返回的不是迭代器，则认为数据库操作失败
-        if not isinstance(cur, types.GeneratorType):
-            return (None, None, None, None, None)
-        else:
-            if need_fetch:  # 遍历结果集
+        if need_fetch:
+            # 向数据库请求最新结果集
+            cur = None
+            cur = libiisi.m_sql.run_fetch(strsql)
+            # print(cur, isinstance(cur, types.GeneratorType))
+            # 若返回的不是迭代器，则认为数据库操作失败
+            if not isinstance(cur, types.GeneratorType):
+                return (None, None, None, None, None)
+            else:
+                # if need_fetch:  # 遍历结果集
                 rep = []
                 cache_data = dict()
                 if need_paging:  # 计算分页索引
@@ -141,6 +140,10 @@ class RequestHandler(mxweb.MXRequestHandler):
                         try:
                             d = cur.next()
                         except Exception as ex:
+                            cur.close()
+                            del cur
+                            break
+                        if d is None:
                             break
                         if n < y and n >= x:
                             rep.append(d)
@@ -160,6 +163,11 @@ class RequestHandler(mxweb.MXRequestHandler):
                         try:
                             d = cur.next()
                         except Exception as ex:
+                            cur.close()
+                            del cur
+                            break
+                            
+                        if d is None:
                             break
                         if n < y and n >= x:
                             rep.append(d)
@@ -177,55 +185,80 @@ class RequestHandler(mxweb.MXRequestHandler):
                     return (n, buffer_tag, paging_idx, paging_total, rep)
                 else:
                     return (n, buffer_tag, paging_idx, paging_total, cache_data.values())
-            else:
-                try:
-                    d = cur.next()
-                except:
-                    pass
-                return (0, None, None, None, None)
-
-        if isinstance(cur, types.GeneratorType):
-            cur.close()
-        del cur
-
-    def _mysql_generator_sql_mysql(self,
-                                   strsql,
-                                   need_fetch=1,
-                                   buffer_tag=0,
-                                   paging_idx=1,
-                                   paging_num=100,
-                                   need_paging=1,
-                                   multi_record=[]):
-        '''数据库访问方法，返回迭代器'''
-        conn = mysql.connect(host=utils.m_jkdb_host,
-                             user=utils.m_jkdb_user,
-                             passwd=utils.m_jkdb_pwd,
-                             port=utils.m_jkdb_port,
-                            #  compress=1,
-                             client_flag=32 | 65536,  # compress,multi_statements
-                             conv=utils.m_conv,
-                             connect_timeout=5,
-                             #  charset='utf8',
-                             )
-        conn.set_character_set('utf8')
-        try:
-            conn.query(strsql)
-        except Exception as ex:
-            logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
+            # else:
+            #     try:
+            #         d = cur.next()
+            #     except:
+            #         cur.close()
+            #         del cur
+            #     return (0, None, None, None, None)
         else:
-            cur = conn.use_result()
-            if need_fetch and cur is not None:
-                while True:
-                    d = cur.fetch_row(619)
-                    if len(d) == 0:
-                        break
-                    else:
-                        for i in d:
-                            yield i
-            else:
-                yield -1
-        conn.close()
-        del conn
+            return libiisi.m_sql.run_exec(strsql)
+
+            # @run_on_executor
+    # def _mysql_no_fetch(self, strsql):
+    #     '''数据库访问方法，用于执行delet，insert，update语句，支持多条语句一起提交，用‘;’分割
+    #     返回:
+    #     [(affected_rows,insert_id),...]'''
+    #     conn = mysql.connect(host=utils.m_db_host,
+    #                          user=utils.m_db_user,
+    #                          passwd=utils.m_db_pwd,
+    #                          port=utils.m_db_port,
+    #                         #  compress=1,
+    #                          client_flag=32 | 65536 | 131072,  # compress,multi_statements,multi_results
+    #                          conv=utils.m_conv,
+    #                          connect_timeout=5,
+    #                          #  charset='utf8',
+    #                          )
+    #     conn.set_character_set('utf8')
+    #     x = []
+    #     try:
+    #         conn.query(strsql)
+    #     except Exception as ex:
+    #         logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
+    #     else:
+    #         conn.use_result()
+    #         x.append((conn.affected_rows(), conn.insert_id()))
+    #         while True:
+    #             if conn.next_result() == -1:
+    #                 break
+    #             x.append((conn.affected_rows(), conn.insert_id()))
+    # 
+    #     conn.close()
+    #     del conn
+    #     return x
+    # 
+    # def _mysql_generator_sql_mysql(self, strsql):
+    #     '''数据库访问方法，返回迭代器'''
+    #     conn = mysql.connect(host=utils.m_db_host,
+    #                          user=utils.m_db_user,
+    #                          passwd=utils.m_db_pwd,
+    #                          port=utils.m_db_port,
+    #                         #  compress=1,
+    #                          client_flag=32 | 65536,  # compress,multi_statements
+    #                          conv=utils.m_conv,
+    #                          connect_timeout=5,
+    #                          #  charset='utf8',
+    #                          )
+    #     conn.set_character_set('utf8')
+    #     try:
+    #         conn.query(strsql)
+    #     except Exception as ex:
+    #         logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
+    #     else:
+    #         cur = conn.use_result()
+    #         if cur is not None:
+    #             while True:
+    #                 d = cur.fetch_row(619)
+    #                 if len(d) == 0:
+    #                     break
+    #                 else:
+    #                     for i in d:
+    #                         yield i
+    #         else:
+    #             yield -1
+    #     conn.close()
+    #     del conn
 
     def init_msgws(self, msgpb, if_name=''):
         '''初始化消息头'''
@@ -258,8 +291,8 @@ class RequestHandler(mxweb.MXRequestHandler):
     def get_phy_cache(self):
         '''缓存物理地址和逻辑地址对照表'''
         strsql = 'select rtu_id,rtu_phy_id,rtu_fid,rtu_name from {0}.para_base_equipment'.format(
-            utils.m_jkdb_name)
-        cur = self._mysql_generator_sql_mysql(strsql, need_fetch=1, need_paging=0)
+            utils.m_dbname_jk)
+        cur = libiisi.m_sql.run_fetch(strsql)
         if isinstance(cur, types.GeneratorType):
             for d in cur:
                 self._tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
@@ -282,9 +315,9 @@ class RequestHandler(mxweb.MXRequestHandler):
 
         if len(self._tml_phy) > 0:
             for a in tml_list:
-                b = self._tml_phy.get(a)[0]
+                b = self._tml_phy.get(a)
                 if b is not None:
-                    x.append(b)
+                    x.append(b[0])
         return x
 
     def get_phy_info(self, tml_id):
@@ -300,17 +333,17 @@ class RequestHandler(mxweb.MXRequestHandler):
         if tml_type == 'r':
             self._cache_tml_r[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                utils.m_jkdb_name,
+                utils.m_dbname_jk,
                 ','.join([str(a) for a in utils.cache_user[user_uuid]['area_r']]))
         elif tml_type == 'w':
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                utils.m_jkdb_name,
+                utils.m_dbname_jk,
                 ','.join([str(a) for a in utils.cache_user[user_uuid]['area_w']]))
         elif tml_type == 'x':
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                utils.m_jkdb_name,
+                utils.m_dbname_jk,
                 ','.join([str(a) for a in utils.cache_user[user_uuid]['area_x']]))
-        cur = self._mysql_generator_sql_mysql(strsql, need_fetch=1, need_paging=0)
+        cur = libiisi.m_sql.run_fetch(strsql)
         # record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
         #     strsql,
         #     need_fetch=1,
@@ -359,7 +392,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         # libiisi.SQL_DATA.execute(strsql)
         strsql = 'insert into {0}_data.record_operator (date_create,user_name, operator_id, is_client_snd, device_ids, contents, remark) \
                         values ({1},"{2}",{3},{4},"{5}","{6}","{7}");'.format(
-            utils.m_jkdb_name, mx.switchStamp(time.time()), user_name, event_id, is_client_snd,
+            utils.m_dbname_jk, mx.switchStamp(time.time()), user_name, event_id, is_client_snd,
             device_ids, contents, remark)
 
         cur = self.mydata_collector(strsql, need_fetch=0)
@@ -523,3 +556,12 @@ class RequestHandler(mxweb.MXRequestHandler):
             msg.head.if_msg = 'User is not logged or has timed out'
 
         return (user_data, rqmsg, msg, user_uuid)
+
+    # 写uas日志
+    @run_on_executor
+    def add_eventlog(self, event_id, user_id, remark):
+        strsql = 'insert into uas.events_log (event_id, event_time, user_id,event_ip,event_remark) \
+                    values ("{0}","{1}","{2}","{3}","{4}")'.format(
+            event_id, int(time.time()), user_id, mx.ip2int(self.request.remote_ip), remark)
+        libiisi.m_sql.run_exec(strsql)
+        del strsql

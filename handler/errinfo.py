@@ -59,7 +59,7 @@ class QueryDataErrHandler(base.RequestHandler):
                     c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count \
                     from {0}_data.info_fault_exist as a left join {0}.fault_types as b \
                     on a.fault_id=b.fault_id left join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
-                    where a.date_create>={1}'.format(utils.m_jkdb_name, sdt)
+                    where a.date_create>={1}'.format(utils.m_dbname_jk, sdt)
                     if edt > 0:
                         strsql += ' and a.date_create<={0}'.format(edt)
                     if len(str_tmls) > 0:
@@ -72,14 +72,14 @@ class QueryDataErrHandler(base.RequestHandler):
                     c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id \
                     from {0}_data.info_fault_history as a left join {0}.fault_types as b \
                     on a.fault_id=b.fault_id left join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
-                    where a.date_create <={1} and a.date_create >={2}'.format(utils.m_jkdb_name,
+                    where a.date_create <={1} and a.date_create >={2}'.format(utils.m_dbname_jk,
                                                                               edt, sdt)
                     if len(str_tmls) > 0:
                         strsql += ' and {0}'.format(str_tmls)
                     if len(str_errs) > 0:
                         strsql += ' and {0}'.format(str_errs)
                     strsql += ' order by a.date_create desc'
-
+                    
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -100,8 +100,8 @@ class QueryDataErrHandler(base.RequestHandler):
                         errview.tml_id = int(d[2])
                         errview.dt_create = mx.switchStamp(int(d[3]))
                         errview.dt_create = mx.switchStamp(int(d[4]))
-                        errview.phy_id = int(d[5])
-                        errview.tml_name = d[6]
+                        errview.phy_id = int(d[5]) if d[5] is not None else 0
+                        errview.tml_name = d[6] if d[6] is not None else ''
                         errview.tml_sub_id1 = int(d[7])
                         errview.tml_sub_id2 = int(d[8])
                         errview.remark = d[9]
@@ -133,7 +133,7 @@ class ErrInfoHandler(base.RequestHandler):
             if user_data['user_auth'] in utils._can_read:
                 # ,akarn_time_set,alarm_time_start,alarm_time_end
                 strsql = 'select fault_id,fault_name,fault_name_define,is_enable,fault_remark, \
-                            fault_check_keyword from {0}.fault_types'.format(utils.m_jkdb_name)
+                            fault_check_keyword from {0}.fault_types'.format(utils.m_dbname_jk)
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,

@@ -15,7 +15,7 @@ import argparse
 import time
 import mxlog
 
-m_confdir, m_logdir, m_cachedir = mx.get_dirs('oahu', 'zmqproxy')
+m_confdir, m_logdir, m_cachedir = mx.get_dirs('oahu')
 proxy_log = None
 
 if __name__ == '__main__':

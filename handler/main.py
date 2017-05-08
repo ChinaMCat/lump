@@ -15,6 +15,7 @@ from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
 import base
 import mlib_iisi as libiisi
+from urllib import urlencode
 import utils
 
 
@@ -23,7 +24,15 @@ class TestHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        print('test get')
+        # strsql = 'delete from uas.user_info where user_name="test2";insert into uas.user_info (user_name,user_pwd,user_alias,create_time) values ("test2","1234","test",1234);'
+        # # strsql = 'select ctrl_id from mydb6301_data.data_slu_ctrl'
+        # self.mydata_collector(strsql, need_fetch=0, need_paging=0)
+        # print(a)
+        # for x in e:
+        #     print(x)
+        # cur = a[4]
+        # for d in cur:
+        #     print("d:",d)
         self.finish('<br/>get test done.')
 
     @gen.coroutine
@@ -36,7 +45,6 @@ class TestHandler(base.RequestHandler):
 
 @mxweb.route()
 class StatusHandler(base.RequestHandler):
-
     help_doc = u'''服务状态检查<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;do - [testconfig|showhandlers|timer]'''
@@ -79,18 +87,17 @@ class StatusHandler(base.RequestHandler):
                         try:
                             push.send_multipart(['zmq.filter', 'zmq test message.'])
                             f, m = sub.recv_multipart()
-                            self.write('Test zmq config ... success. zmq config:{0}<br/>'.format(
-                                zmq_addr))
+                            self.write('Test zmq config ... success. 『 {0} 』<br/>'.format(zmq_addr))
                         except:
-                            self.write('Test zmq config ... failed.<br/>')
+                            self.write('Test zmq config ... failed. 『 {0} 』<br/>'.format(zmq_addr))
 
                         thc = AsyncHTTPClient()
                         url = '{0}'.format(utils.m_fs_url)
                         try:
                             rep = yield thc.fetch(url, raise_error=True, request_timeout=20)
-                            self.write('Test flow config ... success.<br/>')
+                            self.write('Test flow config ... success. 『 {0} 』<br/>'.format(url))
                         except Exception as ex:
-                            self.write('Test flow config ... failed.<br/>')
+                            self.write('Test flow config ... failed. 『 {0} 』<br/>'.format(url))
 
                         del url, thc
 
@@ -98,7 +105,7 @@ class StatusHandler(base.RequestHandler):
                             jk_isok = False
                             dg_isok = False
                             strsql = 'select schema_name from information_schema.schemata where schema_name in ("{0}","{1}");'.format(
-                                utils.m_jkdb_name, utils.m_dgdb_name)
+                                utils.m_dbname_jk, utils.m_dbname_dg)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1)
@@ -107,22 +114,32 @@ class StatusHandler(base.RequestHandler):
                                 dg_isok = False
                             else:
                                 for d in cur:
-                                    if d[0] == utils.m_jkdb_name:
+                                    if d[0] == utils.m_dbname_jk:
                                         jk_isok = True
-                                    elif d[0] == utils.m_dgdb_name:
+                                    elif d[0] == utils.m_dbname_dg:
                                         dg_isok = True
                             if jk_isok:
-                                self.write('Test jkdb config ... success.<br/>')
+                                self.write(
+                                    'Test jkdb config ... success. 『 {0}:{1}/{2} 』<br/>'.format(
+                                        utils.m_db_host, utils.m_db_port, utils.m_dbname_jk))
                             else:
-                                self.write('Test jkdb config ... failed.<br/>')
+                                self.write(
+                                    'Test jkdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
+                                        utils.m_db_host, utils.m_db_port, utils.m_dbname_jk))
                             if dg_isok:
-                                self.write('Test dgdb config ... success.<br/>')
+                                self.write(
+                                    'Test dgdb config ... success. 『 {0}:{1}/{2} 』<br/>'.format(
+                                        utils.m_db_host, utils.m_db_port, utils.m_dbname_dg))
                             else:
-                                self.write('Test dgdb config ... failed.<br/>')
+                                self.write(
+                                    'Test dgdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
+                                        utils.m_db_host, utils.m_db_port, utils.m_dbname_dg))
                             del cur
                         except:
-                            self.write('Test jkdb config ... failed.<br/>')
-                            self.write('Test dgdb config ... failed.<br/>')
+                            self.write('Test jkdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
+                                utils.m_db_host, utils.m_db_port, utils.m_dbname_jk))
+                            self.write('Test dgdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
+                                utils.m_db_host, utils.m_db_port, utils.m_dbname_dg))
                         self.write('<br/>')
                         self.flush()
 
@@ -146,7 +163,7 @@ class StatusHandler(base.RequestHandler):
 class CleaningWorkHandler(base.RequestHandler):
 
     help_doc = u'''资源清理'''
-
+    
     @gen.coroutine
     def get(self):
         t = time.time()
@@ -202,7 +219,6 @@ class CleaningWorkHandler(base.RequestHandler):
 
 @mxweb.route()
 class MainHandler(base.RequestHandler):
-
     @gen.coroutine
     def get(self):
         self.render('index.html')

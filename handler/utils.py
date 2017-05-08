@@ -6,6 +6,7 @@ import mxpsu as mx
 import os
 import time
 import json
+import logging
 # from MySQLdb.constants import FIELD_TYPE
 # 
 # m_conv = {FIELD_TYPE.LONG: int,
@@ -18,25 +19,26 @@ import json
 m_conv = {1: int, 2: int, 3: int, 4: float, 5: float, 8: int, 9: int}
 
 m_tcs_port = libiisi.m_config.getData('tcs_port')  # 监控通讯层端口号
-m_jkdb_name = libiisi.m_config.getData('jkdb_name')  # 监控数据库名称
-m_dgdb_name = libiisi.m_config.getData('dgdb_name')  # 灯杆数据库名称
+m_dbname_jk = libiisi.m_config.getData('db_name_jk')  # 监控数据库名称
+m_dbname_dg = libiisi.m_config.getData('db_name_dg')  # 灯杆数据库名称
+m_dbname_uas = libiisi.m_config.getData('db_name_uas')  # uas数据库名称
 m_dz_url = libiisi.m_config.getData('dz_url')  # 电桩接口地址
 m_fs_url = '{0}/FlowService.asmx'.format(libiisi.m_config.getData('fs_url'))  # 市政工作流接口地址
-if len(libiisi.m_config.getData('db_url')) > 10:  # 异步数据库访问地址（暂不用）
-    m_db_url = '{0}/databaseprocess?pb2='.format(libiisi.m_config.getData('db_url'))
-else:
-    m_db_url = ''
+# if len(libiisi.m_config.getData('db_url')) > 10:  # 异步数据库访问地址（暂不用）
+#     m_db_url = '{0}/databaseprocess?pb2='.format(libiisi.m_config.getData('db_url'))
+# else:
+#     m_db_url = ''
 
-m_jkdb_user = libiisi.m_config.getData('db_user').split(':')[0]
-m_jkdb_pwd = libiisi.m_config.getData('db_pwd')
-m_jkdb_host = libiisi.m_config.getData('db_host').split(':')[0]
-m_jkdb_port = 3306 if len(libiisi.m_config.getData('db_host').split(':')) == 1 else int(
+m_db_user = libiisi.m_config.getData('db_user')
+m_db_pwd = libiisi.m_config.getData('db_pwd')
+m_db_host = libiisi.m_config.getData('db_host').split(':')[0]
+m_db_port = 3306 if len(libiisi.m_config.getData('db_host').split(':')) == 1 else int(
     libiisi.m_config.getData('db_host').split(':')[1])
 
-_can_read = (4, 5, 7, 15)  # 可读权限值
-_can_write = (2, 3, 6, 7, 15)  # 可写权限值
-_can_exec = (1, 3, 5, 7, 15)  # 可操作权限值
-_can_admin = (15, )  # 管理员权限值
+_can_read = set((4, 5, 7, 15))  # 可读权限值
+_can_write = set((2, 3, 6, 7, 15))  # 可写权限值
+_can_exec = set((1, 3, 5, 7, 15))  # 可操作权限值
+_can_admin = set((15, ))  # 管理员权限值
 
 _events_def = dict()  # 事件信息字典（废弃）
 _events_def[11] = u'终端时间同步',

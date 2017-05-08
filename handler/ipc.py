@@ -50,7 +50,7 @@ class IpcUplinkHandler(base.RequestHandler):
                         db_names.add('sens_data_{0:03d}_month_{1}'.format(i, ym))
                     strsql = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES \
                         where TABLE_SCHEMA="{0}" and TABLE_NAME like "{1}"'.format(
-                        utils.m_dgdb_name, '%sens_data_%_month_%')
+                        utils.m_dbname_dg, '%sens_data_%_month_%')
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -64,14 +64,14 @@ class IpcUplinkHandler(base.RequestHandler):
                     for z in db_names:
                         createsql += utils.sqlstr_create_emtable.format(z) + ';'
                     if len(createsql) > 0:
-                        createsql = 'use {0};'.format(utils.m_dgdb_name) + createsql
+                        createsql = 'use {0};'.format(utils.m_dbname_dg) + createsql
                         yield self.mydata_collector(createsql, need_fetch=0)
 
                     t = int(time.time())
                     for i in range(len(utils.qudata_sxhb)):
                         try:
                             insertsql += 'insert into {5}.sens_data_{0:03d}_month_{1} (dev_id,dev_data,date_create) values ({2},{3},{4});'.format(
-                                utils.qudata_sxhb[i], ym, devid, lstdata[i], t, utils.m_dgdb_name)
+                                utils.qudata_sxhb[i], ym, devid, lstdata[i], t, utils.m_dbname_dg)
                         except:
                             pass
                     if len(insertsql) > 0:
@@ -190,7 +190,7 @@ class QueryEMDataHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryEMData(),
+        legal, rqmsg, msg = yield self.check_arguments(msgws.rqQueryEMData(),
                                                                       msgws.QueryEMData(), use_scode=1)
 
         if legal:
@@ -220,10 +220,10 @@ class QueryEMDataHandler(base.RequestHandler):
                     for x in utils.qudata_sxhb:
                         strsql += ', t{0}.dev_data as d{0}'.format(x)
                     strsql += ' from {0}.sens_data_{1}_month_{2} as t{1}'.format(
-                        utils.m_dgdb_name, utils.qudata_sxhb[0], ym)
+                        utils.m_dbname_dg, utils.qudata_sxhb[0], ym)
                     for i in range(1, len(utils.qudata_sxhb)):
                         strsql += ' left join {0}.sens_data_{1}_month_{2} as t{1} on t{3}.dev_id=t{1}.dev_id and t{3}.date_create=t{1}.date_create'.format(
-                            utils.m_dgdb_name, utils.qudata_sxhb[i], ym, utils.qudata_sxhb[0])
+                            utils.m_dbname_dg, utils.qudata_sxhb[i], ym, utils.qudata_sxhb[0])
 
                     if sdt == 0 and edt == 0:
                         # no, no2, co, co2, pm25, temp, rehu, pm10, o3, tvoc, h2s, so2 = utils.qudata_sxhb

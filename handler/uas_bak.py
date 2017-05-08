@@ -12,17 +12,7 @@ import mxweb
 from tornado import gen
 import base
 import pbiisi.msg_ws_pb2 as msgws
-import mlib_iisi as libiisi
 import utils
-
-try:
-    strsql = 'alter table {0}.user_list \
-                add column user_remark text null, \
-                add column user_id int(11) not null AUTO_INCREMENT, \
-                add index user_id (user_id);'.format(utils.m_dbname_jk)
-    libiisi.m_sql.run_exec(strsql)
-except Exception as ex:
-    pass
 
 
 @mxweb.route()
@@ -51,34 +41,23 @@ class UserLoginHandler(base.RequestHandler):
             msg.head.if_st = 46
 
         # 检查用户名密码是否合法
-        strsql = 'select user_id,user_name,user_real_name,user_phonenumber,user_remark from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(utils.m_dbname_jk, rqmsg.user,
-                                                              rqmsg.pwd)
+        strsql = 'select user_id,user_name,user_pwd from  uas.user_info \
+        where user_name="{0}" and user_pwd="{1}"'.format(rqmsg.user, rqmsg.pwd)
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
             need_fetch=1,
             need_paging=0)
+        for d in cur:
+            msg.user_id = d[0]
 
         if record_total is None or record_total == 0:
-            msg.head.if_st = 0
+            yield self.add_eventlog(4, 0, 'Wrong username or password')
+            msg.head.if_st = 40
             msg.head.if_msg = 'Wrong username or password'
-            yield self.write_event(121,
-                                   'login from {0} failed'.format(self.request.remote_ip),
-                                   2,
-                                   user_name=rqmsg.user)
         else:
-            for d in cur:
-                msg.user_id = d[0]
-                msg.user = d[1]
-                msg.fullname = d[2] if d[2] is not None else ''
-                msg.mobile = int(d[3]) if d[3] is not None else 0
-                msg.remark = d[4] if d[4] is not None else ''
-                break
-            yield self.write_event(121,
-                                   'login from {0} success'.format(self.request.remote_ip),
-                                   2,
-                                   user_name=rqmsg.user)
-
+            yield self.add_eventlog(4, msg.user_id, 'successfully to login')
+            msg.head.if_st = 1
+            msg.head.if_msg = 'successfully to login'
         self.write(mx.convertProtobuf(msg))
         self.finish()
 
@@ -110,30 +89,27 @@ class UserAddHandler(base.RequestHandler):
 
         try:
             # 检查用户名密码是否存在
-            strsql = 'insert into {0}.user_info (user_name,user_password,user_real_name,date_create,date_update,date_access,user_remark) \
-                        values ("{1}","{2}","{3}","{4}","{5}","{6}","{7}")'.format(
-                utils.m_dbname_jk, rqmsg.user, rqmsg.pwd, rqmsg.fullname,
-                mx.switchStamp(time.time()), mx.switchStamp(time.time()),
-                mx.switchStamp(time.time()), 'add user from {0}'.format(self.request.remote_ip))
+            strsql = 'insert into uas.user_info (user_name, user_pwd, user_alias, create_time, user_remark) \
+                        values ("{0}","{1}","{2}","{3}","{4}")'.format(
+                rqmsg.user, rqmsg.pwd, rqmsg.fullname, int(time.time()),
+                mx.ip2int(self.request.remote_ip))
             cur = yield self.mydata_collector(strsql, need_fetch=0)
             affected_rows = cur[0][0]
             msg.user_id = cur[0][1]
-            contents = ''
             if affected_rows > 0:
-                contents = 'add user {0} from {1} success'.format(rqmsg.user,
-                                                                  self.request.remote_ip)
-                yield self.write_event(154, 'add user {0} from {1} success'.format(
-                    rqmsg.user, self.request.remote_ip))
+                yield self.add_eventlog(1, msg.user_id, 'Add User {0} Success'.format(rqmsg.user))
+                msg.head.if_st = 1
+                msg.head.if_msg = 'Add User is Success'
             else:
-                contents = 'add user {0} from {1} failed'.format(rqmsg.user, self.request.remote_ip)
-                msg.head.if_st = 0
+                yield self.add_eventlog(1, msg.user_id,
+                                        'User {0} already exists'.format(rqmsg.user))
+                msg.head.if_st = 45
                 msg.head.if_msg = 'User already exists'
         except Exception as ex:
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        yield self.write_event(154, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
 
 
@@ -164,32 +140,28 @@ class UserEditHandler(base.RequestHandler):
 
         try:
             # 检查用户名密码是否存在并更新
-            strsql = 'update {0}.user_list set \
-            user_password="{3}",user_real_name="{4}",user_phonenumber="{5}",user_remark="{6}" \
-            where user_name="{1}" and user_password="{2}"'.format(
-                utils.m_dbname_jk, rqmsg.user, rqmsg.pwd_old, rqmsg.pwd, rqmsg.fullname,
-                rqmsg.mobile, rqmsg.remark)
+            strsql = 'update uas.user_info set \
+            user_pwd="{2}",user_alias="{3}",user_mobile="{4}",user_tel="{5}",user_email="{6}",user_remark="{7}" \
+            where user_name="{0}" and user_pwd="{1}"'.format(rqmsg.user, rqmsg.pwd_old, rqmsg.pwd,
+                                                             rqmsg.fullname, rqmsg.mobile,
+                                                             rqmsg.tel, rqmsg.email, rqmsg.remark)
             cur = yield self.mydata_collector(strsql, need_fetch=0, need_paging=0)
             affected_rows = cur[0][0]
-            contents = ''
             if affected_rows > 0:
-                contents = 'edit user {0} from {1} success'.format(rqmsg.user,
-                                                                   self.request.remote_ip)
+                yield self.add_eventlog(2, rqmsg.user_id,
+                                        'successfully to edit user {0}'.format(rqmsg.user))
                 msg.head.if_st = 1
                 msg.head.if_msg = 'successfully to edit user {0}'.format(rqmsg.user)
             else:
-                contents = 'edit user {0} from {1} failed, wrong username or password or nothing change'.format(
-                    rqmsg.user, self.request.remote_ip)
-                msg.head.if_st = 0
-                msg.head.if_msg = 'Wrong username or password or nothing change'
+                yield self.add_eventlog(2, rqmsg.user_id, 'Wrong username or password')
+                msg.head.if_st = 1
+                msg.head.if_msg = 'Wrong username or password'
         except Exception as ex:
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        yield self.write_event(155, contents, 2, user_name=rqmsg.user)
-        del msg, rqmsg
 
 
 @mxweb.route()
@@ -219,69 +191,63 @@ class UserDelHandler(base.RequestHandler):
 
         # 删除用户
         try:
-            contents = ''
             #判断是否admin账户，是则返回异常，不是则可以删除
             if rqmsg.user != 'admin':
                 # 检查用户名密码是否合法并且删除该用户
-                strsql = 'delete from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                    utils.m_dbname_jk, rqmsg.user, rqmsg.pwd)
+                strsql = 'delete from uas.user_info where user_name="{0}" and user_pwd="{1}"'.format(
+                    rqmsg.user, rqmsg.pwd)
                 cur = yield self.mydata_collector(strsql, need_fetch=0, need_paging=0)
                 affected_rows = cur[0][0]
                 if affected_rows > 0:
-                    contents = 'delete user {0} from {1} success'.format(rqmsg.user,
-                                                                         self.request.remote_ip)
+                    yield self.add_eventlog(3, rqmsg.user_id,
+                                            'successfully delete user {0}'.format(rqmsg.user))
                     msg.head.if_st = 1
                     msg.head.if_msg = 'successfully delete'
                 else:
-                    contents = 'delete user {0} from {1} failed'.format(rqmsg.user,
-                                                                        self.request.remote_ip)
-                    msg.head.if_st = 0
-                    msg.head.if_msg = 'no such user or password wrong'
+                    yield self.add_eventlog(3, rqmsg.user_id, 'Wrong no such user')
+                    msg.head.if_st = 46
+                    msg.head.if_msg = 'no such user'
             else:
-                contents = 'admin account can not delete'
+                yield self.add_eventlog(3, rqmsg.user_id, 'Shall not remove the admin user')
                 msg.head.if_st = 0
-                msg.head.if_msg = "admin account can not delete"
+                msg.head.if_msg = "Shall not remove the admin user"
             del cur, strsql
         except Exception as ex:
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
-
         self.write(mx.convertProtobuf(msg))
         self.finish()
-        self.write_event(156, contents, 2, user_name=rqmsg.user)
-        del msg, rqmsg
 
 
 @mxweb.route()
-class UserInfoHandler(base.RequestHandler):
+class QueryDataEventsHandler(base.RequestHandler):
 
-    help_doc = u'''用户信息获取 (post方式访问)<br/>
+    help_doc = u'''事件記錄查詢 (post方式访问)<br/>
     <b>参数:</b><br/>
-    &nbsp;&nbsp;pb2 - rqUserInfo()结构序列化并经过base64编码后的字符串<br/>
+    &nbsp;&nbsp;pb2 - rqQueryDataEvents()结构序列化并经过base64编码后的字符串<br/>
     <b>返回:</b><br/>
-    &nbsp;&nbsp;UserInfo()结构序列化并经过base64编码后的字符串'''
+    &nbsp;&nbsp;QueryDataEvents()结构序列化并经过base64编码后的字符串'''
 
     root_path = r'/uas/'
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg = yield self.check_arguments(msgws.rqUserInfo(),
-                                                       msgws.UserInfo(),
+
+        legal, rqmsg, msg = yield self.check_arguments(msgws.rqQueryDataEvents(),
+                                                       msgws.QueryDataEvents(),
                                                        use_scode=1)
-        if legal:
-            try:
-                strsql = ''
-                if len(rqmsg.user_name) == 0:
-                    strsql = 'select user_name,user_real_name,user_password,user_phonenumber,user_remark,user_id from {0}.user_list'.format(
-                        utils.m_dbname_jk)
-                else:
-                    strsql = 'select user_name,user_real_name,user_password,user_phonenumber,user_remark,user_id from {0}.user_list where user_name="{1}"'.format(
-                        utils.m_dbname_jk, rqmsg.user_name)
+        try:
+            if legal:
+                strsql = "SELECT e.event_id,u.user_name,s.event_name,e.event_remark,e.event_time,e.event_ip from uas.events_log as e \
+                        LEFT JOIN uas.events_info as s ON e.event_id=s.event_id \
+                        LEFT JOIN uas.user_info as u ON e.user_id=u.user_id WHERE e.event_ip!=0 ORDER BY e.event_time desc, u.user_id"
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
-                    need_paging=0)
+                    buffer_tag=msg.head.paging_buffer_tag,
+                    paging_idx=msg.head.paging_idx,
+                    paging_num=msg.head.paging_num)
                 if record_total is None:
                     msg.head.if_st = 45
                 else:
@@ -290,21 +256,20 @@ class UserInfoHandler(base.RequestHandler):
                     msg.head.paging_idx = paging_idx
                     msg.head.paging_total = paging_total
                     for d in cur:
-                        userview = msgws.UserInfo.UserView()
-                        userview.user = d[0]
-                        userview.fullname = d[1] if d[1] is not None else ''
-                        # userview.pwd = d[2]
-                        userview.tel = d[3] if d[3] is not None else ''
-                        userview.mobile = int(d[3]) if d[3] is not None else 0
-                        userview.remark = d[4] if d[4] is not None else ''
-                        userview.user_id = d[5]
-                        msg.user_view.extend([userview])
-                        del userview
-                del cur
-            except Exception as ex:
-                msg.head.if_st = 0
-                msg.head.if_msg = str(ex)
+                        env = msgws.QueryDataEvents.DataEventsView()
+                        env.events_id = int(d[0])
+                        env.user_name = d[1]
+                        env.events_msg = '{0}'.format(d[2])
+                        env.dt_happen = int(d[3])
+                        env.remote_ip = mx.ip2int(d[4])
+                        msg.data_events_view.extend([env])
+                        del env
 
+            msg.head.if_st = 1
+            msg.head.if_msg = "select events Success"
+        except Exception as ex:
+            msg.head.if_st = 0
+            msg.head.if_msg = str(ex.message)
         self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg

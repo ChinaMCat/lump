@@ -62,7 +62,7 @@ class TmlInfoHandler(base.RequestHandler):
                             strsql = 'select a.rtu_id,a.rtu_phy_id, a.rtu_state,a.rtu_name,b.mobile_no,b.static_ip, \
                             a.rtu_model,a.rtu_fid,a.date_create,a.rtu_remark,a.date_update,a.rtu_install_addr \
                             from {0}.para_base_equipment as a left join {0}.para_rtu_gprs as b \
-                            on a.rtu_id=b.rtu_id {1}'.format(utils.m_jkdb_name, str_tmls)
+                            on a.rtu_id=b.rtu_id {1}'.format(utils.m_dbname_jk, str_tmls)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
@@ -119,7 +119,7 @@ class TmlInfoHandler(base.RequestHandler):
                                     a) for a in list(tml_ids)]))
 
                             strsql = 'select rtu_id, rtu_map_x,rtu_map_y,rtu_gis_x,rtu_gis_y \
-                            from {0}.para_base_equipment {1}'.format(utils.m_jkdb_name, str_tmls)
+                            from {0}.para_base_equipment {1}'.format(utils.m_dbname_jk, str_tmls)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
@@ -163,7 +163,7 @@ class TmlInfoHandler(base.RequestHandler):
                             left join {0}.para_rtu_voltage as d on a.rtu_id=d.rtu_id \
                             left join {0}.para_rtu_switch_out as e \
                             on b.rtu_id=e.rtu_id and b.switch_output_id=e.switch_id where a.rtu_id>=1000000 and a.rtu_id<=1099999 {1} \
-                            order by a.rtu_id'.format(utils.m_jkdb_name, str_tmls)
+                            order by a.rtu_id'.format(utils.m_dbname_jk, str_tmls)
 
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
@@ -193,31 +193,32 @@ class TmlInfoHandler(base.RequestHandler):
                                         rtuinfo.voltage_uplimit = int(d[6])
                                         rtuinfo.voltage_lowlimit = int(d[7])
                                         rtuinfo.loop_st_switch_by_current = int(d[8])
-
-                                    loopinfo = msgws.TmlInfo.RtuLoopItem()
-                                    loopinfo.loop_id = int(d[9])
-                                    loopinfo.loop_name = d[10]
-                                    loopinfo.loop_phase = int(d[11])
-                                    loopinfo.loop_current_range = int(d[12])
-                                    loopinfo.loop_switchout_id = int(d[13])
-                                    loopinfo.loop_switchout_name = d[14] if d[
-                                        14] is not None else ''
-                                    loopinfo.loop_switchout_vector = int(d[15]) if d[
-                                        15] is not None else 0
-                                    loopinfo.loop_switchin_id = int(d[16])
-                                    loopinfo.loop_switchin_vector = int(d[17])
-                                    loopinfo.loop_transformer = int(d[18])
-                                    loopinfo.loop_transformer_num = 1
-                                    loopinfo.loop_step_alarm = int(d[19])
-                                    loopinfo.loop_st_switch = int(d[20])
-                                    # loopinfo.loop_is_shield = d[21]
-                                    # loopinfo.shield_small_current = d[22]
-                                    loopinfo.loop_light_rate_bm = float(d[21])
-                                    loopinfo.loop_light_rate_alarm = float(d[22])
-                                    loopinfo.current_uplimit = int(d[23])
-                                    loopinfo.current_lowlimit = int(d[24])
-                                    rtuinfo.loop_item.extend([loopinfo])
-                                    del loopinfo
+                                        
+                                    if d[9] is not None:
+                                        loopinfo = msgws.TmlInfo.RtuLoopItem()
+                                        loopinfo.loop_id = int(d[9])
+                                        loopinfo.loop_name = d[10]
+                                        loopinfo.loop_phase = int(d[11])
+                                        loopinfo.loop_current_range = int(d[12])
+                                        loopinfo.loop_switchout_id = int(d[13])
+                                        loopinfo.loop_switchout_name = d[14] if d[
+                                            14] is not None else ''
+                                        loopinfo.loop_switchout_vector = int(d[15]) if d[
+                                            15] is not None else 0
+                                        loopinfo.loop_switchin_id = int(d[16])
+                                        loopinfo.loop_switchin_vector = int(d[17])
+                                        loopinfo.loop_transformer = int(d[18])
+                                        loopinfo.loop_transformer_num = 1
+                                        loopinfo.loop_step_alarm = int(d[19])
+                                        loopinfo.loop_st_switch = int(d[20])
+                                        # loopinfo.loop_is_shield = d[21]
+                                        # loopinfo.shield_small_current = d[22]
+                                        loopinfo.loop_light_rate_bm = float(d[21])
+                                        loopinfo.loop_light_rate_alarm = float(d[22])
+                                        loopinfo.current_uplimit = int(d[23])
+                                        loopinfo.current_lowlimit = int(d[24])
+                                        rtuinfo.loop_item.extend([loopinfo])
+                                        del loopinfo
                                 if rtuinfo.tml_id > 0:
                                     msg.rtu_info.extend([rtuinfo])
 
@@ -231,7 +232,7 @@ class TmlInfoHandler(base.RequestHandler):
 
                             strsql = 'select slu_id,grp_id,grp_name,date_update,rtu_list from {0}.slu_ctrl_grp \
                             where  slu_id>=1500000 and slu_id<=1599999 {1} \
-                            order by slu_id,grp_id'.format(utils.m_jkdb_name, str_tmls)
+                            order by slu_id,grp_id'.format(utils.m_dbname_jk, str_tmls)
 
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
@@ -290,7 +291,7 @@ class TmlInfoHandler(base.RequestHandler):
                             from {0}.para_slu as b left join {0}.para_base_equipment as a  \
                             on a.rtu_id=b.rtu_id left join {0}.para_slu_ctrl as c on  \
                             c.slu_id=b.rtu_id where a.rtu_id>=1500000 and a.rtu_id<=1599999 {1} order by a.rtu_id'.format(
-                                utils.m_jkdb_name, str_tmls)
+                                utils.m_dbname_jk, str_tmls)
 
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
@@ -380,7 +381,7 @@ class TmlInfoHandler(base.RequestHandler):
                             b.ldu_loop_id,b.ldu_control_type_code,b.ldu_comm_type_code  \
                             from {0}.para_ldu_line as b left join {0}.para_base_equipment as a  \
                             on a.rtu_id=b.ldu_fid where a.rtu_id>=1100000 and a.rtu_id<=1199999 {1} order by a.rtu_id'.format(
-                                utils.m_jkdb_name, str_tmls)
+                                utils.m_dbname_jk, str_tmls)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
@@ -437,7 +438,7 @@ class TmlInfoHandler(base.RequestHandler):
                             b.lux_port,b.lux_comm_type_code from {0}.para_lux as b  \
                             left join {0}.para_base_equipment as a on a.rtu_id=b.rtu_id  \
                             where a.rtu_id>=1400000 and a.rtu_id<=1499999 {1} order by a.rtu_id'.format(
-                                utils.m_jkdb_name, str_tmls)
+                                utils.m_dbname_jk, str_tmls)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
@@ -473,7 +474,7 @@ class TmlInfoHandler(base.RequestHandler):
                             b.mru_addr_6,b.mru_baudrate,b.mru_ratio,b.mru_type  \
                             from {0}.para_mru as b left join {0}.para_base_equipment as a  \
                             on a.rtu_id=b.rtu_id where a.rtu_id>=1300000 and a.rtu_id<=1399999 {1} order by a.rtu_id'.format(
-                                utils.m_jkdb_name, str_tmls)
+                                utils.m_dbname_jk, str_tmls)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1,
@@ -543,14 +544,14 @@ class QueryDataRtuElecHandler(base.RequestHandler):
                     strsql = '''select a.date_create,a.rtu_id,a.loop_id,a.minutes_open,a.power 
                     from {0}_data.info_rtu_elec as a 
                     where a.date_create>={1} and a.date_create<={2} {3} 
-                    order by a.date_create desc,a.rtu_id,a.loop_id'''.format(utils.m_jkdb_name, sdt,
+                    order by a.date_create desc,a.rtu_id,a.loop_id'''.format(utils.m_dbname_jk, sdt,
                                                                              edt, str_tmls)
                 else:
                     strsql = '''select a.rtu_id,a.rtu_id,a.loop_id,sum(a.minutes_open) as m,sum(a.power) as p 
                     from {0}_data.info_rtu_elec as a 
                     where a.date_create>={1} and a.date_create<={2} {3} 
                     group by a.rtu_id,a.loop_id 
-                    order by a.rtu_id,a.loop_id'''.format(utils.m_jkdb_name, sdt, edt, str_tmls)
+                    order by a.rtu_id,a.loop_id'''.format(utils.m_dbname_jk, sdt, edt, str_tmls)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
@@ -626,7 +627,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                     (select rtu_id,date_create from 
                     (select rtu_id,max(date_create) as date_create from {0}_data.data_rtu_view group by rtu_id) as t 
                     where t.rtu_id=a.rtu_id and t.date_create=a.date_create) {1} order by a.date_create desc,a.rtu_id,a.loop_id;'''.format(
-                        utils.m_jkdb_name, str_tmls)
+                        utils.m_dbname_jk, str_tmls)
                     # if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     #     if len(rqmsg.tml_id) == 0:
                     #         str_tmls = ''
@@ -648,7 +649,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                     #             a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range,  \
                     #             c.loop_name from {0}_data.data_rtu_view as a left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id \
                     #             where a.date_create=(select max(date_create) from {0}_data.data_rtu_record where {1})'.format(
-                    #     utils.m_jkdb_name, str_tmls)
+                    #     utils.m_dbname_jk, str_tmls)
 
                     # cur = self.mysql_generator(strsql)
                     # c = cur.next()
@@ -698,7 +699,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                     c.loop_name from {0}_data.data_rtu_view as a 
                     left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id 
                     where a.date_create>={1} and a.date_create<={2} {3} 
-                    order by a.rtu_id,a.date_create desc,a.loop_id'''.format(utils.m_jkdb_name, sdt,
+                    order by a.rtu_id,a.date_create desc,a.loop_id'''.format(utils.m_dbname_jk, sdt,
                                                                              edt, str_tmls)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
@@ -772,7 +773,7 @@ class RtuDataGetHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqRtuDataGet(), None)
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in utils._can_read & utils._can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = ','.join([str(a) for a in self.get_phy_list(rqmsg.tml_id)])
@@ -829,51 +830,52 @@ class RtuCtlHandler(base.RequestHandler):
                         rtu_ids = ','.join([str(
                             a) for a in self.get_phy_list(self.check_tml_x(user_uuid, list(
                                 x.tml_id)))])
-                    if x.opt == 1:  # 单回路操作
-                        i = 0
-                        for k in list(x.loop_do):
-                            if k in (0, 1):
-                                tcsdata['k'] = i
-                                tcsdata['o'] = k
-                                tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2210',
-                                                             self.request.remote_ip, 0, rtu_ids,
-                                                             tcsdata)
-                                # libiisi.set_to_send(tcsmsg, 0, False)
-                                libiisi.send_to_zmq_pub(
-                                    'tcs.req.{0}.wlst.rtu.2210'.format(utils.m_tcs_port),
-                                    json.dumps(tcsmsg,
-                                               separators=(',', ':')).lower())
-                            i += 1
-                    elif x.opt == 2:  # 多回路操作
-                        i = 1
-                        for k in list(x.loop_do):
-                            tcsdata['k{0}'.format(i)] = k
-                            if i == 6:
-                                break
-                            i += 1
-                        tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.4b00',
-                                                     self.request.remote_ip, 0, rtu_ids, tcsdata)
-                        # libiisi.set_to_send(tcsmsg, 0, False)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{0}.wlst.rtu.4b00'.format(utils.m_tcs_port),
-                            json.dumps(tcsmsg,
-                                       separators=(',', ':')).lower())
-                    elif x.opt == 3:  # 停运
-                        tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2800',
-                                                     self.request.remote_ip, 0, rtu_ids, tcsdata)
-                        # libiisi.set_to_send(tcsmsg, 0, False)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{0}.wlst.rtu.2800'.format(utils.m_tcs_port),
-                            json.dumps(tcsmsg,
-                                       separators=(',', ':')).lower())
-                    elif x.opt == 4:  # 解除停运
-                        tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2900',
-                                                     self.request.remote_ip, 0, rtu_ids, tcsdata)
-                        # libiisi.set_to_send(tcsmsg, 0, False)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{0}.wlst.rtu.2900'.format(utils.m_tcs_port),
-                            json.dumps(tcsmsg,
-                                       separators=(',', ':')).lower())
+                    if len(rtu_ids) > 0:
+                        if x.opt == 1:  # 单回路操作
+                            i = 0
+                            for k in list(x.loop_do):
+                                if k in (0, 1):
+                                    tcsdata['k'] = i
+                                    tcsdata['o'] = k
+                                    tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2210',
+                                                                 self.request.remote_ip, 0, rtu_ids,
+                                                                 tcsdata)
+                                    # libiisi.set_to_send(tcsmsg, 0, False)
+                                    libiisi.send_to_zmq_pub(
+                                        'tcs.req.{0}.wlst.rtu.2210'.format(utils.m_tcs_port),
+                                        json.dumps(tcsmsg,
+                                                   separators=(',', ':')).lower())
+                                i += 1
+                        elif x.opt == 2:  # 多回路操作
+                            i = 1
+                            for k in list(x.loop_do):
+                                tcsdata['k{0}'.format(i)] = k
+                                if i == 6:
+                                    break
+                                i += 1
+                            tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.4b00',
+                                                         self.request.remote_ip, 0, rtu_ids, tcsdata)
+                            # libiisi.set_to_send(tcsmsg, 0, False)
+                            libiisi.send_to_zmq_pub(
+                                'tcs.req.{0}.wlst.rtu.4b00'.format(utils.m_tcs_port),
+                                json.dumps(tcsmsg,
+                                           separators=(',', ':')).lower())
+                        elif x.opt == 3:  # 停运
+                            tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2800',
+                                                         self.request.remote_ip, 0, rtu_ids, tcsdata)
+                            # libiisi.set_to_send(tcsmsg, 0, False)
+                            libiisi.send_to_zmq_pub(
+                                'tcs.req.{0}.wlst.rtu.2800'.format(utils.m_tcs_port),
+                                json.dumps(tcsmsg,
+                                           separators=(',', ':')).lower())
+                        elif x.opt == 4:  # 解除停运
+                            tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2900',
+                                                         self.request.remote_ip, 0, rtu_ids, tcsdata)
+                            # libiisi.set_to_send(tcsmsg, 0, False)
+                            libiisi.send_to_zmq_pub(
+                                'tcs.req.{0}.wlst.rtu.2900'.format(utils.m_tcs_port),
+                                json.dumps(tcsmsg,
+                                           separators=(',', ':')).lower())
                 if not dosomething:
                     msg.head.if_st = 46
             else:
@@ -901,7 +903,7 @@ class RtuVerGetHandler(base.RequestHandler):
 
         env = False
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in utils._can_read & utils._can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = ','.join([str(a) for a in self.get_phy_list(rqmsg.tml_id)])
@@ -928,10 +930,10 @@ class RtuVerGetHandler(base.RequestHandler):
 @mxweb.route()
 class RtuTimerCtlHandler(base.RequestHandler):
 
-    help_doc = u'''获取终端版本信息 (post方式访问)<br/>
+    help_doc = u'''设置/读取终端时钟 (post方式访问)<br/>
     <b>参数:</b><br/>
     &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
-    &nbsp;&nbsp;pb2 - rqRtuVerGet()结构序列化并经过base64编码后的字符串<br/>
+    &nbsp;&nbsp;pb2 - rqRtuTimerCtl()结构序列化并经过base64编码后的字符串<br/>
     <b>返回:</b><br/>
     &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
 
@@ -941,7 +943,11 @@ class RtuTimerCtlHandler(base.RequestHandler):
         env = False
         contents = ''
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if rqmsg.data_mark == 0:
+                user_auth = utils._can_exec & utils._can_read
+            else:
+                user_auth = utils._can_exec & utils._can_write
+            if user_data['user_auth'] in user_auth:
                 env = True
                 contents = 'user from {0} set rtu timer'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id

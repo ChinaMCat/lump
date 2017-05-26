@@ -22,7 +22,7 @@ class MXMariadb(object):
                        5: float,
                        8: int,
                        9: int},
-                 flag=32 | 65536 | 131072,
+                 client_flag=32 | 65536 | 131072,
                  maxconn=20):
         """mariadb访问类初始化
         Args:    
@@ -38,8 +38,8 @@ class MXMariadb(object):
         self.user = user
         self.pwd = pwd
         self.conv = conv
-        self.flag = flag
-        self.conn_queue = Queue.Queue(20)
+        self.client_flag = client_flag
+        self.conn_queue = Queue.Queue(7)
         self.error_msg = ''
         self.show_debug = False
 
@@ -49,17 +49,23 @@ class MXMariadb(object):
             cn.close()
             del cn
 
-    def get_conn(self):
+    def __get_conn(self):
+        '''获取mysql连接'''
         try:
-            return self.conn_queue.get_nowait()
-        except:
+            cn = self.conn_queue.get_nowait()
+            if not cn.stat().startswith('Uptime:'):
+                cn.close()
+                del cn
+                raise Exception('MySQL server has something wrong')
+            return cn
+        except Exception as ex:
             try:
                 cn = mysql.connect(host=self.host,
                                    port=self.port,
                                    user=self.user,
                                    passwd=self.pwd,
                                    conv=self.conv,
-                                   client_flag=self.flag,
+                                   client_flag=self.client_flag,
                                    connect_timeout=7)
                 cn.set_character_set('utf8')
             except Exception as ex:
@@ -70,11 +76,22 @@ class MXMariadb(object):
             else:
                 return cn
 
-    def put_conn(self, conn):
+    def __put_conn(self, conn):
+        '''回收mysql连接'''
         try:
             self.conn_queue.put_nowait(conn)
         except:
-            pass
+            conn.close()
+            del conn
+
+    def get_last_error_message(self):
+        '''获取最近一次操作产生的错误信息, 获取后清空'''
+        s = self.error_msg
+        self.error_msg = ''
+        return s
+
+    def set_debug(self, debug):
+        self.show_debug = debug
 
     def run_fetch(self, strsql):
         '''数据库访问方法，
@@ -84,7 +101,7 @@ class MXMariadb(object):
         if len(strsql) == 0:
             yield None
         else:
-            conn = self.get_conn()
+            conn = self.__get_conn()
             if conn is None:
                 yield None
             else:
@@ -94,6 +111,8 @@ class MXMariadb(object):
                     self.error_msg = '_mysql fetch error: {0}'.format(ex)
                     if self.show_debug:
                         print(self.error_msg)
+                    conn.close()
+                    del conn
                 else:
                     cur = conn.use_result()
                     if cur is not None:
@@ -107,16 +126,16 @@ class MXMariadb(object):
                     else:
                         yield None
                     del cur
-                self.put_conn(conn)
+                    self.__put_conn(conn)
 
     def run_exec(self, strsql):
         '''数据库访问方法
             用于执行delet，insert，update语句，支持多条语句一起提交，用‘;’分割
-            Return:
+        Return:
             [(affected_rows,insert_id),...]'''
         if len(strsql) == 0:
             return None
-        conn = self.get_conn()
+        conn = self.__get_conn()
         if conn is None:
             return None
         x = []
@@ -126,18 +145,13 @@ class MXMariadb(object):
             self.error_msg = '_mysql exec error: {0}'.format(ex)
             if self.show_debug:
                 print(self.error_msg)
+            conn.close()
+            del conn
         else:
             conn.use_result()
             x.append((conn.affected_rows(), conn.insert_id()))
             while conn.next_result() > -1:
                 x.append((conn.affected_rows(), conn.insert_id()))
 
-        self.put_conn(conn)
+            self.__put_conn(conn)
         return x
-
-    def get_last_error_message(self):
-        return self.error_msg
-
-    def set_debug(self, debug):
-        self.show_debug = debug
-        

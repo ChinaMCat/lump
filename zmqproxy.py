@@ -73,18 +73,25 @@ if __name__ == '__main__':
         raw_input('press any key to exit...')
         sys.exit(0)
 
-    poller = zmq.Poller()
-    poller.register(puller, zmq.POLLIN)
-
     proxy_log.writeLog('start zmq proxy server. front:{0} back:{1}'.format(results.front,
                                                                            results.back), 30)
-    while True:
-        poll_list = dict(poller.poll(500))
-        if poll_list.get(puller) == zmq.POLLIN:
-            try:
-                f, m = puller.recv_multipart()
-                puber.send_multipart([f, m])
-                # proxy_log.writeLog(u'{0} recv: {1}, {2}'.format(
-                #     mx.stamp2time(time.time()), f, m), 20)
-            except Exception as ex:
-                print('loop err:{0} - {1}:{2}'.format(ex, f, m))
+    # poller = zmq.Poller()
+    # poller.register(puller, zmq.POLLIN)
+                        
+    # while True:
+    #     poll_list = dict(poller.poll(500))
+    #     if poll_list.get(puller) == zmq.POLLIN:
+    #         try:
+    #             f, m = puller.recv_multipart()
+    #             puber.send_multipart([f, m])
+    #             # proxy_log.writeLog(u'{0} recv: {1}, {2}'.format(
+    #             #     mx.stamp2time(time.time()), f, m), 20)
+    #         except Exception as ex:
+    #             print('loop err:{0} - {1}:{2}'.format(ex, f, m))
+    
+    zmq.proxy(puller, puber)
+    
+    
+    puller.close()
+    puber.close()
+    ctx.term()

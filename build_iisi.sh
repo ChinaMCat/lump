@@ -17,4 +17,4 @@ rm -rf ~/Downloads/iisi_setup.tar.gz
 tar zcvf ~/Downloads/iisi_setup.tar.gz -C dist/ iisi-setup
 
 scp ~/Downloads/iisi_setup.tar.gz cos83:/tmp
-scp ~/Downloads/iisi_setup.tar.gz wgq:/tmp
+# scp ~/Downloads/iisi_setup.tar.gz wgq:/tmp

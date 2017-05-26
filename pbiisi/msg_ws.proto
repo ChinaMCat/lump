@@ -44,7 +44,7 @@ message UserLogin {
     string fullname = 4;  // 用户全名
     string user_db = 5;  // 用户关联数据库名称
     int32 user_area = 6;  // 用户的区域id(暂不用)
-    string zmq = 7;  // 信息推送服务地址(zmp端口号)
+    string zmq = 7;  // // zmq路由端口号（pull端口,pub端口）
     string flow_data = 8; // 备注信息,如工作流系统登录的返回信息
     repeated int32 area_r = 9 [packed=true];  // 可读区域
     repeated int32 area_w = 10 [packed=true];  // 可写区域
@@ -55,6 +55,7 @@ message UserLogin {
     string email = 15; // 用户邮箱
     string remark = 16; // 备注
     string user = 17;  // 用户名
+    int32 tcs = 18;  // 通讯层端口号
 }
 
 // 用户注销 
@@ -149,12 +150,15 @@ message UserInfo {
 // 请求区域信息应答
 message rqAreaInfo {
     Head head = 1;
+    repeated int32 area_id = 2 [packed=true];
+    int32 get_child = 3;  // 默认0-返回输入的area_id的区域信息，1-返回以这些id作为父id的子区域信息
 }
 message AreaInfo {
     message AreaView {
         int32 area_id = 1;  // 区域id
         string area_name = 2;  // 区域名称
         repeated int32 tml_id = 3 [packed=true];  // 下属设备id
+        int32 parent_id = 4;  // 上级区域id
     }
     Head head = 1;
     repeated AreaView area_view = 2;
@@ -517,6 +521,7 @@ message QueryDataRtu {
         double voltage_b = 10;  // B相电压
         double voltage_c = 11;  // C相电压
         repeated int32 alarm_st = 12 [packed=true];  // 终端报警状态,共8位,每一位0-正常,1-异常,[供电,开机申请,停运,报警,电压超限,电流超限,无电流,参数错误]
+        int32 temperature = 14; // 温度
     }
     Head head = 1;
     int32 type = 2;  // 类型,0-最新,1-历史
@@ -834,22 +839,6 @@ message QuerySmsRecord {
     repeated SmsRecord sms_record = 3;
 }
 
-// 中间层报警信息提交
-message rqSubmitAlarm {
-    message AlarmView {
-        int64 dt_create = 1;  // 故障产生时间
-        int32 err_id = 2;  // 故障id
-        int32 tml_id = 3;  // 设备id
-        int32 loop_id = 4;  // 回路id,从1开始,非回路故障填0
-        int32 lamp_id = 5;  // 灯头id,从1开始,非灯头故障填0
-        int32 err_count = 6;  // 在一定时间内重复产生的故障数量
-        int64 dt_remove = 8;  // 故障消除时间
-        int32 is_alarm = 9;  // 1-报警,0-消警
-    }
-    // Head head = 1;
-    repeated AlarmView alarm_view = 2;
-}
-
 // 电表数据查询
 message rqQueryDataMru {
     Head head = 1;
@@ -973,3 +962,32 @@ message rqUserAuthSet {
     repeated ProjectAuth project_auth = 3;
     string admin_pwd = 4;  // admin密码
 }
+
+// 区域添加
+message rqAreaAdd {
+    Head head = 1;  // 协议头信息
+    string area_name = 2;  // 新的区域名称
+    int32 area_parent = 3;  // 区域父id
+    string area_remark = 4;  // 备注
+    string admin_pwd = 5;  // admin密码
+}
+// 应答CommonAns
+
+// 区域修改
+message rqAreaEdit {
+    Head head = 1;  // 协议头信息
+    string area_id = 2;  // 区域id
+    string area_name = 3;  // 区域名称
+    int32 area_parent = 4;  // 父区域id
+    string area_remark = 5;  // 备注
+    string admin_pwd = 6;  // admin 密码
+}
+// 应答CommonAns
+
+// 区域删除
+message rqAreaDel {
+    Head head = 1;  // 协议头信息
+    int32 area_id = 2;  // 项目id
+    string admin_pwd = 3;  // admin密码
+}
+// 应答CommonAns（）

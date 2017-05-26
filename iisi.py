@@ -129,5 +129,6 @@ if __name__ == '__main__':
         print('======= start the service on port {0} ======='.format(iisi_port))
         tornado.ioloop.IOLoop.instance().start()
     except Exception as ex:
-        print(ex)
-        raw_input('press any key to exit...')
+        logging.error('------- service error: {0}'.format(ex))
+        if os.name == 'nt':
+            raw_input('press any key to exit...')

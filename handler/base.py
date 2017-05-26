@@ -20,6 +20,7 @@ import pbiisi.msg_ws_pb2 as msgws
 import utils
 from concurrent.futures import ThreadPoolExecutor
 
+
 class RequestHandler(mxweb.MXRequestHandler):
     executor = ThreadPoolExecutor(200)
     _cache_tml_r = dict()  # 可读权限设备地址缓存
@@ -33,14 +34,6 @@ class RequestHandler(mxweb.MXRequestHandler):
     @gen.coroutine
     def get(self):
         self.render('405.html')
-
-    def prepare(self):
-        '''写日志记录客户端请求pb2参数'''
-        if self.request.method == 'POST':
-            pb2str = ','.join(self.get_arguments('pb2'))
-            if len(pb2str) > 0:
-                logging.info(self.format_log(self.request.remote_ip, pb2str, self.request.path,
-                                             'REQ'))
 
     def write_cache(self, cache_name, msg):
         '''写查询数据结果缓存文件'''
@@ -118,6 +111,10 @@ class RequestHandler(mxweb.MXRequestHandler):
             # 向数据库请求最新结果集
             cur = None
             cur = libiisi.m_sql.run_fetch(strsql)
+            s = libiisi.m_sql.get_last_error_message()
+            if len(s) > 0:
+                logging.error(self.format_log(self.request.remote_ip, s, self.request.path,
+                                              '_MYSQL'))
             # print(cur, isinstance(cur, types.GeneratorType))
             # 若返回的不是迭代器，则认为数据库操作失败
             if not isinstance(cur, types.GeneratorType):
@@ -166,7 +163,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                             cur.close()
                             del cur
                             break
-                            
+
                         if d is None:
                             break
                         if n < y and n >= x:
@@ -193,72 +190,77 @@ class RequestHandler(mxweb.MXRequestHandler):
             #         del cur
             #     return (0, None, None, None, None)
         else:
-            return libiisi.m_sql.run_exec(strsql)
+            cur = libiisi.m_sql.run_exec(strsql)
+            s = libiisi.m_sql.get_last_error_message()
+            if len(s) > 0:
+                logging.error(self.format_log(self.request.remote_ip, s, self.request.path,
+                                              '_MYSQL'))
+            return cur
 
             # @run_on_executor
-    # def _mysql_no_fetch(self, strsql):
-    #     '''数据库访问方法，用于执行delet，insert，update语句，支持多条语句一起提交，用‘;’分割
-    #     返回:
-    #     [(affected_rows,insert_id),...]'''
-    #     conn = mysql.connect(host=utils.m_db_host,
-    #                          user=utils.m_db_user,
-    #                          passwd=utils.m_db_pwd,
-    #                          port=utils.m_db_port,
-    #                         #  compress=1,
-    #                          client_flag=32 | 65536 | 131072,  # compress,multi_statements,multi_results
-    #                          conv=utils.m_conv,
-    #                          connect_timeout=5,
-    #                          #  charset='utf8',
-    #                          )
-    #     conn.set_character_set('utf8')
-    #     x = []
-    #     try:
-    #         conn.query(strsql)
-    #     except Exception as ex:
-    #         logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
-    #     else:
-    #         conn.use_result()
-    #         x.append((conn.affected_rows(), conn.insert_id()))
-    #         while True:
-    #             if conn.next_result() == -1:
-    #                 break
-    #             x.append((conn.affected_rows(), conn.insert_id()))
-    # 
-    #     conn.close()
-    #     del conn
-    #     return x
-    # 
-    # def _mysql_generator_sql_mysql(self, strsql):
-    #     '''数据库访问方法，返回迭代器'''
-    #     conn = mysql.connect(host=utils.m_db_host,
-    #                          user=utils.m_db_user,
-    #                          passwd=utils.m_db_pwd,
-    #                          port=utils.m_db_port,
-    #                         #  compress=1,
-    #                          client_flag=32 | 65536,  # compress,multi_statements
-    #                          conv=utils.m_conv,
-    #                          connect_timeout=5,
-    #                          #  charset='utf8',
-    #                          )
-    #     conn.set_character_set('utf8')
-    #     try:
-    #         conn.query(strsql)
-    #     except Exception as ex:
-    #         logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
-    #     else:
-    #         cur = conn.use_result()
-    #         if cur is not None:
-    #             while True:
-    #                 d = cur.fetch_row(619)
-    #                 if len(d) == 0:
-    #                     break
-    #                 else:
-    #                     for i in d:
-    #                         yield i
-    #         else:
-    #             yield -1
-    #     conn.close()
-    #     del conn
+            # def _mysql_no_fetch(self, strsql):
+            #     '''数据库访问方法，用于执行delet，insert，update语句，支持多条语句一起提交，用‘;’分割
+            #     返回:
+            #     [(affected_rows,insert_id),...]'''
+            #     conn = mysql.connect(host=utils.m_db_host,
+            #                          user=utils.m_db_user,
+            #                          passwd=utils.m_db_pwd,
+            #                          port=utils.m_db_port,
+            #                         #  compress=1,
+            #                          client_flag=32 | 65536 | 131072,  # compress,multi_statements,multi_results
+            #                          conv=utils.m_conv,
+            #                          connect_timeout=5,
+            #                          #  charset='utf8',
+            #                          )
+            #     conn.set_character_set('utf8')
+            #     x = []
+            #     try:
+            #         conn.query(strsql)
+            #     except Exception as ex:
+            #         logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
+            #     else:
+            #         conn.use_result()
+            #         x.append((conn.affected_rows(), conn.insert_id()))
+            #         while True:
+            #             if conn.next_result() == -1:
+            #                 break
+            #             x.append((conn.affected_rows(), conn.insert_id()))
+            # 
+            #     conn.close()
+            #     del conn
+            #     return x
+            # 
+            # def _mysql_generator_sql_mysql(self, strsql):
+            #     '''数据库访问方法，返回迭代器'''
+            #     conn = mysql.connect(host=utils.m_db_host,
+            #                          user=utils.m_db_user,
+            #                          passwd=utils.m_db_pwd,
+            #                          port=utils.m_db_port,
+            #                         #  compress=1,
+            #                          client_flag=32 | 65536,  # compress,multi_statements
+            #                          conv=utils.m_conv,
+            #                          connect_timeout=5,
+            #                          #  charset='utf8',
+            #                          )
+            #     conn.set_character_set('utf8')
+            #     try:
+            #         conn.query(strsql)
+            #     except Exception as ex:
+            #         logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
+            #     else:
+            #         cur = conn.use_result()
+            #         if cur is not None:
+            #             while True:
+            #                 d = cur.fetch_row(619)
+            #                 if len(d) == 0:
+            #                     break
+            #                 else:
+            #                     for i in d:
+            #                         yield i
+            #         else:
+            #             yield -1
+            #     conn.close()
+            #     del conn
 
     def init_msgws(self, msgpb, if_name=''):
         '''初始化消息头'''
@@ -293,6 +295,9 @@ class RequestHandler(mxweb.MXRequestHandler):
         strsql = 'select rtu_id,rtu_phy_id,rtu_fid,rtu_name from {0}.para_base_equipment'.format(
             utils.m_dbname_jk)
         cur = libiisi.m_sql.run_fetch(strsql)
+        s = libiisi.m_sql.get_last_error_message()
+        if len(s) > 0:
+            logging.error(self.format_log(self.request.remote_ip, s, self.request.path, '_MYSQL'))
         if isinstance(cur, types.GeneratorType):
             for d in cur:
                 self._tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
@@ -344,6 +349,9 @@ class RequestHandler(mxweb.MXRequestHandler):
                 utils.m_dbname_jk,
                 ','.join([str(a) for a in utils.cache_user[user_uuid]['area_x']]))
         cur = libiisi.m_sql.run_fetch(strsql)
+        s = libiisi.m_sql.get_last_error_message()
+        if len(s) > 0:
+            logging.error(self.format_log(self.request.remote_ip, s, self.request.path, '_MYSQL'))
         # record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
         #     strsql,
         #     need_fetch=1,
@@ -469,6 +477,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         else:
             rqmsg = None
             msg = self.init_msgws(msgws.CommAns())
+            msg.head.if_msg = 'scode is not leage.'
 
         return (leage, rqmsg, msg)
 

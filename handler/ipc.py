@@ -62,7 +62,7 @@ class IpcUplinkHandler(base.RequestHandler):
                             db_names.discard(z[0])
                     del cur
                     for z in db_names:
-                        createsql += utils.sqlstr_create_emtable.format(z) + ';'
+                        createsql += utils.sqlstr_create_emtable.format(z)
                     if len(createsql) > 0:
                         createsql = 'use {0};'.format(utils.m_dbname_dg) + createsql
                         yield self.mydata_collector(createsql, need_fetch=0)
@@ -122,8 +122,6 @@ class IpcUplinkHandler(base.RequestHandler):
         else:
             msg.head.if_st = 0
             msg.head.if_msg = 'Security code error'
-            logging.error(utils.format_log(self.request.remote_ip, msg.head.if_msg,
-                                           self.request.path, 0))
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
@@ -195,6 +193,8 @@ class QueryEMDataHandler(base.RequestHandler):
 
         if legal:
             sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=0)
+            tdt = int(time.time())
+            edt = tdt if edt > tdt else edt
             devid = rqmsg.dev_id
             msg.dev_id = devid
             yms = []

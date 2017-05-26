@@ -82,48 +82,59 @@ class UserLoginJKHandler(base.RequestHandler):
             msg.fullname = d[1] if d[1] is not None else ''
             zmq_addr = libiisi.m_config.getData('zmq_port')
             if zmq_addr.find(':') > -1:
-                msg.zmq = str(int(zmq_addr.split(':')[1]) + 1)
+                msg.zmq = '{0},{1}'.format(zmq_addr.split(':')[1], int(zmq_addr.split(':')[1]) + 1)
             else:
-                msg.zmq = str(int(zmq_addr) + 1)
+                msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr) + 1)
 
             user_auth = 0
             _area_r = []
             _area_w = []
             _area_x = []
-            strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
-                utils.m_dbname_jk, rqmsg.user)
-            record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
-                strsql,
-                need_fetch=1,
-                need_paging=0)
+            try:
+                strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
+                    utils.m_dbname_jk, rqmsg.user)
+                record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
+                    strsql,
+                    need_fetch=1,
+                    need_paging=0)
 
-            if record_total1 > 0:
-                for d in cur1:
-                    if int(d[3]) == 1:
-                        user_auth = 15
-                        _area_r = [0]
-                        _area_w = [0]
-                        _area_x = [0]
-                    else:
-                        user_auth = 0
-                        if d[0] is not None:
-                            if len(d[0].split(';')[:-1]) > 0:
-                                user_auth += 4
-                                _area_r = [int(a) for a in d[0].split(';')[:-1]]
-                        if d[1] is not None:
-                            if len(d[1].split(';')[:-1]) > 0:
-                                user_auth += 2
-                                _area_w = [int(a) for a in d[1].split(';')[:-1]]
-                        if d[2] is not None:
-                            if len(d[2].split(';')[:-1]) > 0:
-                                user_auth += 1
-                                _area_x = [int(a) for a in d[2].split(';')[:-1]]
-            del cur1
-
+                if record_total1 > 0:
+                    for d in cur1:
+                        if int(d[3]) == 1:
+                            user_auth = 15
+                            _area_r = [0]
+                            _area_w = [0]
+                            _area_x = [0]
+                        else:
+                            user_auth = 0
+                            if d[0] is not None:
+                                if len(d[0].split(';')[:-1]) > 0:
+                                    user_auth += 4
+                                    _area_r = [int(a) for a in d[0].split(';')[:-1]]
+                            if d[1] is not None:
+                                if len(d[1].split(';')[:-1]) > 0:
+                                    user_auth += 2
+                                    _area_w = [int(a) for a in d[1].split(';')[:-1]]
+                            if d[2] is not None:
+                                if len(d[2].split(';')[:-1]) > 0:
+                                    user_auth += 1
+                                    _area_x = [int(a) for a in d[2].split(';')[:-1]]
+                else:
+                    contents = 'login failed, database version error.'
+                    msg.uuid = ''
+                    msg.head.if_st = 0
+                    msg.head.if_msg = 'login failed, database version error.'
+                del cur1
+            except:
+                user_auth = 15
+                _area_r = [0]
+                _area_w = [0]
+                _area_x = [0]
             msg.auth = user_auth
             msg.area_r.extend(_area_r)
             msg.area_w.extend(_area_w)
             msg.area_x.extend(_area_x)
+            msg.tcs = int(utils.m_tcs_port)
             # 加入用户缓存{uuid:dict()}
             utils.cache_user[user_uuid] = dict(user_name=rqmsg.user,
                                                user_auth=user_auth,
@@ -240,48 +251,61 @@ class UserLoginHandler(base.RequestHandler):
             msg.fullname = d[1] if d[1] is not None else ''
             zmq_addr = libiisi.m_config.getData('zmq_port')
             if zmq_addr.find(':') > -1:
-                msg.zmq = str(int(zmq_addr.split(':')[1]) + 1)
+                msg.zmq = '{0},{1}'.format(zmq_addr.split(':')[1], int(zmq_addr.split(':')[1]) + 1)
             else:
-                msg.zmq = str(int(zmq_addr) + 1)
+                msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr) + 1)
+
 
             user_auth = 0
             _area_r = []
             _area_w = []
             _area_x = []
-            strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
-                utils.m_dbname_jk, rqmsg.user)
-            record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
-                strsql,
-                need_fetch=1,
-                need_paging=0)
+            try:
+                strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
+                    utils.m_dbname_jk, rqmsg.user)
+                record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
+                    strsql,
+                    need_fetch=1,
+                    need_paging=0)
 
-            if record_total1 > 0:
-                for d in cur1:
-                    if int(d[3]) == 1:
-                        user_auth = 15
-                        _area_r = [0]
-                        _area_w = [0]
-                        _area_x = [0]
-                    else:
-                        user_auth = 0
-                        if d[0] is not None:
-                            if len(d[0].split(';')[:-1]) > 0:
-                                user_auth += 4
-                                _area_r = [int(a) for a in d[0].split(';')[:-1]]
-                        if d[1] is not None:
-                            if len(d[1].split(';')[:-1]) > 0:
-                                user_auth += 2
-                                _area_w = [int(a) for a in d[1].split(';')[:-1]]
-                        if d[2] is not None:
-                            if len(d[2].split(';')[:-1]) > 0:
-                                user_auth += 1
-                                _area_x = [int(a) for a in d[2].split(';')[:-1]]
-            del cur1
-
+                if record_total1 > 0:
+                    for d in cur1:
+                        if int(d[3]) == 1:
+                            user_auth = 15
+                            _area_r = [0]
+                            _area_w = [0]
+                            _area_x = [0]
+                        else:
+                            user_auth = 0
+                            if d[0] is not None:
+                                if len(d[0].split(';')[:-1]) > 0:
+                                    user_auth += 4
+                                    _area_r = [int(a) for a in d[0].split(';')[:-1]]
+                            if d[1] is not None:
+                                if len(d[1].split(';')[:-1]) > 0:
+                                    user_auth += 2
+                                    _area_w = [int(a) for a in d[1].split(';')[:-1]]
+                            if d[2] is not None:
+                                if len(d[2].split(';')[:-1]) > 0:
+                                    user_auth += 1
+                                    _area_x = [int(a) for a in d[2].split(';')[:-1]]
+                else:
+                    contents = 'login failed, database version error.'
+                    msg.uuid = ''
+                    msg.head.if_st = 0
+                    msg.head.if_msg = 'login failed, database version error.'
+                del cur1
+            except:
+                print('user rwx error')
+                user_auth = 15
+                _area_r = [0]
+                _area_w = [0]
+                _area_x = [0]
             msg.auth = user_auth
             msg.area_r.extend(_area_r)
             msg.area_w.extend(_area_w)
             msg.area_x.extend(_area_x)
+            msg.tcs = int(utils.m_tcs_port)
             # 加入用户缓存{uuid:dict()}
             utils.cache_user[user_uuid] = dict(user_name=rqmsg.user,
                                                user_auth=user_auth,

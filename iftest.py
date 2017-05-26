@@ -5,14 +5,14 @@ import urllib3
 import urllib
 import time
 import base64
-from tornado_mysql import pools
 import pbiisi.msg_ws_pb2 as msgif
 import protobuf3.msg_with_ctrl_pb2 as msgtcs
 import mxpsu as mx
-import tornado.httpclient as thc
-from tornado.httputil import url_concat
+# import tornado.httpclient as thc
+# from tornado.httputil import url_concat
 # import gevent
-import timeit
+
+# tc = thc.AsyncHTTPClient()
 
 baseurl = 'http://192.168.122.185:10005/'
 baseurl = 'http://192.168.50.83:10020/'
@@ -36,18 +36,18 @@ def init_head(msg):
 def test_userlogin():
     global user_id
     print('=== login ===')
-    url = baseurl + 'uas/userlogin'
+    url = baseurl + 'userlogin'
     rqmsg = init_head(msgif.rqUserLogin())
-    rqmsg.dev = 3
+    # rqmsg.dev = 3
     rqmsg.unique = 'asdfhaskdfkaf'
     rqmsg.user = u'admin'
     rqmsg.pwd = '1234'
     # rqmsg.user = '管理员'
     # rqmsg.pwd = '123'
-
     data = {'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    # r = tc.fetch(url, 'POST', body=urllib.urlencode(data), raise_error=True, request_timeout=10)
     r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
-    print(r.data)
+    # print(r)
     msg = msgif.UserLogin()
     msg.ParseFromString(base64.b64decode(r.data))
     user_id = msg.uuid
@@ -64,6 +64,7 @@ def test_userlogout():
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     msg = msgif.CommAns()
     msg.ParseFromString(base64.b64decode(r.data))
+
     print(msg)
 
 
@@ -172,7 +173,7 @@ def test_rtuctl():
     rtudo = msgif.rqRtuCtl.RtuDo()
     rtudo.opt = 2
     rtudo.tml_id.extend([1000003])
-    rtudo.loop_do.extend([0, 0, 0, 0, 2, 2])
+    rtudo.loop_do.extend([1, 1, 1, 1, 2, 2])
     rqmsg.rtu_do.extend([rtudo])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
@@ -260,7 +261,8 @@ def test_ipcsubmit():
         rqmsg.ctl_cmd = cmd
         if cmd == 'ipc.datetime.set':
             rqmsg.dev_datetime = int(time.time())
-        data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+        scode = mx.getMD5('{0}fendangao'.format(mx.stamp2time(time.time(), format_type='%Y%m%d%H')))
+        data = {'scode': scode, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
         r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
         msg = msgif.CommAns()
         msg.ParseFromString(base64.b64decode(r.data))
@@ -273,10 +275,11 @@ def test_ipcuplink():
     global user_id
     print('=== ipc uplink ===')
     url = baseurl + 'ipcuplink'
+    scode = mx.getMD5('{0}asdfja'.format(mx.stamp2time(time.time(), format_type='%Y%m%d%H')))
     rqmsg = msgif.rqIpcUplink()
     rqmsg.dev_id = '901001000001'
-    rqmsg.raw_string = ',25.54,39.11,0.035,00004,0.064,0.000,00423,*14'
-    data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    rqmsg.raw_string = '\r\nQI:0.000,00019,01141,00465,0.050,27.46,43.66,0.084,00074,2.000,0.000,00060,*107'
+    data = {'scode': scode, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     msg = msgif.CommAns()
     msg.ParseFromString(base64.b64decode(r.data))
@@ -288,17 +291,18 @@ def test_ipcuplink():
 def test_ipcqueue():
     global user_id
     print('=== query em data ===')
+    scode = mx.getMD5('{0}fendangao'.format(mx.stamp2time(time.time(), format_type='%Y%m%d%H')))
     url = baseurl + 'queryemdata'
     rqmsg = msgif.rqQueryEMData()
-    rqmsg.head.paging_num = 100
+    # rqmsg.head.paging_num = 1
     # rqmsg.head.paging_buffer_tag = 1478230469047982
     # rqmsg.head.paging_idx = 30
     rqmsg.dev_id = '901001000999'
     # rqmsg.dt_start = 1489021647
     # rqmsg.dt_end = 1489108047
-    rqmsg.dt_start = mx.time2stamp('2017-03-23 0:0:0')
-    rqmsg.dt_end = mx.time2stamp('2017-03-28 23:59:59')
-    data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    rqmsg.dt_start = mx.time2stamp('2017-05-01 0:0:0')
+    rqmsg.dt_end = mx.time2stamp('2017-07-28 23:59:59')
+    data = {'scode': scode, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     msg = msgif.QueryEMData()
     msg.ParseFromString(base64.b64decode(r.data))
@@ -402,7 +406,7 @@ def test_tmlinfo():
     print('=== query rty info ===')
     url = baseurl + 'tmlinfo'
     rqmsg = msgif.rqTmlInfo()
-    rqmsg.data_mark.extend([1,2,3,4,5,6,7,8,9])
+    rqmsg.data_mark.extend([1,2,3,4,5])
     rqmsg.tml_id.extend([])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     # data = {'uuid': user_id, 'pb2': 'CgsQyOQJoAbTgM7CBSoCAwIyAQA='}
@@ -504,16 +508,16 @@ def handle_response(response):
         print response.body
 
 
-def test_ws():
-    client = thc.HTTPClient()
-    url = baseurl + 'setGps'
-    # baseurl = 'http://192.168.50.80:33819/ws_common/FlowService.asmx/mobileLogin'
-    args = {'user_id': '78', 'lon': '121.41110644', 'lat':'31.24478767'}
-    url = url_concat(url, args)
-    print(url)
-    rep = client.fetch(url)
-    # print(dir(rep))
-    print(repr(rep.body))
+# def test_ws():
+#     client = thc.HTTPClient()
+#     url = baseurl + 'setGps'
+#     # baseurl = 'http://192.168.50.80:33819/ws_common/FlowService.asmx/mobileLogin'
+#     args = {'user_id': '78', 'lon': '121.41110644', 'lat':'31.24478767'}
+#     url = url_concat(url, args)
+#     print(url)
+#     rep = client.fetch(url)
+#     # print(dir(rep))
+#     print(repr(rep.body))
 
 
 def handle_request(response):
@@ -637,6 +641,7 @@ if __name__ == '__main__':
     # print('sms finish ', time.time() - a)
     # test_test()
     # exit()
+    # for i in range(1):
     test_userlogin()
     # test_useredit()
     # test_sluctl()
@@ -646,7 +651,6 @@ if __name__ == '__main__':
     # test_querysludata()
     # test_sysinfo()
     # test_errquery()
-    # test_querysludata()
     # test_sludataget()
     # test_areainfo()
     # test_grpinfo()
@@ -660,4 +664,6 @@ if __name__ == '__main__':
     # test_userinfo()
     # test_rtudataget()
     # # test_userdel()
-    # test_userlogout()
+    # test_ipcuplink()
+    # test_ipcsubmit()
+        # test_userlogout()

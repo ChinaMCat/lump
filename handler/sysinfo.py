@@ -98,32 +98,33 @@ class AreaInfoHandler(base.RequestHandler):
                     msg.head.paging_idx = paging_idx
                     msg.head.paging_total = paging_total
                     for d in cur:
-                        x = d[2].split(';')[:-1]
-                        y = [int(b) for b in x]
-                        av = msgws.AreaInfo.AreaView()
-                        av.area_id = int(d[0])
-                        av.area_name = d[1]
-                        av.tml_id.extend(y)
-                        msg.area_view.extend([av])
-                        if int(d[0]) in user_data[
-                                'area_r']:  # or user_data['user_auth'] in utils._can_admin:
-                            if user_uuid in self._cache_tml_r.keys():
-                                self._cache_tml_r[user_uuid].union(y)
-                            else:
-                                self._cache_tml_r[user_uuid] = set(y)
-                        if int(d[0]) in user_data[
-                                'area_w']:  # or user_data['user_auth'] in utils._can_admin:
-                            if user_uuid in self._cache_tml_w.keys():
-                                self._cache_tml_w[user_uuid].union(y)
-                            else:
-                                self._cache_tml_w[user_uuid] = set(y)
-                        if int(d[0]) in user_data[
-                                'area_x']:  # or user_data['user_auth'] in utils._can_admin:
-                            if user_uuid in self._cache_tml_x.keys():
-                                self._cache_tml_x[user_uuid].union(y)
-                            else:
-                                self._cache_tml_x[user_uuid] = set(y)
-                        del av, x, y
+                        if d[2] is not None:
+                            x = d[2].split(';')[:-1]
+                            y = [int(b) for b in x]
+                            av = msgws.AreaInfo.AreaView()
+                            av.area_id = int(d[0])
+                            av.area_name = d[1]
+                            av.tml_id.extend(y)
+                            msg.area_view.extend([av])
+                            if int(d[0]) in user_data[
+                                    'area_r']:  # or user_data['user_auth'] in utils._can_admin:
+                                if user_uuid in self._cache_tml_r.keys():
+                                    self._cache_tml_r[user_uuid].union(y)
+                                else:
+                                    self._cache_tml_r[user_uuid] = set(y)
+                            if int(d[0]) in user_data[
+                                    'area_w']:  # or user_data['user_auth'] in utils._can_admin:
+                                if user_uuid in self._cache_tml_w.keys():
+                                    self._cache_tml_w[user_uuid].union(y)
+                                else:
+                                    self._cache_tml_w[user_uuid] = set(y)
+                            if int(d[0]) in user_data[
+                                    'area_x']:  # or user_data['user_auth'] in utils._can_admin:
+                                if user_uuid in self._cache_tml_x.keys():
+                                    self._cache_tml_x[user_uuid].union(y)
+                                else:
+                                    self._cache_tml_x[user_uuid] = set(y)
+                            del av, x, y
 
                 del cur, strsql
 

@@ -24,6 +24,12 @@ class TestHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
+        # url = 'http://192.168.50.83:10020/test'
+        # tch = AsyncHTTPClient()
+        # data = {'a':1,'b':2}
+        # r = yield tch.fetch(url,method='POST', body=urlencode(data), raise_error=True, request_timeout=10)
+        # print(r)
+        # print(str(self.get_argument('do')))
         # strsql = 'delete from uas.user_info where user_name="test2";insert into uas.user_info (user_name,user_pwd,user_alias,create_time) values ("test2","1234","test",1234);'
         # # strsql = 'select ctrl_id from mydb6301_data.data_slu_ctrl'
         # self.mydata_collector(strsql, need_fetch=0, need_paging=0)
@@ -33,14 +39,14 @@ class TestHandler(base.RequestHandler):
         # cur = a[4]
         # for d in cur:
         #     print("d:",d)
+        self.write(str(self.request.arguments))
         self.finish('<br/>get test done.')
 
     @gen.coroutine
     def post(self):
-        print('test post')
         # self.write(self.request.uri + '\r\n')
-        # self.write(str(self.request.arguments) + '\r\n')
-        self.finish('post test done.')
+        self.write(str(self.request.arguments))
+        self.finish('<br/>post test done.')
 
 
 @mxweb.route()
@@ -57,6 +63,13 @@ class StatusHandler(base.RequestHandler):
                 self.write(self.help_doc)
             else:
                 for do in jobs:
+                    if do == 'showsalt':
+                        self.write(repr(self.salt))
+                        self.write('<br/>')
+                        # self.write(os.path.join(mx.SCRIPT_DIR, '.salt'))
+                        # self.write('<br/>')
+                        self.flush()
+
                     if do == 'timer' or do == 'all':
                         self.write('<b><u>===== show system timer =====</u></b><br/>')
                         self.write('{0:.6f} ({1})<br/>'.format(time.time(), mx.stamp2time(time.time(
@@ -94,7 +107,7 @@ class StatusHandler(base.RequestHandler):
                         thc = AsyncHTTPClient()
                         url = '{0}'.format(utils.m_fs_url)
                         try:
-                            rep = yield thc.fetch(url, raise_error=True, request_timeout=20)
+                            rep = yield thc.fetch(url, raise_error=True, request_timeout=30)
                             self.write('Test flow config ... success. 『 {0} 』<br/>'.format(url))
                         except Exception as ex:
                             self.write('Test flow config ... failed. 『 {0} 』<br/>'.format(url))
@@ -109,6 +122,7 @@ class StatusHandler(base.RequestHandler):
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1)
+
                             if record_total is None:
                                 jk_isok = False
                                 dg_isok = False
@@ -163,7 +177,7 @@ class StatusHandler(base.RequestHandler):
 class CleaningWorkHandler(base.RequestHandler):
 
     help_doc = u'''资源清理'''
-    
+
     @gen.coroutine
     def get(self):
         t = time.time()
@@ -219,6 +233,7 @@ class CleaningWorkHandler(base.RequestHandler):
 
 @mxweb.route()
 class MainHandler(base.RequestHandler):
+
     @gen.coroutine
     def get(self):
         self.render('index.html')

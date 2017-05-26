@@ -16,13 +16,33 @@ import mlib_iisi as libiisi
 import utils
 
 try:
-    strsql = 'alter table {0}.user_list \
-                add column user_remark text null, \
-                add column user_id int(11) not null AUTO_INCREMENT, \
-                add index user_id (user_id);'.format(utils.m_dbname_jk)
-    libiisi.m_sql.run_exec(strsql)
+    strsql = 'select column_name from INFORMATION_SCHEMA.columns where table_schema="{0}" and column_name in ("user_id","user_remark");'.format(utils.m_dbname_jk)
+    cur = libiisi.m_sql.run_exec(strsql)
+    add_user_mark = 'add column user_remark text null, '
+    add_user_id = 'add column user_id int(11) not null AUTO_INCREMENT, add index user_id (user_id)'
+    strsql = 'alter table {0}.user_list '.format(utils.m_dbname_jk)
+    need_update = False
+    x = []
+    try:
+        while True:
+            d = cur.next()
+            if len(d) == 0:
+                break
+            x.append(d[0])
+    except:
+        pass
+    if 'user_id' in x:
+        need_update = True
+        strsql += add_user_id
+    if 'user_remark' in x:
+        need_update = True
+        strsql += add_user_remark
+    if need_update:
+        strsql += ';'
+        libiisi.m_sql.run_exec(strsql)
+    del x, strsql, need_update, add_user_id, add_user_mark, cur
 except Exception as ex:
-    pass
+    print('err',libiisi.m_sql.get_last_error_message())
 
 
 @mxweb.route()

@@ -46,6 +46,15 @@ class TestHandler(base.RequestHandler):
     def post(self):
         # self.write(self.request.uri + '\r\n')
         self.write(str(self.request.arguments))
+        
+        # self.set_header("Access-Control-Allow-Origin", "*")
+        # self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        # self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        
+        # self.flush()
+        # self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.write('test again')
+        # self.flush()
         self.finish('<br/>post test done.')
 
 
@@ -68,14 +77,14 @@ class StatusHandler(base.RequestHandler):
                         self.write('<br/>')
                         # self.write(os.path.join(mx.SCRIPT_DIR, '.salt'))
                         # self.write('<br/>')
-                        self.flush()
+                        # self.flush()
 
                     if do == 'timer' or do == 'all':
                         self.write('<b><u>===== show system timer =====</u></b><br/>')
                         self.write('{0:.6f} ({1})<br/>'.format(time.time(), mx.stamp2time(time.time(
                         ))))
                         self.write('<br/>')
-                        self.flush()
+                        # self.flush()
 
                     if do == 'testconfig' or do == 'all':
                         self.write('<b><u>===== test config =====</u></b><br/>')
@@ -155,7 +164,7 @@ class StatusHandler(base.RequestHandler):
                             self.write('Test dgdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
                                 utils.m_db_host, utils.m_db_port, utils.m_dbname_dg))
                         self.write('<br/>')
-                        self.flush()
+                        # self.flush()
 
                     if do == 'showhandlers' or do == 'all':
                         self.write('<b><u>===== show handlers =====</u></b><br/>')
@@ -167,7 +176,7 @@ class StatusHandler(base.RequestHandler):
                                 self.write(a.kwargs.get('help_doc') + '<br/><br/>')
                                 # self.write('---<br/><br/>')
                         self.write('<br/>')
-                        self.flush()
+                        # self.flush()
         except:
             self.write(self.help_doc)
         self.finish()

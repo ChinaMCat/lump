@@ -221,6 +221,7 @@ m_config.setData('fs_url', 'http://127.0.0.1:33819/ws_common', '工作流接口�
 m_config.setData('bind_port', 10005, '本地监听端口')
 m_config.setData('zmq_port', '10006',
                  'ZMQ端口，采用ip:port格式时连接远程ZMQ-PULL服务,采用port格式时为发布本地PULL服务,PUB服务端口号+1')
+m_config.setData('cross_domain', 'true', '允许跨域访问')
 
 
 def zmq_proxy():

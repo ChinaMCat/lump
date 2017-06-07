@@ -109,10 +109,15 @@ class MXMariadb(object):
                     conn.query(strsql)
                 except Exception as ex:
                     self.error_msg = '_mysql fetch error: {0}'.format(ex)
+                    try:
+                        conn.close()
+                    except:
+                        pass
+                    else:
+                        del conn
+                    
                     if self.show_debug:
                         print(self.error_msg)
-                    conn.close()
-                    del conn
                 else:
                     cur = conn.use_result()
                     if cur is not None:

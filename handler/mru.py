@@ -13,6 +13,7 @@ import base
 import pbiisi.msg_ws_pb2 as msgws
 import utils
 import json
+from mxpbjson import pb2json
 
 
 @mxweb.route()
@@ -81,7 +82,10 @@ class QueryDataMruHandler(base.RequestHandler):
                         msg.data_mru_view.extend([dv])
                 del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data
 
@@ -151,6 +155,9 @@ class MruDataGetHandler(base.RequestHandler):
             else:
                 msg.head.if_st = 11
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid

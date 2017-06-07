@@ -35,6 +35,10 @@ class UserLoginJKHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
+        args = self.request.arguments
+        if 'givemejson' in args.keys():
+            self.go_back_json = True
+            
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserLogin()
         msg = msgws.UserLogin()
@@ -183,9 +187,12 @@ class UserLoginJKHandler(base.RequestHandler):
                         msg.flow_data = ''
                 else:
                     msg.flow_data = ''
-                    print(str(ex))
+                    # print(str(ex))
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         self.write_event(121, contents, 2, user_name=rqmsg.user)
         del rqmsg, msg
@@ -204,6 +211,10 @@ class UserLoginHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
+        args = self.request.arguments
+        if 'givemejson' in args.keys():
+            self.go_back_json = True
+            
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserLogin()
         msg = msgws.UserLogin()
@@ -356,7 +367,10 @@ class UserLoginHandler(base.RequestHandler):
                 else:
                     msg.flow_data = ''
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         self.write_event(121, contents, 2, user_name=rqmsg.user)
         del rqmsg, msg
@@ -396,7 +410,10 @@ class UserLogoutHandler(base.RequestHandler):
                 msg.head.if_st = 40
                 msg.head.if_msg = 'The user is not logged'
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
             self.write_event(122, contents, 2, user_name=user_data['user_name'])
@@ -468,7 +485,10 @@ class UserAddHandler(base.RequestHandler):
 
                     del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
             self.write_event(154, contents, 2, user_name=user_data['user_name'])
@@ -522,7 +542,10 @@ class UserDelHandler(base.RequestHandler):
                         msg.head.if_st = 0
                         msg.head.if_msg = str(ex.message)
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
             self.write_event(156, contents, 2, user_name=user_data['user_name'])
@@ -603,7 +626,10 @@ class UserEditHandler(base.RequestHandler):
                 # self.mydata_collector(strsql, 0)
                 # del strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data
 
@@ -674,6 +700,9 @@ class UserInfoHandler(base.RequestHandler):
                     msg.head.if_st = 0
                     msg.head.if_msg = str(ex)
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid

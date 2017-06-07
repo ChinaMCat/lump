@@ -915,6 +915,12 @@ message ProjectInfo {
         string project_address = 3;  // 项目访问地址 http://ip:port/root_path 格式
         int32 area_id = 4;  //  项目所属区域
         string project_remark = 5;  // 备注
+        int32 tml_total = 6;  // 设备总数
+        int32 tml_online = 7;  // 设备在线数（因该数据变化评率变化较平凡，标准化接口暂不提供，后期考虑使用zmq推送）
+        int32 tml_error = 8;  // 现存故障数量
+        repeated int32 server_status = 9 [packed=true];  // 项目相关服务状态0-不在线，1-在线，[接口服务状态，数据服务状态，通信服务状态]
+        double location_lon = 10;  // 项目位置经度
+        double location_lat = 11;  // 项目位置纬度
     }
     Head head = 1;  // 协议头信息
     repeated ProjectView project_view = 2;
@@ -930,6 +936,8 @@ message rqProjectAdd {
     int32 area_id = 6;  // 新的项目所属区域
     string project_remark = 7;  // 新的备注
     string admin_pwd = 8;  // admin密码
+    double location_lon = 10;  // 项目位置经度
+    double location_lat = 11;  // 项目位置纬度
 }
 
 // 项目修改
@@ -941,7 +949,9 @@ message rqProjectEdit {
     string project_root = 5;  // 修改后的项目接口路径
     int32 area_id = 6;  // 修改后的项目所属区域
     string project_remark = 7;  // 修改后的备注
-    int32 project_id = 8;  // 项目id
+    int32 project_id = 8;  // 项目id        
+    double location_lon = 10;  // 项目位置经度
+    double location_lat = 11;  // 项目位置纬度
 }
 
 // 项目删除
@@ -991,3 +1001,47 @@ message rqAreaDel {
     string admin_pwd = 3;  // admin密码
 }
 // 应答CommonAns（）
+
+// 城市经纬度查询
+message rqLocationInfo {
+    Head head = 1;  // 协议头信息
+    int32 data_mark = 2;  // 查询类型，0-依据三级名称设置返回信息，1-只返回所有省份名称（此时，三个location_name无效），2-只返回指定省份的所有城市名称（此时location_name2，location_name3无效）
+    string location_name1 = 3;  // 省份名称，模糊匹配
+    string location_name2 = 4;  // 城市名称，模糊匹配
+    string location_name3 = 5;  // 区县名称，模糊匹配
+}
+// 应答
+message LocationInfo {
+    message LocationView {
+        string location_name1 = 1;  // 省份名称
+        string location_name2 = 2;  // 城市名称，data_mark=1时不填充
+        string location_name3 = 3;  // 区县名称，data_mark=1,2时不填充
+        double location_lon = 4;  // 经度，data_mark=1,2时不填充
+        double location_lat = 5;  // 纬度，data_mark=1,2时不填充
+    }
+    Head head = 1;  // 协议头信息
+    repeated LocationView location_view = 2;
+}
+
+// 设备时间表操作记录查询
+message rqQueryTimetableDo {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 设备逻辑地址
+    int32 data_mark = 3;  // 查询标记，0-关灯，1-开灯，2-全部
+    int32 data_type = 4;  // 数据标记，0-全部，1-设备应答，3-设备未应答
+    int64 dt_start = 5;  // 查询起始日期
+    int64 dt_end = 6;  // 查询结束日期
+}
+// 应答
+message QueryTimetableDo {
+    message TimetableDoView {
+        int32 tml_id = 1; // 设备逻辑地址
+        int32 tml_loop_id = 2;  // 设备操作回路id
+        int32 data_mark = 3;  // 操作标记，0-关灯，1-开灯
+        int32 data_type = 4;  // 应答状态，3-设备未应答，1-设备应答
+        int64 dt_send = 5;  // 指令下发时间
+        int64 dt_reply = 6;  // 设备应答时间，若未应答，则返回的是设置时间
+    }
+    Head head = 1;
+    repeated TimetableDoView timetable_do_view = 3;
+}

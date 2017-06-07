@@ -30,7 +30,13 @@ class RequestHandler(mxweb.MXRequestHandler):
     _tml_phy = dict()  # 设备物理地址与逻辑地址对照表
 
     cache_dir = libiisi.m_cachedir
+    go_back_json = False
 
+    def flush(self, include_footers=False, callback=None):
+        if utils.m_enable_cross_domain:
+            self.set_header("Access-Control-Allow-Origin", "*")
+        super(RequestHandler, self).flush(include_footers, callback)
+        
     @gen.coroutine
     def get(self):
         self.render('405.html')
@@ -416,14 +422,18 @@ class RequestHandler(mxweb.MXRequestHandler):
         Return:
             use_scode == 0: (用户信息dict，请求参数，应答数据)
             use_scode == 1: (安全码是否合法，请求参数，应答数据)'''
-        if use_scode:
-            return self.check_scode(pb2rq, pb2msg)
-        else:
-            return self.check_uuid(pb2rq, pb2msg)
-
-    def check_scode(self, pb2rq=None, pb2msg=None):
-        '''安全码验证'''
         args = self.request.arguments
+        if 'givemejson' in args.keys():
+            self.go_back_json = True
+
+        if use_scode:
+            return self.check_scode(args, pb2rq, pb2msg)
+        else:
+            return self.check_uuid(args, pb2rq, pb2msg)
+
+    def check_scode(self, args, pb2rq=None, pb2msg=None):
+        '''安全码验证'''
+        # args = self.request.arguments
         if 'scode' not in args.keys():
             msg = self.init_msgws(msgws.CommAns())
             msg.head.if_st = 0
@@ -481,8 +491,8 @@ class RequestHandler(mxweb.MXRequestHandler):
 
         return (leage, rqmsg, msg)
 
-    def check_uuid(self, pb2rq=None, pb2msg=None):
-        args = self.request.arguments
+    def check_uuid(self, args, pb2rq=None, pb2msg=None):
+        # args = self.request.arguments
         if 'uuid' not in args.keys():
             msg = self.init_msgws(msgws.CommAns())
             msg.head.if_st = 0

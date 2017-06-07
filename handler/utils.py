@@ -24,6 +24,7 @@ m_dbname_dg = libiisi.m_config.getData('db_name_dg')  # 灯杆数据库名称
 m_dbname_uas = libiisi.m_config.getData('db_name_uas')  # uas数据库名称
 m_dz_url = libiisi.m_config.getData('dz_url')  # 电桩接口地址
 m_fs_url = '{0}/FlowService.asmx'.format(libiisi.m_config.getData('fs_url'))  # 市政工作流接口地址
+m_enable_cross_domain = 1 if libiisi.m_config.getData('cross_domain').lower() == 'true' else 0
 # if len(libiisi.m_config.getData('db_url')) > 10:  # 异步数据库访问地址（暂不用）
 #     m_db_url = '{0}/databaseprocess?pb2='.format(libiisi.m_config.getData('db_url'))
 # else:

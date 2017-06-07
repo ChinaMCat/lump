@@ -8,7 +8,7 @@ __doc__ = 'slu handler'
 import mxpsu as mx
 import mxweb
 from tornado import gen
-
+from mxpbjson import pb2json
 import base
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
@@ -260,7 +260,10 @@ class QueryDataSluHandler(base.RequestHandler):
 
                     del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data
 
@@ -316,7 +319,11 @@ class SluDataGetHandler(base.RequestHandler):
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+        
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -373,7 +380,11 @@ class SluitemDataGetHandler(base.RequestHandler):
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+        
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -434,7 +445,11 @@ class SluTimerCtlHandler(base.RequestHandler):
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+        
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         if env and rqmsg.data_mark == 1:
             self.write_event(57, contents, 2, user_name=user_data['user_name'])
@@ -504,7 +519,11 @@ class SluCtlHandler(base.RequestHandler):
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+        
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
             self.write_event(65, contents, 2, user_name=user_data['user_name'])
@@ -558,6 +577,10 @@ class SluVerGetHandler(base.RequestHandler):
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+        
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid

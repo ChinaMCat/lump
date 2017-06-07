@@ -7,7 +7,7 @@ __doc__ = 'sms handler'
 
 import logging
 import time
-
+from mxpbjson import pb2json
 import mxpsu as mx
 import mxweb
 from tornado import gen
@@ -69,7 +69,10 @@ class QuerySmsRecordHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -104,6 +107,9 @@ class SubmitSmsHandler(base.RequestHandler):
             logging.error(utils.format_log(self.request.remote_ip, msg.head.if_msg,
                                            self.request.path, 0))
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg

@@ -9,7 +9,7 @@ import mxpsu as mx
 import mxweb
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
-
+from mxpbjson import pb2json
 import base
 import mlib_iisi as libiisi
 import pbiisi.msg_ws_pb2 as msgws
@@ -29,7 +29,7 @@ class QueryDataErrHandler(base.RequestHandler):
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataErr(),
-                                                                msgws.QueryDataErr())
+                                                                      msgws.QueryDataErr())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -79,7 +79,7 @@ class QueryDataErrHandler(base.RequestHandler):
                     if len(str_errs) > 0:
                         strsql += ' and {0}'.format(str_errs)
                     strsql += ' order by a.date_create desc'
-                    
+
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -109,8 +109,10 @@ class QueryDataErrHandler(base.RequestHandler):
                         msg.err_view.extend([errview])
                         del errview
                 del cur, strsql
-
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -127,7 +129,8 @@ class ErrInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqErrInfo(), msgws.ErrInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqErrInfo(),
+                                                                      msgws.ErrInfo())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
@@ -164,6 +167,10 @@ class ErrInfoHandler(base.RequestHandler):
                             del errinfoview
 
                 del cur, strsql
-        self.write(mx.convertProtobuf(msg))
+
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid

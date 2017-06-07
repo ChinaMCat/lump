@@ -14,6 +14,7 @@ import base
 import pbiisi.msg_ws_pb2 as msgws
 import mlib_iisi as libiisi
 import utils
+from mxpbjson import pb2json
 
 try:
     strsql = 'select column_name from INFORMATION_SCHEMA.columns where table_schema="{0}" and column_name in ("user_id","user_remark");'.format(utils.m_dbname_jk)
@@ -58,6 +59,10 @@ class UserLoginHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
+        args = self.request.arguments
+        if 'givemejson' in args.keys():
+            self.go_back_json = True
+            
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserLogin()
         msg = msgws.UserLogin()
@@ -99,7 +104,10 @@ class UserLoginHandler(base.RequestHandler):
                                    2,
                                    user_name=rqmsg.user)
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
 
 
@@ -116,6 +124,10 @@ class UserAddHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
+        args = self.request.arguments
+        if 'givemejson' in args.keys():
+            self.go_back_json = True
+            
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserAdd()
         msg = msgws.UserAdd()
@@ -151,7 +163,11 @@ class UserAddHandler(base.RequestHandler):
         except Exception as ex:
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
-        self.write(mx.convertProtobuf(msg))
+        
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         yield self.write_event(154, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
@@ -170,6 +186,10 @@ class UserEditHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
+        args = self.request.arguments
+        if 'givemejson' in args.keys():
+            self.go_back_json = True
+            
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserEdit()
         msg = msgws.CommAns()
@@ -206,7 +226,10 @@ class UserEditHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         yield self.write_event(155, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
@@ -225,6 +248,10 @@ class UserDelHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
+        args = self.request.arguments
+        if 'givemejson' in args.keys():
+            self.go_back_json = True
+            
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserDel()
         msg = msgws.CommAns()
@@ -266,9 +293,12 @@ class UserDelHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
-        self.write_event(156, contents, 2, user_name=rqmsg.user)
+        yield self.write_event(156, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
 
 
@@ -285,46 +315,61 @@ class UserInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg = yield self.check_arguments(msgws.rqUserInfo(),
-                                                       msgws.UserInfo(),
-                                                       use_scode=1)
-        if legal:
-            try:
-                strsql = ''
-                if len(rqmsg.user_name) == 0:
-                    strsql = 'select user_name,user_real_name,user_password,user_phonenumber,user_remark,user_id from {0}.user_list'.format(
-                        utils.m_dbname_jk)
-                else:
-                    strsql = 'select user_name,user_real_name,user_password,user_phonenumber,user_remark,user_id from {0}.user_list where user_name="{1}"'.format(
-                        utils.m_dbname_jk, rqmsg.user_name)
+        args = self.request.arguments
+        if 'givemejson' in args.keys():
+            self.go_back_json = True
+            
+        pb2 = self.get_argument('pb2')
+        rqmsg = msgws.rqUserInfo()
+        msg = msgws.UserInfo()
+        msg.head.ver = 160328
+        msg.head.if_dt = int(time.time())
+        try:
+            rqmsg.ParseFromString(base64.b64decode(pb2))
+            msg.head.idx = rqmsg.head.idx
+            msg.head.if_st = 1
+        except:
+            msg.head.if_st = 46
+            
+        try:
+            strsql = ''
+            if len(rqmsg.user_name) == 0:
+                strsql = 'select user_name,user_real_name,user_password,user_phonenumber,user_remark,user_id from {0}.user_list'.format(
+                    utils.m_dbname_jk)
+            else:
+                strsql = 'select user_name,user_real_name,user_password,user_phonenumber,user_remark,user_id from {0}.user_list where user_name="{1}"'.format(
+                    utils.m_dbname_jk, rqmsg.user_name)
 
-                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                    strsql,
-                    need_fetch=1,
-                    need_paging=0)
-                if record_total is None:
-                    msg.head.if_st = 45
-                else:
-                    msg.head.paging_record_total = record_total
-                    msg.head.paging_buffer_tag = buffer_tag
-                    msg.head.paging_idx = paging_idx
-                    msg.head.paging_total = paging_total
-                    for d in cur:
-                        userview = msgws.UserInfo.UserView()
-                        userview.user = d[0]
-                        userview.fullname = d[1] if d[1] is not None else ''
-                        # userview.pwd = d[2]
-                        userview.tel = d[3] if d[3] is not None else ''
-                        userview.mobile = int(d[3]) if d[3] is not None else 0
-                        userview.remark = d[4] if d[4] is not None else ''
-                        userview.user_id = d[5]
-                        msg.user_view.extend([userview])
-                        del userview
-                del cur
-            except Exception as ex:
-                msg.head.if_st = 0
-                msg.head.if_msg = str(ex)
+            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                strsql,
+                need_fetch=1,
+                need_paging=0)
+            if record_total is None:
+                msg.head.if_st = 45
+            else:
+                msg.head.paging_record_total = record_total
+                msg.head.paging_buffer_tag = buffer_tag
+                msg.head.paging_idx = paging_idx
+                msg.head.paging_total = paging_total
+                for d in cur:
+                    userview = msgws.UserInfo.UserView()
+                    userview.user = d[0]
+                    userview.fullname = d[1] if d[1] is not None else ''
+                    # userview.pwd = d[2]
+                    userview.tel = d[3] if d[3] is not None else ''
+                    userview.mobile = int(d[3]) if d[3] is not None else 0
+                    userview.remark = d[4] if d[4] is not None else ''
+                    userview.user_id = d[5]
+                    msg.user_view.extend([userview])
+                    del userview
+            del cur
+        except Exception as ex:
+            msg.head.if_st = 0
+            msg.head.if_msg = str(ex)
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg

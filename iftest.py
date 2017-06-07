@@ -16,7 +16,7 @@ import mxpsu as mx
 
 baseurl = 'http://192.168.122.185:10005/'
 baseurl = 'http://192.168.50.83:10020/'
-baseurl = 'http://192.168.50.55:10005/'
+# baseurl = 'http://192.168.50.55:10005/'
 # baseurl = 'http://221.215.87.102:10005/'
 # baseurl = 'http://180.168.198.218:63000/'
 # baseurl = 'http://221.215.87.102:10005/'
@@ -68,18 +68,17 @@ def test_userlogout():
     print(msg)
 
 
-def test_userrenew():
+def test_posttest():
     global user_id
-    print('=== renew===')
-    url = baseurl + 'userrenew'
+    print('=== post test ===')
+    url = baseurl + 'test'
 
     rqmsg = init_head(msgif.rqUserRenew())
     rqmsg.dev = 2
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
-    msg = msgif.CommAns()
-    msg.ParseFromString(base64.b64decode(r.data))
-    print(msg)
+    print(r.getheaders())
+    print(r.data)
     time.sleep(0)
 
 
@@ -172,7 +171,7 @@ def test_rtuctl():
     # rqmsg.rtu_do.extend([rtudo])
     rtudo = msgif.rqRtuCtl.RtuDo()
     rtudo.opt = 2
-    rtudo.tml_id.extend([1000003])
+    rtudo.tml_id.extend([1000050])
     rtudo.loop_do.extend([1, 1, 1, 1, 2, 2])
     rqmsg.rtu_do.extend([rtudo])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
@@ -642,7 +641,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    test_userlogin()
+    # test_userlogin()
     # test_useredit()
     # test_sluctl()
     # test_querydatartuelec()
@@ -661,6 +660,7 @@ if __name__ == '__main__':
     # test_errinfo()
     # test_eventinfo()
     # test_rtuctl()
+    test_posttest()
     # test_userinfo()
     # test_rtudataget()
     # # test_userdel()

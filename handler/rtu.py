@@ -6,7 +6,7 @@ __ver__ = '0.1'
 __doc__ = 'rtu handler'
 
 import time
-
+from mxpbjson import pb2json
 import mxpsu as mx
 import mxweb
 from tornado import gen
@@ -193,7 +193,7 @@ class TmlInfoHandler(base.RequestHandler):
                                         rtuinfo.voltage_uplimit = int(d[6])
                                         rtuinfo.voltage_lowlimit = int(d[7])
                                         rtuinfo.loop_st_switch_by_current = int(d[8])
-                                        
+
                                     if d[9] is not None:
                                         loopinfo = msgws.TmlInfo.RtuLoopItem()
                                         loopinfo.loop_id = int(d[9])
@@ -504,7 +504,11 @@ class TmlInfoHandler(base.RequestHandler):
                             else:
                                 str_tmls = ' and a.rtu_id in ({0})'.format(','.join([str(
                                     a) for a in list(tml_ids)]))
-        self.write(mx.convertProtobuf(msg))
+        
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -580,7 +584,10 @@ class QueryDataRtuElecHandler(base.RequestHandler):
                         del dv
                     del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -753,7 +760,10 @@ class QueryDataRtuHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -792,7 +802,11 @@ class RtuDataGetHandler(base.RequestHandler):
                                                        separators=(',', ':')).lower())
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -854,7 +868,8 @@ class RtuCtlHandler(base.RequestHandler):
                                     break
                                 i += 1
                             tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.4b00',
-                                                         self.request.remote_ip, 0, rtu_ids, tcsdata)
+                                                         self.request.remote_ip, 0, rtu_ids,
+                                                         tcsdata)
                             # libiisi.set_to_send(tcsmsg, 0, False)
                             libiisi.send_to_zmq_pub(
                                 'tcs.req.{0}.wlst.rtu.4b00'.format(utils.m_tcs_port),
@@ -862,7 +877,8 @@ class RtuCtlHandler(base.RequestHandler):
                                            separators=(',', ':')).lower())
                         elif x.opt == 3:  # 停运
                             tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2800',
-                                                         self.request.remote_ip, 0, rtu_ids, tcsdata)
+                                                         self.request.remote_ip, 0, rtu_ids,
+                                                         tcsdata)
                             # libiisi.set_to_send(tcsmsg, 0, False)
                             libiisi.send_to_zmq_pub(
                                 'tcs.req.{0}.wlst.rtu.2800'.format(utils.m_tcs_port),
@@ -870,7 +886,8 @@ class RtuCtlHandler(base.RequestHandler):
                                            separators=(',', ':')).lower())
                         elif x.opt == 4:  # 解除停运
                             tcsmsg = libiisi.initRtuJson(2, 2, 1, 1, 1, 'wlst.rtu.2900',
-                                                         self.request.remote_ip, 0, rtu_ids, tcsdata)
+                                                         self.request.remote_ip, 0, rtu_ids,
+                                                         tcsdata)
                             # libiisi.set_to_send(tcsmsg, 0, False)
                             libiisi.send_to_zmq_pub(
                                 'tcs.req.{0}.wlst.rtu.2900'.format(utils.m_tcs_port),
@@ -880,7 +897,11 @@ class RtuCtlHandler(base.RequestHandler):
                     msg.head.if_st = 46
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
             cur = yield self.write_event(65, contents, 2, user_name=user_data['user_name'])
@@ -922,7 +943,11 @@ class RtuVerGetHandler(base.RequestHandler):
                                                        separators=(',', ':')).lower())
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data
 
@@ -972,7 +997,11 @@ class RtuTimerCtlHandler(base.RequestHandler):
                                                        separators=(',', ':')).lower())
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         if env and rqmsg.data_mark == 1:
             self.write_event(11, contents, 2, user_name=user_data['user_name'])

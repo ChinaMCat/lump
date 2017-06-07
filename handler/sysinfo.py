@@ -8,7 +8,7 @@ __doc__ = 'sys handler'
 import mxpsu as mx
 import mxweb
 from tornado import gen
-
+from mxpbjson import pb2json
 import base
 import pbiisi.msg_ws_pb2 as msgws
 import utils
@@ -60,7 +60,10 @@ class GroupInfoHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del user_data, rqmsg, msg
 
@@ -128,7 +131,10 @@ class AreaInfoHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del user_data, rqmsg, msg
 
@@ -179,7 +185,10 @@ class EventInfoHandler(base.RequestHandler):
 
                     del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del user_data, rqmsg, msg
 
@@ -224,7 +233,10 @@ class SunrisetInfoHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del user_data, rqmsg, msg
 
@@ -303,7 +315,86 @@ class QueryDataEventsHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        self.write(mx.convertProtobuf(msg))
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
+        self.finish()
+        del msg, rqmsg, user_data
+
+
+@mxweb.route()
+class QueryTimetableDo(base.RequestHandler):
+
+    help_doc = u'''时间表开关灯操作记录查询 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqQueryTimetableDo()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;QueryTimetableDo()结构序列化并经过base64编码后的字符串'''
+
+    @gen.coroutine
+    def post(self):
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryTimetableDo(),
+                                                                      msgws.QueryTimetableDo())
+
+        if user_data is not None:
+            if user_data['user_auth'] in utils._can_read:
+                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+
+                # 验证用户可操作的设备id
+                if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
+                    tml_ids = list(rqmsg.tml_id)
+                else:
+                    if len(rqmsg.tml_id) == 0:
+                        tml_ids = self._cache_tml_r[user_uuid]
+                    else:
+                        tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+
+                if len(tml_ids) == 0:
+                    str_tmls = ''
+                else:
+                    str_tmls = ' and a.rtu_id in ({0}) '.format(','.join([str(a) for a in tml_ids]))
+
+                strsql = 'select rtu_id,loop_id,date_create,is_open,rtu_reply_type \
+                                from {0}_data.record_rtu_open_close_light_record \
+                                where date_create<={1} and date_create>={2} {3}'.format(
+                    utils.m_dbname_jk, edt, sdt, str_tmls)
+                if rqmsg.data_mark != 2:
+                    strsql += ' and rtu_reply_type={0}'.format(rqmsg.data_mark)
+                if rqmsg.data_type > 0:
+                    strsql += ' and is_open={0}'.format(rqmsg.data_type)
+
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                    strsql,
+                    need_fetch=1,
+                    buffer_tag=msg.head.paging_buffer_tag,
+                    paging_idx=msg.head.paging_idx,
+                    paging_num=msg.head.paging_num)
+                if record_total is None:
+                    msg.head.if_st = 45
+                else:
+                    msg.head.paging_record_total = record_total
+                    msg.head.paging_buffer_tag = buffer_tag
+                    msg.head.paging_idx = paging_idx
+                    msg.head.paging_total = paging_total
+                    for d in cur:
+                        env = msgws.QueryTimetableDo.TimetableDoView()
+                        env.tml_id = d[0]
+                        env.tml_loop_id = d[1]
+                        env.data_mark = d[2]
+                        env.data_type = d[3]
+                        env.dt_send = mx.switchStamp(int(d[4]))
+                        env.dt_reply = mx.switchStamp(int(d[5])) if d[5] is not None else 0
+                        msg.timetable_do_view.extend([env])
+                        del env
+
+                del cur, strsql
+
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data
 
@@ -333,7 +424,11 @@ class SysEditHandler(base.RequestHandler):
             del strsql
         else:
             msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         if env:
             self.write_event(165, contents, 2, user_name=user_data['user_name'])
@@ -448,6 +543,10 @@ class SysInfoHandler(base.RequestHandler):
                     msg.head.if_st = 99
             else:
                 msg.head.if_st = 11
-        self.write(mx.convertProtobuf(msg))
+
+        if self.go_back_json:
+            self.write(pb2json(msg))
+        else:
+            self.write(mx.convertProtobuf(msg))
         self.finish()
         del msg, rqmsg, user_data

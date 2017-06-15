@@ -1045,3 +1045,14 @@ message QueryTimetableDo {
     Head head = 1;
     repeated TimetableDoView timetable_do_view = 3;
 }
+
+// 转发接口应答
+message Mahalo {
+    Head head = 1;  // 协议头信息
+    message MahaloView {
+        int32 project_id = 1;  // 项目id
+        string ifname = 2;  // 接口名称
+        string pb2 = 3;  // iisi接口返回的数据
+    }
+    repeated MahaloView mahalo_view = 2;
+}

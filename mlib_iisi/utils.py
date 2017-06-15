@@ -264,7 +264,7 @@ def send_to_zmq_pub(sfilter, msg):
     try:
         if m_zmq_pub is None:
             zmq_conf = m_config.getData('zmq_port')
-            print(zmq_conf)
+            # print(zmq_conf)
             m_zmq_ctx = zmq.Context.instance()
             try:
                 if zmq_conf.find(':') > -1:

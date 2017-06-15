@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protocol_slu.proto',
   package='wlst.pb2',
   syntax='proto3',
-  serialized_pb=_b('\n\x12protocol_slu.proto\x12\x08wlst.pb2\"V\n\rWlst_slu_f400\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x0e\n\x06remark\x18\x03 \x01(\x05\x12\x14\n\x0csluitem_addr\x18\x04 \x01(\x05\"\x1c\n\rWlst_slu_d000\x12\x0b\n\x03ver\x18\x01 \x01(\t\".\n\rWlst_slu_2800\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\r\n\x05\x61larm\x18\x02 \x01(\x05\"0\n\rWlst_slu_2400\x12\x0f\n\x07\x64o_flag\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\"\x8c\x01\n\rWlst_slu_6e00\x12\x0f\n\x07\x64o_flag\x18\x01 \x01(\x05\x12\x14\n\x0cpatrol_start\x18\x02 \x01(\x05\x12\x17\n\x0fpatrol_interval\x18\x03 \x01(\x05\x12\x14\n\x0cpatrol_order\x18\x04 \x01(\x05\x12\x14\n\x0cpatrol_count\x18\x05 \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\x06 \x01(\x05\"\x7f\n\rWlst_slu_3000\x12\r\n\x05\x63trls\x18\x01 \x01(\x05\x12\x13\n\x0b\x64omain_name\x18\x02 \x01(\x05\x12\x1b\n\x13upper_voltage_limit\x18\x03 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x04 \x01(\x05\x12\x10\n\x08mac_addr\x18\x05 \x01(\x03\"/\n\rWlst_slu_9a00\x12\x1e\n\x12\x64omain_name_status\x18\x01 \x03(\x05\x42\x02\x10\x01\"\xb3\x02\n\rWlst_slu_cd00\x12\x0f\n\x07\x63md_idx\x18\r \x01(\x05\x12\x1e\n\x16\x63ommunication_failures\x18\x01 \x01(\x05\x12\x14\n\x0cpower_factor\x18\x02 \x01(\x05\x12\x1d\n\x15\x63ommunication_channel\x18\x03 \x01(\x05\x12\x15\n\rcurrent_range\x18\x04 \x01(\x01\x12\x13\n\x0bpower_range\x18\x05 \x01(\x05\x12\x11\n\tauto_mode\x18\x06 \x01(\x05\x12\x11\n\tlongitude\x18\x07 \x01(\x01\x12\x10\n\x08latitude\x18\x08 \x01(\x01\x12\x1c\n\x14\x63\x61rrier_routing_mode\x18\t \x01(\x05\x12\x15\n\rbluetooth_pin\x18\n \x01(\x05\x12\x16\n\x0e\x62luetooth_mode\x18\x0b \x01(\x05\x12\x0b\n\x03\x63\x63t\x18\x0c \x01(\x05\"J\n\rWlst_slu_1c00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x03\x12\x13\n\x0b\x64omain_name\x18\x03 \x01(\x05\"\xa1\x02\n\rWlst_slu_1d00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x03\x12\x34\n\tdata_mark\x18\x04 \x01(\x0b\x32!.wlst.pb2.Wlst_slu_1d00.Data_mark\x1a\xb3\x01\n\tData_mark\x12\x11\n\tread_data\x18\x01 \x01(\x05\x12\x12\n\nread_timer\x18\x02 \x01(\x05\x12\x11\n\tread_args\x18\x03 \x01(\x05\x12\x12\n\nread_group\x18\x04 \x01(\x05\x12\x10\n\x08read_ver\x18\x05 \x01(\x05\x12\x17\n\x0fread_sunriseset\x18\x06 \x01(\x05\x12\x16\n\x0eread_timetable\x18\x07 \x01(\x05\x12\x15\n\rread_ctrldata\x18\x08 \x01(\x05\"\xeb\x10\n\rWlst_slu_9d00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x03\x12\x34\n\tdata_mark\x18\x04 \x01(\x0b\x32!.wlst.pb2.Wlst_slu_1d00.Data_mark\x12\x12\n\nloop_count\x18\x05 \x01(\x05\x12:\n\x0csluitem_data\x18\x06 \x01(\x0b\x32$.wlst.pb2.Wlst_slu_9d00.Sluitem_data\x12\x14\n\x0csluitem_time\x18\x07 \x01(\x03\x12:\n\x0csluitem_para\x18\x08 \x01(\x0b\x32$.wlst.pb2.Wlst_slu_9d00.Sluitem_para\x12\x19\n\rsluitem_group\x18\t \x03(\x05\x42\x02\x10\x01\x12\x38\n\x0bsluitem_ver\x18\n \x01(\x0b\x32#.wlst.pb2.Wlst_slu_9d00.Sluitem_ver\x12\x46\n\x12sluitem_sunriseset\x18\x0b \x01(\x0b\x32*.wlst.pb2.Wlst_slu_9d00.Sluitem_sunriseset\x12@\n\x0fsluitem_runtime\x18\x0c \x03(\x0b\x32\'.wlst.pb2.Wlst_slu_9d00.Sluitem_runtime\x12\x42\n\x10sluitem_data_new\x18\r \x01(\x0b\x32(.wlst.pb2.Wlst_slu_9d00.Sluitem_data_new\x12\x0e\n\x06status\x18\x0e \x01(\x05\x1a\xaf\x03\n\x0cSluitem_data\x12\x0f\n\x07voltage\x18\x01 \x01(\x01\x12\x13\n\x07\x63urrent\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x18\n\x0c\x61\x63tive_power\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x1a\n\x0ereactive_power\x18\x04 \x03(\x01\x42\x02\x10\x01\x12\x13\n\x0bmax_voltage\x18\x05 \x01(\x01\x12\x17\n\x0bmax_current\x18\x06 \x03(\x01\x42\x02\x10\x01\x12\x1d\n\x11total_electricity\x18\x07 \x03(\x01\x42\x02\x10\x01\x12\x13\n\x0btemperature\x18\x08 \x01(\x05\x12\x17\n\x0fleakage_current\x18\t \x01(\x01\x12\x13\n\x0btimer_error\x18\n \x01(\x05\x12P\n\x0esluitem_status\x18\x0b \x01(\x0b\x32\x38.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Sluitem_status\x12L\n\x0clight_status\x18\x0c \x01(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_status\x12\x13\n\x0breset_count\x18\r \x01(\x05\x1a\x94\x03\n\x10Sluitem_data_new\x12\x13\n\x07voltage\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x13\n\x07\x63urrent\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x18\n\x0c\x61\x63tive_power\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x14\n\x08run_time\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\r\n\x05phase\x18\x05 \x01(\x05\x12\x1d\n\x11total_electricity\x18\x07 \x03(\x01\x42\x02\x10\x01\x12\x17\n\x0fleakage_current\x18\t \x01(\x01\x12\x13\n\x0btimer_error\x18\n \x01(\x05\x12P\n\x0esluitem_status\x18\x0b \x01(\x0b\x32\x38.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Sluitem_status\x12L\n\x0clight_status\x18\x0c \x03(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_status\x12\x13\n\x0breset_count\x18\r \x01(\x05\x12\x15\n\renergy_saving\x18\x0e \x03(\x05\x1a\xd5\x01\n\x0cSluitem_para\x12\x13\n\x0b\x64omain_name\x18\x01 \x01(\x05\x12\x16\n\x0esluitem_status\x18\x02 \x01(\x05\x12\x1c\n\x14sluitem_enable_alarm\x18\x03 \x01(\x05\x12 \n\x14sluitem_power_turnon\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x1a\n\x0esluitem_vector\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tlongitude\x18\x06 \x01(\x01\x12\x10\n\x08latitude\x18\x07 \x01(\x01\x12\x17\n\x0brated_power\x18\x08 \x03(\x05\x42\x02\x10\x01\x1a\xb0\x01\n\x0bSluitem_ver\x12\x14\n\x0csluitem_loop\x18\x01 \x01(\x05\x12\x15\n\renergy_saving\x18\x02 \x01(\x05\x12\x1f\n\x17\x65lectric_leakage_module\x18\x03 \x01(\x05\x12\x1a\n\x12temperature_module\x18\x04 \x01(\x05\x12\x14\n\x0ctimer_module\x18\x05 \x01(\x05\x12\x14\n\x0csluitem_type\x18\x06 \x01(\t\x12\x0b\n\x03ver\x18\x07 \x01(\t\x1a\x35\n\x12Sluitem_sunriseset\x12\x0f\n\x07sunrise\x18\x01 \x01(\x05\x12\x0e\n\x06sunset\x18\x02 \x01(\x05\x1a\x9d\x02\n\x0fSluitem_runtime\x12\x11\n\tdata_type\x18\x01 \x01(\x05\x12\x13\n\x0boutput_type\x18\x02 \x01(\x05\x12\x14\n\x0coperate_type\x18\x03 \x01(\x05\x12\x17\n\x0b\x64\x61te_enable\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0coperate_time\x18\x05 \x01(\x05\x12\x16\n\x0eoperate_offset\x18\x06 \x01(\x05\x12\x19\n\rrelay_operate\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08pwm_loop\x18\x08 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tpwm_power\x18\t \x01(\x05\x12\x14\n\x0cpwm_baudrate\x18\n \x01(\x05\x12\x16\n\x0ers485_baudrate\x18\x0b \x01(\x05\x12\x13\n\x0brs485_check\x18\x0c \x01(\x05\"\x9e\x02\n\rWlst_slu_f000\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x36\n\nreset_mark\x18\x02 \x01(\x0b\x32\".wlst.pb2.Wlst_slu_f000.Reset_mark\x1a\xc3\x01\n\nReset_mark\x12\x12\n\nclear_task\x18\x01 \x01(\x05\x12\x1a\n\x12reset_concentrator\x18\x02 \x01(\x05\x12\x19\n\x11hard_reset_zigbee\x18\x03 \x01(\x05\x12\x19\n\x11soft_reset_zigbee\x18\x04 \x01(\x05\x12\x15\n\rreset_carrier\x18\x05 \x01(\x05\x12\x10\n\x08init_all\x18\x06 \x01(\x05\x12\x12\n\nclear_data\x18\x07 \x01(\x05\x12\x12\n\nclear_args\x18\x08 \x01(\x05\"\xe7\x01\n\rWlst_slu_f100\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08opt_mark\x18\x02 \x01(\x05\x12\x11\n\tdate_time\x18\x03 \x01(\x03\x12\x13\n\x0b\x66orce_timer\x18\x04 \x01(\x05\x12:\n\x0ctimer_status\x18\x05 \x01(\x0b\x32$.wlst.pb2.Wlst_slu_f100.Timer_status\x1aO\n\x0cTimer_status\x12\x16\n\x0e\x64tformat_error\x18\x01 \x01(\x05\x12\x13\n\x0btimer_error\x18\x02 \x01(\x05\x12\x12\n\ntime_fault\x18\x03 \x01(\x05\"\xf1\x05\n\rWlst_slu_f200\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x05\x12\x15\n\rsluitem_count\x18\x03 \x01(\x05\x12\x34\n\tdata_mark\x18\x04 \x01(\x0b\x32!.wlst.pb2.Wlst_slu_f200.Data_mark\x12=\n\x0csluitem_data\x18\x05 \x03(\x0b\x32\'.wlst.pb2.Wlst_slu_f200.Controller_data\x12\x0e\n\x06status\x18\x06 \x01(\x05\x1a\xd0\x01\n\tData_mark\x12\x10\n\x08set_data\x18\x14 \x01(\x05\x12\r\n\x05group\x18\x01 \x01(\x05\x12\x0f\n\x07\x62\x61rcode\x18\x02 \x01(\x05\x12\r\n\x05route\x18\x03 \x01(\x05\x12\r\n\x05order\x18\x04 \x01(\x05\x12\r\n\x05limit\x18\x05 \x01(\x05\x12\x17\n\x0fpower_on_status\x18\x06 \x01(\x05\x12\x12\n\nrun_status\x18\x07 \x01(\x05\x12\x0e\n\x06vector\x18\x08 \x01(\x05\x12\x13\n\x0brated_power\x18\t \x01(\x05\x12\x12\n\nloop_count\x18\n \x01(\x05\x1a\xca\x02\n\x0f\x43ontroller_data\x12\x19\n\rsluitem_group\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x03\x12\x19\n\rsluitem_route\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rsluitem_order\x18\x04 \x01(\x05\x12\x19\n\x11upper_power_limit\x18\x05 \x01(\x05\x12\x19\n\x11lower_power_limit\x18\x06 \x01(\x05\x12 \n\x14sluitem_power_turnon\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x16\n\x0esluitem_status\x18\x08 \x01(\x05\x12\x1c\n\x14sluitem_enable_alarm\x18\t \x01(\x05\x12\x1a\n\x0esluitem_vector\x18\n \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0brated_power\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x12\n\nloop_count\x18\x0c \x01(\x05\"\xdf\x13\n\rWlst_slu_7300\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x15\n\rsluitem_start\x18\x02 \x01(\x05\x12\x15\n\rsluitem_count\x18\x03 \x01(\x05\x12\x11\n\tdata_mark\x18\x04 \x01(\x05\x12\x44\n\x11\x63oncentrator_data\x18\x05 \x01(\x0b\x32).wlst.pb2.Wlst_slu_7300.Concentrator_data\x12\x44\n\x11\x62\x61se_sluitem_data\x18\x06 \x03(\x0b\x32).wlst.pb2.Wlst_slu_7300.Base_sluitem_data\x12>\n\x0eunknow_sluitem\x18\x07 \x03(\x0b\x32&.wlst.pb2.Wlst_slu_7300.Unknow_sluitem\x12H\n\x13\x61ssist_sluitem_data\x18\x08 \x03(\x0b\x32+.wlst.pb2.Wlst_slu_7300.Assist_sluitem_data\x12@\n\x0fsluitem_phyinfo\x18\t \x03(\x0b\x32\'.wlst.pb2.Wlst_slu_7300.Sluitem_phyinfo\x12\x19\n\rsluitem_addrs\x18\n \x03(\x05\x42\x02\x10\x01\x1a\xb4\x05\n\x11\x43oncentrator_data\x12\x17\n\x0breset_count\x18\x01 \x03(\x05\x42\x02\x10\x01\x12H\n\nrun_status\x18\x02 \x01(\x0b\x32\x34.wlst.pb2.Wlst_slu_7300.Concentrator_data.Run_status\x12J\n\x0b\x61rgs_status\x18\x03 \x01(\x0b\x32\x35.wlst.pb2.Wlst_slu_7300.Concentrator_data.Args_status\x12R\n\x0fhardware_status\x18\x04 \x01(\x0b\x32\x39.wlst.pb2.Wlst_slu_7300.Concentrator_data.Hardware_status\x12\x1c\n\x14unknow_sluitem_count\x18\x05 \x01(\x05\x12\x1d\n\x15\x63ommunication_channel\x18\x06 \x01(\x05\x1av\n\nRun_status\x12\x0f\n\x07offline\x18\x01 \x01(\x05\x12\x14\n\x0c\x65nable_alarm\x18\x02 \x01(\x05\x12\x14\n\x0cpoweron_mark\x18\x03 \x01(\x05\x12\x13\n\x0b\x65nable_gprs\x18\x04 \x01(\x05\x12\x16\n\x0e\x65nable_autochk\x18\x05 \x01(\x05\x1a\x64\n\x0b\x41rgs_status\x12\x1f\n\x17\x63oncentrator_args_error\x18\x01 \x01(\x05\x12\x1a\n\x12sluitem_args_error\x18\x02 \x01(\x05\x12\x18\n\x10turn_onoff_error\x18\x03 \x01(\x05\x1a\x80\x01\n\x0fHardware_status\x12\x14\n\x0czigbee_error\x18\x01 \x01(\x05\x12\x15\n\rcarrier_error\x18\x02 \x01(\x05\x12\x12\n\nfram_error\x18\x03 \x01(\x05\x12\x17\n\x0f\x62luetooth_error\x18\x04 \x01(\x05\x12\x13\n\x0btimer_error\x18\x05 \x01(\x05\x1a\xba\x05\n\x11\x42\x61se_sluitem_data\x12\x11\n\tdate_time\x18\x01 \x01(\x03\x12P\n\x0esluitem_status\x18\x02 \x01(\x0b\x32\x38.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Sluitem_status\x12\x13\n\x0btemperature\x18\x03 \x01(\x05\x12L\n\x0clight_status\x18\x04 \x03(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_status\x12H\n\nlight_data\x18\x05 \x03(\x0b\x32\x34.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_data\x12\x14\n\x0csluitem_loop\x18\x06 \x01(\x05\x1a\x9c\x01\n\x0eSluitem_status\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x0e\n\x06\x61\x64just\x18\x02 \x01(\x05\x12\x14\n\x0cworking_args\x18\x03 \x01(\x05\x12\x10\n\x08no_alarm\x18\x04 \x01(\x05\x12\x10\n\x08off_line\x18\x05 \x01(\x05\x12\x14\n\x0c\x65\x65prom_error\x18\x06 \x01(\x05\x12\x1a\n\x12temperature_sensor\x18\x07 \x01(\x05\x1aX\n\x0cLight_status\x12\x14\n\x0cpower_status\x18\x01 \x01(\x05\x12\x0f\n\x07leakage\x18\x02 \x01(\x05\x12\r\n\x05\x66\x61ult\x18\x03 \x01(\x05\x12\x12\n\nworking_on\x18\x04 \x01(\x05\x1a\x83\x01\n\nLight_data\x12\x0f\n\x07voltage\x18\x01 \x01(\x01\x12\x0f\n\x07\x63urrent\x18\x02 \x01(\x01\x12\x14\n\x0c\x61\x63tive_power\x18\x03 \x01(\x01\x12\x13\n\x0b\x65lectricity\x18\x04 \x01(\x01\x12\x13\n\x0b\x61\x63tive_time\x18\x05 \x01(\x01\x12\x13\n\x0bpower_level\x18\x06 \x01(\x05\x1a]\n\x0eUnknow_sluitem\x12\x13\n\x0bsluitem_idx\x18\x01 \x01(\x03\x12\x36\n\nmodel_info\x18\x02 \x01(\x0b\x32\".wlst.pb2.Wlst_slu_7300.Model_info\x1a\xf0\x01\n\x13\x41ssist_sluitem_data\x12\x11\n\tdate_time\x18\x01 \x01(\x03\x12\x17\n\x0fleakage_current\x18\x02 \x01(\x01\x12J\n\nlight_data\x18\x03 \x03(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Assist_sluitem_data.Light_data\x12\x14\n\x0csluitem_loop\x18\x04 \x01(\x05\x1aK\n\nLight_data\x12\x13\n\x0bmax_voltage\x18\x01 \x01(\x01\x12\x13\n\x0bmax_current\x18\x02 \x01(\x01\x12\x13\n\x0b\x65lectricity\x18\x03 \x01(\x01\x1a\xb7\x01\n\x0fSluitem_phyinfo\x12\x17\n\x0fsignal_strength\x18\x01 \x01(\x05\x12\x0f\n\x07routing\x18\x02 \x01(\x05\x12\r\n\x05phase\x18\x03 \x01(\x05\x12\x1a\n\x12useful_communicate\x18\x04 \x01(\x05\x12\x17\n\x0f\x61ll_communicate\x18\x05 \x01(\x05\x12\x36\n\nmodel_info\x18\x06 \x01(\x0b\x32\".wlst.pb2.Wlst_slu_7300.Model_info\x1a\x88\x01\n\nModel_info\x12\x14\n\x0csluitem_loop\x18\x01 \x01(\x05\x12\x14\n\x0cpower_saving\x18\x02 \x01(\x05\x12\x13\n\x0bhas_leakage\x18\x03 \x01(\x05\x12\x17\n\x0fhas_temperature\x18\x04 \x01(\x05\x12\x11\n\thas_timer\x18\x05 \x01(\x05\x12\r\n\x05model\x18\x06 \x01(\x05\"\xc9\x05\n\rWlst_slu_f900\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x12\n\nalarm_type\x18\x02 \x01(\x05\x12\x44\n\x11\x63oncentrator_data\x18\x03 \x01(\x0b\x32).wlst.pb2.Wlst_slu_7300.Concentrator_data\x12\x17\n\x0b\x65rror_ctrls\x18\x04 \x03(\x05\x42\x02\x10\x01\x12J\n\x14sluitem_status_alarm\x18\x05 \x03(\x0b\x32,.wlst.pb2.Wlst_slu_f900.Sluitem_status_alarm\x12@\n\x0f\x62luetooth_apply\x18\x06 \x01(\x0b\x32\'.wlst.pb2.Wlst_slu_f900.Bluetooth_apply\x12\x44\n\x11set_domain_result\x18\x07 \x01(\x0b\x32).wlst.pb2.Wlst_slu_f900.Set_domain_result\x1a\xe1\x01\n\x14Sluitem_status_alarm\x12\x13\n\x0bsluitem_idx\x18\x01 \x01(\x05\x12\x14\n\x0csluitem_loop\x18\x02 \x01(\x05\x12P\n\x0esluitem_status\x18\x03 \x01(\x0b\x32\x38.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Sluitem_status\x12L\n\x0clight_status\x18\x04 \x03(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_status\x1a\x39\n\x0f\x42luetooth_apply\x12\x12\n\nsim_number\x18\x01 \x01(\x03\x12\x12\n\ncheck_code\x18\x02 \x01(\t\x1a\x41\n\x11Set_domain_result\x12\x13\n\x0b\x64omain_name\x18\x01 \x01(\x05\x12\x17\n\x0bset_success\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xdf\x03\n\rWlst_slu_7b00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x05\x12\x12\n\ndata_count\x18\x03 \x01(\x05\x12P\n\x0eoperation_data\x18\x04 \x03(\x0b\x32\x38.wlst.pb2.Wlst_slu_7b00.Read_concentrator_operation_data\x1a\xc1\x02\n Read_concentrator_operation_data\x12\x17\n\x0foperation_order\x18\x01 \x01(\x05\x12\x16\n\x0eoperation_type\x18\x02 \x01(\x05\x12\x14\n\x08week_set\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0ftimer_or_offset\x18\x04 \x01(\x05\x12\x11\n\taddr_type\x18\x05 \x01(\x05\x12\x10\n\x04\x61\x64\x64r\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x63md_type\x18\x07 \x01(\x05\x12W\n\x07\x63md_mix\x18\x08 \x03(\x0b\x32\x46.wlst.pb2.Wlst_slu_7b00.Read_concentrator_operation_data.Cmd_operation\x1a-\n\rCmd_operation\x12\x0e\n\x06handle\x18\x01 \x01(\x05\x12\x0c\n\x04rate\x18\x02 \x01(\x05\"e\n\rWlst_slu_fe00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x15\n\roperation_cmd\x18\x02 \x01(\x05\x12\x13\n\x0b\x66\x61ult_count\x18\x03 \x01(\x05\x12\x17\n\x0bsluitem_idx\x18\x04 \x03(\x05\x42\x02\x10\x01\"\xc0\x02\n\rWlst_slu_7400\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x16\n\x0eoperation_type\x18\x02 \x01(\x05\x12\x17\n\x0foperation_order\x18\x03 \x01(\x05\x12\x11\n\taddr_type\x18\x04 \x01(\x05\x12\x11\n\x05\x61\x64\x64rs\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08week_set\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0ftimer_or_offset\x18\x08 \x01(\x05\x12\x10\n\x08\x63md_type\x18\t \x01(\x05\x12\x13\n\x07\x63md_mix\x18\n \x03(\x05\x42\x02\x10\x01\x12\x30\n\x07\x63md_pwm\x18\x0b \x01(\x0b\x32\x1f.wlst.pb2.Wlst_slu_7400.Cmd_pwm\x1a?\n\x07\x43md_pwm\x12\x17\n\x0bloop_can_do\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\r\n\x05scale\x18\x02 \x01(\x05\x12\x0c\n\x04rate\x18\x03 \x01(\x05\"\xf6\x04\n\rWlst_slu_7c00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\taddr_type\x18\x02 \x01(\x05\x12\x0c\n\x04\x61\x64\x64r\x18\x03 \x01(\x05\x12\x11\n\tcmd_count\x18\x04 \x01(\x05\x12\x15\n\radd_or_update\x18\x05 \x01(\x05\x12K\n\x0eoperation_data\x18\x06 \x03(\x0b\x32\x33.wlst.pb2.Wlst_slu_7c00.Concentrator_operation_data\x1a\xbb\x03\n\x1b\x43oncentrator_operation_data\x12\x16\n\x0eoperation_type\x18\x01 \x01(\x05\x12\x10\n\x08\x63md_type\x18\x02 \x01(\x05\x12\x14\n\x08week_set\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0ftimer_or_offset\x18\x04 \x01(\x05\x12\x13\n\x07\x63md_mix\x18\x05 \x03(\x05\x42\x02\x10\x01\x12L\n\x07\x63md_pwm\x18\x06 \x01(\x0b\x32;.wlst.pb2.Wlst_slu_7c00.Concentrator_operation_data.Cmd_pwm\x12L\n\x07\x63md_485\x18\x07 \x01(\x0b\x32;.wlst.pb2.Wlst_slu_7c00.Concentrator_operation_data.Cmd_485\x1a?\n\x07\x43md_pwm\x12\x17\n\x0bloop_can_do\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\r\n\x05scale\x18\x02 \x01(\x05\x12\x0c\n\x04rate\x18\x03 \x01(\x05\x1aQ\n\x07\x43md_485\x12\x10\n\x08\x62\x61udrate\x18\x01 \x01(\x05\x12\r\n\x05\x63heck\x18\x02 \x01(\x05\x12\x13\n\x0b\x64\x61ta_length\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x61ta_485\x18\x04 \x01(\t\"\x94\x02\n\rWlst_slu_6f00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\taddr_type\x18\x02 \x01(\x05\x12\x0c\n\x04\x61\x64\x64r\x18\x03 \x01(\x05\x12\x36\n\nreset_mark\x18\x04 \x01(\x0b\x32\".wlst.pb2.Wlst_slu_6f00.Reset_mark\x12\x0e\n\x06status\x18\x05 \x01(\x05\x1a\x88\x01\n\nReset_mark\x12\x11\n\treset_mcu\x18\x01 \x01(\x05\x12\x12\n\nreset_comm\x18\x02 \x01(\x05\x12\x19\n\x11init_mcu_hardware\x18\x03 \x01(\x05\x12\x10\n\x08init_ram\x18\x04 \x01(\x05\x12\x12\n\nzero_eerom\x18\x05 \x01(\x05\x12\x12\n\nzero_count\x18\x06 \x01(\x05\x42\x02H\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x12protocol_slu.proto\x12\x08wlst.pb2\"V\n\rWlst_slu_f400\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x0e\n\x06remark\x18\x03 \x01(\x05\x12\x14\n\x0csluitem_addr\x18\x04 \x01(\x05\"\x80\x01\n\rWlst_slu_7800\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x12\n\nevent_type\x18\x02 \x01(\x05\x12\x12\n\nclass_type\x18\x03 \x01(\x05\x12\x14\n\x0crecord_count\x18\x04 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\"\xdc\x07\n\rWlst_slu_f800\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x12\n\nevent_type\x18\x02 \x01(\x05\x12\x12\n\nclass_type\x18\x03 \x01(\x05\x12\x12\n\ndata_total\x18\x04 \x01(\x05\x12\x10\n\x08\x64\x61ta_idx\x18\x05 \x01(\x05\x12\x14\n\x0crecord_count\x18\x06 \x01(\x05\x12\x33\n\tview_0x20\x18\x07 \x03(\x0b\x32 .wlst.pb2.Wlst_slu_f800.View0x20\x12\x33\n\tview_0x21\x18\x08 \x03(\x0b\x32 .wlst.pb2.Wlst_slu_f800.View0x21\x12\x33\n\tview_0x22\x18\t \x03(\x0b\x32 .wlst.pb2.Wlst_slu_f800.View0x20\x12\x33\n\tview_0x23\x18\n \x03(\x0b\x32 .wlst.pb2.Wlst_slu_f800.View0x23\x12\x33\n\tview_0x24\x18\x0b \x03(\x0b\x32 .wlst.pb2.Wlst_slu_f800.View0x20\x12\x33\n\tview_0x25\x18\x0c \x03(\x0b\x32 .wlst.pb2.Wlst_slu_f800.View0x20\x1a\x31\n\x08View0x20\x12\x11\n\tdt_happen\x18\x01 \x01(\x03\x12\x12\n\x06status\x18\x02 \x03(\x05\x42\x02\x10\x01\x1a\x8a\x01\n\x08View0x21\x12\x11\n\tdt_happen\x18\x01 \x01(\x03\x12\x16\n\x0eoperation_type\x18\x02 \x01(\x05\x12\x17\n\x0foperation_order\x18\x03 \x01(\x05\x12\x11\n\taddr_type\x18\x04 \x01(\x05\x12\r\n\x05\x61\x64\x64r5\x18\x05 \x01(\x05\x12\x18\n\x10operation_source\x18\x06 \x01(\x05\x1a\xd7\x02\n\x08View0x23\x12\x11\n\tdt_happen\x18\x01 \x01(\x03\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\x05\x12\x16\n\nalarm_type\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x1a\n\x0esluitem_status\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0fsluitem_voltage\x18\x05 \x01(\x01\x12\x1b\n\x0fsluitem_current\x18\x06 \x03(\x01\x42\x02\x10\x01\x12 \n\x14sluitem_active_power\x18\x07 \x03(\x01\x42\x02\x10\x01\x12\"\n\x16sluitem_reactive_power\x18\x08 \x03(\x01\x42\x02\x10\x01\x12\x1b\n\x13sluitem_max_voltage\x18\t \x01(\x01\x12\x1f\n\x13sluitem_max_current\x18\n \x03(\x01\x42\x02\x10\x01\x12\x1f\n\x13sluitem_electricity\x18\x0b \x03(\x01\x42\x02\x10\x01\x12\x1b\n\x0fsluitem_phyinfo\x18\x0c \x03(\x05\x42\x02\x10\x01\"w\n\rWlst_slu_ec00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tstart_idx\x18\x02 \x01(\x05\x12\x12\n\nread_count\x18\x03 \x01(\x05\x12.\n\rwlst_slu_6b00\x18\x04 \x03(\x0b\x32\x17.wlst.pb2.Wlst_slu_6b00\"\xdd\x02\n\rWlst_slu_6b00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0f\n\x07set_idx\x18\x02 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x04 \x01(\x03\x12\x16\n\x0eoperation_type\x18\x05 \x01(\x05\x12\x17\n\x0foperation_order\x18\x06 \x01(\x05\x12\x17\n\x0ftimer_or_offset\x18\x07 \x01(\x05\x12\x11\n\taddr_type\x18\x08 \x01(\x05\x12\x11\n\x05\x61\x64\x64rs\x18\t \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x63md_type\x18\n \x01(\x05\x12\x13\n\x07\x63md_mix\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x30\n\x07\x63md_pwm\x18\x0c \x01(\x0b\x32\x1f.wlst.pb2.Wlst_slu_6b00.Cmd_pwm\x1a?\n\x07\x43md_pwm\x12\x17\n\x0bloop_can_do\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\r\n\x05scale\x18\x02 \x01(\x05\x12\x0c\n\x04rate\x18\x03 \x01(\x05\"G\n\rWlst_slu_6c00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tstart_idx\x18\x02 \x01(\x05\x12\x12\n\nread_count\x18\x03 \x01(\x05\"\x1c\n\rWlst_slu_d000\x12\x0b\n\x03ver\x18\x01 \x01(\t\".\n\rWlst_slu_2800\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\r\n\x05\x61larm\x18\x02 \x01(\x05\"0\n\rWlst_slu_2400\x12\x0f\n\x07\x64o_flag\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\"\x8c\x01\n\rWlst_slu_6e00\x12\x0f\n\x07\x64o_flag\x18\x01 \x01(\x05\x12\x14\n\x0cpatrol_start\x18\x02 \x01(\x05\x12\x17\n\x0fpatrol_interval\x18\x03 \x01(\x05\x12\x14\n\x0cpatrol_order\x18\x04 \x01(\x05\x12\x14\n\x0cpatrol_count\x18\x05 \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\x06 \x01(\x05\"\x7f\n\rWlst_slu_3000\x12\r\n\x05\x63trls\x18\x01 \x01(\x05\x12\x13\n\x0b\x64omain_name\x18\x02 \x01(\x05\x12\x1b\n\x13upper_voltage_limit\x18\x03 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x04 \x01(\x05\x12\x10\n\x08mac_addr\x18\x05 \x01(\x03\"/\n\rWlst_slu_9a00\x12\x1e\n\x12\x64omain_name_status\x18\x01 \x03(\x05\x42\x02\x10\x01\"\xb3\x02\n\rWlst_slu_cd00\x12\x0f\n\x07\x63md_idx\x18\r \x01(\x05\x12\x1e\n\x16\x63ommunication_failures\x18\x01 \x01(\x05\x12\x14\n\x0cpower_factor\x18\x02 \x01(\x05\x12\x1d\n\x15\x63ommunication_channel\x18\x03 \x01(\x05\x12\x15\n\rcurrent_range\x18\x04 \x01(\x01\x12\x13\n\x0bpower_range\x18\x05 \x01(\x05\x12\x11\n\tauto_mode\x18\x06 \x01(\x05\x12\x11\n\tlongitude\x18\x07 \x01(\x01\x12\x10\n\x08latitude\x18\x08 \x01(\x01\x12\x1c\n\x14\x63\x61rrier_routing_mode\x18\t \x01(\x05\x12\x15\n\rbluetooth_pin\x18\n \x01(\x05\x12\x16\n\x0e\x62luetooth_mode\x18\x0b \x01(\x05\x12\x0b\n\x03\x63\x63t\x18\x0c \x01(\x05\"J\n\rWlst_slu_1c00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x03\x12\x13\n\x0b\x64omain_name\x18\x03 \x01(\x05\"\xa1\x02\n\rWlst_slu_1d00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x03\x12\x34\n\tdata_mark\x18\x04 \x01(\x0b\x32!.wlst.pb2.Wlst_slu_1d00.Data_mark\x1a\xb3\x01\n\tData_mark\x12\x11\n\tread_data\x18\x01 \x01(\x05\x12\x12\n\nread_timer\x18\x02 \x01(\x05\x12\x11\n\tread_args\x18\x03 \x01(\x05\x12\x12\n\nread_group\x18\x04 \x01(\x05\x12\x10\n\x08read_ver\x18\x05 \x01(\x05\x12\x17\n\x0fread_sunriseset\x18\x06 \x01(\x05\x12\x16\n\x0eread_timetable\x18\x07 \x01(\x05\x12\x15\n\rread_ctrldata\x18\x08 \x01(\x05\"\xeb\x10\n\rWlst_slu_9d00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x03\x12\x34\n\tdata_mark\x18\x04 \x01(\x0b\x32!.wlst.pb2.Wlst_slu_1d00.Data_mark\x12\x12\n\nloop_count\x18\x05 \x01(\x05\x12:\n\x0csluitem_data\x18\x06 \x01(\x0b\x32$.wlst.pb2.Wlst_slu_9d00.Sluitem_data\x12\x14\n\x0csluitem_time\x18\x07 \x01(\x03\x12:\n\x0csluitem_para\x18\x08 \x01(\x0b\x32$.wlst.pb2.Wlst_slu_9d00.Sluitem_para\x12\x19\n\rsluitem_group\x18\t \x03(\x05\x42\x02\x10\x01\x12\x38\n\x0bsluitem_ver\x18\n \x01(\x0b\x32#.wlst.pb2.Wlst_slu_9d00.Sluitem_ver\x12\x46\n\x12sluitem_sunriseset\x18\x0b \x01(\x0b\x32*.wlst.pb2.Wlst_slu_9d00.Sluitem_sunriseset\x12@\n\x0fsluitem_runtime\x18\x0c \x03(\x0b\x32\'.wlst.pb2.Wlst_slu_9d00.Sluitem_runtime\x12\x42\n\x10sluitem_data_new\x18\r \x01(\x0b\x32(.wlst.pb2.Wlst_slu_9d00.Sluitem_data_new\x12\x0e\n\x06status\x18\x0e \x01(\x05\x1a\xaf\x03\n\x0cSluitem_data\x12\x0f\n\x07voltage\x18\x01 \x01(\x01\x12\x13\n\x07\x63urrent\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x18\n\x0c\x61\x63tive_power\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x1a\n\x0ereactive_power\x18\x04 \x03(\x01\x42\x02\x10\x01\x12\x13\n\x0bmax_voltage\x18\x05 \x01(\x01\x12\x17\n\x0bmax_current\x18\x06 \x03(\x01\x42\x02\x10\x01\x12\x1d\n\x11total_electricity\x18\x07 \x03(\x01\x42\x02\x10\x01\x12\x13\n\x0btemperature\x18\x08 \x01(\x05\x12\x17\n\x0fleakage_current\x18\t \x01(\x01\x12\x13\n\x0btimer_error\x18\n \x01(\x05\x12P\n\x0esluitem_status\x18\x0b \x01(\x0b\x32\x38.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Sluitem_status\x12L\n\x0clight_status\x18\x0c \x01(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_status\x12\x13\n\x0breset_count\x18\r \x01(\x05\x1a\x94\x03\n\x10Sluitem_data_new\x12\x13\n\x07voltage\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x13\n\x07\x63urrent\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x18\n\x0c\x61\x63tive_power\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x14\n\x08run_time\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\r\n\x05phase\x18\x05 \x01(\x05\x12\x1d\n\x11total_electricity\x18\x07 \x03(\x01\x42\x02\x10\x01\x12\x17\n\x0fleakage_current\x18\t \x01(\x01\x12\x13\n\x0btimer_error\x18\n \x01(\x05\x12P\n\x0esluitem_status\x18\x0b \x01(\x0b\x32\x38.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Sluitem_status\x12L\n\x0clight_status\x18\x0c \x03(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_status\x12\x13\n\x0breset_count\x18\r \x01(\x05\x12\x15\n\renergy_saving\x18\x0e \x03(\x05\x1a\xd5\x01\n\x0cSluitem_para\x12\x13\n\x0b\x64omain_name\x18\x01 \x01(\x05\x12\x16\n\x0esluitem_status\x18\x02 \x01(\x05\x12\x1c\n\x14sluitem_enable_alarm\x18\x03 \x01(\x05\x12 \n\x14sluitem_power_turnon\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x1a\n\x0esluitem_vector\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tlongitude\x18\x06 \x01(\x01\x12\x10\n\x08latitude\x18\x07 \x01(\x01\x12\x17\n\x0brated_power\x18\x08 \x03(\x05\x42\x02\x10\x01\x1a\xb0\x01\n\x0bSluitem_ver\x12\x14\n\x0csluitem_loop\x18\x01 \x01(\x05\x12\x15\n\renergy_saving\x18\x02 \x01(\x05\x12\x1f\n\x17\x65lectric_leakage_module\x18\x03 \x01(\x05\x12\x1a\n\x12temperature_module\x18\x04 \x01(\x05\x12\x14\n\x0ctimer_module\x18\x05 \x01(\x05\x12\x14\n\x0csluitem_type\x18\x06 \x01(\t\x12\x0b\n\x03ver\x18\x07 \x01(\t\x1a\x35\n\x12Sluitem_sunriseset\x12\x0f\n\x07sunrise\x18\x01 \x01(\x05\x12\x0e\n\x06sunset\x18\x02 \x01(\x05\x1a\x9d\x02\n\x0fSluitem_runtime\x12\x11\n\tdata_type\x18\x01 \x01(\x05\x12\x13\n\x0boutput_type\x18\x02 \x01(\x05\x12\x14\n\x0coperate_type\x18\x03 \x01(\x05\x12\x17\n\x0b\x64\x61te_enable\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0coperate_time\x18\x05 \x01(\x05\x12\x16\n\x0eoperate_offset\x18\x06 \x01(\x05\x12\x19\n\rrelay_operate\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08pwm_loop\x18\x08 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tpwm_power\x18\t \x01(\x05\x12\x14\n\x0cpwm_baudrate\x18\n \x01(\x05\x12\x16\n\x0ers485_baudrate\x18\x0b \x01(\x05\x12\x13\n\x0brs485_check\x18\x0c \x01(\x05\"\x9e\x02\n\rWlst_slu_f000\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x36\n\nreset_mark\x18\x02 \x01(\x0b\x32\".wlst.pb2.Wlst_slu_f000.Reset_mark\x1a\xc3\x01\n\nReset_mark\x12\x12\n\nclear_task\x18\x01 \x01(\x05\x12\x1a\n\x12reset_concentrator\x18\x02 \x01(\x05\x12\x19\n\x11hard_reset_zigbee\x18\x03 \x01(\x05\x12\x19\n\x11soft_reset_zigbee\x18\x04 \x01(\x05\x12\x15\n\rreset_carrier\x18\x05 \x01(\x05\x12\x10\n\x08init_all\x18\x06 \x01(\x05\x12\x12\n\nclear_data\x18\x07 \x01(\x05\x12\x12\n\nclear_args\x18\x08 \x01(\x05\"\xe7\x01\n\rWlst_slu_f100\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08opt_mark\x18\x02 \x01(\x05\x12\x11\n\tdate_time\x18\x03 \x01(\x03\x12\x13\n\x0b\x66orce_timer\x18\x04 \x01(\x05\x12:\n\x0ctimer_status\x18\x05 \x01(\x0b\x32$.wlst.pb2.Wlst_slu_f100.Timer_status\x1aO\n\x0cTimer_status\x12\x16\n\x0e\x64tformat_error\x18\x01 \x01(\x05\x12\x13\n\x0btimer_error\x18\x02 \x01(\x05\x12\x12\n\ntime_fault\x18\x03 \x01(\x05\"\xf1\x05\n\rWlst_slu_f200\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x05\x12\x15\n\rsluitem_count\x18\x03 \x01(\x05\x12\x34\n\tdata_mark\x18\x04 \x01(\x0b\x32!.wlst.pb2.Wlst_slu_f200.Data_mark\x12=\n\x0csluitem_data\x18\x05 \x03(\x0b\x32\'.wlst.pb2.Wlst_slu_f200.Controller_data\x12\x0e\n\x06status\x18\x06 \x01(\x05\x1a\xd0\x01\n\tData_mark\x12\x10\n\x08set_data\x18\x14 \x01(\x05\x12\r\n\x05group\x18\x01 \x01(\x05\x12\x0f\n\x07\x62\x61rcode\x18\x02 \x01(\x05\x12\r\n\x05route\x18\x03 \x01(\x05\x12\r\n\x05order\x18\x04 \x01(\x05\x12\r\n\x05limit\x18\x05 \x01(\x05\x12\x17\n\x0fpower_on_status\x18\x06 \x01(\x05\x12\x12\n\nrun_status\x18\x07 \x01(\x05\x12\x0e\n\x06vector\x18\x08 \x01(\x05\x12\x13\n\x0brated_power\x18\t \x01(\x05\x12\x12\n\nloop_count\x18\n \x01(\x05\x1a\xca\x02\n\x0f\x43ontroller_data\x12\x19\n\rsluitem_group\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x03\x12\x19\n\rsluitem_route\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rsluitem_order\x18\x04 \x01(\x05\x12\x19\n\x11upper_power_limit\x18\x05 \x01(\x05\x12\x19\n\x11lower_power_limit\x18\x06 \x01(\x05\x12 \n\x14sluitem_power_turnon\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x16\n\x0esluitem_status\x18\x08 \x01(\x05\x12\x1c\n\x14sluitem_enable_alarm\x18\t \x01(\x05\x12\x1a\n\x0esluitem_vector\x18\n \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0brated_power\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x12\n\nloop_count\x18\x0c \x01(\x05\"\xdf\x13\n\rWlst_slu_7300\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x15\n\rsluitem_start\x18\x02 \x01(\x05\x12\x15\n\rsluitem_count\x18\x03 \x01(\x05\x12\x11\n\tdata_mark\x18\x04 \x01(\x05\x12\x44\n\x11\x63oncentrator_data\x18\x05 \x01(\x0b\x32).wlst.pb2.Wlst_slu_7300.Concentrator_data\x12\x44\n\x11\x62\x61se_sluitem_data\x18\x06 \x03(\x0b\x32).wlst.pb2.Wlst_slu_7300.Base_sluitem_data\x12>\n\x0eunknow_sluitem\x18\x07 \x03(\x0b\x32&.wlst.pb2.Wlst_slu_7300.Unknow_sluitem\x12H\n\x13\x61ssist_sluitem_data\x18\x08 \x03(\x0b\x32+.wlst.pb2.Wlst_slu_7300.Assist_sluitem_data\x12@\n\x0fsluitem_phyinfo\x18\t \x03(\x0b\x32\'.wlst.pb2.Wlst_slu_7300.Sluitem_phyinfo\x12\x19\n\rsluitem_addrs\x18\n \x03(\x05\x42\x02\x10\x01\x1a\xb4\x05\n\x11\x43oncentrator_data\x12\x17\n\x0breset_count\x18\x01 \x03(\x05\x42\x02\x10\x01\x12H\n\nrun_status\x18\x02 \x01(\x0b\x32\x34.wlst.pb2.Wlst_slu_7300.Concentrator_data.Run_status\x12J\n\x0b\x61rgs_status\x18\x03 \x01(\x0b\x32\x35.wlst.pb2.Wlst_slu_7300.Concentrator_data.Args_status\x12R\n\x0fhardware_status\x18\x04 \x01(\x0b\x32\x39.wlst.pb2.Wlst_slu_7300.Concentrator_data.Hardware_status\x12\x1c\n\x14unknow_sluitem_count\x18\x05 \x01(\x05\x12\x1d\n\x15\x63ommunication_channel\x18\x06 \x01(\x05\x1av\n\nRun_status\x12\x0f\n\x07offline\x18\x01 \x01(\x05\x12\x14\n\x0c\x65nable_alarm\x18\x02 \x01(\x05\x12\x14\n\x0cpoweron_mark\x18\x03 \x01(\x05\x12\x13\n\x0b\x65nable_gprs\x18\x04 \x01(\x05\x12\x16\n\x0e\x65nable_autochk\x18\x05 \x01(\x05\x1a\x64\n\x0b\x41rgs_status\x12\x1f\n\x17\x63oncentrator_args_error\x18\x01 \x01(\x05\x12\x1a\n\x12sluitem_args_error\x18\x02 \x01(\x05\x12\x18\n\x10turn_onoff_error\x18\x03 \x01(\x05\x1a\x80\x01\n\x0fHardware_status\x12\x14\n\x0czigbee_error\x18\x01 \x01(\x05\x12\x15\n\rcarrier_error\x18\x02 \x01(\x05\x12\x12\n\nfram_error\x18\x03 \x01(\x05\x12\x17\n\x0f\x62luetooth_error\x18\x04 \x01(\x05\x12\x13\n\x0btimer_error\x18\x05 \x01(\x05\x1a\xba\x05\n\x11\x42\x61se_sluitem_data\x12\x11\n\tdate_time\x18\x01 \x01(\x03\x12P\n\x0esluitem_status\x18\x02 \x01(\x0b\x32\x38.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Sluitem_status\x12\x13\n\x0btemperature\x18\x03 \x01(\x05\x12L\n\x0clight_status\x18\x04 \x03(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_status\x12H\n\nlight_data\x18\x05 \x03(\x0b\x32\x34.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_data\x12\x14\n\x0csluitem_loop\x18\x06 \x01(\x05\x1a\x9c\x01\n\x0eSluitem_status\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x0e\n\x06\x61\x64just\x18\x02 \x01(\x05\x12\x14\n\x0cworking_args\x18\x03 \x01(\x05\x12\x10\n\x08no_alarm\x18\x04 \x01(\x05\x12\x10\n\x08off_line\x18\x05 \x01(\x05\x12\x14\n\x0c\x65\x65prom_error\x18\x06 \x01(\x05\x12\x1a\n\x12temperature_sensor\x18\x07 \x01(\x05\x1aX\n\x0cLight_status\x12\x14\n\x0cpower_status\x18\x01 \x01(\x05\x12\x0f\n\x07leakage\x18\x02 \x01(\x05\x12\r\n\x05\x66\x61ult\x18\x03 \x01(\x05\x12\x12\n\nworking_on\x18\x04 \x01(\x05\x1a\x83\x01\n\nLight_data\x12\x0f\n\x07voltage\x18\x01 \x01(\x01\x12\x0f\n\x07\x63urrent\x18\x02 \x01(\x01\x12\x14\n\x0c\x61\x63tive_power\x18\x03 \x01(\x01\x12\x13\n\x0b\x65lectricity\x18\x04 \x01(\x01\x12\x13\n\x0b\x61\x63tive_time\x18\x05 \x01(\x01\x12\x13\n\x0bpower_level\x18\x06 \x01(\x05\x1a]\n\x0eUnknow_sluitem\x12\x13\n\x0bsluitem_idx\x18\x01 \x01(\x03\x12\x36\n\nmodel_info\x18\x02 \x01(\x0b\x32\".wlst.pb2.Wlst_slu_7300.Model_info\x1a\xf0\x01\n\x13\x41ssist_sluitem_data\x12\x11\n\tdate_time\x18\x01 \x01(\x03\x12\x17\n\x0fleakage_current\x18\x02 \x01(\x01\x12J\n\nlight_data\x18\x03 \x03(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Assist_sluitem_data.Light_data\x12\x14\n\x0csluitem_loop\x18\x04 \x01(\x05\x1aK\n\nLight_data\x12\x13\n\x0bmax_voltage\x18\x01 \x01(\x01\x12\x13\n\x0bmax_current\x18\x02 \x01(\x01\x12\x13\n\x0b\x65lectricity\x18\x03 \x01(\x01\x1a\xb7\x01\n\x0fSluitem_phyinfo\x12\x17\n\x0fsignal_strength\x18\x01 \x01(\x05\x12\x0f\n\x07routing\x18\x02 \x01(\x05\x12\r\n\x05phase\x18\x03 \x01(\x05\x12\x1a\n\x12useful_communicate\x18\x04 \x01(\x05\x12\x17\n\x0f\x61ll_communicate\x18\x05 \x01(\x05\x12\x36\n\nmodel_info\x18\x06 \x01(\x0b\x32\".wlst.pb2.Wlst_slu_7300.Model_info\x1a\x88\x01\n\nModel_info\x12\x14\n\x0csluitem_loop\x18\x01 \x01(\x05\x12\x14\n\x0cpower_saving\x18\x02 \x01(\x05\x12\x13\n\x0bhas_leakage\x18\x03 \x01(\x05\x12\x17\n\x0fhas_temperature\x18\x04 \x01(\x05\x12\x11\n\thas_timer\x18\x05 \x01(\x05\x12\r\n\x05model\x18\x06 \x01(\x05\"\xc9\x05\n\rWlst_slu_f900\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x12\n\nalarm_type\x18\x02 \x01(\x05\x12\x44\n\x11\x63oncentrator_data\x18\x03 \x01(\x0b\x32).wlst.pb2.Wlst_slu_7300.Concentrator_data\x12\x17\n\x0b\x65rror_ctrls\x18\x04 \x03(\x05\x42\x02\x10\x01\x12J\n\x14sluitem_status_alarm\x18\x05 \x03(\x0b\x32,.wlst.pb2.Wlst_slu_f900.Sluitem_status_alarm\x12@\n\x0f\x62luetooth_apply\x18\x06 \x01(\x0b\x32\'.wlst.pb2.Wlst_slu_f900.Bluetooth_apply\x12\x44\n\x11set_domain_result\x18\x07 \x01(\x0b\x32).wlst.pb2.Wlst_slu_f900.Set_domain_result\x1a\xe1\x01\n\x14Sluitem_status_alarm\x12\x13\n\x0bsluitem_idx\x18\x01 \x01(\x05\x12\x14\n\x0csluitem_loop\x18\x02 \x01(\x05\x12P\n\x0esluitem_status\x18\x03 \x01(\x0b\x32\x38.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Sluitem_status\x12L\n\x0clight_status\x18\x04 \x03(\x0b\x32\x36.wlst.pb2.Wlst_slu_7300.Base_sluitem_data.Light_status\x1a\x39\n\x0f\x42luetooth_apply\x12\x12\n\nsim_number\x18\x01 \x01(\x03\x12\x12\n\ncheck_code\x18\x02 \x01(\t\x1a\x41\n\x11Set_domain_result\x12\x13\n\x0b\x64omain_name\x18\x01 \x01(\x05\x12\x17\n\x0bset_success\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xdf\x03\n\rWlst_slu_7b00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x02 \x01(\x05\x12\x12\n\ndata_count\x18\x03 \x01(\x05\x12P\n\x0eoperation_data\x18\x04 \x03(\x0b\x32\x38.wlst.pb2.Wlst_slu_7b00.Read_concentrator_operation_data\x1a\xc1\x02\n Read_concentrator_operation_data\x12\x17\n\x0foperation_order\x18\x01 \x01(\x05\x12\x16\n\x0eoperation_type\x18\x02 \x01(\x05\x12\x14\n\x08week_set\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0ftimer_or_offset\x18\x04 \x01(\x05\x12\x11\n\taddr_type\x18\x05 \x01(\x05\x12\x10\n\x04\x61\x64\x64r\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x63md_type\x18\x07 \x01(\x05\x12W\n\x07\x63md_mix\x18\x08 \x03(\x0b\x32\x46.wlst.pb2.Wlst_slu_7b00.Read_concentrator_operation_data.Cmd_operation\x1a-\n\rCmd_operation\x12\x0e\n\x06handle\x18\x01 \x01(\x05\x12\x0c\n\x04rate\x18\x02 \x01(\x05\"e\n\rWlst_slu_fe00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x15\n\roperation_cmd\x18\x02 \x01(\x05\x12\x13\n\x0b\x66\x61ult_count\x18\x03 \x01(\x05\x12\x17\n\x0bsluitem_idx\x18\x04 \x03(\x05\x42\x02\x10\x01\"\xc0\x02\n\rWlst_slu_7400\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x16\n\x0eoperation_type\x18\x02 \x01(\x05\x12\x17\n\x0foperation_order\x18\x03 \x01(\x05\x12\x11\n\taddr_type\x18\x04 \x01(\x05\x12\x11\n\x05\x61\x64\x64rs\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08week_set\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0ftimer_or_offset\x18\x08 \x01(\x05\x12\x10\n\x08\x63md_type\x18\t \x01(\x05\x12\x13\n\x07\x63md_mix\x18\n \x03(\x05\x42\x02\x10\x01\x12\x30\n\x07\x63md_pwm\x18\x0b \x01(\x0b\x32\x1f.wlst.pb2.Wlst_slu_7400.Cmd_pwm\x1a?\n\x07\x43md_pwm\x12\x17\n\x0bloop_can_do\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\r\n\x05scale\x18\x02 \x01(\x05\x12\x0c\n\x04rate\x18\x03 \x01(\x05\"\xf6\x04\n\rWlst_slu_7c00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\taddr_type\x18\x02 \x01(\x05\x12\x0c\n\x04\x61\x64\x64r\x18\x03 \x01(\x05\x12\x11\n\tcmd_count\x18\x04 \x01(\x05\x12\x15\n\radd_or_update\x18\x05 \x01(\x05\x12K\n\x0eoperation_data\x18\x06 \x03(\x0b\x32\x33.wlst.pb2.Wlst_slu_7c00.Concentrator_operation_data\x1a\xbb\x03\n\x1b\x43oncentrator_operation_data\x12\x16\n\x0eoperation_type\x18\x01 \x01(\x05\x12\x10\n\x08\x63md_type\x18\x02 \x01(\x05\x12\x14\n\x08week_set\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0ftimer_or_offset\x18\x04 \x01(\x05\x12\x13\n\x07\x63md_mix\x18\x05 \x03(\x05\x42\x02\x10\x01\x12L\n\x07\x63md_pwm\x18\x06 \x01(\x0b\x32;.wlst.pb2.Wlst_slu_7c00.Concentrator_operation_data.Cmd_pwm\x12L\n\x07\x63md_485\x18\x07 \x01(\x0b\x32;.wlst.pb2.Wlst_slu_7c00.Concentrator_operation_data.Cmd_485\x1a?\n\x07\x43md_pwm\x12\x17\n\x0bloop_can_do\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\r\n\x05scale\x18\x02 \x01(\x05\x12\x0c\n\x04rate\x18\x03 \x01(\x05\x1aQ\n\x07\x43md_485\x12\x10\n\x08\x62\x61udrate\x18\x01 \x01(\x05\x12\r\n\x05\x63heck\x18\x02 \x01(\x05\x12\x13\n\x0b\x64\x61ta_length\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x61ta_485\x18\x04 \x01(\t\"\x94\x02\n\rWlst_slu_6f00\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\taddr_type\x18\x02 \x01(\x05\x12\x0c\n\x04\x61\x64\x64r\x18\x03 \x01(\x05\x12\x36\n\nreset_mark\x18\x04 \x01(\x0b\x32\".wlst.pb2.Wlst_slu_6f00.Reset_mark\x12\x0e\n\x06status\x18\x05 \x01(\x05\x1a\x88\x01\n\nReset_mark\x12\x11\n\treset_mcu\x18\x01 \x01(\x05\x12\x12\n\nreset_comm\x18\x02 \x01(\x05\x12\x19\n\x11init_mcu_hardware\x18\x03 \x01(\x05\x12\x10\n\x08init_ram\x18\x04 \x01(\x05\x12\x12\n\nzero_eerom\x18\x05 \x01(\x05\x12\x12\n\nzero_count\x18\x06 \x01(\x05\x42\x02H\x01\x62\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -78,6 +78,638 @@ _WLST_SLU_F400 = _descriptor.Descriptor(
 )
 
 
+_WLST_SLU_7800 = _descriptor.Descriptor(
+  name='Wlst_slu_7800',
+  full_name='wlst.pb2.Wlst_slu_7800',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_slu_7800.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='event_type', full_name='wlst.pb2.Wlst_slu_7800.event_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='class_type', full_name='wlst.pb2.Wlst_slu_7800.class_type', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='record_count', full_name='wlst.pb2.Wlst_slu_7800.record_count', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='dt_start', full_name='wlst.pb2.Wlst_slu_7800.dt_start', index=4,
+      number=5, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='dt_end', full_name='wlst.pb2.Wlst_slu_7800.dt_end', index=5,
+      number=6, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=121,
+  serialized_end=249,
+)
+
+
+_WLST_SLU_F800_VIEW0X20 = _descriptor.Descriptor(
+  name='View0x20',
+  full_name='wlst.pb2.Wlst_slu_f800.View0x20',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='dt_happen', full_name='wlst.pb2.Wlst_slu_f800.View0x20.dt_happen', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='wlst.pb2.Wlst_slu_f800.View0x20.status', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=704,
+  serialized_end=753,
+)
+
+_WLST_SLU_F800_VIEW0X21 = _descriptor.Descriptor(
+  name='View0x21',
+  full_name='wlst.pb2.Wlst_slu_f800.View0x21',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='dt_happen', full_name='wlst.pb2.Wlst_slu_f800.View0x21.dt_happen', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='operation_type', full_name='wlst.pb2.Wlst_slu_f800.View0x21.operation_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='operation_order', full_name='wlst.pb2.Wlst_slu_f800.View0x21.operation_order', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='addr_type', full_name='wlst.pb2.Wlst_slu_f800.View0x21.addr_type', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='addr5', full_name='wlst.pb2.Wlst_slu_f800.View0x21.addr5', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='operation_source', full_name='wlst.pb2.Wlst_slu_f800.View0x21.operation_source', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=756,
+  serialized_end=894,
+)
+
+_WLST_SLU_F800_VIEW0X23 = _descriptor.Descriptor(
+  name='View0x23',
+  full_name='wlst.pb2.Wlst_slu_f800.View0x23',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='dt_happen', full_name='wlst.pb2.Wlst_slu_f800.View0x23.dt_happen', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='addr', full_name='wlst.pb2.Wlst_slu_f800.View0x23.addr', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='alarm_type', full_name='wlst.pb2.Wlst_slu_f800.View0x23.alarm_type', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='sluitem_status', full_name='wlst.pb2.Wlst_slu_f800.View0x23.sluitem_status', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='sluitem_voltage', full_name='wlst.pb2.Wlst_slu_f800.View0x23.sluitem_voltage', index=4,
+      number=5, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_current', full_name='wlst.pb2.Wlst_slu_f800.View0x23.sluitem_current', index=5,
+      number=6, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='sluitem_active_power', full_name='wlst.pb2.Wlst_slu_f800.View0x23.sluitem_active_power', index=6,
+      number=7, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='sluitem_reactive_power', full_name='wlst.pb2.Wlst_slu_f800.View0x23.sluitem_reactive_power', index=7,
+      number=8, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='sluitem_max_voltage', full_name='wlst.pb2.Wlst_slu_f800.View0x23.sluitem_max_voltage', index=8,
+      number=9, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_max_current', full_name='wlst.pb2.Wlst_slu_f800.View0x23.sluitem_max_current', index=9,
+      number=10, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='sluitem_electricity', full_name='wlst.pb2.Wlst_slu_f800.View0x23.sluitem_electricity', index=10,
+      number=11, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='sluitem_phyinfo', full_name='wlst.pb2.Wlst_slu_f800.View0x23.sluitem_phyinfo', index=11,
+      number=12, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=897,
+  serialized_end=1240,
+)
+
+_WLST_SLU_F800 = _descriptor.Descriptor(
+  name='Wlst_slu_f800',
+  full_name='wlst.pb2.Wlst_slu_f800',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_slu_f800.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='event_type', full_name='wlst.pb2.Wlst_slu_f800.event_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='class_type', full_name='wlst.pb2.Wlst_slu_f800.class_type', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='data_total', full_name='wlst.pb2.Wlst_slu_f800.data_total', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='data_idx', full_name='wlst.pb2.Wlst_slu_f800.data_idx', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='record_count', full_name='wlst.pb2.Wlst_slu_f800.record_count', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='view_0x20', full_name='wlst.pb2.Wlst_slu_f800.view_0x20', index=6,
+      number=7, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='view_0x21', full_name='wlst.pb2.Wlst_slu_f800.view_0x21', index=7,
+      number=8, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='view_0x22', full_name='wlst.pb2.Wlst_slu_f800.view_0x22', index=8,
+      number=9, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='view_0x23', full_name='wlst.pb2.Wlst_slu_f800.view_0x23', index=9,
+      number=10, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='view_0x24', full_name='wlst.pb2.Wlst_slu_f800.view_0x24', index=10,
+      number=11, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='view_0x25', full_name='wlst.pb2.Wlst_slu_f800.view_0x25', index=11,
+      number=12, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_WLST_SLU_F800_VIEW0X20, _WLST_SLU_F800_VIEW0X21, _WLST_SLU_F800_VIEW0X23, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=252,
+  serialized_end=1240,
+)
+
+
+_WLST_SLU_EC00 = _descriptor.Descriptor(
+  name='Wlst_slu_ec00',
+  full_name='wlst.pb2.Wlst_slu_ec00',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_slu_ec00.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='start_idx', full_name='wlst.pb2.Wlst_slu_ec00.start_idx', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='read_count', full_name='wlst.pb2.Wlst_slu_ec00.read_count', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='wlst_slu_6b00', full_name='wlst.pb2.Wlst_slu_ec00.wlst_slu_6b00', index=3,
+      number=4, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1242,
+  serialized_end=1361,
+)
+
+
+_WLST_SLU_6B00_CMD_PWM = _descriptor.Descriptor(
+  name='Cmd_pwm',
+  full_name='wlst.pb2.Wlst_slu_6b00.Cmd_pwm',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='loop_can_do', full_name='wlst.pb2.Wlst_slu_6b00.Cmd_pwm.loop_can_do', index=0,
+      number=1, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='scale', full_name='wlst.pb2.Wlst_slu_6b00.Cmd_pwm.scale', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='rate', full_name='wlst.pb2.Wlst_slu_6b00.Cmd_pwm.rate', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1650,
+  serialized_end=1713,
+)
+
+_WLST_SLU_6B00 = _descriptor.Descriptor(
+  name='Wlst_slu_6b00',
+  full_name='wlst.pb2.Wlst_slu_6b00',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_slu_6b00.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='set_idx', full_name='wlst.pb2.Wlst_slu_6b00.set_idx', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='dt_start', full_name='wlst.pb2.Wlst_slu_6b00.dt_start', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='dt_end', full_name='wlst.pb2.Wlst_slu_6b00.dt_end', index=3,
+      number=4, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='operation_type', full_name='wlst.pb2.Wlst_slu_6b00.operation_type', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='operation_order', full_name='wlst.pb2.Wlst_slu_6b00.operation_order', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='timer_or_offset', full_name='wlst.pb2.Wlst_slu_6b00.timer_or_offset', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='addr_type', full_name='wlst.pb2.Wlst_slu_6b00.addr_type', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='addrs', full_name='wlst.pb2.Wlst_slu_6b00.addrs', index=8,
+      number=9, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='cmd_type', full_name='wlst.pb2.Wlst_slu_6b00.cmd_type', index=9,
+      number=10, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cmd_mix', full_name='wlst.pb2.Wlst_slu_6b00.cmd_mix', index=10,
+      number=11, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='cmd_pwm', full_name='wlst.pb2.Wlst_slu_6b00.cmd_pwm', index=11,
+      number=12, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_WLST_SLU_6B00_CMD_PWM, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1364,
+  serialized_end=1713,
+)
+
+
+_WLST_SLU_6C00 = _descriptor.Descriptor(
+  name='Wlst_slu_6c00',
+  full_name='wlst.pb2.Wlst_slu_6c00',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_slu_6c00.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='start_idx', full_name='wlst.pb2.Wlst_slu_6c00.start_idx', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='read_count', full_name='wlst.pb2.Wlst_slu_6c00.read_count', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1715,
+  serialized_end=1786,
+)
+
+
 _WLST_SLU_D000 = _descriptor.Descriptor(
   name='Wlst_slu_d000',
   full_name='wlst.pb2.Wlst_slu_d000',
@@ -104,8 +736,8 @@ _WLST_SLU_D000 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=120,
-  serialized_end=148,
+  serialized_start=1788,
+  serialized_end=1816,
 )
 
 
@@ -142,8 +774,8 @@ _WLST_SLU_2800 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=150,
-  serialized_end=196,
+  serialized_start=1818,
+  serialized_end=1864,
 )
 
 
@@ -180,8 +812,8 @@ _WLST_SLU_2400 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=198,
-  serialized_end=246,
+  serialized_start=1866,
+  serialized_end=1914,
 )
 
 
@@ -246,8 +878,8 @@ _WLST_SLU_6E00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=249,
-  serialized_end=389,
+  serialized_start=1917,
+  serialized_end=2057,
 )
 
 
@@ -305,8 +937,8 @@ _WLST_SLU_3000 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=391,
-  serialized_end=518,
+  serialized_start=2059,
+  serialized_end=2186,
 )
 
 
@@ -336,8 +968,8 @@ _WLST_SLU_9A00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=520,
-  serialized_end=567,
+  serialized_start=2188,
+  serialized_end=2235,
 )
 
 
@@ -451,8 +1083,8 @@ _WLST_SLU_CD00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=570,
-  serialized_end=877,
+  serialized_start=2238,
+  serialized_end=2545,
 )
 
 
@@ -496,8 +1128,8 @@ _WLST_SLU_1C00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=879,
-  serialized_end=953,
+  serialized_start=2547,
+  serialized_end=2621,
 )
 
 
@@ -576,8 +1208,8 @@ _WLST_SLU_1D00_DATA_MARK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1066,
-  serialized_end=1245,
+  serialized_start=2734,
+  serialized_end=2913,
 )
 
 _WLST_SLU_1D00 = _descriptor.Descriptor(
@@ -620,8 +1252,8 @@ _WLST_SLU_1D00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=956,
-  serialized_end=1245,
+  serialized_start=2624,
+  serialized_end=2913,
 )
 
 
@@ -735,8 +1367,8 @@ _WLST_SLU_9D00_SLUITEM_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1827,
-  serialized_end=2258,
+  serialized_start=3495,
+  serialized_end=3926,
 )
 
 _WLST_SLU_9D00_SLUITEM_DATA_NEW = _descriptor.Descriptor(
@@ -842,8 +1474,8 @@ _WLST_SLU_9D00_SLUITEM_DATA_NEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2261,
-  serialized_end=2665,
+  serialized_start=3929,
+  serialized_end=4333,
 )
 
 _WLST_SLU_9D00_SLUITEM_PARA = _descriptor.Descriptor(
@@ -921,8 +1553,8 @@ _WLST_SLU_9D00_SLUITEM_PARA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2668,
-  serialized_end=2881,
+  serialized_start=4336,
+  serialized_end=4549,
 )
 
 _WLST_SLU_9D00_SLUITEM_VER = _descriptor.Descriptor(
@@ -993,8 +1625,8 @@ _WLST_SLU_9D00_SLUITEM_VER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2884,
-  serialized_end=3060,
+  serialized_start=4552,
+  serialized_end=4728,
 )
 
 _WLST_SLU_9D00_SLUITEM_SUNRISESET = _descriptor.Descriptor(
@@ -1030,8 +1662,8 @@ _WLST_SLU_9D00_SLUITEM_SUNRISESET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3062,
-  serialized_end=3115,
+  serialized_start=4730,
+  serialized_end=4783,
 )
 
 _WLST_SLU_9D00_SLUITEM_RUNTIME = _descriptor.Descriptor(
@@ -1137,8 +1769,8 @@ _WLST_SLU_9D00_SLUITEM_RUNTIME = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3118,
-  serialized_end=3403,
+  serialized_start=4786,
+  serialized_end=5071,
 )
 
 _WLST_SLU_9D00 = _descriptor.Descriptor(
@@ -1251,8 +1883,8 @@ _WLST_SLU_9D00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1248,
-  serialized_end=3403,
+  serialized_start=2916,
+  serialized_end=5071,
 )
 
 
@@ -1331,8 +1963,8 @@ _WLST_SLU_F000_RESET_MARK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3497,
-  serialized_end=3692,
+  serialized_start=5165,
+  serialized_end=5360,
 )
 
 _WLST_SLU_F000 = _descriptor.Descriptor(
@@ -1368,8 +2000,8 @@ _WLST_SLU_F000 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3406,
-  serialized_end=3692,
+  serialized_start=5074,
+  serialized_end=5360,
 )
 
 
@@ -1413,8 +2045,8 @@ _WLST_SLU_F100_TIMER_STATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3847,
-  serialized_end=3926,
+  serialized_start=5515,
+  serialized_end=5594,
 )
 
 _WLST_SLU_F100 = _descriptor.Descriptor(
@@ -1471,8 +2103,8 @@ _WLST_SLU_F100 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3695,
-  serialized_end=3926,
+  serialized_start=5363,
+  serialized_end=5594,
 )
 
 
@@ -1572,8 +2204,8 @@ _WLST_SLU_F200_DATA_MARK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4141,
-  serialized_end=4349,
+  serialized_start=5809,
+  serialized_end=6017,
 )
 
 _WLST_SLU_F200_CONTROLLER_DATA = _descriptor.Descriptor(
@@ -1679,8 +2311,8 @@ _WLST_SLU_F200_CONTROLLER_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4352,
-  serialized_end=4682,
+  serialized_start=6020,
+  serialized_end=6350,
 )
 
 _WLST_SLU_F200 = _descriptor.Descriptor(
@@ -1744,8 +2376,8 @@ _WLST_SLU_F200 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3929,
-  serialized_end=4682,
+  serialized_start=5597,
+  serialized_end=6350,
 )
 
 
@@ -1803,8 +2435,8 @@ _WLST_SLU_7300_CONCENTRATOR_DATA_RUN_STATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5497,
-  serialized_end=5615,
+  serialized_start=7165,
+  serialized_end=7283,
 )
 
 _WLST_SLU_7300_CONCENTRATOR_DATA_ARGS_STATUS = _descriptor.Descriptor(
@@ -1847,8 +2479,8 @@ _WLST_SLU_7300_CONCENTRATOR_DATA_ARGS_STATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5617,
-  serialized_end=5717,
+  serialized_start=7285,
+  serialized_end=7385,
 )
 
 _WLST_SLU_7300_CONCENTRATOR_DATA_HARDWARE_STATUS = _descriptor.Descriptor(
@@ -1905,8 +2537,8 @@ _WLST_SLU_7300_CONCENTRATOR_DATA_HARDWARE_STATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5720,
-  serialized_end=5848,
+  serialized_start=7388,
+  serialized_end=7516,
 )
 
 _WLST_SLU_7300_CONCENTRATOR_DATA = _descriptor.Descriptor(
@@ -1970,8 +2602,8 @@ _WLST_SLU_7300_CONCENTRATOR_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5156,
-  serialized_end=5848,
+  serialized_start=6824,
+  serialized_end=7516,
 )
 
 _WLST_SLU_7300_BASE_SLUITEM_DATA_SLUITEM_STATUS = _descriptor.Descriptor(
@@ -2042,8 +2674,8 @@ _WLST_SLU_7300_BASE_SLUITEM_DATA_SLUITEM_STATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6169,
-  serialized_end=6325,
+  serialized_start=7837,
+  serialized_end=7993,
 )
 
 _WLST_SLU_7300_BASE_SLUITEM_DATA_LIGHT_STATUS = _descriptor.Descriptor(
@@ -2093,8 +2725,8 @@ _WLST_SLU_7300_BASE_SLUITEM_DATA_LIGHT_STATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6327,
-  serialized_end=6415,
+  serialized_start=7995,
+  serialized_end=8083,
 )
 
 _WLST_SLU_7300_BASE_SLUITEM_DATA_LIGHT_DATA = _descriptor.Descriptor(
@@ -2158,8 +2790,8 @@ _WLST_SLU_7300_BASE_SLUITEM_DATA_LIGHT_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6418,
-  serialized_end=6549,
+  serialized_start=8086,
+  serialized_end=8217,
 )
 
 _WLST_SLU_7300_BASE_SLUITEM_DATA = _descriptor.Descriptor(
@@ -2223,8 +2855,8 @@ _WLST_SLU_7300_BASE_SLUITEM_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5851,
-  serialized_end=6549,
+  serialized_start=7519,
+  serialized_end=8217,
 )
 
 _WLST_SLU_7300_UNKNOW_SLUITEM = _descriptor.Descriptor(
@@ -2260,8 +2892,8 @@ _WLST_SLU_7300_UNKNOW_SLUITEM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6551,
-  serialized_end=6644,
+  serialized_start=8219,
+  serialized_end=8312,
 )
 
 _WLST_SLU_7300_ASSIST_SLUITEM_DATA_LIGHT_DATA = _descriptor.Descriptor(
@@ -2304,8 +2936,8 @@ _WLST_SLU_7300_ASSIST_SLUITEM_DATA_LIGHT_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6812,
-  serialized_end=6887,
+  serialized_start=8480,
+  serialized_end=8555,
 )
 
 _WLST_SLU_7300_ASSIST_SLUITEM_DATA = _descriptor.Descriptor(
@@ -2355,8 +2987,8 @@ _WLST_SLU_7300_ASSIST_SLUITEM_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6647,
-  serialized_end=6887,
+  serialized_start=8315,
+  serialized_end=8555,
 )
 
 _WLST_SLU_7300_SLUITEM_PHYINFO = _descriptor.Descriptor(
@@ -2420,8 +3052,8 @@ _WLST_SLU_7300_SLUITEM_PHYINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6890,
-  serialized_end=7073,
+  serialized_start=8558,
+  serialized_end=8741,
 )
 
 _WLST_SLU_7300_MODEL_INFO = _descriptor.Descriptor(
@@ -2485,8 +3117,8 @@ _WLST_SLU_7300_MODEL_INFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7076,
-  serialized_end=7212,
+  serialized_start=8744,
+  serialized_end=8880,
 )
 
 _WLST_SLU_7300 = _descriptor.Descriptor(
@@ -2578,8 +3210,8 @@ _WLST_SLU_7300 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4685,
-  serialized_end=7212,
+  serialized_start=6353,
+  serialized_end=8880,
 )
 
 
@@ -2630,8 +3262,8 @@ _WLST_SLU_F900_SLUITEM_STATUS_ALARM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7577,
-  serialized_end=7802,
+  serialized_start=9245,
+  serialized_end=9470,
 )
 
 _WLST_SLU_F900_BLUETOOTH_APPLY = _descriptor.Descriptor(
@@ -2667,8 +3299,8 @@ _WLST_SLU_F900_BLUETOOTH_APPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7804,
-  serialized_end=7861,
+  serialized_start=9472,
+  serialized_end=9529,
 )
 
 _WLST_SLU_F900_SET_DOMAIN_RESULT = _descriptor.Descriptor(
@@ -2704,8 +3336,8 @@ _WLST_SLU_F900_SET_DOMAIN_RESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7863,
-  serialized_end=7928,
+  serialized_start=9531,
+  serialized_end=9596,
 )
 
 _WLST_SLU_F900 = _descriptor.Descriptor(
@@ -2776,8 +3408,8 @@ _WLST_SLU_F900 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7215,
-  serialized_end=7928,
+  serialized_start=8883,
+  serialized_end=9596,
 )
 
 
@@ -2814,8 +3446,8 @@ _WLST_SLU_7B00_READ_CONCENTRATOR_OPERATION_DATA_CMD_OPERATION = _descriptor.Desc
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8365,
-  serialized_end=8410,
+  serialized_start=10033,
+  serialized_end=10078,
 )
 
 _WLST_SLU_7B00_READ_CONCENTRATOR_OPERATION_DATA = _descriptor.Descriptor(
@@ -2893,8 +3525,8 @@ _WLST_SLU_7B00_READ_CONCENTRATOR_OPERATION_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8089,
-  serialized_end=8410,
+  serialized_start=9757,
+  serialized_end=10078,
 )
 
 _WLST_SLU_7B00 = _descriptor.Descriptor(
@@ -2944,8 +3576,8 @@ _WLST_SLU_7B00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7931,
-  serialized_end=8410,
+  serialized_start=9599,
+  serialized_end=10078,
 )
 
 
@@ -2996,8 +3628,8 @@ _WLST_SLU_FE00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8412,
-  serialized_end=8513,
+  serialized_start=10080,
+  serialized_end=10181,
 )
 
 
@@ -3041,8 +3673,8 @@ _WLST_SLU_7400_CMD_PWM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8773,
-  serialized_end=8836,
+  serialized_start=1650,
+  serialized_end=1713,
 )
 
 _WLST_SLU_7400 = _descriptor.Descriptor(
@@ -3134,8 +3766,8 @@ _WLST_SLU_7400 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8516,
-  serialized_end=8836,
+  serialized_start=10184,
+  serialized_end=10504,
 )
 
 
@@ -3179,8 +3811,8 @@ _WLST_SLU_7C00_CONCENTRATOR_OPERATION_DATA_CMD_PWM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8773,
-  serialized_end=8836,
+  serialized_start=1650,
+  serialized_end=1713,
 )
 
 _WLST_SLU_7C00_CONCENTRATOR_OPERATION_DATA_CMD_485 = _descriptor.Descriptor(
@@ -3230,8 +3862,8 @@ _WLST_SLU_7C00_CONCENTRATOR_OPERATION_DATA_CMD_485 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9388,
-  serialized_end=9469,
+  serialized_start=11056,
+  serialized_end=11137,
 )
 
 _WLST_SLU_7C00_CONCENTRATOR_OPERATION_DATA = _descriptor.Descriptor(
@@ -3302,8 +3934,8 @@ _WLST_SLU_7C00_CONCENTRATOR_OPERATION_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9026,
-  serialized_end=9469,
+  serialized_start=10694,
+  serialized_end=11137,
 )
 
 _WLST_SLU_7C00 = _descriptor.Descriptor(
@@ -3367,8 +3999,8 @@ _WLST_SLU_7C00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8839,
-  serialized_end=9469,
+  serialized_start=10507,
+  serialized_end=11137,
 )
 
 
@@ -3433,8 +4065,8 @@ _WLST_SLU_6F00_RESET_MARK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9612,
-  serialized_end=9748,
+  serialized_start=11280,
+  serialized_end=11416,
 )
 
 _WLST_SLU_6F00 = _descriptor.Descriptor(
@@ -3491,10 +4123,22 @@ _WLST_SLU_6F00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9472,
-  serialized_end=9748,
+  serialized_start=11140,
+  serialized_end=11416,
 )
 
+_WLST_SLU_F800_VIEW0X20.containing_type = _WLST_SLU_F800
+_WLST_SLU_F800_VIEW0X21.containing_type = _WLST_SLU_F800
+_WLST_SLU_F800_VIEW0X23.containing_type = _WLST_SLU_F800
+_WLST_SLU_F800.fields_by_name['view_0x20'].message_type = _WLST_SLU_F800_VIEW0X20
+_WLST_SLU_F800.fields_by_name['view_0x21'].message_type = _WLST_SLU_F800_VIEW0X21
+_WLST_SLU_F800.fields_by_name['view_0x22'].message_type = _WLST_SLU_F800_VIEW0X20
+_WLST_SLU_F800.fields_by_name['view_0x23'].message_type = _WLST_SLU_F800_VIEW0X23
+_WLST_SLU_F800.fields_by_name['view_0x24'].message_type = _WLST_SLU_F800_VIEW0X20
+_WLST_SLU_F800.fields_by_name['view_0x25'].message_type = _WLST_SLU_F800_VIEW0X20
+_WLST_SLU_EC00.fields_by_name['wlst_slu_6b00'].message_type = _WLST_SLU_6B00
+_WLST_SLU_6B00_CMD_PWM.containing_type = _WLST_SLU_6B00
+_WLST_SLU_6B00.fields_by_name['cmd_pwm'].message_type = _WLST_SLU_6B00_CMD_PWM
 _WLST_SLU_1D00_DATA_MARK.containing_type = _WLST_SLU_1D00
 _WLST_SLU_1D00.fields_by_name['data_mark'].message_type = _WLST_SLU_1D00_DATA_MARK
 _WLST_SLU_9D00_SLUITEM_DATA.fields_by_name['sluitem_status'].message_type = _WLST_SLU_7300_BASE_SLUITEM_DATA_SLUITEM_STATUS
@@ -3573,6 +4217,11 @@ _WLST_SLU_7C00.fields_by_name['operation_data'].message_type = _WLST_SLU_7C00_CO
 _WLST_SLU_6F00_RESET_MARK.containing_type = _WLST_SLU_6F00
 _WLST_SLU_6F00.fields_by_name['reset_mark'].message_type = _WLST_SLU_6F00_RESET_MARK
 DESCRIPTOR.message_types_by_name['Wlst_slu_f400'] = _WLST_SLU_F400
+DESCRIPTOR.message_types_by_name['Wlst_slu_7800'] = _WLST_SLU_7800
+DESCRIPTOR.message_types_by_name['Wlst_slu_f800'] = _WLST_SLU_F800
+DESCRIPTOR.message_types_by_name['Wlst_slu_ec00'] = _WLST_SLU_EC00
+DESCRIPTOR.message_types_by_name['Wlst_slu_6b00'] = _WLST_SLU_6B00
+DESCRIPTOR.message_types_by_name['Wlst_slu_6c00'] = _WLST_SLU_6C00
 DESCRIPTOR.message_types_by_name['Wlst_slu_d000'] = _WLST_SLU_D000
 DESCRIPTOR.message_types_by_name['Wlst_slu_2800'] = _WLST_SLU_2800
 DESCRIPTOR.message_types_by_name['Wlst_slu_2400'] = _WLST_SLU_2400
@@ -3600,6 +4249,73 @@ Wlst_slu_f400 = _reflection.GeneratedProtocolMessageType('Wlst_slu_f400', (_mess
   # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_f400)
   ))
 _sym_db.RegisterMessage(Wlst_slu_f400)
+
+Wlst_slu_7800 = _reflection.GeneratedProtocolMessageType('Wlst_slu_7800', (_message.Message,), dict(
+  DESCRIPTOR = _WLST_SLU_7800,
+  __module__ = 'protocol_slu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_7800)
+  ))
+_sym_db.RegisterMessage(Wlst_slu_7800)
+
+Wlst_slu_f800 = _reflection.GeneratedProtocolMessageType('Wlst_slu_f800', (_message.Message,), dict(
+
+  View0x20 = _reflection.GeneratedProtocolMessageType('View0x20', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_SLU_F800_VIEW0X20,
+    __module__ = 'protocol_slu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_f800.View0x20)
+    ))
+  ,
+
+  View0x21 = _reflection.GeneratedProtocolMessageType('View0x21', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_SLU_F800_VIEW0X21,
+    __module__ = 'protocol_slu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_f800.View0x21)
+    ))
+  ,
+
+  View0x23 = _reflection.GeneratedProtocolMessageType('View0x23', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_SLU_F800_VIEW0X23,
+    __module__ = 'protocol_slu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_f800.View0x23)
+    ))
+  ,
+  DESCRIPTOR = _WLST_SLU_F800,
+  __module__ = 'protocol_slu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_f800)
+  ))
+_sym_db.RegisterMessage(Wlst_slu_f800)
+_sym_db.RegisterMessage(Wlst_slu_f800.View0x20)
+_sym_db.RegisterMessage(Wlst_slu_f800.View0x21)
+_sym_db.RegisterMessage(Wlst_slu_f800.View0x23)
+
+Wlst_slu_ec00 = _reflection.GeneratedProtocolMessageType('Wlst_slu_ec00', (_message.Message,), dict(
+  DESCRIPTOR = _WLST_SLU_EC00,
+  __module__ = 'protocol_slu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_ec00)
+  ))
+_sym_db.RegisterMessage(Wlst_slu_ec00)
+
+Wlst_slu_6b00 = _reflection.GeneratedProtocolMessageType('Wlst_slu_6b00', (_message.Message,), dict(
+
+  Cmd_pwm = _reflection.GeneratedProtocolMessageType('Cmd_pwm', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_SLU_6B00_CMD_PWM,
+    __module__ = 'protocol_slu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_6b00.Cmd_pwm)
+    ))
+  ,
+  DESCRIPTOR = _WLST_SLU_6B00,
+  __module__ = 'protocol_slu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_6b00)
+  ))
+_sym_db.RegisterMessage(Wlst_slu_6b00)
+_sym_db.RegisterMessage(Wlst_slu_6b00.Cmd_pwm)
+
+Wlst_slu_6c00 = _reflection.GeneratedProtocolMessageType('Wlst_slu_6c00', (_message.Message,), dict(
+  DESCRIPTOR = _WLST_SLU_6C00,
+  __module__ = 'protocol_slu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_slu_6c00)
+  ))
+_sym_db.RegisterMessage(Wlst_slu_6c00)
 
 Wlst_slu_d000 = _reflection.GeneratedProtocolMessageType('Wlst_slu_d000', (_message.Message,), dict(
   DESCRIPTOR = _WLST_SLU_D000,
@@ -4016,6 +4732,30 @@ _sym_db.RegisterMessage(Wlst_slu_6f00.Reset_mark)
 
 DESCRIPTOR.has_options = True
 DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), _b('H\001'))
+_WLST_SLU_F800_VIEW0X20.fields_by_name['status'].has_options = True
+_WLST_SLU_F800_VIEW0X20.fields_by_name['status']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_F800_VIEW0X23.fields_by_name['alarm_type'].has_options = True
+_WLST_SLU_F800_VIEW0X23.fields_by_name['alarm_type']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_status'].has_options = True
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_status']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_current'].has_options = True
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_current']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_active_power'].has_options = True
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_active_power']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_reactive_power'].has_options = True
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_reactive_power']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_max_current'].has_options = True
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_max_current']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_electricity'].has_options = True
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_electricity']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_phyinfo'].has_options = True
+_WLST_SLU_F800_VIEW0X23.fields_by_name['sluitem_phyinfo']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_6B00_CMD_PWM.fields_by_name['loop_can_do'].has_options = True
+_WLST_SLU_6B00_CMD_PWM.fields_by_name['loop_can_do']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_6B00.fields_by_name['addrs'].has_options = True
+_WLST_SLU_6B00.fields_by_name['addrs']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_SLU_6B00.fields_by_name['cmd_mix'].has_options = True
+_WLST_SLU_6B00.fields_by_name['cmd_mix']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_SLU_9A00.fields_by_name['domain_name_status'].has_options = True
 _WLST_SLU_9A00.fields_by_name['domain_name_status']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_SLU_9D00_SLUITEM_DATA.fields_by_name['current'].has_options = True

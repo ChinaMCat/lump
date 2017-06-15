@@ -64,8 +64,10 @@ if __name__ == '__main__':
     ctx = zmq.Context()
     try:
         puller = ctx.socket(zmq.PULL)
+        puller.setsockopt(zmq.RCVHWM, 70000)
         puller.bind('tcp://*:{0}'.format(results.front))
         puber = ctx.socket(zmq.PUB)
+        puller.setsockopt(zmq.SNDHWM, 50000)
         puber.bind('tcp://*:{0}'.format(results.back))
     except Exception as ex:
         print('zmq bind error: {0}'.format(ex))
@@ -77,7 +79,7 @@ if __name__ == '__main__':
                                                                            results.back), 30)
     # poller = zmq.Poller()
     # poller.register(puller, zmq.POLLIN)
-                        
+    #                     
     # while True:
     #     poll_list = dict(poller.poll(500))
     #     if poll_list.get(puller) == zmq.POLLIN:

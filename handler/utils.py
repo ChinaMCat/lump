@@ -126,6 +126,12 @@ if os.path.isfile(os.path.join(mx.SCRIPT_DIR, '.profile')):
     for y in z:
         try:
             x = json.loads(y)
+            if 'enable_if' in x.keys():
+                a = mx.code_string(x['enable_if'], do=1)
+                x['enable_if'] = tuple(a.split(','))
+                del a
+            else:
+                x['enable_if'] = tuple()
             if 'uuid' in x.keys():
                 uuid = x['uuid']
                 cache_buildin_users.add(uuid)

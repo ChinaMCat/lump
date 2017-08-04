@@ -13,53 +13,329 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
-import protocol_wxjy_pb2 as protocol__wxjy__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='protocol_tp.proto',
   package='wlst.pb2',
   syntax='proto3',
-  serialized_pb=_b('\n\x11protocol_tp.proto\x12\x08wlst.pb2\x1a\x13protocol_wxjy.proto\"\xc6\x01\n\x04Wxjy\x12.\n\rwxjy_esu_5500\x18\x01 \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_5500\x12.\n\rwxjy_esu_d500\x18\x02 \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_5500\x12.\n\rwxjy_esu_d700\x18\x03 \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_d700\x12.\n\rwxjy_esu_d800\x18\x04 \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_d800B\x02H\x01\x62\x06proto3')
-  ,
-  dependencies=[protocol__wxjy__pb2.DESCRIPTOR,])
+  serialized_pb=_b('\n\x11protocol_tp.proto\x12\x08wlst.pb2\"\xf0\x04\n\rAhhf_rtu_6804\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x15\n\tdata_mark\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x16\n\ndata_point\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x36\n\nswitch_out\x18\x04 \x01(\x0b\x32\".wlst.pb2.Ahhf_rtu_6804.Switch_out\x12\x34\n\tswitch_in\x18\x05 \x01(\x0b\x32!.wlst.pb2.Ahhf_rtu_6804.Switch_in\x12@\n\x0fswitch_in_limit\x18\x06 \x01(\x0b\x32\'.wlst.pb2.Ahhf_rtu_6804.Switch_in_limit\x12\x12\n\x06status\x18\t \x03(\x05\x42\x02\x10\x01\x1a\x43\n\nSwitch_out\x12\x18\n\x10switch_out_total\x18\x01 \x01(\x05\x12\x1b\n\x0fswitch_out_loop\x18\x02 \x03(\x05\x42\x02\x10\x01\x1ax\n\tSwitch_in\x12\x1b\n\x13voltage_transformer\x18\x01 \x01(\x05\x12\x12\n\nloop_total\x18\x02 \x01(\x05\x12\x1f\n\x13\x63urrent_transformer\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x19\n\rcurrent_phase\x18\x04 \x03(\x05\x42\x02\x10\x01\x1a\x9b\x01\n\x0fSwitch_in_limit\x12\x12\n\nloop_total\x18\x05 \x01(\x05\x12\x1b\n\x0fvoltage_uplimit\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10voltage_lowlimit\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x1b\n\x0f\x63urrent_uplimit\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10\x63urrent_lowlimit\x18\x04 \x03(\x01\x42\x02\x10\x01\"L\n\rWxjy_esu_5500\x12\x10\n\x08time_now\x18\x01 \x01(\t\x12\x12\n\x06x_time\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x15\n\tx_voltage\x18\x03 \x03(\x05\x42\x02\x10\x01\"\x8a\x01\n\rWxjy_esu_d700\x12\x12\n\nphase_a_in\x18\x01 \x01(\x05\x12\x12\n\nphase_b_in\x18\x02 \x01(\x05\x12\x12\n\nphase_c_in\x18\x03 \x01(\x05\x12\x13\n\x0bphase_a_out\x18\x04 \x01(\x05\x12\x13\n\x0bphase_b_out\x18\x05 \x01(\x05\x12\x13\n\x0bphase_c_out\x18\x06 \x01(\x05\"\x1f\n\rWxjy_esu_d800\x12\x0e\n\x06status\x18\x01 \x01(\tB\x02H\x01\x62\x06proto3')
+)
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 
 
 
-_WXJY = _descriptor.Descriptor(
-  name='Wxjy',
-  full_name='wlst.pb2.Wxjy',
+_AHHF_RTU_6804_SWITCH_OUT = _descriptor.Descriptor(
+  name='Switch_out',
+  full_name='wlst.pb2.Ahhf_rtu_6804.Switch_out',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='wxjy_esu_5500', full_name='wlst.pb2.Wxjy.wxjy_esu_5500', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='switch_out_total', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_out.switch_out_total', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wxjy_esu_d500', full_name='wlst.pb2.Wxjy.wxjy_esu_d500', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='switch_out_loop', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_out.switch_out_loop', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=309,
+  serialized_end=376,
+)
+
+_AHHF_RTU_6804_SWITCH_IN = _descriptor.Descriptor(
+  name='Switch_in',
+  full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='voltage_transformer', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in.voltage_transformer', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wxjy_esu_d700', full_name='wlst.pb2.Wxjy.wxjy_esu_d700', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='loop_total', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in.loop_total', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wxjy_esu_d800', full_name='wlst.pb2.Wxjy.wxjy_esu_d800', index=3,
+      name='current_transformer', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in.current_transformer', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='current_phase', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in.current_phase', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=378,
+  serialized_end=498,
+)
+
+_AHHF_RTU_6804_SWITCH_IN_LIMIT = _descriptor.Descriptor(
+  name='Switch_in_limit',
+  full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in_limit',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='loop_total', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in_limit.loop_total', index=0,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='voltage_uplimit', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in_limit.voltage_uplimit', index=1,
+      number=1, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='voltage_lowlimit', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in_limit.voltage_lowlimit', index=2,
+      number=2, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='current_uplimit', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in_limit.current_uplimit', index=3,
+      number=3, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='current_lowlimit', full_name='wlst.pb2.Ahhf_rtu_6804.Switch_in_limit.current_lowlimit', index=4,
+      number=4, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=501,
+  serialized_end=656,
+)
+
+_AHHF_RTU_6804 = _descriptor.Descriptor(
+  name='Ahhf_rtu_6804',
+  full_name='wlst.pb2.Ahhf_rtu_6804',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Ahhf_rtu_6804.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='data_mark', full_name='wlst.pb2.Ahhf_rtu_6804.data_mark', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='data_point', full_name='wlst.pb2.Ahhf_rtu_6804.data_point', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='switch_out', full_name='wlst.pb2.Ahhf_rtu_6804.switch_out', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='switch_in', full_name='wlst.pb2.Ahhf_rtu_6804.switch_in', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='switch_in_limit', full_name='wlst.pb2.Ahhf_rtu_6804.switch_in_limit', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='wlst.pb2.Ahhf_rtu_6804.status', index=6,
+      number=9, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+  ],
+  extensions=[
+  ],
+  nested_types=[_AHHF_RTU_6804_SWITCH_OUT, _AHHF_RTU_6804_SWITCH_IN, _AHHF_RTU_6804_SWITCH_IN_LIMIT, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=32,
+  serialized_end=656,
+)
+
+
+_WXJY_ESU_5500 = _descriptor.Descriptor(
+  name='Wxjy_esu_5500',
+  full_name='wlst.pb2.Wxjy_esu_5500',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='time_now', full_name='wlst.pb2.Wxjy_esu_5500.time_now', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='x_time', full_name='wlst.pb2.Wxjy_esu_5500.x_time', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='x_voltage', full_name='wlst.pb2.Wxjy_esu_5500.x_voltage', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=658,
+  serialized_end=734,
+)
+
+
+_WXJY_ESU_D700 = _descriptor.Descriptor(
+  name='Wxjy_esu_d700',
+  full_name='wlst.pb2.Wxjy_esu_d700',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='phase_a_in', full_name='wlst.pb2.Wxjy_esu_d700.phase_a_in', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='phase_b_in', full_name='wlst.pb2.Wxjy_esu_d700.phase_b_in', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='phase_c_in', full_name='wlst.pb2.Wxjy_esu_d700.phase_c_in', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='phase_a_out', full_name='wlst.pb2.Wxjy_esu_d700.phase_a_out', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='phase_b_out', full_name='wlst.pb2.Wxjy_esu_d700.phase_b_out', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='phase_c_out', full_name='wlst.pb2.Wxjy_esu_d700.phase_c_out', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -75,24 +351,129 @@ _WXJY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=53,
-  serialized_end=251,
+  serialized_start=737,
+  serialized_end=875,
 )
 
-_WXJY.fields_by_name['wxjy_esu_5500'].message_type = protocol__wxjy__pb2._WXJY_ESU_5500
-_WXJY.fields_by_name['wxjy_esu_d500'].message_type = protocol__wxjy__pb2._WXJY_ESU_5500
-_WXJY.fields_by_name['wxjy_esu_d700'].message_type = protocol__wxjy__pb2._WXJY_ESU_D700
-_WXJY.fields_by_name['wxjy_esu_d800'].message_type = protocol__wxjy__pb2._WXJY_ESU_D800
-DESCRIPTOR.message_types_by_name['Wxjy'] = _WXJY
 
-Wxjy = _reflection.GeneratedProtocolMessageType('Wxjy', (_message.Message,), dict(
-  DESCRIPTOR = _WXJY,
+_WXJY_ESU_D800 = _descriptor.Descriptor(
+  name='Wxjy_esu_d800',
+  full_name='wlst.pb2.Wxjy_esu_d800',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='status', full_name='wlst.pb2.Wxjy_esu_d800.status', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=877,
+  serialized_end=908,
+)
+
+_AHHF_RTU_6804_SWITCH_OUT.containing_type = _AHHF_RTU_6804
+_AHHF_RTU_6804_SWITCH_IN.containing_type = _AHHF_RTU_6804
+_AHHF_RTU_6804_SWITCH_IN_LIMIT.containing_type = _AHHF_RTU_6804
+_AHHF_RTU_6804.fields_by_name['switch_out'].message_type = _AHHF_RTU_6804_SWITCH_OUT
+_AHHF_RTU_6804.fields_by_name['switch_in'].message_type = _AHHF_RTU_6804_SWITCH_IN
+_AHHF_RTU_6804.fields_by_name['switch_in_limit'].message_type = _AHHF_RTU_6804_SWITCH_IN_LIMIT
+DESCRIPTOR.message_types_by_name['Ahhf_rtu_6804'] = _AHHF_RTU_6804
+DESCRIPTOR.message_types_by_name['Wxjy_esu_5500'] = _WXJY_ESU_5500
+DESCRIPTOR.message_types_by_name['Wxjy_esu_d700'] = _WXJY_ESU_D700
+DESCRIPTOR.message_types_by_name['Wxjy_esu_d800'] = _WXJY_ESU_D800
+
+Ahhf_rtu_6804 = _reflection.GeneratedProtocolMessageType('Ahhf_rtu_6804', (_message.Message,), dict(
+
+  Switch_out = _reflection.GeneratedProtocolMessageType('Switch_out', (_message.Message,), dict(
+    DESCRIPTOR = _AHHF_RTU_6804_SWITCH_OUT,
+    __module__ = 'protocol_tp_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Ahhf_rtu_6804.Switch_out)
+    ))
+  ,
+
+  Switch_in = _reflection.GeneratedProtocolMessageType('Switch_in', (_message.Message,), dict(
+    DESCRIPTOR = _AHHF_RTU_6804_SWITCH_IN,
+    __module__ = 'protocol_tp_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Ahhf_rtu_6804.Switch_in)
+    ))
+  ,
+
+  Switch_in_limit = _reflection.GeneratedProtocolMessageType('Switch_in_limit', (_message.Message,), dict(
+    DESCRIPTOR = _AHHF_RTU_6804_SWITCH_IN_LIMIT,
+    __module__ = 'protocol_tp_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Ahhf_rtu_6804.Switch_in_limit)
+    ))
+  ,
+  DESCRIPTOR = _AHHF_RTU_6804,
   __module__ = 'protocol_tp_pb2'
-  # @@protoc_insertion_point(class_scope:wlst.pb2.Wxjy)
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Ahhf_rtu_6804)
   ))
-_sym_db.RegisterMessage(Wxjy)
+_sym_db.RegisterMessage(Ahhf_rtu_6804)
+_sym_db.RegisterMessage(Ahhf_rtu_6804.Switch_out)
+_sym_db.RegisterMessage(Ahhf_rtu_6804.Switch_in)
+_sym_db.RegisterMessage(Ahhf_rtu_6804.Switch_in_limit)
+
+Wxjy_esu_5500 = _reflection.GeneratedProtocolMessageType('Wxjy_esu_5500', (_message.Message,), dict(
+  DESCRIPTOR = _WXJY_ESU_5500,
+  __module__ = 'protocol_tp_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wxjy_esu_5500)
+  ))
+_sym_db.RegisterMessage(Wxjy_esu_5500)
+
+Wxjy_esu_d700 = _reflection.GeneratedProtocolMessageType('Wxjy_esu_d700', (_message.Message,), dict(
+  DESCRIPTOR = _WXJY_ESU_D700,
+  __module__ = 'protocol_tp_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wxjy_esu_d700)
+  ))
+_sym_db.RegisterMessage(Wxjy_esu_d700)
+
+Wxjy_esu_d800 = _reflection.GeneratedProtocolMessageType('Wxjy_esu_d800', (_message.Message,), dict(
+  DESCRIPTOR = _WXJY_ESU_D800,
+  __module__ = 'protocol_tp_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wxjy_esu_d800)
+  ))
+_sym_db.RegisterMessage(Wxjy_esu_d800)
 
 
 DESCRIPTOR.has_options = True
 DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), _b('H\001'))
+_AHHF_RTU_6804_SWITCH_OUT.fields_by_name['switch_out_loop'].has_options = True
+_AHHF_RTU_6804_SWITCH_OUT.fields_by_name['switch_out_loop']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_AHHF_RTU_6804_SWITCH_IN.fields_by_name['current_transformer'].has_options = True
+_AHHF_RTU_6804_SWITCH_IN.fields_by_name['current_transformer']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_AHHF_RTU_6804_SWITCH_IN.fields_by_name['current_phase'].has_options = True
+_AHHF_RTU_6804_SWITCH_IN.fields_by_name['current_phase']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_AHHF_RTU_6804_SWITCH_IN_LIMIT.fields_by_name['voltage_uplimit'].has_options = True
+_AHHF_RTU_6804_SWITCH_IN_LIMIT.fields_by_name['voltage_uplimit']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_AHHF_RTU_6804_SWITCH_IN_LIMIT.fields_by_name['voltage_lowlimit'].has_options = True
+_AHHF_RTU_6804_SWITCH_IN_LIMIT.fields_by_name['voltage_lowlimit']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_AHHF_RTU_6804_SWITCH_IN_LIMIT.fields_by_name['current_uplimit'].has_options = True
+_AHHF_RTU_6804_SWITCH_IN_LIMIT.fields_by_name['current_uplimit']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_AHHF_RTU_6804_SWITCH_IN_LIMIT.fields_by_name['current_lowlimit'].has_options = True
+_AHHF_RTU_6804_SWITCH_IN_LIMIT.fields_by_name['current_lowlimit']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_AHHF_RTU_6804.fields_by_name['data_mark'].has_options = True
+_AHHF_RTU_6804.fields_by_name['data_mark']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_AHHF_RTU_6804.fields_by_name['data_point'].has_options = True
+_AHHF_RTU_6804.fields_by_name['data_point']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_AHHF_RTU_6804.fields_by_name['status'].has_options = True
+_AHHF_RTU_6804.fields_by_name['status']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WXJY_ESU_5500.fields_by_name['x_time'].has_options = True
+_WXJY_ESU_5500.fields_by_name['x_time']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WXJY_ESU_5500.fields_by_name['x_voltage'].has_options = True
+_WXJY_ESU_5500.fields_by_name['x_voltage']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 # @@protoc_insertion_point(module_scope)

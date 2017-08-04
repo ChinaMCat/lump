@@ -36,9 +36,11 @@ class UserLoginJKHandler(base.RequestHandler):
     @gen.coroutine
     def post(self):
         args = self.request.arguments
-        if 'givemejson' in args.keys():
-            self.go_back_json = True
-            
+        if 'formatmydata' in args.keys():
+            self._go_back_format = True
+        if 'tcsport' in args.keys():
+            self._db_name = 'mydb{0}'.format(args.get('tcsport')[0])
+
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserLogin()
         msg = msgws.UserLogin()
@@ -53,8 +55,9 @@ class UserLoginJKHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(utils.m_dbname_jk, rqmsg.user,
-                                                              rqmsg.pwd)
+        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace(
+            '"', ''), rqmsg.pwd.replace('"', ''))
+
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
             need_fetch=1,
@@ -90,13 +93,21 @@ class UserLoginJKHandler(base.RequestHandler):
             else:
                 msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr) + 1)
 
+            try:
+                yield self.get_phy_cache()
+                yield self.get_tml_cache('r', user_uuid)
+                yield self.get_tml_cache('w', user_uuid)
+                yield self.get_tml_cache('x', user_uuid)
+            except:
+                pass
+
             user_auth = 0
             _area_r = []
             _area_w = []
             _area_x = []
             try:
                 strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
-                    utils.m_dbname_jk, rqmsg.user)
+                    self._db_name, rqmsg.user)
                 record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -144,7 +155,7 @@ class UserLoginJKHandler(base.RequestHandler):
                                                user_auth=user_auth,
                                                login_time=time.time(),
                                                active_time=time.time(),
-                                               user_db=utils.m_dbname_jk,
+                                               user_db=self._db_name,
                                                area_id=0,
                                                source_dev=rqmsg.dev,
                                                unique=rqmsg.unique,
@@ -156,6 +167,14 @@ class UserLoginJKHandler(base.RequestHandler):
             del _area_r, _area_w, _area_x
 
         del cur, strsql
+
+        try:
+            yield self.get_phy_cache()
+            yield self.get_tml_cache('r', user_uuid)
+            yield self.get_tml_cache('w', user_uuid)
+            yield self.get_tml_cache('x', user_uuid)
+        except Exception as ex:
+            pass
 
         # 登录工作流
         if rqmsg.dev == 3:
@@ -189,10 +208,13 @@ class UserLoginJKHandler(base.RequestHandler):
                     msg.flow_data = ''
                     # print(str(ex))
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         self.write_event(121, contents, 2, user_name=rqmsg.user)
         del rqmsg, msg
@@ -212,9 +234,11 @@ class UserLoginHandler(base.RequestHandler):
     @gen.coroutine
     def post(self):
         args = self.request.arguments
-        if 'givemejson' in args.keys():
-            self.go_back_json = True
-            
+        if 'formatmydata' in args.keys():
+            self._go_back_format = True
+        if 'tcsport' in args.keys():
+            self._db_name = 'mydb{0}'.format(args.get('tcsport')[0])
+
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserLogin()
         msg = msgws.UserLogin()
@@ -229,8 +253,9 @@ class UserLoginHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(utils.m_dbname_jk, rqmsg.user,
-                                                              rqmsg.pwd)
+        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace(
+            '"', ''), rqmsg.pwd.replace('"', ''))
+
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
             need_fetch=1,
@@ -266,14 +291,13 @@ class UserLoginHandler(base.RequestHandler):
             else:
                 msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr) + 1)
 
-
             user_auth = 0
             _area_r = []
             _area_w = []
             _area_x = []
             try:
                 strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
-                    utils.m_dbname_jk, rqmsg.user)
+                    self._db_name, rqmsg.user)
                 record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -322,7 +346,7 @@ class UserLoginHandler(base.RequestHandler):
                                                user_auth=user_auth,
                                                login_time=time.time(),
                                                active_time=time.time(),
-                                               user_db=utils.m_dbname_jk,
+                                               user_db=self._db_name,
                                                area_id=0,
                                                source_dev=rqmsg.dev,
                                                unique=rqmsg.unique,
@@ -334,6 +358,11 @@ class UserLoginHandler(base.RequestHandler):
             del _area_r, _area_w, _area_x
 
         del cur, strsql
+
+        try:
+            yield self.update_cache('r,w,x', user_uuid)
+        except Exception as ex:
+            pass
 
         # 登录工作流
         if rqmsg.dev == 3:
@@ -367,10 +396,13 @@ class UserLoginHandler(base.RequestHandler):
                 else:
                     msg.flow_data = ''
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         self.write_event(121, contents, 2, user_name=rqmsg.user)
         del rqmsg, msg
@@ -410,10 +442,13 @@ class UserLogoutHandler(base.RequestHandler):
                 msg.head.if_st = 40
                 msg.head.if_msg = 'The user is not logged'
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         if env:
             self.write_event(122, contents, 2, user_name=user_data['user_name'])
@@ -466,7 +501,7 @@ class UserAddHandler(base.RequestHandler):
                 else:
                     # 判断用户是否存在
                     strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                        utils.m_dbname_jk, rqmsg.user, rqmsg.pwd)
+                        self._db_name, rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"', ''))
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1)
@@ -476,7 +511,7 @@ class UserAddHandler(base.RequestHandler):
                     else:
                         strsql = 'insert into {0}.user_list (user_name, user_real_name, user_password, user_phonenumber, user_operator_code, date_create, date_update, date_access) \
                         values ("{1}","{2}","{3}","{4}","{5}",{6},{7},{8})'.format(
-                            utils.m_dbname_jk, rqmsg.user, rqmsg.fullname, rqmsg.pwd, rqmsg.tel,
+                            self._db_name, rqmsg.user, rqmsg.fullname, rqmsg.pwd, rqmsg.tel,
                             rqmsg.code, mx.switchStamp(int(time.time())),
                             mx.switchStamp(int(time.time())), mx.switchStamp(int(time.time())))
                         yield self.mydata_collector(strsql, need_fetch=0)
@@ -485,10 +520,13 @@ class UserAddHandler(base.RequestHandler):
 
                     del cur, strsql
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         if env:
             self.write_event(154, contents, 2, user_name=user_data['user_name'])
@@ -523,13 +561,13 @@ class UserDelHandler(base.RequestHandler):
                     # 删除用户
                     try:
                         strsql = 'select * from {0}.user_list where user_name="{1}"'.format(
-                            utils.m_dbname_jk, rqmsg.user_name)
+                            self._db_name, rqmsg.user_name.replace('"', ''))
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
                             need_fetch=1)
                         if record_total > 0:
                             strsql = 'delete from {0}.user_list where user_name="{1}"'.format(
-                                utils.m_dbname_jk, rqmsg.user_name)
+                                self._db_name, rqmsg.user_name)
                             yield self.mydata_collector(strsql, need_fetch=0)
                             env = True
                             contents = 'del user {0}'.format(rqmsg.user_name)
@@ -542,10 +580,13 @@ class UserDelHandler(base.RequestHandler):
                         msg.head.if_st = 0
                         msg.head.if_msg = str(ex.message)
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         if env:
             self.write_event(156, contents, 2, user_name=user_data['user_name'])
@@ -575,7 +616,7 @@ class UserEditHandler(base.RequestHandler):
         else:
             if user_data is not None:
                 strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                    utils.m_dbname_jk, rqmsg.user_name, rqmsg.pwd_old)
+                    self._db_name, rqmsg.user_name.replace('"', ''), rqmsg.pwd_old.replace('"', ''))
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1)
@@ -586,9 +627,9 @@ class UserEditHandler(base.RequestHandler):
                                         user_password="{2}", \
                                         user_phonenumber="{3}", \
                                         user_operator_code="{4}" \
-                                        where user_name="{5}"'.format(
-                                utils.m_dbname_jk, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
-                                rqmsg.user_name)
+                                        where user_name="{5}"'.format(self._db_name, rqmsg.fullname,
+                                                                      rqmsg.pwd.replace('"', ''), rqmsg.tel,
+                                                                      rqmsg.code, rqmsg.user_name.replace('"', ''))
                             self.mydata_collector(strsql, 0)
                         else:
                             msg.head.if_st = 11
@@ -600,7 +641,7 @@ class UserEditHandler(base.RequestHandler):
                     #                     user_phonenumber="{3}", \
                     #                     user_operator_code="{4}" \
                     #                     where user_name="{5}"'.format(
-                    #             utils.m_dbname_jk, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
+                    #             self._db_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
                     #             rqmsg.user_name)
                     #         self.mydata_collector(strsql, 0)
                     #     else:
@@ -621,15 +662,18 @@ class UserEditHandler(base.RequestHandler):
                 msg.head.if_msg = 'sz UpdatePassword error.'
                 # strsql = 'update {0}.user_list set \
                 #             user_password="{1}", \
-                #             where user_name="{2}"'.format(utils.m_dbname_jk, rqmsg.old_pwd,
+                #             where user_name="{2}"'.format(self._db_name, rqmsg.old_pwd,
                 #                                           rqmsg.user_name)
                 # self.mydata_collector(strsql, 0)
                 # del strsql
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del msg, rqmsg, user_data
 
@@ -668,10 +712,10 @@ class UserInfoHandler(base.RequestHandler):
                                     user_data['user_db'])
                             else:
                                 strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
-                                    utils.m_dbname_jk, rqmsg.user_name)
+                                    self._db_name, rqmsg.user_name)
                         elif user_data['user_auth'] in utils._can_read:
                             strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
-                                utils.m_dbname_jk, user_data['user_name'])
+                                self._db_name, user_data['user_name'])
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -700,9 +744,12 @@ class UserInfoHandler(base.RequestHandler):
                     msg.head.if_st = 0
                     msg.head.if_msg = str(ex)
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del msg, rqmsg, user_data, user_uuid

@@ -136,6 +136,7 @@ if __name__ == '__main__':
         os.system('copy dist\\iisi-win\\_multiprocessing.pyd ..\\mwsc\\dist\\bin\\ /Y')
         os.system('copy dist\\iisi-win\\_mysql.pyd ..\\mwsc\\dist\\bin\\ /Y')
         os.system('copy dist\\iisi-win\\mxweb.pyd ..\\mwsc\\dist\\bin\\ /Y')
+        os.system('copy dist\\iisi-win\\mxsql.pyd ..\\mwsc\\dist\\bin\\ /Y')
         os.system('copy dist\\iisi-win\\tornado.speedups.pyd ..\\mwsc\\dist\\bin\\ /Y')
         os.system('copy lic.dll ..\\mwsc\\dist\\bin\\ /Y')
         os.system('rmdir /Q /S dist\\iisi-win\\certifi\\')
@@ -147,7 +148,6 @@ if __name__ == '__main__':
         os.system('mkdir dist\\iisi-win\\tk\\')
         os.system('pyinstaller -y zmqproxy-win.spec')
         os.system('copy dist\\zmqproxy-win\\zmqproxy.exe dist\\iisi-win\\ /Y')
-        os.system('copy profile dist\\iisi-win\\.profile /Y')
     else:
         os.system('pyinstaller -y iisi.spec')
         os.system('cp -f -r static dist/iisi/')

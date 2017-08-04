@@ -12,6 +12,7 @@ import sys
 import thread
 import time
 import mxpsu as mx
+from mxsql import MXMariadb
 import mlib_iisi as libiisi
 import tornado.httpserver
 import tornado.web
@@ -92,15 +93,16 @@ if __name__ == '__main__':
             opt_args.append('--log_to_stderr')
         options.parse_command_line(args=opt_args, final=True)
 
+    record_all = bool(libiisi.m_config.getData('record_all'))
     if results.hp:
         tornado.process.fork_processes(0)
 
-    libiisi.m_sql = libiisi.MXMariadb(
-        host=libiisi.m_config.getData('db_host').split(':')[0],
-        port=3306 if len(libiisi.m_config.getData('db_host').split(':')) == 1 else int(
-            libiisi.m_config.getData('db_host').split(':')[1]),
-        user=libiisi.m_config.getData('db_user'),
-        pwd=libiisi.m_config.getData('db_pwd'))
+    libiisi.m_sql = MXMariadb(host=libiisi.m_config.getData('db_host').split(':')[0],
+                              port=3306 if len(libiisi.m_config.getData('db_host').split(':')) == 1
+                              else int(libiisi.m_config.getData('db_host').split(':')[1]),
+                              user=libiisi.m_config.getData('db_user'),
+                              pwd=mx.code_string(libiisi.m_config.getData('db_pwd'), 1),
+                              maxconn=int(libiisi.m_config.getData('max_db_conn')))
     libiisi.m_sql.set_debug(results.debug)
 
     # 开启后台线程
@@ -114,21 +116,22 @@ if __name__ == '__main__':
                     cookie_secret='RGVhciwgSSBsb3ZlIHlvdSBmb3JldmVyLg==',
                     gzip=True,
                     debug=results.debug,
+                    record_all=record_all,
                     # xsrf_cookies=True,
                     # login_url='/userloginjk', 
                     )
 
-    try:
-        from handler import handler_iisi, handler_err
-        lst_handler = []
-        lst_handler.extend(handler_iisi)
-        lst_handler.extend(handler_err)
-        application = tornado.web.Application(handlers=lst_handler, **settings)
-        application.listen(int(iisi_port))
-        logging.error('======= start the service on port {0} ======='.format(iisi_port))
-        print('======= start the service on port {0} ======='.format(iisi_port))
-        tornado.ioloop.IOLoop.instance().start()
-    except Exception as ex:
-        logging.error('------- service error: {0}'.format(ex))
-        if os.name == 'nt':
-            raw_input('press any key to exit...')
+    # try:
+    from handler import handler_iisi, handler_err
+    lst_handler = []
+    lst_handler.extend(handler_iisi)
+    lst_handler.extend(handler_err)
+    application = tornado.web.Application(handlers=lst_handler, **settings)
+    application.listen(int(iisi_port))
+    logging.error('======= start the service on port {0} ======='.format(iisi_port))
+    print('======= start the service on port {0} ======='.format(iisi_port))
+    tornado.ioloop.IOLoop.instance().start()
+    # except Exception as ex:
+    #     logging.error('------- service error: {0}'.format(ex))
+    #     if os.name == 'nt':
+    #         raw_input('press any key to exit...')

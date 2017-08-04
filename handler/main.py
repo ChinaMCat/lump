@@ -20,45 +20,6 @@ import utils
 
 
 @mxweb.route()
-class TestHandler(base.RequestHandler):
-
-    @gen.coroutine
-    def get(self):
-        # url = 'http://192.168.50.83:10020/test'
-        # tch = AsyncHTTPClient()
-        # data = {'a':1,'b':2}
-        # r = yield tch.fetch(url,method='POST', body=urlencode(data), raise_error=True, request_timeout=10)
-        # print(r)
-        # print(str(self.get_argument('do')))
-        # strsql = 'delete from uas.user_info where user_name="test2";insert into uas.user_info (user_name,user_pwd,user_alias,create_time) values ("test2","1234","test",1234);'
-        # # strsql = 'select ctrl_id from mydb6301_data.data_slu_ctrl'
-        # self.mydata_collector(strsql, need_fetch=0, need_paging=0)
-        # print(a)
-        # for x in e:
-        #     print(x)
-        # cur = a[4]
-        # for d in cur:
-        #     print("d:",d)
-        self.write(str(self.request.arguments))
-        self.finish('<br/>get test done.')
-
-    @gen.coroutine
-    def post(self):
-        # self.write(self.request.uri + '\r\n')
-        self.write(str(self.request.arguments))
-        
-        # self.set_header("Access-Control-Allow-Origin", "*")
-        # self.set_header("Access-Control-Allow-Headers", "x-requested-with")
-        # self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-        
-        # self.flush()
-        # self.set_header("Access-Control-Allow-Headers", "x-requested-with")
-        self.write('test again')
-        # self.flush()
-        self.finish('<br/>post test done.')
-
-
-@mxweb.route()
 class StatusHandler(base.RequestHandler):
     help_doc = u'''服务状态检查<br/>
     <b>参数:</b><br/>
@@ -89,29 +50,14 @@ class StatusHandler(base.RequestHandler):
                     if do == 'testconfig' or do == 'all':
                         self.write('<b><u>===== test config =====</u></b><br/>')
 
-                        ctx = zmq.Context()
-                        sub = ctx.socket(zmq.SUB)
-                        sub.setsockopt(zmq.RCVTIMEO, 1000)
-                        sub.setsockopt(zmq.SUBSCRIBE, b'')
-
-                        push = ctx.socket(zmq.PUSH)
-                        push.setsockopt(zmq.SNDTIMEO, 500)
-
-                        zmq_addr = libiisi.m_config.getData('zmq_port')
-                        if zmq_addr.find(':') == -1:
-                            ip = '127.0.0.1'
-                            port = zmq_addr
+                        m = yield self.check_zmq_status(b'zmq.filter', 'zmq test message',
+                                                        b'zmq.filter')
+                        if len(m) > 0:
+                            self.write('Test zmq config ... success. 『 {0} 』<br/>'.format(
+                                libiisi.m_config.getData('zmq_port')))
                         else:
-                            ip, port = zmq_addr.split(':')
-
-                        sub.connect('tcp://{0}:{1}'.format(ip, int(port) + 1))
-                        push.connect('tcp://{0}:{1}'.format(ip, port))
-                        try:
-                            push.send_multipart(['zmq.filter', 'zmq test message.'])
-                            f, m = sub.recv_multipart()
-                            self.write('Test zmq config ... success. 『 {0} 』<br/>'.format(zmq_addr))
-                        except:
-                            self.write('Test zmq config ... failed. 『 {0} 』<br/>'.format(zmq_addr))
+                            self.write('Test zmq config ... failed. 『 {0} 』<br/>'.format(
+                                libiisi.m_config.getData('zmq_port')))
 
                         thc = AsyncHTTPClient()
                         url = '{0}'.format(utils.m_fs_url)
@@ -127,7 +73,7 @@ class StatusHandler(base.RequestHandler):
                             jk_isok = False
                             dg_isok = False
                             strsql = 'select schema_name from information_schema.schemata where schema_name in ("{0}","{1}");'.format(
-                                utils.m_dbname_jk, utils.m_dbname_dg)
+                                self._db_name, utils.m_dbname_dg)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1)
@@ -137,18 +83,18 @@ class StatusHandler(base.RequestHandler):
                                 dg_isok = False
                             else:
                                 for d in cur:
-                                    if d[0] == utils.m_dbname_jk:
+                                    if d[0] == self._db_name:
                                         jk_isok = True
                                     elif d[0] == utils.m_dbname_dg:
                                         dg_isok = True
                             if jk_isok:
                                 self.write(
                                     'Test jkdb config ... success. 『 {0}:{1}/{2} 』<br/>'.format(
-                                        utils.m_db_host, utils.m_db_port, utils.m_dbname_jk))
+                                        utils.m_db_host, utils.m_db_port, self._db_name))
                             else:
                                 self.write(
                                     'Test jkdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
-                                        utils.m_db_host, utils.m_db_port, utils.m_dbname_jk))
+                                        utils.m_db_host, utils.m_db_port, self._db_name))
                             if dg_isok:
                                 self.write(
                                     'Test dgdb config ... success. 『 {0}:{1}/{2} 』<br/>'.format(
@@ -160,7 +106,7 @@ class StatusHandler(base.RequestHandler):
                             del cur
                         except:
                             self.write('Test jkdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
-                                utils.m_db_host, utils.m_db_port, utils.m_dbname_jk))
+                                utils.m_db_host, utils.m_db_port, self._db_name))
                             self.write('Test dgdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
                                 utils.m_db_host, utils.m_db_port, utils.m_dbname_dg))
                         self.write('<br/>')
@@ -177,7 +123,8 @@ class StatusHandler(base.RequestHandler):
                                 # self.write('---<br/><br/>')
                         self.write('<br/>')
                         # self.flush()
-        except:
+        except Exception as ex:
+            print(ex)
             self.write(self.help_doc)
         self.finish()
 
@@ -192,13 +139,24 @@ class CleaningWorkHandler(base.RequestHandler):
         t = time.time()
 
         # 清理缓存文件
-        lstcache = os.listdir(self.cache_dir)
-        for c in lstcache:
-            if t - os.path.getctime(os.path.join(self.cache_dir, c)) > 60 * 60 * 24:
-                try:
-                    os.remove(c)
-                except:
-                    pass
+        try:
+            for r, d, f in os.walk(m_cachedir):
+                if r == m_cachedir:
+                    for x in f:
+                        try:
+                            if t - int(x[:10]) > 3600:
+                                os.remove(x)
+                        except:
+                            pass
+        except:
+            pass
+        # lstcache = os.listdir(self.cache_dir)
+        # for c in lstcache:
+        #     if t - os.path.getctime(os.path.join(self.cache_dir, c)) > 60 * 60 * 24:
+        #         try:
+        #             os.remove(c)
+        #         except:
+        #             pass
 
         # 清理
         k = set(utils.cache_user.keys())

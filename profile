@@ -1,1 +1,0 @@
-{"uuid": "ef61022b553911e6832074d435009085", "user_name": "buildin-rx", "user_auth": 5, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydbv2_1001"}

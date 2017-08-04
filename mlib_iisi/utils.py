@@ -13,6 +13,7 @@ m_confdir, m_logdir, m_cachedir = mx.get_dirs('oahu')
 
 m_zmq_pub = None
 m_zmq_pull = None
+m_zmq_ctx = zmq.Context()
 
 m_send_queue = mx.PriorityQueue(maxsize=5000)
 
@@ -169,12 +170,12 @@ def initRtuJson(mod,
     # return s
 
 
-def initRtuProtobuf(cmd, addr, ip=[], port=0, cid=1, tra=1):
+def initRtuProtobuf(cmd, addr, ip=[], port=0, cid=1, tra=1, tver=1):
     svrmsg = msgctrl.MsgWithCtrl()
     svrmsg.head.mod = 2
-    svrmsg.head.src = 2
+    svrmsg.head.src = 7
     svrmsg.head.ver = 1
-    svrmsg.head.tver = 1
+    svrmsg.head.tver = tver
     svrmsg.head.cmd = cmd
     svrmsg.head.tra = tra
     svrmsg.args.addr.extend(addr)
@@ -212,7 +213,7 @@ m_config.setData('log_level', 10, '日志记录等级, 10-debug, 20-info, 30-war
 m_config.setData('tcs_port', '1024', '对应通讯服务程序端口')
 m_config.setData('db_host', '127.0.0.1:3306', '数据库服务地址, ip:port, 端口默认3306')
 m_config.setData('db_user', 'root', '数据库服务用户名')
-m_config.setData('db_pwd', 'lp1234xy', '数据库服务密码')
+m_config.setData('db_pwd', 'SaqabW8bK3JAQ6WWmtyYlmGbaaV2aPG=', '数据库服务密码')
 m_config.setData('db_name_jk', 'mydb1024', '监控数据库名称')
 m_config.setData('db_name_dg', 'mydb_dg_10001', '灯杆数据库名称')
 m_config.setData('db_name_uas', 'uas', '统一验证数据库名称')
@@ -222,35 +223,50 @@ m_config.setData('bind_port', 10005, '本地监听端口')
 m_config.setData('zmq_port', '10006',
                  'ZMQ端口，采用ip:port格式时连接远程ZMQ-PULL服务,采用port格式时为发布本地PULL服务,PUB服务端口号+1')
 m_config.setData('cross_domain', 'true', '允许跨域访问')
+m_config.setData('max_db_conn', '20', '最大数据库连接池容量')
 
 
 def zmq_proxy():
-    global m_zmq_pub, m_zmq_pull
+    global m_zmq_pub, m_zmq_pull, m_zmq_ctx
 
     zmq_conf = m_config.getData('zmq_port')
     if zmq_conf.find(':') == -1:
         try:
             if m_zmq_pull is None:
-                m_zmq_ctx = zmq.Context.instance()
                 try:
                     m_zmq_pull = m_zmq_ctx.socket(zmq.PULL)
                     m_zmq_pull.bind('tcp://*:{0}'.format(zmq_conf))
                     m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
                     m_zmq_pub.bind('tcp://*:{0}'.format(int(zmq_conf) + 1))
+                    # zmq.proxy(m_zmq_pull, m_zmq_pub)
+                    poller = zmq.Poller()
+                    poller.register(m_zmq_pull, zmq.POLLIN)
 
-                    zmq.proxy(m_zmq_pull, m_zmq_pub)
-                    # poller = zmq.Poller()
-                    # poller.register(m_zmq_pull, zmq.POLLIN)
-                    # 
-                    # while True:
-                    #     poll_list = dict(poller.poll(500))
-                    #     if poll_list.get(m_zmq_pull) == zmq.POLLIN:
-                    #         try:
-                    #             f, m = m_zmq_pull.recv_multipart()
-                    #             # print('{0} recv: {1} {2}'.format(mx.stamp2time(time.time()), f, m))
-                    #             m_zmq_pub.send_multipart([f, m])
-                    #         except Exception as ex:
-                    #             pass
+                    last_cache_clean = time.time()
+                    while True:
+                        poll_list = dict(poller.poll(500))
+                        if poll_list.get(m_zmq_pull) == zmq.POLLIN:
+                            try:
+                                f, m = m_zmq_pull.recv_multipart()
+                                # print('{0} recv: {1} {2}'.format(mx.stamp2time(time.time()), f, m))
+                                m_zmq_pub.send_multipart([f, m])
+                            except Exception as ex:
+                                pass
+
+                        if time.time() - last_cache_clean > 86400:  # 清理缓存
+                            t = time.time()
+                            last_cache_clean = t
+                            try:
+                                for r, d, f in os.walk(m_cachedir):
+                                    if r == m_cachedir:
+                                        for x in f:
+                                            try:
+                                                if t - int(x[:10]) > 3600:
+                                                    os.remove(x)
+                                            except:
+                                                pass
+                            except:
+                                pass
                     print('zmq end.')
                 except Exception as ex:
                     print('zmq proxy err:{0}'.format(ex))
@@ -260,12 +276,10 @@ def zmq_proxy():
 
 
 def send_to_zmq_pub(sfilter, msg):
-    global m_zmq_pub, m_zmq_pull
+    global m_zmq_pub, m_zmq_pull, m_zmq_ctx
     try:
         if m_zmq_pub is None:
             zmq_conf = m_config.getData('zmq_port')
-            # print(zmq_conf)
-            m_zmq_ctx = zmq.Context.instance()
             try:
                 if zmq_conf.find(':') > -1:
                     m_zmq_pub = m_zmq_ctx.socket(zmq.PUSH)

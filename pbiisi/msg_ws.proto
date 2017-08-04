@@ -97,7 +97,7 @@ message rqUserDel {
     string user = 2;  // 要删除的用户名
     string pwd = 3;  // 用户密码
     string admin_pwd = 4; // admin密码
-    string user_id = 5;  // 要删除的用户id
+    int32 user_id = 5;  // 要删除的用户id
 }
 
 // CommAns应答
@@ -183,19 +183,20 @@ message GroupInfo {
 // 请求系统信息
 message rqSysInfo {
     Head head = 1;
-    repeated int32 data_mark = 2[packed=true];  // 查询类型标记,1-系统名称,2-终端总数/启用数量/在线数量(暂不支持),
-                                                                                    // 3-现存故障总数,终端现存故障总数,单灯现存故障总数,防盗现存故障总数,
-                                                                                    // 4-系统包含的设备信息,
-                                                                                    // 7-服务运行状态(暂不支持)
+    repeated int32 data_mark = 2 [packed=true];  // 查询类型标记,1-系统名称,
+                                                            // 2-终端总数/启用数量,
+                                                            // 3-现存故障总数,终端现存故障总数,单灯现存故障总数,防盗现存故障总数,
+                                                            // 4-系统包含的设备信息,
+                                                            // 7-服务运行状态
 }
 // 应答
 message SysInfo {
     Head head = 1;
-    repeated int32 data_mark = 2[packed=true];  // 查询类型标记,同请求
+    repeated int32 data_mark = 2 [packed=true];  // 查询类型标记,同请求
     string sys_name = 3;  // 系统名称
-    repeated int32 tml_num = 4 [packed=true];  // [终端总数,启用数量,在线数量(暂不支持)]
+    repeated int32 tml_num = 4 [packed=true];  // [终端总数,启用数量]
     repeated int32 err_num = 5 [packed=true];  // 故障总数 [现存故障总数,终端现存总数,单灯现存故障总数,防盗现存故障总数]
-    repeated int32 st_svr = 6 [packed=true];  // [数据服务,通信服务],0-服务不在线,1-服务在线,2-服务状态未知(暂不支持)
+    repeated int32 st_svr = 6 [packed=true];  // [数据服务,通信服务,设备在线数量],0-服务不在线,1-服务在线,若返回[-1,-1,-1]表示可能存在应答异常，可再次请求
     repeated int32 tml_type = 7 [packed=true];  // [终端数量,防盗数量,节能数量,抄表数量,光控数量,单灯数量,漏电数量]若无相应设备,则填0
 }
 
@@ -334,7 +335,7 @@ message QueryDataErr {
         int32 tml_id = 5;  // 产生故障的设备逻辑地址
         int64 dt_create = 6;  // 故障产生时间
         int64 dt_remove = 7;  // 故障消除时间(现存故障时为0)
-        int32 phy_id = 8;  // 设备物理地址
+        int64 phy_id = 8;  // 设备物理地址
         string tml_name = 9;  // 设备名称
         int32 tml_sub_id1 = 10;  // 回路序号 或控制系序号或线路序号
         int32 tml_sub_id2 = 11;  // 灯头序号 等
@@ -509,7 +510,7 @@ message QueryDataRtu {
     }
     message DataRtuView {
         int32 tml_id = 1;
-        int32 phy_id = 2;
+        int64 phy_id = 2;
         string tml_name = 13;  // 设备名称
         int64 dt_receive = 3;  // 数据接收时间
         repeated LoopView loop_view = 4;
@@ -541,7 +542,7 @@ message rqQueryDataSlu {
 message QueryDataSlu {
     message DataSluView {
         int32 tml_id = 1;
-        int32 phy_id = 2;
+        int64 phy_id = 2;
         string tml_name = 10;  // 设备名称
         int64 dt_receive = 3;  // 数据接收时间
         repeated int32 reset_times = 4 [packed=true];  // 连续4天复位次数,[今天,昨天,前天,大前天]
@@ -553,7 +554,7 @@ message QueryDataSlu {
     }
     message DataSluitemView {
         int32 tml_id = 1;
-        int32 phy_id = 2;
+        int64 phy_id = 2;
         string tml_name = 10;  // 设备名称
         int32 sluitem_id = 11;  // 控制器id
         string sluitem_name = 12;  // 控制器名称
@@ -593,7 +594,7 @@ message QueryDataSlu {
     }
     message DataSluitemPhyView {
         int32 tml_id = 1;
-        int32 phy_id = 2;
+        int64 phy_id = 2;
         int64 dt_receive = 3;  // 数据接收时间
         int32 sluitem_id = 4;  // 控制器地址
         int32 signal_strength = 5;  // 信号强度
@@ -625,8 +626,8 @@ message rqTmlInfo {
 // 应答
 message TmlInfo {
     message BaseInfo {
-        int64 tml_id = 1;  // 设备逻辑地址
-        int32 phy_id = 2;  // 设备物理地址
+        int32 tml_id = 1;  // 设备逻辑地址
+        int64 phy_id = 2;  // 设备物理地址
         int32 tml_type = 3;  // 设备型号,1-终端,2-防盗,3-节能,4-抄表,5-光控,6-单灯,7-漏电
         int32 tml_st = 4;  // 设备状态,0-不用,1-停运,2-启用
         string tml_name = 5;  // 设备名称
@@ -641,14 +642,14 @@ message TmlInfo {
         string tml_guid=14;  // 唯一识别号
     }
     message GisInfo {
-        int64 tml_id = 1;  // 设备逻辑地址
+        int32 tml_id = 1;  // 设备逻辑地址
         double tml_pix_x = 5;  // 位图x坐标
         double tml_pix_y = 2;  // 位图y坐标
         double tml_gis_x = 3;  // gis x坐标
         double tml_gis_y = 4;  // gis y坐标
     }
     message RtuInfo {
-        int64 tml_id = 1;  // 设备逻辑地址
+        int32 tml_id = 1;  // 设备逻辑地址
         int32 heart_beat = 2;  // 心跳周期,(单位分钟,默认60)(界面建议不呈现)
         int32 active_report = 3;  // 主报周期,(单位分钟,默认260)(界面建议不呈现)
         int32 alarm_delay = 4;  // 报警延迟,(单位秒,默认15)(界面建议不呈现)
@@ -660,7 +661,7 @@ message TmlInfo {
         repeated RtuLoopItem loop_item = 12;  // 回路信息
     }
     message SluInfo {
-        int64 tml_id = 1;  // 设备逻辑地址
+        int32 tml_id = 1;  // 设备逻辑地址
         int32 slu_auto_alarm = 2;  // 允许主报,0-false,1-true
         int32 slu_auto_patrol = 3;  // 允许巡测,0-false,1-true
         int32 slu_auto_resend = 4;  // 允许自动补发指令,0-false,1-true
@@ -685,12 +686,12 @@ message TmlInfo {
         repeated SluItemInfo sluitem_info = 22;
     }
     message LduInfo {
-        int64 tml_id = 1;  // 设备逻辑地址
+        int32 tml_id = 1;  // 设备逻辑地址
         int32 lduitem_id = 2;  // 防盗集中器地址
         repeated LduItemInfo lduitem_info = 3;
     }
     message AlsInfo {
-        int64 tml_id = 1;  // 设备逻辑地址
+        int32 tml_id = 1;  // 设备逻辑地址
         int32 als_id = 2;  // 光照度地址
         int32 als_range = 3;  // 光照度量程,1-100,2-10000, 默认2
         int32 als_mode = 4;  // 光照度模式,0-每隔5s主动上报(用户电脑串口直连),1-选测应答(选测1),2-按设定间隔主动上报(选测2),3-485连接下按设定间隔主动上报(选测3),4-按设定间隔主动上报(选测4)
@@ -698,14 +699,14 @@ message TmlInfo {
         int32 als_comm = 6; // 1-串口直连,2-gprs,3-485
     }
     message MruInfo {
-        int64 tml_id = 1;  // 设备逻辑地址
+        int32 tml_id = 1;  // 设备逻辑地址
         repeated int32 mru_id = 2 [packed=true];  // 抄表地址,六字节
         int32 mru_baud_rate = 3;  // 波特率
         int32 mru_transformer = 4;  // 电表变比
         int32 mru_type = 5;  // 协议版本,1-1997,2-2007
     }
     message EsuInfo {
-        int64 tml_id = 1;  // 设备逻辑地址
+        int32 tml_id = 1;  // 设备逻辑地址
 		bool esu_used = 28;  // 有效标示  0-不用,1-使用
 		int32 esu_preheating_time = 2;  // 预热时间 默认2分钟
 		int32 esu_close_time = 4;  // 关机时间 不设置
@@ -881,7 +882,7 @@ message rqQueryDataRtuElec {
 message QueryDataRtuElec {
     message DataRtuElecView {
         int64 dt_count = 1;  // 计算的日期,如2017-01-09表示从2017-01-08 12:00:00~2017-01-09 12:00:00的电量估算值
-        int64 tml_id = 2;  // 设备逻辑id
+        int32 tml_id = 2;  // 设备逻辑id
         int32 loop_id = 3;  // 回路id
         int32 data_lenght = 4;  // 开灯时长
         double estimate_value = 5;  // 估算电量
@@ -921,6 +922,7 @@ message ProjectInfo {
         repeated int32 server_status = 9 [packed=true];  // 项目相关服务状态0-不在线，1-在线，[接口服务状态，数据服务状态，通信服务状态]
         double location_lon = 10;  // 项目位置经度
         double location_lat = 11;  // 项目位置纬度
+        int32 tcs_port = 12;  // 项目对应的终端通信端口号（必填）
     }
     Head head = 1;  // 协议头信息
     repeated ProjectView project_view = 2;
@@ -938,6 +940,7 @@ message rqProjectAdd {
     string admin_pwd = 8;  // admin密码
     double location_lon = 10;  // 项目位置经度
     double location_lat = 11;  // 项目位置纬度
+    int32 tcs_port = 12;  // 项目对应的终端通信端口号（必填）
 }
 
 // 项目修改
@@ -949,9 +952,11 @@ message rqProjectEdit {
     string project_root = 5;  // 修改后的项目接口路径
     int32 area_id = 6;  // 修改后的项目所属区域
     string project_remark = 7;  // 修改后的备注
-    int32 project_id = 8;  // 项目id        
+    string admin_pwd = 9;  // admin密码
+    int32 project_id = 8;  // 项目id
     double location_lon = 10;  // 项目位置经度
     double location_lat = 11;  // 项目位置纬度
+    int32 tcs_port = 12;  // 项目对应的终端通信端口号（必填）
 }
 
 // 项目删除
@@ -986,7 +991,7 @@ message rqAreaAdd {
 // 区域修改
 message rqAreaEdit {
     Head head = 1;  // 协议头信息
-    string area_id = 2;  // 区域id
+    int32 area_id = 2;  // 区域id
     string area_name = 3;  // 区域名称
     int32 area_parent = 4;  // 父区域id
     string area_remark = 5;  // 备注
@@ -1053,6 +1058,61 @@ message Mahalo {
         int32 project_id = 1;  // 项目id
         string ifname = 2;  // 接口名称
         string pb2 = 3;  // iisi接口返回的数据
+        string project_if_addr = 4;  // (前端提交时可选)iisi接口访问地址，ip:port 格式
+        int32 project_tcs_port = 5;  // （前端提交时必填）项目设备接入端口号
     }
     repeated MahaloView mahalo_view = 2;
+}
+
+// 查询设备设置的开关灯时间
+message rqQueryRtuTimeTableBind {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 设备逻辑地址
+    int32 data_mark = 3;  // 查询标记，0-查询当天，1-查询指定日期
+    int64 dt_start = 4;  // 查询起始日期，data_mark==1时有效，取月日
+    int64 dt_end = 5;  // 查询结束日期，data_mark==1时有效，取月日
+    repeated int32 tml_loop_id = 6 [packed=true];  // 回路id，留空查询终端下所有回路，要查询指定回路时填充回路序号
+}
+message QueryRtuTimeTableBind {
+    message TimeTableBindView {
+        int32 tml_id = 1; // 设备逻辑地址
+        int32 tml_loop_id = 2;  // 设备操作回路id
+        int32 tt_on_type = 4;  // 时间表类型，1-光控，2-偏移，3-时控 
+        int32 tt_off_type = 5;  // 时间表类型，1-光控，2-偏移，3-时控 
+        int64 dt_ctl = 6;  // 日期，取月，日
+        int32 tt_section_id = 7;  // 时间段序号
+        int32 turn_on = 8;  // 开灯时间或开灯光照，时间为hh*60+mm格式
+        int32 turn_off = 9;  // 关灯时间或关灯光照，时间为hh*60+mm格式
+    }
+    Head head = 1;
+    int32 data_mark = 2;  // 查询标记，0-查询当天，1-查询指定日期
+    repeated TimeTableBindView timetable_bind_view = 3;
+}
+// 查询用户权限
+message rqUserAuthGet {
+    Head head = 1;  // 协议头信息
+    int32 user_id = 2;  // 用户id
+    repeated int32 project_id = 3 [packed=true];  // 项目id,留空表示查询该用户所有项目权限
+}
+message UserAuthGet {
+    Head head = 1;  // 协议头信息
+    int32 user_id = 2;  // 用户id
+    repeated rqUserAuthSet.ProjectAuth project_auth = 3;
+}
+
+// 光照度数据查询
+message rqQueryDataAls {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 设备逻辑地址
+    int64 dt_start = 3;  // 查询起始日期
+    int64 dt_end = 4;  // 查询结束日期
+}
+message QueryDataAls {
+    message DataAlsView {
+        int32 tml_id = 1; // 设备逻辑地址
+        int64 dt_receive = 2;  // 数据时间
+        float lux_value = 3;  // 光照度数据
+    }
+    Head head = 1;
+    repeated DataAlsView data_als_view = 2;
 }

@@ -1,9 +1,0 @@
-package protocol;
-
-import "cr.proto";
-import "cr_ans.proto";
-
-message chatmsg {
-	optional protocol.chatroom cr = 1;
-	optional protocol.chatroom_ans crans = 2;
-}

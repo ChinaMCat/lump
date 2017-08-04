@@ -1,6 +1,0 @@
-package protocol;
-
-message chatroom_ans {
-	optional string ans_type = 1;
-	optional int32 ans_result = 2;
-}

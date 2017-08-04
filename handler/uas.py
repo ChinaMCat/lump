@@ -17,11 +17,12 @@ import utils
 from mxpbjson import pb2json
 
 try:
-    strsql = 'select column_name from INFORMATION_SCHEMA.columns where table_schema="{0}" and column_name in ("user_id","user_remark");'.format(utils.m_dbname_jk)
+    strsql = 'select column_name from INFORMATION_SCHEMA.columns where table_schema="{0}" and column_name in ("user_id","user_remark");'.format(
+        utils.m_dbname_uas)
     cur = libiisi.m_sql.run_exec(strsql)
     add_user_mark = 'add column user_remark text null, '
     add_user_id = 'add column user_id int(11) not null AUTO_INCREMENT, add index user_id (user_id)'
-    strsql = 'alter table {0}.user_list '.format(utils.m_dbname_jk)
+    strsql = 'alter table {0}.user_list '.format(utils.m_dbname_uas)
     need_update = False
     x = []
     try:
@@ -43,7 +44,8 @@ try:
         libiisi.m_sql.run_exec(strsql)
     del x, strsql, need_update, add_user_id, add_user_mark, cur
 except Exception as ex:
-    print('err',libiisi.m_sql.get_last_error_message())
+    print(ex)
+    # print('err',libiisi.m_sql.get_last_error_message())
 
 
 @mxweb.route()
@@ -61,8 +63,8 @@ class UserLoginHandler(base.RequestHandler):
     def post(self):
         args = self.request.arguments
         if 'givemejson' in args.keys():
-            self.go_back_json = True
-            
+            self._go_back_format = True
+
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserLogin()
         msg = msgws.UserLogin()
@@ -77,8 +79,8 @@ class UserLoginHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_id,user_name,user_real_name,user_phonenumber,user_remark from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(utils.m_dbname_jk, rqmsg.user,
-                                                              rqmsg.pwd)
+        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace(
+            '"', ''), rqmsg.pwd.replace('"', ''))
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
             need_fetch=1,
@@ -104,10 +106,13 @@ class UserLoginHandler(base.RequestHandler):
                                    2,
                                    user_name=rqmsg.user)
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
 
 
@@ -126,8 +131,8 @@ class UserAddHandler(base.RequestHandler):
     def post(self):
         args = self.request.arguments
         if 'givemejson' in args.keys():
-            self.go_back_json = True
-            
+            self._go_back_format = True
+
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserAdd()
         msg = msgws.UserAdd()
@@ -144,9 +149,9 @@ class UserAddHandler(base.RequestHandler):
             # 检查用户名密码是否存在
             strsql = 'insert into {0}.user_info (user_name,user_password,user_real_name,date_create,date_update,date_access,user_remark) \
                         values ("{1}","{2}","{3}","{4}","{5}","{6}","{7}")'.format(
-                utils.m_dbname_jk, rqmsg.user, rqmsg.pwd, rqmsg.fullname,
+                self._db_name, rqmsg.user, rqmsg.pwd, rqmsg.fullname, mx.switchStamp(time.time()),
                 mx.switchStamp(time.time()), mx.switchStamp(time.time()),
-                mx.switchStamp(time.time()), 'add user from {0}'.format(self.request.remote_ip))
+                'add user from {0}'.format(self.request.remote_ip))
             cur = yield self.mydata_collector(strsql, need_fetch=0)
             affected_rows = cur[0][0]
             msg.user_id = cur[0][1]
@@ -163,11 +168,14 @@ class UserAddHandler(base.RequestHandler):
         except Exception as ex:
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
-        
-        if self.go_back_json:
+
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         yield self.write_event(154, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
@@ -188,8 +196,8 @@ class UserEditHandler(base.RequestHandler):
     def post(self):
         args = self.request.arguments
         if 'givemejson' in args.keys():
-            self.go_back_json = True
-            
+            self._go_back_format = True
+
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserEdit()
         msg = msgws.CommAns()
@@ -207,8 +215,8 @@ class UserEditHandler(base.RequestHandler):
             strsql = 'update {0}.user_list set \
             user_password="{3}",user_real_name="{4}",user_phonenumber="{5}",user_remark="{6}" \
             where user_name="{1}" and user_password="{2}"'.format(
-                utils.m_dbname_jk, rqmsg.user, rqmsg.pwd_old, rqmsg.pwd, rqmsg.fullname,
-                rqmsg.mobile, rqmsg.remark)
+                self._db_name, rqmsg.user.replace('"', ''), rqmsg.pwd_old.replace('"', ''),
+                rqmsg.pwd.replace('"', ''), rqmsg.fullname, rqmsg.mobile, rqmsg.remark)
             cur = yield self.mydata_collector(strsql, need_fetch=0, need_paging=0)
             affected_rows = cur[0][0]
             contents = ''
@@ -226,10 +234,13 @@ class UserEditHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         yield self.write_event(155, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
@@ -250,8 +261,8 @@ class UserDelHandler(base.RequestHandler):
     def post(self):
         args = self.request.arguments
         if 'givemejson' in args.keys():
-            self.go_back_json = True
-            
+            self._go_back_format = True
+
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserDel()
         msg = msgws.CommAns()
@@ -271,7 +282,7 @@ class UserDelHandler(base.RequestHandler):
             if rqmsg.user != 'admin':
                 # 检查用户名密码是否合法并且删除该用户
                 strsql = 'delete from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                    utils.m_dbname_jk, rqmsg.user, rqmsg.pwd)
+                    self._db_name, rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"', ''))
                 cur = yield self.mydata_collector(strsql, need_fetch=0, need_paging=0)
                 affected_rows = cur[0][0]
                 if affected_rows > 0:
@@ -293,10 +304,13 @@ class UserDelHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         yield self.write_event(156, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
@@ -317,8 +331,8 @@ class UserInfoHandler(base.RequestHandler):
     def post(self):
         args = self.request.arguments
         if 'givemejson' in args.keys():
-            self.go_back_json = True
-            
+            self._go_back_format = True
+
         pb2 = self.get_argument('pb2')
         rqmsg = msgws.rqUserInfo()
         msg = msgws.UserInfo()
@@ -330,15 +344,15 @@ class UserInfoHandler(base.RequestHandler):
             msg.head.if_st = 1
         except:
             msg.head.if_st = 46
-            
+
         try:
             strsql = ''
             if len(rqmsg.user_name) == 0:
                 strsql = 'select user_name,user_real_name,user_password,user_phonenumber,user_remark,user_id from {0}.user_list'.format(
-                    utils.m_dbname_jk)
+                    self._db_name)
             else:
                 strsql = 'select user_name,user_real_name,user_password,user_phonenumber,user_remark,user_id from {0}.user_list where user_name="{1}"'.format(
-                    utils.m_dbname_jk, rqmsg.user_name)
+                    self._db_name, rqmsg.user_name)
 
             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                 strsql,
@@ -367,9 +381,12 @@ class UserInfoHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = str(ex)
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del msg, rqmsg

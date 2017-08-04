@@ -8,7 +8,7 @@ import os
 import threading
 import time
 import types
-
+import zmq
 import mxpsu as mx
 import mxweb
 from tornado import gen
@@ -26,20 +26,85 @@ class RequestHandler(mxweb.MXRequestHandler):
     _cache_tml_r = dict()  # 可读权限设备地址缓存
     _cache_tml_w = dict()  # 可写权限设备地址缓存
     _cache_tml_x = dict()  # 可操作权限设备地址缓存
-
     _tml_phy = dict()  # 设备物理地址与逻辑地址对照表
+    _cache_sunriseset = dict()  # 日出日落对照表
 
-    cache_dir = libiisi.m_cachedir
-    go_back_json = False
+    _db_name = utils.m_dbname_jk
+    _cache_dir = libiisi.m_cachedir
+    _go_back_format = 0  # 数据返回格式设置0-base64，1-json，2-pb2 serialString
+    _fetch_limited = ' limit 1000'  # 数据查询数量限制
 
     def flush(self, include_footers=False, callback=None):
         if utils.m_enable_cross_domain:
             self.set_header("Access-Control-Allow-Origin", "*")
         super(RequestHandler, self).flush(include_footers, callback)
-        
+
     @gen.coroutine
     def get(self):
         self.render('405.html')
+
+    # @run_on_executor
+    def cache_sunriseset(self):
+        strsql = 'select date_month, date_day, time_sunrise, time_sunset \
+                from {0}.time_sunriset_info order by date_month, date_day'.format(self._db_name)
+        cur = libiisi.m_sql.run_fetch(strsql)
+        s = libiisi.m_sql.get_last_error_message()
+        if len(s) > 0:
+            logging.error(self.format_log(self.request.remote_ip, s, self.request.path, '_MYSQL'))
+
+        # if isinstance(cur, types.GeneratorType):
+        if cur is not None:
+            for d in cur:
+                self._cache_sunriseset[int('{0}{1:02d}'.format(d[0], d[1]))] = (d[2], d[3])
+        del cur
+
+    def get_sunriseset(self, mmdd):
+        if len(self._cache_sunriseset) == 0:
+            self.cache_sunriseset()
+        a = self._cache_sunriseset.get(int(mmdd))
+        if a is None:
+            return (0, 0)
+        else:
+            return a
+
+    @run_on_executor
+    def check_zmq_status(self, req_filter, req_msg, subscribe=b''):
+        rep_value = ''
+        ctx = zmq.Context()
+        sub = ctx.socket(zmq.SUB)
+        sub.setsockopt(zmq.RCVTIMEO, 7000)
+        sub.setsockopt(zmq.SUBSCRIBE, subscribe)
+        # sub.setsockopt(zmq.SUBSCRIBE, '')
+        push = ctx.socket(zmq.PUSH)
+
+        zmq_addr = libiisi.m_config.getData('zmq_port')
+        if zmq_addr.find(':') == -1:
+            ip = '127.0.0.1'
+            port = zmq_addr
+        else:
+            ip, port = zmq_addr.split(':')
+        sub.connect('tcp://{0}:{1}'.format(ip, int(port) + 1))
+        push.connect('tcp://{0}:{1}'.format(ip, int(port)))
+        try:
+            push.send_multipart([req_filter, req_msg])
+            f, m = sub.recv_multipart()
+            rep_value = m
+        except:
+            rep_value = ''
+
+        try:
+            sub.close()
+        except:
+            pass
+        try:
+            push.close()
+        except:
+            pass
+        finally:
+            del sub
+            del push
+
+        return rep_value
 
     def write_cache(self, cache_name, msg):
         '''写查询数据结果缓存文件'''
@@ -70,15 +135,18 @@ class RequestHandler(mxweb.MXRequestHandler):
         if len(strsql) == 0:
             return (None, None, None, None, None)
 
+        # if self.debug:
+        #     print(strsql)
+
         cache_head = ''.join(['{0:x}'.format(ord(a)) for a in self.url_pattern])
         # 判断是否优先读取缓存数据
-        if buffer_tag > 0 and os.path.isfile(os.path.join(self.cache_dir, '{0}{1}'.format(
-                cache_head, buffer_tag))):
+        if buffer_tag > 0 and os.path.isfile(os.path.join(self._cache_dir, '{0}{1}'.format(
+                buffer_tag, cache_head))):
             try:
                 rep = []
                 with open(
-                        os.path.join(self.cache_dir, '{0}{1}'.format(cache_head,
-                                                                     buffer_tag)), 'rb') as f:
+                        os.path.join(self._cache_dir, '{0}{1}'.format(buffer_tag, cache_head)),
+                        'rb') as f:
                     cur = json.loads(f.read())
                     f.close()
                 c = len(cur.keys())
@@ -103,27 +171,24 @@ class RequestHandler(mxweb.MXRequestHandler):
                         i += 1
                 else:
                     while n < c:
-                        d = cur.get(n)
+                        d = cur.get(str(n))
                         if n < y and n >= x:
                             rep.append(d)
                         n += 1
                 paging_total = n / paging_num if n % paging_num == 0 else n / paging_num + 1
                 del cur
                 return (n, buffer_tag, paging_idx, paging_total, rep)
-            except:
-                pass
+            except Exception as ex:
+                print('read cache error: {0}'.format(ex))
 
         if need_fetch:
             # 向数据库请求最新结果集
             cur = None
             cur = libiisi.m_sql.run_fetch(strsql)
-            s = libiisi.m_sql.get_last_error_message()
-            if len(s) > 0:
-                logging.error(self.format_log(self.request.remote_ip, s, self.request.path,
-                                              '_MYSQL'))
             # print(cur, isinstance(cur, types.GeneratorType))
             # 若返回的不是迭代器，则认为数据库操作失败
-            if not isinstance(cur, types.GeneratorType):
+            # if not isinstance(cur, types.GeneratorType):
+            if cur is None:
                 return (None, None, None, None, None)
             else:
                 # if need_fetch:  # 遍历结果集
@@ -139,15 +204,16 @@ class RequestHandler(mxweb.MXRequestHandler):
                 old_record = [0] * len(multi_record)
                 if len(multi_record) > 0:
                     i = 0
-                    while True:
-                        try:
-                            d = cur.next()
-                        except Exception as ex:
-                            cur.close()
-                            del cur
-                            break
-                        if d is None:
-                            break
+                    # while True:
+                    #     try:
+                    #         d = cur.next()
+                    #     except Exception as ex:
+                    #         cur.close()
+                    #         del cur
+                    #         break
+                    #     if d is None:
+                    #         break
+                    for d in cur:
                         if n < y and n >= x:
                             rep.append(d)
 
@@ -162,32 +228,40 @@ class RequestHandler(mxweb.MXRequestHandler):
                         cache_data[i] = d
                         i += 1
                 else:
-                    while True:
-                        try:
-                            d = cur.next()
-                        except Exception as ex:
-                            cur.close()
-                            del cur
-                            break
-
-                        if d is None:
-                            break
+                    # while True:
+                    #     try:
+                    #         d = cur.next()
+                    #     except Exception as ex:
+                    #         cur.close()
+                    #         del cur
+                    #         break
+                    #     if d is None:
+                    #         break
+                    for d in cur:
                         if n < y and n >= x:
                             rep.append(d)
                         cache_data[n] = d
                         n += 1
-                paging_total = n / paging_num if n % paging_num == 0 else n / paging_num + 1
-                buffer_tag = int(time.time() * 1000000)
-                if need_paging:
-                    if paging_total > 1:  # 利用后台线程写缓存
-                        t = threading.Thread(target=self.write_cache,
-                                             args=(os.path.join(self.cache_dir, '{0}{1}'.format(
-                                                 cache_head, buffer_tag)),
-                                                   cache_data, ))
-                        t.start()
-                    return (n, buffer_tag, paging_idx, paging_total, rep)
+
+                s = libiisi.m_sql.get_last_error_message()
+                if len(s) > 0:
+                    logging.error(self.format_log(self.request.remote_ip, s, self.request.path,
+                                                  '_MYSQL'))
+                    return (None, None, None, None, None)
                 else:
-                    return (n, buffer_tag, paging_idx, paging_total, cache_data.values())
+                    paging_total = n / paging_num if n % paging_num == 0 else n / paging_num + 1
+                    buffer_tag = int(time.time() * 1000000)
+                    if need_paging:
+                        if paging_total > 1:  # 利用后台线程写缓存
+                            t = threading.Thread(
+                                target=self.write_cache,
+                                args=(os.path.join(self._cache_dir, '{0}{1}'.format(buffer_tag,
+                                                                                    cache_head)),
+                                      cache_data, ))
+                            t.start()
+                        return (n, buffer_tag, paging_idx, paging_total, rep)
+                    else:
+                        return (n, buffer_tag, paging_idx, paging_total, cache_data.values())
             # else:
             #     try:
             #         d = cur.next()
@@ -296,28 +370,26 @@ class RequestHandler(mxweb.MXRequestHandler):
             edt = dt_end
         return sdt, edt
 
+    @run_on_executor
+    def update_cache(self, tml_type='r', user_uuid=''):
+        self.get_phy_cache()
+        if len(user_uuid) > 0 and len(tml_type):
+            for a in tml_type.split(','):
+                self.get_tml_cache(a, user_uuid)
+
     def get_phy_cache(self):
         '''缓存物理地址和逻辑地址对照表'''
         strsql = 'select rtu_id,rtu_phy_id,rtu_fid,rtu_name from {0}.para_base_equipment'.format(
-            utils.m_dbname_jk)
+            self._db_name)
         cur = libiisi.m_sql.run_fetch(strsql)
         s = libiisi.m_sql.get_last_error_message()
         if len(s) > 0:
             logging.error(self.format_log(self.request.remote_ip, s, self.request.path, '_MYSQL'))
-        if isinstance(cur, types.GeneratorType):
+        # if isinstance(cur, types.GeneratorType):
+        if cur is not None:
             for d in cur:
                 self._tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
-        # record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-        #     strsql,
-        #     need_fetch=1,
-        #     need_paging=0)
-        # if record_total is not None:
-        #     for d in cur:
-        #         self._tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
         del cur
-
-    def set_phy_list(self, rtu_id, rtu_info):
-        self._tml_phy[rtu_id] = rtu_info
 
     def get_phy_list(self, tml_list):
         if len(self._tml_phy) == 0:
@@ -344,16 +416,15 @@ class RequestHandler(mxweb.MXRequestHandler):
         if tml_type == 'r':
             self._cache_tml_r[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                utils.m_dbname_jk,
-                ','.join([str(a) for a in utils.cache_user[user_uuid]['area_r']]))
+                self._db_name, ','.join([str(a) for a in utils.cache_user[user_uuid]['area_r']]))
         elif tml_type == 'w':
+            self._cache_tml_w[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                utils.m_dbname_jk,
-                ','.join([str(a) for a in utils.cache_user[user_uuid]['area_w']]))
+                self._db_name, ','.join([str(a) for a in utils.cache_user[user_uuid]['area_w']]))
         elif tml_type == 'x':
+            self._cache_tml_x[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                utils.m_dbname_jk,
-                ','.join([str(a) for a in utils.cache_user[user_uuid]['area_x']]))
+                self._db_name, ','.join([str(a) for a in utils.cache_user[user_uuid]['area_x']]))
         cur = libiisi.m_sql.run_fetch(strsql)
         s = libiisi.m_sql.get_last_error_message()
         if len(s) > 0:
@@ -363,17 +434,27 @@ class RequestHandler(mxweb.MXRequestHandler):
         #     need_fetch=1,
         #     need_paging=0)
         # if record_total is not None:
-        if isinstance(cur, types.GeneratorType):
+
+        # if isinstance(cur, types.GeneratorType):
+        if cur is not None:
             for d in cur:
+                if d[0] is None:
+                    continue
                 if tml_type == 'r':
                     for a in d:
-                        self._cache_tml_r[user_uuid].union(set([int(b) for b in a.split(';')[:-1]]))
+                        z = set([int(b) for b in a.split(';')[:-1]])
+                        y = self._cache_tml_r[user_uuid]
+                        self._cache_tml_r[user_uuid] = y.union(z)
                 elif tml_type == 'w':
                     for a in d:
-                        self._cache_tml_r[user_uuid].union(set([int(b) for b in a.split(';')[:-1]]))
+                        z = set([int(b) for b in a.split(';')[:-1]])
+                        y = self._cache_tml_w[user_uuid]
+                        self._cache_tml_w[user_uuid] = y.union(z)
                 elif tml_type == 'x':
                     for a in d:
-                        self._cache_tml_r[user_uuid].union(set([int(b) for b in a.split(';')[:-1]]))
+                        z = set([int(b) for b in a.split(';')[:-1]])
+                        y = self._cache_tml_x[user_uuid]
+                        self._cache_tml_x[user_uuid] = y.union(z)
         del cur, strsql
 
     def check_tml_r(self, user_uuid, settml):
@@ -405,8 +486,8 @@ class RequestHandler(mxweb.MXRequestHandler):
         #     int(time.time()), user_name, event_id, is_client_snd, device_ids, contents, remark)
         # libiisi.SQL_DATA.execute(strsql)
         strsql = 'insert into {0}_data.record_operator (date_create,user_name, operator_id, is_client_snd, device_ids, contents, remark) \
-                        values ({1},"{2}",{3},{4},"{5}","{6}","{7}");'.format(
-            utils.m_dbname_jk, mx.switchStamp(time.time()), user_name, event_id, is_client_snd,
+                        values ({1},"{2}",{3},{4},"{5}","{6}","{7}")'.format(
+            self._db_name, mx.switchStamp(time.time()), user_name, event_id, is_client_snd,
             device_ids, contents, remark)
 
         cur = self.mydata_collector(strsql, need_fetch=0)
@@ -419,12 +500,23 @@ class RequestHandler(mxweb.MXRequestHandler):
             pb2rq: 请求参数
             pb2msg: 应答数据的结构体
             use_scode: 是否通过动态安全码验证0-使用uuid验证，1-使用安全码验证
+            formatmydata: 设置返回数据格式，0-base64，1-json，2-bytes
         Return:
             use_scode == 0: (用户信息dict，请求参数，应答数据)
             use_scode == 1: (安全码是否合法，请求参数，应答数据)'''
+        # 处理隐藏参数
         args = self.request.arguments
-        if 'givemejson' in args.keys():
-            self.go_back_json = True
+        if 'formatmydata' in args.keys():  # 返回数据格式参数，0-base64，1-json，2-bytes，默认0
+            try:
+                self._go_back_format = int(args.get('givemejson'))
+            except:
+                self._go_back_format = 0
+        if 'tcsport' in args.keys():  # 项目设备通信端口号用于匹配数据库名称
+            self._db_name = 'mydb{0}'.format(args.get('tcsport')[0])
+        if 'fetchunlimited' in args.keys():  # 是否取消查询数据量上限
+            self._fetch_limited = ''
+        else:
+            self._fetch_limited = ' limit 1000'
 
         if use_scode:
             return self.check_scode(args, pb2rq, pb2msg)
@@ -462,26 +554,24 @@ class RequestHandler(mxweb.MXRequestHandler):
 
                 try:
                     rqmsg.ParseFromString(base64.b64decode(pb2))
-                    if 'submit' not in self.url_pattern:
-                        msg.head.idx = rqmsg.head.idx
-                        msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
-                        msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
-                        msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
+                    msg.head.idx = rqmsg.head.idx
+                    msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
+                    msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
+                    msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
                 except Exception as ex:
                     if ' ' in pb2:
                         try:
                             rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
-                            if 'submit' not in self.url_pattern:
-                                msg.head.idx = rqmsg.head.idx
-                                msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
-                                msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
-                                msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
+                            msg.head.idx = rqmsg.head.idx
+                            msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
+                            msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
+                            msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
                         except:
                             msg.head.if_st = 46
-                            return (None, None, msg, '')
+                            return (None, None, msg)
                     else:
                         msg.head.if_st = 46
-                        return (None, None, msg, '')
+                        return (None, None, msg)
             else:
                 rqmsg = None
         else:
@@ -547,9 +637,17 @@ class RequestHandler(mxweb.MXRequestHandler):
             # 检查uuid是否合法
         if user_uuid in utils.cache_user.keys():
             user_data = utils.cache_user.get(user_uuid)
+            # self._db_name = user_data['user_db']
             if user_uuid in utils.cache_buildin_users:
                 user_data['active_time'] = time.time()
                 utils.cache_user[user_uuid] = user_data
+                if user_data['is_buildin'] == 1:
+                    a = self.url_pattern
+                    if a[a.rfind('/') + 1:] not in user_data[
+                            'enable_if'] and 'enable_all' not in user_data['enable_if']:
+                        msg.head.if_st = 11
+                        msg.head.if_msg = 'You do not have access to this interface'
+                        user_data = None
             else:
                 if user_data['remote_ip'] != self.request.remote_ip:
                     if not (rqmsg is not None and user_data['source_dev'] == 3 and

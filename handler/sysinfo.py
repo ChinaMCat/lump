@@ -12,6 +12,8 @@ from mxpbjson import pb2json
 import base
 import pbiisi.msg_ws_pb2 as msgws
 import utils
+import zmq
+import mlib_iisi as libiisi
 
 
 @mxweb.route()
@@ -31,7 +33,7 @@ class GroupInfoHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 strsql = 'select grp_id,grp_name,rtu_list,area_id,orderx from {0}.area_equipment_group'.format(
-                    utils.m_dbname_jk)
+                    self._db_name)
                 if user_data['user_auth'] not in utils._can_admin:
                     z = user_data['area_r'].union(user_data['area_w']).union(user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(','.join([str(a) for a in z]))
@@ -60,10 +62,13 @@ class GroupInfoHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del user_data, rqmsg, msg
 
@@ -84,7 +89,7 @@ class AreaInfoHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
                 strsql = 'select area_id,area_name,rtu_list from {0}.area_info'.format(
-                    utils.m_dbname_jk)
+                    self._db_name)
                 if user_data['user_auth'] not in utils._can_admin:
                     z = user_data['area_r'].union(user_data['area_w']).union(user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(','.join([str(a) for a in z]))
@@ -131,10 +136,13 @@ class AreaInfoHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del user_data, rqmsg, msg
 
@@ -157,8 +165,7 @@ class EventInfoHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
 
-                strsql = 'select id, name from {0}_data.operator_id_assign'.format(
-                    utils.m_dbname_jk)
+                strsql = 'select id, name from {0}_data.operator_id_assign'.format(self._db_name)
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -185,10 +192,13 @@ class EventInfoHandler(base.RequestHandler):
 
                     del cur, strsql
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del user_data, rqmsg, msg
 
@@ -205,12 +215,13 @@ class SunrisetInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataErr(),
-                                                                      msgws.QueryDataErr())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSunrisetInfo(),
+                                                                      msgws.SunrisetInfo())
 
         if user_data is not None:
             if user_data['user_auth'] in utils._can_read:
-                strsql = 'select date_month, date_day, time_sunrise, time_sunset from {0}.time_sunriset_info order by date_month, date_day'
+                strsql = 'select date_month, date_day, time_sunrise, time_sunset from {0}.time_sunriset_info order by date_month, date_day'.format(
+                    self._db_name)
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -233,10 +244,13 @@ class SunrisetInfoHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del user_data, rqmsg, msg
 
@@ -282,13 +296,15 @@ class QueryDataEventsHandler(base.RequestHandler):
 
                 strsql = 'select date_create, user_name, operator_id, is_client_snd, device_ids, contents, remark \
                                 from {0}_data.record_operator where date_create<={1} and date_create>={2}'.format(
-                    utils.m_dbname_jk, edt, sdt)
+                    self._db_name, edt, sdt)
                 if len(str_events) > 0:
                     strsql += ' and {0}'.format(str_events)
                 if len(str_tmls) > 0:
                     strsql += ' and {0}'.format(str_tmls)
                 if len(str_users) > 0:
                     strsql += ' and {0}'.format(str_users)
+                strsql += self._fetch_limited
+                
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -315,16 +331,19 @@ class QueryDataEventsHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del msg, rqmsg, user_data
 
 
 @mxweb.route()
-class QueryTimetableDo(base.RequestHandler):
+class QueryEventsTimetableDoHandler(base.RequestHandler):
 
     help_doc = u'''时间表开关灯操作记录查询 (post方式访问)<br/>
     <b>参数:</b><br/>
@@ -344,57 +363,68 @@ class QueryTimetableDo(base.RequestHandler):
 
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
-                    tml_ids = list(rqmsg.tml_id)
-                else:
-                    if len(rqmsg.tml_id) == 0:
-                        tml_ids = self._cache_tml_r[user_uuid]
+                    if len(rqmsg.tml_id) > 0:
+                        tml_ids = list(rqmsg.tml_id)
                     else:
+                        tml_ids = []
+                else:
+                    if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+                    else:
+                        tml_ids = self._cache_tml_r[user_uuid]
+                    if len(tml_ids) == 0:
+                        msg.head.if_st = 11
 
-                if len(tml_ids) == 0:
-                    str_tmls = ''
-                else:
-                    str_tmls = ' and a.rtu_id in ({0}) '.format(','.join([str(a) for a in tml_ids]))
+                if msg.head.if_st == 1:
+                    if len(tml_ids) == 0:
+                        str_tmls = ''
+                    else:
+                        str_tmls = ' and a.rtu_id in ({0}) '.format(','.join([str(a) for a in
+                                                                              tml_ids]))
 
-                strsql = 'select rtu_id,loop_id,date_create,is_open,rtu_reply_type \
-                                from {0}_data.record_rtu_open_close_light_record \
-                                where date_create<={1} and date_create>={2} {3}'.format(
-                    utils.m_dbname_jk, edt, sdt, str_tmls)
-                if rqmsg.data_mark != 2:
-                    strsql += ' and rtu_reply_type={0}'.format(rqmsg.data_mark)
-                if rqmsg.data_type > 0:
-                    strsql += ' and is_open={0}'.format(rqmsg.data_type)
+                    strsql = 'select a.rtu_id,a.loop_id,a.is_open,a.rtu_reply_type,a.date_create,a.rtu_reply_time \
+                                    from {0}_data.record_rtu_open_close_light_record as a \
+                                    where a.date_create<={1} and a.date_create>={2} {3}'.format(
+                        self._db_name, edt, sdt, str_tmls)
+                    
+                    if rqmsg.data_mark in (0, 1):
+                        strsql += ' and is_open={0}'.format(rqmsg.data_mark)
+                    if rqmsg.data_type in (1, 3):
+                        strsql += ' and rtu_reply_type={0}'.format(rqmsg.data_type)
+                    strsql += self._fetch_limited
+                    
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                        strsql,
+                        need_fetch=1,
+                        buffer_tag=msg.head.paging_buffer_tag,
+                        paging_idx=msg.head.paging_idx,
+                        paging_num=msg.head.paging_num)
+                    if record_total is None:
+                        msg.head.if_st = 45
+                    else:
+                        msg.head.paging_record_total = record_total
+                        msg.head.paging_buffer_tag = buffer_tag
+                        msg.head.paging_idx = paging_idx
+                        msg.head.paging_total = paging_total
+                        for d in cur:
+                            env = msgws.QueryTimetableDo.TimetableDoView()
+                            env.tml_id = d[0]
+                            env.tml_loop_id = d[1]
+                            env.data_mark = d[2]
+                            env.data_type = d[3]
+                            env.dt_send = mx.switchStamp(int(d[4]))
+                            env.dt_reply = mx.switchStamp(int(d[5])) if d[5] is not None else 0
+                            msg.timetable_do_view.extend([env])
+                            del env
+                    del cur, strsql
 
-                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                    strsql,
-                    need_fetch=1,
-                    buffer_tag=msg.head.paging_buffer_tag,
-                    paging_idx=msg.head.paging_idx,
-                    paging_num=msg.head.paging_num)
-                if record_total is None:
-                    msg.head.if_st = 45
-                else:
-                    msg.head.paging_record_total = record_total
-                    msg.head.paging_buffer_tag = buffer_tag
-                    msg.head.paging_idx = paging_idx
-                    msg.head.paging_total = paging_total
-                    for d in cur:
-                        env = msgws.QueryTimetableDo.TimetableDoView()
-                        env.tml_id = d[0]
-                        env.tml_loop_id = d[1]
-                        env.data_mark = d[2]
-                        env.data_type = d[3]
-                        env.dt_send = mx.switchStamp(int(d[4]))
-                        env.dt_reply = mx.switchStamp(int(d[5])) if d[5] is not None else 0
-                        msg.timetable_do_view.extend([env])
-                        del env
-
-                del cur, strsql
-
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del msg, rqmsg, user_data
 
@@ -418,17 +448,20 @@ class SysEditHandler(base.RequestHandler):
             env = True
             contents = 'change sys name to {0}'.format(rqmsg.sys_name)
             strsql = 'update {0}.key_value set value_value="{1}" where key_key="system_title"'.format(
-                utils.m_dbname_jk, rqmsg.sys_name)
+                self._db_name, rqmsg.sys_name)
             self.mysql_generator(strsql, 0)
 
             del strsql
         else:
             msg.head.if_st = 11
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         if env:
             self.write_event(165, contents, 2, user_name=user_data['user_name'])
@@ -454,7 +487,7 @@ class SysInfoHandler(base.RequestHandler):
                 msg.data_mark.extend(rqmsg.data_mark)
                 if 1 in msg.data_mark:
                     strsql = 'select value_value from {0}.key_value where key_key="system_title"'.format(
-                        utils.m_dbname_jk)
+                        self._db_name)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -471,10 +504,10 @@ class SysInfoHandler(base.RequestHandler):
                             msg.sys_name = d[0]
 
                     del cur, strsql
-                if 2 in msg.data_mark:  # 暂不支持在线数量
+                if 2 in msg.data_mark:
                     strsql = 'select count(*) as a from {0}.para_base_equipment union all \
                     select count(*) as a from {0}.para_base_equipment where rtu_state=2'.format(
-                        utils.m_dbname_jk)
+                        self._db_name)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -497,7 +530,7 @@ class SysInfoHandler(base.RequestHandler):
                     select count(*) as a from {0}_data.info_fault_exist where rtu_id<1100000 union all \
                     select count(*) as a from {0}_data.info_fault_exist where rtu_id<1600000 and rtu_id>=1500000 union all\
                     select count(*) as a from {0}_data.info_fault_exist where rtu_id<1200000 and rtu_id>=1100000 \
-                    '.format(utils.m_dbname_jk)
+                    '.format(self._db_name)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -522,7 +555,7 @@ class SysInfoHandler(base.RequestHandler):
                                     select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1400000 and rtu_id<=1499999 union all \
                                     select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1500000 and rtu_id<=1599999 union all \
                                     select count(rtu_id) as a from {0}.para_base_equipment where rtu_id>=1600000 and rtu_id<=1699999 \
-                                    '.format(utils.m_dbname_jk)
+                                    '.format(self._db_name)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -539,14 +572,33 @@ class SysInfoHandler(base.RequestHandler):
                             msg.tml_type.extend([int(d[0])])
 
                     del cur, strsql
-                if 7 in msg.data_mark:  # 暂不支持服务状态
-                    msg.head.if_st = 99
+                if 7 in msg.data_mark:
+                    tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.sys.status', addr=[-1])
+                    tcsmsg.head.mod = 1
+                    tcsmsg.head.src = 2
+                    m = yield self.check_zmq_status(
+                        b'tcs.req.{0}.wlst.sys.status'.format(utils.m_tcs_port),
+                        tcsmsg.SerializeToString(),
+                        b'tcs.rep.{0}.wlst.sys.status'.format(utils.m_tcs_port))
+                    if len(m) > 0:
+                        try:
+                            tcsmsg.ParseFromString(m)
+                            if len(tcsmsg.args.status) > 0:
+                                msg.st_svr.extend([1 if tcsmsg.args.status[0] > 0 else 0, 1,
+                                                   tcsmsg.args.status[1]])
+                        except:
+                            msg.st_svr.extend([-1, -1, -1])
+                    else:
+                        msg.st_svr.extend([0, 0, 0])
             else:
                 msg.head.if_st = 11
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del msg, rqmsg, user_data

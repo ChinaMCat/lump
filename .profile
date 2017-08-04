@@ -1,1 +1,2 @@
-{"uuid": "ef61022b553911e6832074d435009085", "user_name": "buildin-rx", "user_auth": 5, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydbv2_1001"}
+{"uuid": "e9251f34735a11e7a88ffcaa14e489ec", "user_name": "buildin-rx", "user_auth": 5, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "SaqabW8bK3JAY8LjJe/nsuRmsWuafHueaa=="}
+{"uuid": "ab6443e6781911e78ad6fcaa14e489ec", "user_name": "buildin-r", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "SaqabW8bK3JAkYPktsXjtkKSsI0T1mLpY8SSkKOf0ZM5jtQLoCuiYDksiJGhafPyfGC="}

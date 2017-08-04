@@ -44,7 +44,7 @@ class QuerySmsRecordHandler(base.RequestHandler):
                     str_tels = ''
                 strsql = 'select send_date,send_number,send_msg from {0}_data.record_msg_log \
                                 where send_date>={1} and send_date<={2} and send_msg like "%{3}%" \
-                                {4}'.format(utils.m_dbname_jk, sdt, edt, rqmsg.msg, str_tels)
+                                {4} {5}'.format(self._db_name, sdt, edt, rqmsg.msg, str_tels, self._fetch_limited)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
@@ -69,10 +69,13 @@ class QuerySmsRecordHandler(base.RequestHandler):
 
                 del cur, strsql
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -99,7 +102,7 @@ class SubmitSmsHandler(base.RequestHandler):
             for tel in rqmsg.tels:
                 if isinstance(tel, types.IntType):
                     strsql += 'insert into {0}_data.record_msg_new (date_create,rtu_name,user_phone_number,is_alarm) values ({1},"{2}",{3},2);'.format(
-                        utils.m_dbname_jk, t, u'{0}'.format(str(rqmsg.msg).strip()), tel)
+                        self._db_name, t, u'{0}'.format(str(rqmsg.msg).strip()), tel)
             yield self.mydata_collector(strsql, need_fetch=0)
         else:
             msg.head.if_st = 0
@@ -107,9 +110,12 @@ class SubmitSmsHandler(base.RequestHandler):
             logging.error(utils.format_log(self.request.remote_ip, msg.head.if_msg,
                                            self.request.path, 0))
 
-        if self.go_back_json:
+        if self._go_back_format == 1:
             self.write(pb2json(msg))
+        elif self._go_back_format == 2:
+            self.write(msg.SerializeToString())
         else:
             self.write(mx.convertProtobuf(msg))
+
         self.finish()
         del msg, rqmsg

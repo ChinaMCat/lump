@@ -39,7 +39,7 @@ class MXMariadb(object):
         self.pwd = pwd
         self.conv = conv
         self.client_flag = client_flag
-        self.conn_queue = Queue.Queue(7)
+        self.conn_queue = Queue.Queue(100)
         self.error_msg = ''
         self.show_debug = False
 
@@ -49,32 +49,39 @@ class MXMariadb(object):
             cn.close()
             del cn
 
+    def _build_conn(self):
+        try:
+            cn = mysql.connect(host=self.host,
+                               port=self.port,
+                               user=self.user,
+                               passwd=self.pwd,
+                               conv=self.conv,
+                               client_flag=self.client_flag,
+                               connect_timeout=7)
+            cn.set_character_set('utf8')
+        except Exception as ex:
+            self.error_msg = '_mysql conn error: {0}'.format(ex)
+            if self.show_debug:
+                print(self.error_msg)
+            return None
+        else:
+            return cn
+
     def __get_conn(self):
         '''获取mysql连接'''
-        try:
-            cn = self.conn_queue.get_nowait()
-            if not cn.stat().startswith('Uptime:'):
-                cn.close()
-                del cn
-                raise Exception('MySQL server has something wrong')
-            return cn
-        except Exception as ex:
+        if self.conn_queue.qsize() == 0:
+            cn = self._build_conn()
+        else:
             try:
-                cn = mysql.connect(host=self.host,
-                                   port=self.port,
-                                   user=self.user,
-                                   passwd=self.pwd,
-                                   conv=self.conv,
-                                   client_flag=self.client_flag,
-                                   connect_timeout=7)
-                cn.set_character_set('utf8')
+                cn = self.conn_queue.get(timeout=7)
+
+                if not cn.stat().startswith('Uptime:'):
+                    cn.close()
+                    del cn
+                    raise Exception('MySQL server has something wrong')
             except Exception as ex:
-                self.error_msg = '_mysql conn error: {0}'.format(ex)
-                if self.show_debug:
-                    print(self.error_msg)
-                return None
-            else:
-                return cn
+                cn = self._build_conn()
+        return cn
 
     def __put_conn(self, conn):
         '''回收mysql连接'''
@@ -86,7 +93,7 @@ class MXMariadb(object):
 
     def get_last_error_message(self):
         '''获取最近一次操作产生的错误信息, 获取后清空'''
-        s = self.error_msg
+        s = '' + self.error_msg
         self.error_msg = ''
         return s
 
@@ -115,7 +122,7 @@ class MXMariadb(object):
                         pass
                     else:
                         del conn
-                    
+
                     if self.show_debug:
                         print(self.error_msg)
                 else:

@@ -11,11 +11,9 @@ import mxpsu as mx
 import mxweb
 import protobuf3.msg_with_ctrl_pb2 as msgtcs
 from tornado import gen
-
 import base
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 
 
 # 故障提交

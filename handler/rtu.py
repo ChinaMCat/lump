@@ -12,9 +12,8 @@ import mxweb
 from tornado import gen
 import json
 import base
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 
 
 @mxweb.route()
@@ -40,7 +39,7 @@ class TmlInfoHandler(base.RequestHandler):
                                                                       msgws.TmlInfo())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 msg.data_mark.extend(list(rqmsg.data_mark))
                 # 验证用户可操作的设备id
                 yield self.update_cache('r', user_uuid)
@@ -53,7 +52,7 @@ class TmlInfoHandler(base.RequestHandler):
                     if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                     else:
-                        tml_ids = self._cache_tml_r[user_uuid]
+                        tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
 
@@ -85,7 +84,7 @@ class TmlInfoHandler(base.RequestHandler):
                                 for d in cur:
                                     baseinfo = msgws.TmlInfo.BaseInfo()
                                     # 加入/更新地址对照缓存
-                                    self._tml_phy[int(d[0])] = (int(d[1]), int(d[7]), d[3])
+                                    libiisi.tml_phy[int(d[0])] = (int(d[1]), int(d[7]), d[3])
 
                                     baseinfo.tml_id = int(d[0])
                                     baseinfo.tml_dt_update = mx.switchStamp(int(d[10]))
@@ -554,7 +553,7 @@ class QueryRtuTimeTableBindHandler(base.RequestHandler):
                 if len(rqmsg.tml_id) > 0:
                     tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                 else:
-                    tml_ids = self._cache_tml_r[user_uuid]
+                    tml_ids = libiisi.cache_tml_r[user_uuid]
                 if len(tml_ids) == 0:
                     msg.head.if_st = 11
 
@@ -647,7 +646,7 @@ class QueryDataRtuElecHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataRtuElec(),
                                                                       msgws.QueryDataRtuElec())
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
 
                 # 验证用户可操作的设备id
@@ -660,7 +659,7 @@ class QueryDataRtuElecHandler(base.RequestHandler):
                     if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                     else:
-                        tml_ids = self._cache_tml_r[user_uuid]
+                        tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
 
@@ -738,7 +737,7 @@ class QueryDataRtuHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataRtu(),
                                                                       msgws.QueryDataRtu())
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.type = rqmsg.type
 
@@ -752,7 +751,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                     if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                     else:
-                        tml_ids = self._cache_tml_r[user_uuid]
+                        tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
 
@@ -920,7 +919,7 @@ class RtuDataGetHandler(base.RequestHandler):
                 tver = int(self.get_argument('tver'))
             except:
                 tver = 1
-            if user_data['user_auth'] in utils._can_read & utils._can_exec:
+            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
                 # 验证用户可操作的设备id
                 yield self.update_cache('r', user_uuid)
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
@@ -937,7 +936,7 @@ class RtuDataGetHandler(base.RequestHandler):
                                                      self.request.remote_ip, 0, rtu_ids, dict())
                         # libiisi.set_to_send(tcsmsg, 0, False)
                         libiisi.send_to_zmq_pub(
-                            'tcs.req.{0}.wlst.rtu.2000'.format(utils.m_tcs_port),
+                            'tcs.req.{0}.wlst.rtu.2000'.format(libiisi.cfg_tcs_port),
                             json.dumps(tcsmsg,
                                        separators=(',', ':')).lower())
                     elif tver == 2:
@@ -945,7 +944,7 @@ class RtuDataGetHandler(base.RequestHandler):
                                                          addr=list(addr),
                                                          tver=tver)
                         libiisi.send_to_zmq_pub(
-                            'tcs.req.{0}.{1}'.format(utils.m_tcs_port, tcsmsg.head.cmd),
+                            'tcs.req.{0}.{1}'.format(libiisi.cfg_tcs_port, tcsmsg.head.cmd),
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
@@ -981,7 +980,7 @@ class RtuCtlHandler(base.RequestHandler):
                 tver = int(self.get_argument('tver'))
             except:
                 tver = 1
-            if user_data['user_auth'] in utils._can_exec:
+            if user_data['user_auth'] in libiisi.can_exec:
                 env = True
                 contents = 'build-in user from {0} ctrl rtu'.format(self.request.remote_ip)
                 dosomething = False
@@ -1011,7 +1010,7 @@ class RtuCtlHandler(base.RequestHandler):
                                                                  tcsdata)
                                     # libiisi.set_to_send(tcsmsg, 0, False)
                                     libiisi.send_to_zmq_pub(
-                                        'tcs.req.{0}.wlst.rtu.2210'.format(utils.m_tcs_port),
+                                        'tcs.req.{0}.wlst.rtu.2210'.format(libiisi.cfg_tcs_port),
                                         json.dumps(tcsmsg,
                                                    separators=(',', ':')).lower())
                                 i += 1
@@ -1028,14 +1027,14 @@ class RtuCtlHandler(base.RequestHandler):
                                                              tcsdata)
                                 # libiisi.set_to_send(tcsmsg, 0, False)
                                 libiisi.send_to_zmq_pub(
-                                    'tcs.req.{0}.wlst.rtu.4b00'.format(utils.m_tcs_port),
+                                    'tcs.req.{0}.wlst.rtu.4b00'.format(libiisi.cfg_tcs_port),
                                     json.dumps(tcsmsg,
                                                separators=(',', ':')).lower())
                             elif tver == 2:
                                 tcsmsg = libiisi.initRtuProtobuf(cmd='ahhf.rtu.4b00', tver=tver)
                                 tcsmsg.wlst_tml.wlst_rtu_4b00.operation.extend(list(x.loop_do))
-                                libiisi.send_to_zmq_pub('tcs.req.{0}.{1}'.format(utils.m_tcs_port,
-                                                                                 tcsmsg.head.cmd),
+                                libiisi.send_to_zmq_pub('tcs.req.{0}.{1}'.format(
+                                    libiisi.cfg_tcs_port, tcsmsg.head.cmd),
                                                         tcsmsg.SerializeToString())
                         elif x.opt == 3:  # 停运
                             tcsmsg = libiisi.initRtuJson(2, 7, 1, 1, 1, 'wlst.rtu.2800',
@@ -1043,7 +1042,7 @@ class RtuCtlHandler(base.RequestHandler):
                                                          tcsdata)
                             # libiisi.set_to_send(tcsmsg, 0, False)
                             libiisi.send_to_zmq_pub(
-                                'tcs.req.{0}.wlst.rtu.2800'.format(utils.m_tcs_port),
+                                'tcs.req.{0}.wlst.rtu.2800'.format(libiisi.cfg_tcs_port),
                                 json.dumps(tcsmsg,
                                            separators=(',', ':')).lower())
                         elif x.opt == 4:  # 解除停运
@@ -1052,7 +1051,7 @@ class RtuCtlHandler(base.RequestHandler):
                                                          tcsdata)
                             # libiisi.set_to_send(tcsmsg, 0, False)
                             libiisi.send_to_zmq_pub(
-                                'tcs.req.{0}.wlst.rtu.2900'.format(utils.m_tcs_port),
+                                'tcs.req.{0}.wlst.rtu.2900'.format(libiisi.cfg_tcs_port),
                                 json.dumps(tcsmsg,
                                            separators=(',', ':')).lower())
                 if not dosomething:
@@ -1093,7 +1092,7 @@ class RtuVerGetHandler(base.RequestHandler):
                 tver = int(self.get_argument('tver'))
             except:
                 tver = 1
-            if user_data['user_auth'] in utils._can_read & utils._can_exec:
+            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
                 # 验证用户可操作的设备id
                 yield self.update_cache('r', user_uuid)
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
@@ -1110,12 +1109,12 @@ class RtuVerGetHandler(base.RequestHandler):
                                                      self.request.remote_ip, 0, rtu_ids, dict())
                         # libiisi.set_to_send(tcsmsg, 0, False)
                         libiisi.send_to_zmq_pub(
-                            'tcs.req.{0}.wlst.rtu.5c00'.format(utils.m_tcs_port),
+                            'tcs.req.{0}.wlst.rtu.5c00'.format(libiisi.cfg_tcs_port),
                             json.dumps(tcsmsg,
                                        separators=(',', ':')).lower())
                     elif tver == 2:
                         tcsmsg = libiisi.initRtuProtobuf(cmd='ahhf.rtu.5c00', tver=tver)
-                        libiisi.send_to_zmq_pub('tcs.req.{0}.{1}'.format(utils.m_tcs_port,
+                        libiisi.send_to_zmq_pub('tcs.req.{0}.{1}'.format(libiisi.cfg_tcs_port,
                                                                          tcsmsg.head.cmd),
                                                 tcsmsg.SerializeToString())
             else:
@@ -1153,9 +1152,9 @@ class RtuTimerCtlHandler(base.RequestHandler):
             except:
                 tver = 1
             if rqmsg.data_mark == 0:
-                user_auth = utils._can_exec & utils._can_read
+                user_auth = libiisi.can_exec & libiisi.can_read
             else:
-                user_auth = utils._can_exec & utils._can_write
+                user_auth = libiisi.can_exec & libiisi.can_write
             if user_data['user_auth'] in user_auth:
                 env = True
                 contents = 'user from {0} set rtu timer'.format(self.request.remote_ip)
@@ -1178,7 +1177,7 @@ class RtuTimerCtlHandler(base.RequestHandler):
                         tcsmsg = libiisi.initRtuJson(2, 7, 1, 1, 1, cmd, self.request.remote_ip, 0,
                                                      rtu_ids, dict())
                         # libiisi.set_to_send(tcsmsg, 0, False)
-                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(cmd, utils.m_tcs_port),
+                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(cmd, libiisi.cfg_tcs_port),
                                                 json.dumps(tcsmsg,
                                                            separators=(',', ':')).lower())
                     elif tver == 2:
@@ -1187,7 +1186,7 @@ class RtuTimerCtlHandler(base.RequestHandler):
                         else:
                             cmd = 'ahhf.rtu.1300'
                         tcsmsg = libiisi.initRtuProtobuf(cmd=cmd, tver=2)
-                        libiisi.send_to_zmq_pub('tcs.req.{0}.{1}'.format(utils.m_tcs_port, cmd),
+                        libiisi.send_to_zmq_pub('tcs.req.{0}.{1}'.format(libiisi.cfg_tcs_port, cmd),
                                                 tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11

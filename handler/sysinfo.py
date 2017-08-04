@@ -11,9 +11,8 @@ from tornado import gen
 from mxpbjson import pb2json
 import base
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 import zmq
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 
 
 @mxweb.route()
@@ -31,10 +30,10 @@ class GroupInfoHandler(base.RequestHandler):
                                                                       msgws.GroupInfo())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 strsql = 'select grp_id,grp_name,rtu_list,area_id,orderx from {0}.area_equipment_group'.format(
                     self._db_name)
-                if user_data['user_auth'] not in utils._can_admin:
+                if user_data['user_auth'] not in libiisi.can_admin:
                     z = user_data['area_r'].union(user_data['area_w']).union(user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(','.join([str(a) for a in z]))
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
@@ -87,10 +86,10 @@ class AreaInfoHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqAreaInfo(),
                                                                       msgws.AreaInfo())
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 strsql = 'select area_id,area_name,rtu_list from {0}.area_info'.format(
                     self._db_name)
-                if user_data['user_auth'] not in utils._can_admin:
+                if user_data['user_auth'] not in libiisi.can_admin:
                     z = user_data['area_r'].union(user_data['area_w']).union(user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(','.join([str(a) for a in z]))
 
@@ -115,23 +114,23 @@ class AreaInfoHandler(base.RequestHandler):
                             av.tml_id.extend(y)
                             msg.area_view.extend([av])
                             if int(d[0]) in user_data[
-                                    'area_r']:  # or user_data['user_auth'] in utils._can_admin:
-                                if user_uuid in self._cache_tml_r.keys():
-                                    self._cache_tml_r[user_uuid].union(y)
+                                    'area_r']:  # or user_data['user_auth'] in libiisi.can_admin:
+                                if user_uuid in libiisi.cache_tml_r.keys():
+                                    libiisi.cache_tml_r[user_uuid].union(y)
                                 else:
-                                    self._cache_tml_r[user_uuid] = set(y)
+                                    libiisi.cache_tml_r[user_uuid] = set(y)
                             if int(d[0]) in user_data[
-                                    'area_w']:  # or user_data['user_auth'] in utils._can_admin:
-                                if user_uuid in self._cache_tml_w.keys():
-                                    self._cache_tml_w[user_uuid].union(y)
+                                    'area_w']:  # or user_data['user_auth'] in libiisi.can_admin:
+                                if user_uuid in libiisi.cache_tml_w.keys():
+                                    libiisi.cache_tml_w[user_uuid].union(y)
                                 else:
-                                    self._cache_tml_w[user_uuid] = set(y)
+                                    libiisi.cache_tml_w[user_uuid] = set(y)
                             if int(d[0]) in user_data[
-                                    'area_x']:  # or user_data['user_auth'] in utils._can_admin:
-                                if user_uuid in self._cache_tml_x.keys():
-                                    self._cache_tml_x[user_uuid].union(y)
+                                    'area_x']:  # or user_data['user_auth'] in libiisi.can_admin:
+                                if user_uuid in libiisi.cache_tml_x.keys():
+                                    libiisi.cache_tml_x[user_uuid].union(y)
                                 else:
-                                    self._cache_tml_x[user_uuid] = set(y)
+                                    libiisi.cache_tml_x[user_uuid] = set(y)
                             del av, x, y
 
                 del cur, strsql
@@ -163,7 +162,7 @@ class EventInfoHandler(base.RequestHandler):
                                                                       msgws.EventInfo())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
 
                 strsql = 'select id, name from {0}_data.operator_id_assign'.format(self._db_name)
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
@@ -172,10 +171,10 @@ class EventInfoHandler(base.RequestHandler):
                     need_paging=0)
                 if record_total is None:
                     msg.head.if_st = 45
-                    for d in utils._events_def.keys():
+                    for d in libiisi.events_def.keys():
                         envinfoview = msgws.EventInfo.EventInfoView()
                         envinfoview.event_id = d
-                        envinfoview.event_name = utils._events_def.get(d)[0]
+                        envinfoview.event_name = libiisi.events_def.get(d)[0]
                         msg.event_info_view.extend([envinfoview])
                         del envinfoview
                 else:
@@ -219,7 +218,7 @@ class SunrisetInfoHandler(base.RequestHandler):
                                                                       msgws.SunrisetInfo())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 strsql = 'select date_month, date_day, time_sunrise, time_sunset from {0}.time_sunriset_info order by date_month, date_day'.format(
                     self._db_name)
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
@@ -271,7 +270,7 @@ class QueryDataEventsHandler(base.RequestHandler):
                                                                       msgws.QueryDataEvents())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
 
                 if len(rqmsg.events_id) == 0:
@@ -285,7 +284,7 @@ class QueryDataEventsHandler(base.RequestHandler):
                     str_tmls = ' device_ids in ({0}) '.format(','.join([str(a) for a in rqmsg.tml_id
                                                                         ]))
                 # 额外判断是否管理员,非管理员只能查询自己以及系统事件
-                if user_data['user_auth'] in utils._can_admin:
+                if user_data['user_auth'] in libiisi.can_admin:
                     if len(rqmsg.user_name) == 0:
                         str_users = ''
                     else:
@@ -304,7 +303,7 @@ class QueryDataEventsHandler(base.RequestHandler):
                 if len(str_users) > 0:
                     strsql += ' and {0}'.format(str_users)
                 strsql += self._fetch_limited
-                
+
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1,
@@ -325,7 +324,7 @@ class QueryDataEventsHandler(base.RequestHandler):
                         env.tml_id = int(d[4])
                         env.events_msg = '{0} {1}'.format(d[5], d[6])
                         env.dt_happen = mx.switchStamp(int(d[0]))
-                        env.events_name = utils._events_def[int(d[2])]
+                        env.events_name = libiisi.events_def[int(d[2])]
                         msg.data_events_view.extend([env])
                         del env
 
@@ -358,7 +357,7 @@ class QueryEventsTimetableDoHandler(base.RequestHandler):
                                                                       msgws.QueryTimetableDo())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
 
                 # 验证用户可操作的设备id
@@ -371,7 +370,7 @@ class QueryEventsTimetableDoHandler(base.RequestHandler):
                     if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                     else:
-                        tml_ids = self._cache_tml_r[user_uuid]
+                        tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
 
@@ -386,13 +385,13 @@ class QueryEventsTimetableDoHandler(base.RequestHandler):
                                     from {0}_data.record_rtu_open_close_light_record as a \
                                     where a.date_create<={1} and a.date_create>={2} {3}'.format(
                         self._db_name, edt, sdt, str_tmls)
-                    
+
                     if rqmsg.data_mark in (0, 1):
                         strsql += ' and is_open={0}'.format(rqmsg.data_mark)
                     if rqmsg.data_type in (1, 3):
                         strsql += ' and rtu_reply_type={0}'.format(rqmsg.data_type)
                     strsql += self._fetch_limited
-                    
+
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -444,7 +443,7 @@ class SysEditHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSysEdit(), None)
         env = False
         contents = ''
-        if user_data['user_auth'] in utils._can_write:
+        if user_data['user_auth'] in libiisi.can_write:
             env = True
             contents = 'change sys name to {0}'.format(rqmsg.sys_name)
             strsql = 'update {0}.key_value set value_value="{1}" where key_key="system_title"'.format(
@@ -483,7 +482,7 @@ class SysInfoHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSysInfo(),
                                                                       msgws.SysInfo())
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 msg.data_mark.extend(rqmsg.data_mark)
                 if 1 in msg.data_mark:
                     strsql = 'select value_value from {0}.key_value where key_key="system_title"'.format(
@@ -577,9 +576,9 @@ class SysInfoHandler(base.RequestHandler):
                     tcsmsg.head.mod = 1
                     tcsmsg.head.src = 2
                     m = yield self.check_zmq_status(
-                        b'tcs.req.{0}.wlst.sys.status'.format(utils.m_tcs_port),
+                        b'tcs.req.{0}.wlst.sys.status'.format(libiisi.cfg_tcs_port),
                         tcsmsg.SerializeToString(),
-                        b'tcs.rep.{0}.wlst.sys.status'.format(utils.m_tcs_port))
+                        b'tcs.rep.{0}.wlst.sys.status'.format(libiisi.cfg_tcs_port))
                     if len(m) > 0:
                         try:
                             tcsmsg.ParseFromString(m)

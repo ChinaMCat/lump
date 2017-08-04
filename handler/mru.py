@@ -8,10 +8,9 @@ __doc__ = 'slu handler'
 import mxpsu as mx
 import mxweb
 from tornado import gen
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import base
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 import json
 from mxpbjson import pb2json
 
@@ -32,7 +31,7 @@ class QueryDataMruHandler(base.RequestHandler):
                                                                       msgws.QueryDataMru())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 if sdt + edt > 0:
                     strdt = ' and a.date_create>={0} and a.date_create<={1}'.format(sdt, edt)
@@ -48,7 +47,7 @@ class QueryDataMruHandler(base.RequestHandler):
                     if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                     else:
-                        tml_ids = self._cache_tml_r[user_uuid]
+                        tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
 
@@ -121,7 +120,7 @@ class MruDataGetHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqMruDataGet(), None)
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read & utils._can_exec:
+            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     if len(rqmsg.tml_id) > 0:
@@ -132,7 +131,7 @@ class MruDataGetHandler(base.RequestHandler):
                     if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                     else:
-                        tml_ids = self._cache_tml_r[user_uuid]
+                        tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
 
@@ -176,9 +175,9 @@ class MruDataGetHandler(base.RequestHandler):
                                                                type=rqmsg.data_mark,
                                                                date=rqmsg.dt_mark,
                                                                br=rqmsg.baud_rate))
-                        libiisi.set_to_send(tcsmsg, 0, False)
+                        # libiisi.set_to_send(tcsmsg, 0, False)
                         libiisi.send_to_zmq_pub(
-                            'tcs.req.{0}.wlst.mru.9100'.format(utils.m_tcs_port),
+                            'tcs.req.{0}.wlst.mru.9100'.format(libiisi.cfg_tcs_port),
                             json.dumps(tcsmsg,
                                        separators=(',', ':')).lower())
             else:

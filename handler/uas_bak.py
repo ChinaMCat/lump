@@ -12,7 +12,6 @@ import mxweb
 from tornado import gen
 import base
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 
 
 @mxweb.route()

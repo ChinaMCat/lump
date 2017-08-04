@@ -14,9 +14,8 @@ import mxpsu as mx
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
 import base
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 from urllib import urlencode
-import utils
 
 
 @mxweb.route()
@@ -60,7 +59,7 @@ class StatusHandler(base.RequestHandler):
                                 libiisi.m_config.getData('zmq_port')))
 
                         thc = AsyncHTTPClient()
-                        url = '{0}'.format(utils.m_fs_url)
+                        url = '{0}'.format(libiisi.cfg_fs_url)
                         try:
                             rep = yield thc.fetch(url, raise_error=True, request_timeout=30)
                             self.write('Test flow config ... success. 『 {0} 』<br/>'.format(url))
@@ -73,7 +72,7 @@ class StatusHandler(base.RequestHandler):
                             jk_isok = False
                             dg_isok = False
                             strsql = 'select schema_name from information_schema.schemata where schema_name in ("{0}","{1}");'.format(
-                                self._db_name, utils.m_dbname_dg)
+                                self._db_name, libiisi.cfg_dbname_dg)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql,
                                 need_fetch=1)
@@ -85,30 +84,28 @@ class StatusHandler(base.RequestHandler):
                                 for d in cur:
                                     if d[0] == self._db_name:
                                         jk_isok = True
-                                    elif d[0] == utils.m_dbname_dg:
+                                    elif d[0] == libiisi.cfg_dbname_dg:
                                         dg_isok = True
                             if jk_isok:
                                 self.write(
-                                    'Test jkdb config ... success. 『 {0}:{1}/{2} 』<br/>'.format(
-                                        utils.m_db_host, utils.m_db_port, self._db_name))
+                                    'Test jkdb config ... success. 『 {0} / {1} 』<br/>'.format(
+                                        libiisi.m_config.getData('db_host'), self._db_name))
                             else:
-                                self.write(
-                                    'Test jkdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
-                                        utils.m_db_host, utils.m_db_port, self._db_name))
+                                self.write('Test jkdb config ... failed. 『 {0} / {1} 』<br/>'.format(
+                                    libiisi.m_config.getData('db_host'), self._db_name))
                             if dg_isok:
                                 self.write(
-                                    'Test dgdb config ... success. 『 {0}:{1}/{2} 』<br/>'.format(
-                                        utils.m_db_host, utils.m_db_port, utils.m_dbname_dg))
+                                    'Test dgdb config ... success. 『 {0} / {1} 』<br/>'.format(
+                                        libiisi.m_config.getData('db_host'), libiisi.cfg_dbname_dg))
                             else:
-                                self.write(
-                                    'Test dgdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
-                                        utils.m_db_host, utils.m_db_port, utils.m_dbname_dg))
+                                self.write('Test dgdb config ... failed. 『 {0} / {1} 』<br/>'.format(
+                                    libiisi.m_config.getData('db_host'), libiisi.cfg_dbname_dg))
                             del cur
                         except:
-                            self.write('Test jkdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
-                                utils.m_db_host, utils.m_db_port, self._db_name))
-                            self.write('Test dgdb config ... failed. 『 {0}:{1}/{2} 』<br/>'.format(
-                                utils.m_db_host, utils.m_db_port, utils.m_dbname_dg))
+                            self.write('Test jkdb config ... failed. 『 {0} / {1} 』<br/>'.format(
+                                libiisi.m_config.getData('db_host'), self._db_name))
+                            self.write('Test dgdb config ... failed. 『 {0} / {1} 』<br/>'.format(
+                                libiisi.m_config.getData('db_host'), libiisi.cfg_dbname_dg))
                         self.write('<br/>')
                         # self.flush()
 
@@ -137,63 +134,7 @@ class CleaningWorkHandler(base.RequestHandler):
     @gen.coroutine
     def get(self):
         t = time.time()
-
-        # 清理缓存文件
-        try:
-            for r, d, f in os.walk(m_cachedir):
-                if r == m_cachedir:
-                    for x in f:
-                        try:
-                            if t - int(x[:10]) > 3600:
-                                os.remove(x)
-                        except:
-                            pass
-        except:
-            pass
-        # lstcache = os.listdir(self.cache_dir)
-        # for c in lstcache:
-        #     if t - os.path.getctime(os.path.join(self.cache_dir, c)) > 60 * 60 * 24:
-        #         try:
-        #             os.remove(c)
-        #         except:
-        #             pass
-
-        # 清理
-        k = set(utils.cache_user.keys())
-        r = set(self._cache_tml_r.keys())
-        w = set(self._cache_tml_w.keys())
-        x = set(self._cache_tml_x.keys())
-        for a in k:
-            try:
-                if a in utils.cache_buildin_users:
-                    continue
-                b = utils.cache_user.get(a)
-                if t - b['active_time'] > 60 * 60:
-                    del utils.cache_user[a]
-                    # k.remove(a)
-            except:
-                pass
-
-        z = r.difference(k)
-        for a in z:
-            try:
-                del self._cache_tml_r[a]
-            except:
-                pass
-        z = w.difference(k)
-        for a in z:
-            try:
-                del self._cache_tml_w[a]
-            except:
-                pass
-        z = x.difference(k)
-        for a in z:
-            try:
-                del self._cache_tml_x[a]
-            except:
-                pass
-
-        del z, t, k, r, w, x, lstcache
+        libiisi.cleaningwork(t)
         gc.collect()
         self.finish()
 

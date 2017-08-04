@@ -10,9 +10,8 @@ import mxweb
 from tornado import gen
 from mxpbjson import pb2json
 import base
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 
 
 @mxweb.route()
@@ -31,7 +30,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                                                       msgws.QueryDataSlu())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.data_mark = rqmsg.data_mark
 
@@ -46,7 +45,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         if len(rqmsg.tml_id) > 0:
                             tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                         else:
-                            tml_ids = self._cache_tml_r[user_uuid]
+                            tml_ids = libiisi.cache_tml_r[user_uuid]
                         if len(tml_ids) == 0:
                             msg.head.if_st = 11
 
@@ -122,7 +121,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         if len(rqmsg.tml_id) > 0:
                             tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                         else:
-                            tml_ids = self._cache_tml_r[user_uuid]
+                            tml_ids = libiisi.cache_tml_r[user_uuid]
                         if len(tml_ids) == 0:
                             msg.head.if_st = 11
 
@@ -197,7 +196,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         if len(rqmsg.tml_id) > 0:
                             tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                         else:
-                            tml_ids = self._cache_tml_r[user_uuid]
+                            tml_ids = libiisi.cache_tml_r[user_uuid]
                         if len(tml_ids) == 0:
                             msg.head.if_st = 11
 
@@ -328,7 +327,7 @@ class SluDataGetHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluDataGet(), None)
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read & utils._can_exec:
+            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = rqmsg.tml_id
@@ -361,7 +360,7 @@ class SluDataGetHandler(base.RequestHandler):
                         tcsmsg.wlst_tml.wlst_slu_7300.data_mark = rqmsg.data_mark
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                         libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
@@ -393,7 +392,7 @@ class SluitemDataGetHandler(base.RequestHandler):
                                                                       None)
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read & utils._can_exec:
+            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = rqmsg.tml_id
@@ -426,7 +425,7 @@ class SluitemDataGetHandler(base.RequestHandler):
                             rqmsg.data_mark.SerializeToString())
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                         libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
@@ -459,9 +458,9 @@ class SluTimerCtlHandler(base.RequestHandler):
         contents = ''
         if user_data is not None:
             if rqmsg.data_mark == 0:
-                user_auth = utils._can_exec & utils._can_write
+                user_auth = libiisi.can_exec & libiisi.can_write
             else:
-                user_auth = utils._can_exec & utils._can_read
+                user_auth = libiisi.can_exec & libiisi.can_read
             if user_data['user_auth'] in user_auth:
                 env = True
                 contents = 'user from {0} set slu timer'.format(self.request.remote_ip)
@@ -495,7 +494,7 @@ class SluTimerCtlHandler(base.RequestHandler):
                         tcsmsg.wlst_tml.wlst_slu_7100.force_timer = rqmsg.do_force
                         # libiisi.set_to_send(tcsmsg, 0)
                         libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
@@ -529,7 +528,7 @@ class SluCtlHandler(base.RequestHandler):
         env = False
         contents = ''
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_exec:
+            if user_data['user_auth'] in libiisi.can_exec:
                 env = True
                 contents = 'user from {0} ctrl slu'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id
@@ -573,7 +572,7 @@ class SluCtlHandler(base.RequestHandler):
                                 rqmsg.cmd_pwm.SerializeToString())
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                         libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
@@ -606,7 +605,7 @@ class SluVerGetHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluDataGet(), None)
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = rqmsg.tml_id
@@ -635,7 +634,7 @@ class SluVerGetHandler(base.RequestHandler):
                                                          tra=tra)
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                         libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, utils.m_tcs_port),
+                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
                             tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11

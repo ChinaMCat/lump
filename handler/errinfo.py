@@ -11,9 +11,8 @@ from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
 from mxpbjson import pb2json
 import base
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 
 
 @mxweb.route()
@@ -32,7 +31,7 @@ class QueryDataErrHandler(base.RequestHandler):
                                                                       msgws.QueryDataErr())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.type = rqmsg.type
 
@@ -51,7 +50,7 @@ class QueryDataErrHandler(base.RequestHandler):
                     if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                     else:
-                        tml_ids = self._cache_tml_r[user_uuid]
+                        tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
 
@@ -146,7 +145,7 @@ class ErrInfoHandler(base.RequestHandler):
                                                                       msgws.ErrInfo())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 # ,akarn_time_set,alarm_time_start,alarm_time_end
                 strsql = 'select fault_id,fault_name,fault_name_define,is_enable,fault_remark, \
                             fault_check_keyword from {0}.fault_types'.format(self._db_name)

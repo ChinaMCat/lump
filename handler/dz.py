@@ -7,9 +7,9 @@ __doc__ = 'dz handler'
 import base
 import tornado
 from tornado import gen
+import mlib_iisi.utils as libiisi
 import mxweb
 from tornado.httpclient import AsyncHTTPClient
-import utils
 
 dz_url = 'http://id.dz.tt/index.php'
 
@@ -21,7 +21,7 @@ class DZProxyHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = self.request.uri.replace('/dzproxy', utils.m_dz_url)
+        url = self.request.uri.replace('/dzproxy', libiisi.cfg_dz_url)
         thc = AsyncHTTPClient()
 
         try:

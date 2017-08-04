@@ -2,6 +2,8 @@
 ---
 - 加密配置文件中的数据库密码
 - 对用户登录接口中的sql注入攻击漏洞进行修复
+- cleaningwork bug fix
+- 整理代码，取消handler.utils文件，合并入mlib_iisi.const和mlib_iisi.utils中
 
 [2017-08-03]
 ---

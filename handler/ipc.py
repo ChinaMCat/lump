@@ -8,15 +8,12 @@ __doc__ = 'Environmental Meteorology handler'
 import logging
 import time
 from datetime import datetime, timedelta
-
 import mxpsu as mx
 import mxweb
 from tornado import gen
-
 import base
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 
 
 # 气象数据提交
@@ -46,11 +43,11 @@ class IpcUplinkHandler(base.RequestHandler):
                     data = raw_string.split(':')[1]
                     lstdata = data.split(',')
                     ym = mx.stamp2time(time.time(), format_type='%y%m')
-                    for i in utils.qudata_sxhb:
+                    for i in libiisi.qudata_sxhb:
                         db_names.add('sens_data_{0:03d}_month_{1}'.format(i, ym))
                     strsql = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES \
                         where TABLE_SCHEMA="{0}" and TABLE_NAME like "{1}"'.format(
-                        utils.m_dbname_dg, '%sens_data_%_month_%')
+                        libiisi.cfg_dbname_dg, '%sens_data_%_month_%')
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -62,16 +59,17 @@ class IpcUplinkHandler(base.RequestHandler):
                             db_names.discard(z[0])
                     del cur
                     for z in db_names:
-                        createsql += utils.sqlstr_create_emtable.format(z)
+                        createsql += libiisi.sqlstr_create_emtable.format(z)
                     if len(createsql) > 0:
-                        createsql = 'use {0};'.format(utils.m_dbname_dg) + createsql
+                        createsql = 'use {0};'.format(libiisi.cfg_dbname_dg) + createsql
                         yield self.mydata_collector(createsql, need_fetch=0)
 
                     t = int(time.time())
-                    for i in range(len(utils.qudata_sxhb)):
+                    for i in range(len(libiisi.qudata_sxhb)):
                         try:
                             insertsql += 'insert into {5}.sens_data_{0:03d}_month_{1} (dev_id,dev_data,date_create) values ({2},{3},{4});'.format(
-                                utils.qudata_sxhb[i], ym, devid, lstdata[i], t, utils.m_dbname_dg)
+                                libiisi.qudata_sxhb[i], ym, devid, lstdata[i], t,
+                                libiisi.cfg_dbname_dg)
                         except:
                             pass
                     if len(insertsql) > 0:
@@ -189,7 +187,8 @@ class QueryEMDataHandler(base.RequestHandler):
     @gen.coroutine
     def post(self):
         legal, rqmsg, msg = yield self.check_arguments(msgws.rqQueryEMData(),
-                                                                      msgws.QueryEMData(), use_scode=1)
+                                                       msgws.QueryEMData(),
+                                                       use_scode=1)
 
         if legal:
             sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=0)
@@ -216,22 +215,23 @@ class QueryEMDataHandler(base.RequestHandler):
 
             if devid.startswith('901001'):
                 for ym in yms:
-                    strsql = 'select t{0}.dev_id,t{0}.date_create '.format(utils.qudata_sxhb[0])
-                    for x in utils.qudata_sxhb:
+                    strsql = 'select t{0}.dev_id,t{0}.date_create '.format(libiisi.qudata_sxhb[0])
+                    for x in libiisi.qudata_sxhb:
                         strsql += ', t{0}.dev_data as d{0}'.format(x)
                     strsql += ' from {0}.sens_data_{1}_month_{2} as t{1}'.format(
-                        utils.m_dbname_dg, utils.qudata_sxhb[0], ym)
-                    for i in range(1, len(utils.qudata_sxhb)):
+                        libiisi.cfg_dbname_dg, libiisi.qudata_sxhb[0], ym)
+                    for i in range(1, len(libiisi.qudata_sxhb)):
                         strsql += ' left join {0}.sens_data_{1}_month_{2} as t{1} on t{3}.dev_id=t{1}.dev_id and t{3}.date_create=t{1}.date_create'.format(
-                            utils.m_dbname_dg, utils.qudata_sxhb[i], ym, utils.qudata_sxhb[0])
+                            libiisi.cfg_dbname_dg, libiisi.qudata_sxhb[i], ym,
+                            libiisi.qudata_sxhb[0])
 
                     if sdt == 0 and edt == 0:
-                        # no, no2, co, co2, pm25, temp, rehu, pm10, o3, tvoc, h2s, so2 = utils.qudata_sxhb
+                        # no, no2, co, co2, pm25, temp, rehu, pm10, o3, tvoc, h2s, so2 = libiisi.qudata_sxhb
                         strsql += ' where t{0}.dev_id="{1}" order by t{0}.date_create desc limit 1'.format(
-                            utils.qudata_sxhb[0], devid)
+                            libiisi.qudata_sxhb[0], devid)
                     else:
                         strsql += ' where t{0}.dev_id="{1}" and t{0}.date_create>={2} and t{0}.date_create<={3} order by t{0}.date_create'.format(
-                            utils.qudata_sxhb[0], devid, sdt, edt)
+                            libiisi.qudata_sxhb[0], devid, sdt, edt)
                     # print(strsql)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,

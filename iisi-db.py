@@ -16,7 +16,7 @@ import zmq
 import time
 from tornado.options import options
 import mxpsu as mx
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 
 USER_AUTH = {}
 SOCKET_POOL = None

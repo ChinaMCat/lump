@@ -15,27 +15,21 @@ from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
 import tornado.web
 from tornado.concurrent import run_on_executor
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import utils
+
 from concurrent.futures import ThreadPoolExecutor
 
 
 class RequestHandler(mxweb.MXRequestHandler):
     executor = ThreadPoolExecutor(200)
-    _cache_tml_r = dict()  # 可读权限设备地址缓存
-    _cache_tml_w = dict()  # 可写权限设备地址缓存
-    _cache_tml_x = dict()  # 可操作权限设备地址缓存
-    _tml_phy = dict()  # 设备物理地址与逻辑地址对照表
-    _cache_sunriseset = dict()  # 日出日落对照表
 
-    _db_name = utils.m_dbname_jk
-    _cache_dir = libiisi.m_cachedir
+    _db_name = libiisi.cfg_dbname_jk
     _go_back_format = 0  # 数据返回格式设置0-base64，1-json，2-pb2 serialString
     _fetch_limited = ' limit 1000'  # 数据查询数量限制
 
     def flush(self, include_footers=False, callback=None):
-        if utils.m_enable_cross_domain:
+        if libiisi.cfg_enable_cross_domain:
             self.set_header("Access-Control-Allow-Origin", "*")
         super(RequestHandler, self).flush(include_footers, callback)
 
@@ -55,13 +49,13 @@ class RequestHandler(mxweb.MXRequestHandler):
         # if isinstance(cur, types.GeneratorType):
         if cur is not None:
             for d in cur:
-                self._cache_sunriseset[int('{0}{1:02d}'.format(d[0], d[1]))] = (d[2], d[3])
+                libiisi.cache_sunriseset[int('{0}{1:02d}'.format(d[0], d[1]))] = (d[2], d[3])
         del cur
 
     def get_sunriseset(self, mmdd):
-        if len(self._cache_sunriseset) == 0:
+        if len(libiisi.cache_sunriseset) == 0:
             self.cache_sunriseset()
-        a = self._cache_sunriseset.get(int(mmdd))
+        a = libiisi.cache_sunriseset.get(int(mmdd))
         if a is None:
             return (0, 0)
         else:
@@ -140,12 +134,12 @@ class RequestHandler(mxweb.MXRequestHandler):
 
         cache_head = ''.join(['{0:x}'.format(ord(a)) for a in self.url_pattern])
         # 判断是否优先读取缓存数据
-        if buffer_tag > 0 and os.path.isfile(os.path.join(self._cache_dir, '{0}{1}'.format(
+        if buffer_tag > 0 and os.path.isfile(os.path.join(libiisi.m_cachedir, '{0}{1}'.format(
                 buffer_tag, cache_head))):
             try:
                 rep = []
                 with open(
-                        os.path.join(self._cache_dir, '{0}{1}'.format(buffer_tag, cache_head)),
+                        os.path.join(libiisi.m_cachedir, '{0}{1}'.format(buffer_tag, cache_head)),
                         'rb') as f:
                     cur = json.loads(f.read())
                     f.close()
@@ -255,8 +249,8 @@ class RequestHandler(mxweb.MXRequestHandler):
                         if paging_total > 1:  # 利用后台线程写缓存
                             t = threading.Thread(
                                 target=self.write_cache,
-                                args=(os.path.join(self._cache_dir, '{0}{1}'.format(buffer_tag,
-                                                                                    cache_head)),
+                                args=(os.path.join(libiisi.m_cachedir, '{0}{1}'.format(buffer_tag,
+                                                                                       cache_head)),
                                       cache_data, ))
                             t.start()
                         return (n, buffer_tag, paging_idx, paging_total, rep)
@@ -388,43 +382,43 @@ class RequestHandler(mxweb.MXRequestHandler):
         # if isinstance(cur, types.GeneratorType):
         if cur is not None:
             for d in cur:
-                self._tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
+                libiisi.tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
         del cur
 
     def get_phy_list(self, tml_list):
-        if len(self._tml_phy) == 0:
+        if len(libiisi.tml_phy) == 0:
             self.get_phy_cache()
         x = []
 
-        if len(self._tml_phy) > 0:
+        if len(libiisi.tml_phy) > 0:
             for a in tml_list:
-                b = self._tml_phy.get(a)
+                b = libiisi.tml_phy.get(a)
                 if b is not None:
                     x.append(b[0])
         return x
 
     def get_phy_info(self, tml_id):
-        if len(self._tml_phy) == 0:
+        if len(libiisi.tml_phy) == 0:
             self.get_phy_cache()
-        if tml_id in self._tml_phy.keys():
-            return self._tml_phy.get(tml_id)
+        if tml_id in libiisi.tml_phy.keys():
+            return libiisi.tml_phy.get(tml_id)
         else:
             return (-1, -1, 0)
 
     def get_tml_cache(self, tml_type, user_uuid):
         '''获取用户当前对设备的权限列表'''
         if tml_type == 'r':
-            self._cache_tml_r[user_uuid] = set()
+            libiisi.cache_tml_r[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                self._db_name, ','.join([str(a) for a in utils.cache_user[user_uuid]['area_r']]))
+                self._db_name, ','.join([str(a) for a in libiisi.cache_user[user_uuid]['area_r']]))
         elif tml_type == 'w':
-            self._cache_tml_w[user_uuid] = set()
+            libiisi.cache_tml_w[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                self._db_name, ','.join([str(a) for a in utils.cache_user[user_uuid]['area_w']]))
+                self._db_name, ','.join([str(a) for a in libiisi.cache_user[user_uuid]['area_w']]))
         elif tml_type == 'x':
-            self._cache_tml_x[user_uuid] = set()
+            libiisi.cache_tml_x[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                self._db_name, ','.join([str(a) for a in utils.cache_user[user_uuid]['area_x']]))
+                self._db_name, ','.join([str(a) for a in libiisi.cache_user[user_uuid]['area_x']]))
         cur = libiisi.m_sql.run_fetch(strsql)
         s = libiisi.m_sql.get_last_error_message()
         if len(s) > 0:
@@ -443,37 +437,37 @@ class RequestHandler(mxweb.MXRequestHandler):
                 if tml_type == 'r':
                     for a in d:
                         z = set([int(b) for b in a.split(';')[:-1]])
-                        y = self._cache_tml_r[user_uuid]
-                        self._cache_tml_r[user_uuid] = y.union(z)
+                        y = libiisi.cache_tml_r[user_uuid]
+                        libiisi.cache_tml_r[user_uuid] = y.union(z)
                 elif tml_type == 'w':
                     for a in d:
                         z = set([int(b) for b in a.split(';')[:-1]])
-                        y = self._cache_tml_w[user_uuid]
-                        self._cache_tml_w[user_uuid] = y.union(z)
+                        y = libiisi.cache_tml_w[user_uuid]
+                        libiisi.cache_tml_w[user_uuid] = y.union(z)
                 elif tml_type == 'x':
                     for a in d:
                         z = set([int(b) for b in a.split(';')[:-1]])
-                        y = self._cache_tml_x[user_uuid]
-                        self._cache_tml_x[user_uuid] = y.union(z)
+                        y = libiisi.cache_tml_x[user_uuid]
+                        libiisi.cache_tml_x[user_uuid] = y.union(z)
         del cur, strsql
 
     def check_tml_r(self, user_uuid, settml):
         '''检查当前用户是否有读权限'''
-        if user_uuid not in self._cache_tml_r.keys():
+        if user_uuid not in libiisi.cache_tml_r.keys():
             self.get_tml_cache('r', user_uuid)
-        return self._cache_tml_r[user_uuid].intersection(settml)
+        return libiisi.cache_tml_r[user_uuid].intersection(settml)
 
     def check_tml_w(self, user_uuid, settml):
         '''检查当前用户是否有写权限'''
-        if user_uuid not in self._cache_tml_w.keys():
+        if user_uuid not in libiisi.cache_tml_w.keys():
             self.get_tml_cache('w', user_uuid)
-        return self._cache_tml_w[user_uuid].intersection(settml)
+        return libiisi.cache_tml_w[user_uuid].intersection(settml)
 
     def check_tml_x(self, user_uuid, settml):
         '''检查当前用户是否有对相关设备的操作权限'''
-        if user_uuid not in self._cache_tml_x.keys():
+        if user_uuid not in libiisi.cache_tml_x.keys():
             self.get_tml_cache('x', user_uuid)
-        return self._cache_tml_x[user_uuid].intersection(settml)
+        return libiisi.cache_tml_x[user_uuid].intersection(settml)
 
     @run_on_executor
     def write_event(self, event_id, contents, is_client_snd, **kwords):
@@ -635,12 +629,12 @@ class RequestHandler(mxweb.MXRequestHandler):
             msg.head.if_st = 46
 
             # 检查uuid是否合法
-        if user_uuid in utils.cache_user.keys():
-            user_data = utils.cache_user.get(user_uuid)
+        if user_uuid in libiisi.cache_user.keys():
+            user_data = libiisi.cache_user.get(user_uuid)
             # self._db_name = user_data['user_db']
-            if user_uuid in utils.cache_buildin_users:
+            if user_uuid in libiisi.cache_buildin_users:
                 user_data['active_time'] = time.time()
-                utils.cache_user[user_uuid] = user_data
+                libiisi.cache_user[user_uuid] = user_data
                 if user_data['is_buildin'] == 1:
                     a = self.url_pattern
                     if a[a.rfind('/') + 1:] not in user_data[
@@ -652,14 +646,14 @@ class RequestHandler(mxweb.MXRequestHandler):
                 if user_data['remote_ip'] != self.request.remote_ip:
                     if not (rqmsg is not None and user_data['source_dev'] == 3 and
                             user_data['unique'] == rqmsg.head.unique):
-                        del utils.cache_user[user_uuid]
+                        del libiisi.cache_user[user_uuid]
                         contents = 'User source ip is illegal'
                         msg.head.if_st = 12
                         msg.head.if_msg = contents
                         self.write_event(123, contents, 1, user_name=user_data['user_name'])
                         user_data = None
                 elif time.time() - user_data['active_time'] > 60 * 30:
-                    del utils.cache_user[user_uuid]
+                    del libiisi.cache_user[user_uuid]
                     contents = 'User login timed out'
                     msg.head.if_st = 10
                     msg.head.if_msg = contents
@@ -667,7 +661,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                     user_data = None
                 else:
                     user_data['active_time'] = time.time()
-                    utils.cache_user[user_uuid] = user_data
+                    libiisi.cache_user[user_uuid] = user_data
         else:
             msg.head.if_st = 10
             msg.head.if_msg = 'User is not logged or has timed out'

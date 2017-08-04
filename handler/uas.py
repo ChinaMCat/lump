@@ -12,17 +12,16 @@ import mxweb
 from tornado import gen
 import base
 import pbiisi.msg_ws_pb2 as msgws
-import mlib_iisi as libiisi
-import utils
+import mlib_iisi.utils as libiisi
 from mxpbjson import pb2json
 
 try:
     strsql = 'select column_name from INFORMATION_SCHEMA.columns where table_schema="{0}" and column_name in ("user_id","user_remark");'.format(
-        utils.m_dbname_uas)
+        libiisi.cfg_dbname_uas)
     cur = libiisi.m_sql.run_exec(strsql)
     add_user_mark = 'add column user_remark text null, '
     add_user_id = 'add column user_id int(11) not null AUTO_INCREMENT, add index user_id (user_id)'
-    strsql = 'alter table {0}.user_list '.format(utils.m_dbname_uas)
+    strsql = 'alter table {0}.user_list '.format(libiisi.cfg_dbname_uas)
     need_update = False
     x = []
     try:
@@ -79,8 +78,9 @@ class UserLoginHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_id,user_name,user_real_name,user_phonenumber,user_remark from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace(
-            '"', ''), rqmsg.pwd.replace('"', ''))
+        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace('"',
+                                                                                                ''),
+                                                              rqmsg.pwd.replace('"', ''))
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
             need_fetch=1,

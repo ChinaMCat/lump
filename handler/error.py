@@ -4,6 +4,7 @@
 from tornado import gen
 import mxweb
 import base
+import mlib_iisi.utils as libiisi
 
 
 @mxweb.route()
@@ -11,5 +12,5 @@ class Err404Handler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        # self.redirect('/cleaningwork')
+        libiisi.cleaningwork()
         self.render('404.html')

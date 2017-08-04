@@ -3,20 +3,17 @@
 
 __author__ = 'minamoto'
 __ver__ = '0.1'
-__doc__ = 'Environmental Meteorology handler'
+__doc__ = 'als handler'
 
 import logging
 import time
 from datetime import datetime, timedelta
-
 import mxpsu as mx
 import mxweb
 from tornado import gen
-
 import base
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 
 
 @mxweb.route()
@@ -34,7 +31,7 @@ class QueryDataAlsHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataAls(),
                                                                       msgws.QueryDataAls())
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
 
                 # 验证用户可操作的设备id
@@ -47,7 +44,7 @@ class QueryDataAlsHandler(base.RequestHandler):
                     if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                     else:
-                        tml_ids = self._cache_tml_r[user_uuid]
+                        tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
 

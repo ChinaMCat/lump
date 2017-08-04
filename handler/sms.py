@@ -5,7 +5,6 @@ __author__ = 'minamoto'
 __ver__ = '0.1'
 __doc__ = 'sms handler'
 
-import logging
 import time
 from mxpbjson import pb2json
 import mxpsu as mx
@@ -13,10 +12,8 @@ import mxweb
 from tornado import gen
 import types
 import base
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import utils
-import _mysql as mysql
 
 
 @mxweb.route()
@@ -35,7 +32,7 @@ class QuerySmsRecordHandler(base.RequestHandler):
                                                                       msgws.QuerySmsRecord())
 
         if user_data is not None:
-            if user_data['user_auth'] in utils._can_read:
+            if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 if len(rqmsg.tels) > 0:
                     str_tels = ' and send_number in ({0})'.format(','.join([str(t) for t in
@@ -44,7 +41,8 @@ class QuerySmsRecordHandler(base.RequestHandler):
                     str_tels = ''
                 strsql = 'select send_date,send_number,send_msg from {0}_data.record_msg_log \
                                 where send_date>={1} and send_date<={2} and send_msg like "%{3}%" \
-                                {4} {5}'.format(self._db_name, sdt, edt, rqmsg.msg, str_tels, self._fetch_limited)
+                                {4} {5}'.format(self._db_name, sdt, edt, rqmsg.msg, str_tels,
+                                                self._fetch_limited)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
@@ -107,8 +105,6 @@ class SubmitSmsHandler(base.RequestHandler):
         else:
             msg.head.if_st = 0
             msg.head.if_msg = 'Security code error'
-            logging.error(utils.format_log(self.request.remote_ip, msg.head.if_msg,
-                                           self.request.path, 0))
 
         if self._go_back_format == 1:
             self.write(pb2json(msg))

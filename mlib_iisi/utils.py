@@ -1,73 +1,61 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-import codecs
 import json
-import os
 import time
 import mxpsu as mx
 import protobuf3.msg_with_ctrl_pb2 as msgctrl
 import zmq
-
-m_confdir, m_logdir, m_cachedir = mx.get_dirs('oahu')
+import os
+import gc
+from const import *
 
 m_zmq_pub = None
 m_zmq_pull = None
 m_zmq_ctx = zmq.Context()
 
-m_send_queue = mx.PriorityQueue(maxsize=5000)
 
-m_tcs = None
-
-m_sql = None
-
-# _wait4ans = dict()
-# _ans_queue = dict()
-
-
-def set_tcs_queue(tcsmsg):
-    m_send_queue.put_nowait(tcsmsg.SerializeToString())
-
-
-def count_tcs_queue():
-    return m_send_queue.qsize()
-
-
-def get_tcs_queue():
-    return m_send_queue.get_nowait()
-
-
-def set_to_send(tcsmsg, w4a, usepb2=True):
-    return
-    if usepb2:
-        m_send_queue.put_nowait('`{0}`'.format(mx.convertProtobuf(tcsmsg)))
-        # for d in tcsmsg.args.addr:
-        #     _wait4ans[int(time.time() * 100000)] = '{0}.{1}.{2}'.format(tcsmsg.head.cmd, d, w4a)
-    else:
-        m_send_queue.put_nowait('`{0}`'.format(json.dumps(tcsmsg, separators=(',', ':')).lower()))
-        # for d in tcsmsg['args']['addr']:
-        #     _wait4ans[int(time.time() * 100000)] = '{0}.{1}.{2}'.format(tcsmsg['head']['cmd'], d, w4a)
+def load_profile():
+    # 判断是否存在内建用户，并读取
+    if os.path.isfile(os.path.join(mx.SCRIPT_DIR, '.profile')):
+        with open(os.path.join(mx.SCRIPT_DIR, '.profile'), 'r') as f:
+            z = f.readlines()
+        for y in z:
+            try:
+                x = json.loads(y)
+                if 'enable_if' in x.keys():
+                    a = mx.code_string(x['enable_if'], do=1)
+                    x['enable_if'] = tuple(a.split(','))
+                    del a
+                else:
+                    x['enable_if'] = tuple()
+                if 'uuid' in x.keys():
+                    uuid = x['uuid']
+                    cache_buildin_users.add(uuid)
+                    del x['uuid']
+                    x['login_time'] = time.time()
+                    x['active_time'] = time.time()
+                    x['is_buildin'] = 1
+                    x['area_r'] = set([0])
+                    x['area_w'] = set([0])
+                    x['area_x'] = set([0])
+                    cache_user[uuid] = x
+            except:
+                pass
 
 
-def get_to_send():
-    return m_send_queue.get_nowait()
-
-# def check_ans(uuid, tcsmsg):
-#     for k in _wait4ans.keys():
-#         if time.time() - k > 60 * 5:
-#             del _wait4ans[k]
-#             continue
-#         # 检查应答
-#         pass
-
-# def set_ans(uuid, tcsmsg):
-#     check_ans(uuid, tcsmsg)
-#     if uuid not in _ans_queue.keys():
-#         _ans_queue[uuid] = []
-#     _ans_queue[uuid].append(tcsmsg)
-
-# def get_ans(uuid):
-#     return _ans_queue[uuid]
+def load_config(conf):
+    global cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain
+    load_profile()
+    m_config.loadConfig(conf)
+    cfg_bind_port = m_config.getData('bind_port')
+    cfg_tcs_port = m_config.getData('tcs_port')  # 监控通讯层端口号
+    cfg_dbname_jk = m_config.getData('db_name_jk')  # 监控数据库名称
+    cfg_dbname_dg = m_config.getData('db_name_dg')  # 灯杆数据库名称
+    cfg_dbname_uas = m_config.getData('db_name_uas')  # uas数据库名称
+    cfg_dz_url = m_config.getData('dz_url')  # 电桩接口地址
+    cfg_fs_url = '{0}/FlowService.asmx'.format(m_config.getData('fs_url'))  # 市政工作流接口地址
+    cfg_enable_cross_domain = 1 if m_config.getData('cross_domain').lower() == 'true' else 0
 
 
 class SendData():
@@ -194,37 +182,6 @@ def sendServerMsg(msg, cmd):
 
 SENDWHOIS = '`{0}`'.format(sendServerMsg('', 'wlst.sys.whois'))
 
-# m_config = mx.ConfigFile(dict(log_level=('10', u'日志记录等级, 10-debug, 20-info, 30-warring, 40-error'),
-#                               tcs_server=('127.0.0.1:10001', u'接口中间件服务器地址, ip:port'),
-#                               reconnect_time=('10', u'连接断开重新发起连接间隔,默认10s'),
-#                               bind_port=('10005', u'本地监听端口'),
-#                               zmq_pub=('10007', u'ZMQ PUB 端口'),
-#                               db_host=('127.0.0.1:3306', u'监控数据库服务地址, ip:port, 端口默认3306'),
-#                               db_user=('root', u'监控数据库服务用户名'),
-#                               db_pwd=('lp1234xy', u'监控数据库服务密码'),
-#                               jkdb_name=('mydb1024', u'监控数据库名称'),
-#                               dgdb_name=('dgdb10001', u'灯杆数据库名称'),
-#                               dz_url=('http://id.dz.tt/index.php', u'电桩接口地址'),
-#                               fs_url=('http://127.0.0.1:33819/ws_common', u'工作流接口地址'),
-#                               db_url=('', u'数据访问接口地址'), ))
-m_config = mx.ConfigFile()
-m_config.setData('uas_url', 'http://127.0.0.1:10009/uas', '统一验证服务地址')
-m_config.setData('log_level', 10, '日志记录等级, 10-debug, 20-info, 30-warring, 40-error')
-m_config.setData('tcs_port', '1024', '对应通讯服务程序端口')
-m_config.setData('db_host', '127.0.0.1:3306', '数据库服务地址, ip:port, 端口默认3306')
-m_config.setData('db_user', 'root', '数据库服务用户名')
-m_config.setData('db_pwd', 'SaqabW8bK3JAQ6WWmtyYlmGbaaV2aPG=', '数据库服务密码')
-m_config.setData('db_name_jk', 'mydb1024', '监控数据库名称')
-m_config.setData('db_name_dg', 'mydb_dg_10001', '灯杆数据库名称')
-m_config.setData('db_name_uas', 'uas', '统一验证数据库名称')
-m_config.setData('dz_url', 'http://id.dz.tt/index.php', '电桩接口地址')
-m_config.setData('fs_url', 'http://127.0.0.1:33819/ws_common', '工作流接口地址')
-m_config.setData('bind_port', 10005, '本地监听端口')
-m_config.setData('zmq_port', '10006',
-                 'ZMQ端口，采用ip:port格式时连接远程ZMQ-PULL服务,采用port格式时为发布本地PULL服务,PUB服务端口号+1')
-m_config.setData('cross_domain', 'true', '允许跨域访问')
-m_config.setData('max_db_conn', '20', '最大数据库连接池容量')
-
 
 def zmq_proxy():
     global m_zmq_pub, m_zmq_pull, m_zmq_ctx
@@ -256,17 +213,7 @@ def zmq_proxy():
                         if time.time() - last_cache_clean > 86400:  # 清理缓存
                             t = time.time()
                             last_cache_clean = t
-                            try:
-                                for r, d, f in os.walk(m_cachedir):
-                                    if r == m_cachedir:
-                                        for x in f:
-                                            try:
-                                                if t - int(x[:10]) > 3600:
-                                                    os.remove(x)
-                                            except:
-                                                pass
-                            except:
-                                pass
+                            cleaningwork(t)
                     print('zmq end.')
                 except Exception as ex:
                     print('zmq proxy err:{0}'.format(ex))
@@ -300,3 +247,55 @@ def send_to_zmq_pub(sfilter, msg):
             m_zmq_pub.send_multipart([f, msg])
     except Exception as ex:
         print('zmq pub err:{0}'.format(ex))
+
+
+def cleaningwork(t=time.time()):
+    # 清理缓存文件
+    try:
+        for r, d, f in os.walk(m_cachedir):
+            if r == m_cachedir:
+                for x in f:
+                    try:
+                        if t - int(x[:10]) > 3600:
+                            os.remove(os.path.join(m_cachedir, x))
+                    except Exception as ex:
+                        pass
+    except Exception as ex:
+        pass
+    # 清理
+    k = set(cache_user.keys())
+    r = set(cache_tml_r.keys())
+    w = set(cache_tml_w.keys())
+    x = set(cache_tml_x.keys())
+    for a in k:
+        try:
+            if a in cache_buildin_users:
+                continue
+            b = cache_user.get(a)
+            if t - b['active_time'] > 60 * 60:
+                del cache_user[a]
+                # k.remove(a)
+        except:
+            pass
+
+    z = r.difference(k)
+    for a in z:
+        try:
+            del cache_tml_r[a]
+        except:
+            pass
+    z = w.difference(k)
+    for a in z:
+        try:
+            del cache_tml_w[a]
+        except:
+            pass
+    z = x.difference(k)
+    for a in z:
+        try:
+            del cache_tml_x[a]
+        except:
+            pass
+
+    del z, t, k, r, w, x
+    gc.collect()

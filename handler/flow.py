@@ -6,13 +6,11 @@ __doc__ = 'rtu handler'
 
 import xml.dom.minidom as xmld
 from urllib import urlencode
-
+import mlib_iisi.utils as libiisi
 import mxweb
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
-
 import base
-import utils
 
 
 @mxweb.route()
@@ -28,7 +26,7 @@ class FlowWorkHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}/{1}'.format(utils.m_fs_url, self.request.uri.replace(self.root_path, ''))
+        url = '{0}/{1}'.format(libiisi.cfg_fs_url, self.request.uri.replace(self.root_path, ''))
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -45,7 +43,7 @@ class FlowWorkHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}/{1}'.format(utils.m_fs_url, self.request.uri.replace(self.root_path, ''))
+        url = '{0}/{1}'.format(libiisi.cfg_fs_url, self.request.uri.replace(self.root_path, ''))
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -61,6 +59,7 @@ class FlowWorkHandler(base.RequestHandler):
         self.finish()
         del url, x, data
 
+
 @mxweb.route()
 class mobileLoginHandler(base.RequestHandler):
 
@@ -73,7 +72,7 @@ class mobileLoginHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -90,7 +89,7 @@ class mobileLoginHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -119,7 +118,7 @@ class getAssetHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -136,7 +135,7 @@ class getAssetHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -151,6 +150,7 @@ class getAssetHandler(base.RequestHandler):
             self.write(str(ex))
         self.finish()
         del url, x, data
+
 
 @mxweb.route()
 class getInfoHandler(base.RequestHandler):
@@ -164,7 +164,7 @@ class getInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -181,7 +181,7 @@ class getInfoHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -197,6 +197,7 @@ class getInfoHandler(base.RequestHandler):
         self.finish()
         del url, x, data
 
+
 @mxweb.route()
 class getVersionHandler(base.RequestHandler):
 
@@ -209,7 +210,7 @@ class getVersionHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -226,7 +227,7 @@ class getVersionHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -255,7 +256,7 @@ class getFormHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -272,7 +273,7 @@ class getFormHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -301,7 +302,7 @@ class setGpsHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -318,7 +319,7 @@ class setGpsHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -347,7 +348,7 @@ class getFilterBoxHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -364,7 +365,7 @@ class getFilterBoxHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -393,7 +394,7 @@ class listRecordHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -410,7 +411,7 @@ class listRecordHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -439,7 +440,7 @@ class listTaskHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -456,7 +457,7 @@ class listTaskHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -485,7 +486,7 @@ class listTaskRecordHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -502,7 +503,7 @@ class listTaskRecordHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -531,7 +532,7 @@ class listTaskAllHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -548,7 +549,7 @@ class listTaskAllHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -577,7 +578,7 @@ class listDoneHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -594,7 +595,7 @@ class listDoneHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -623,7 +624,7 @@ class getFormHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -640,7 +641,7 @@ class getFormHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -669,7 +670,7 @@ class getLogHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -686,7 +687,7 @@ class getLogHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -715,7 +716,7 @@ class doFetchHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -732,7 +733,7 @@ class doFetchHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -761,7 +762,7 @@ class doTransitionHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -778,7 +779,7 @@ class doTransitionHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,
@@ -807,7 +808,7 @@ class GetDictValuesWithFilterHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
 
@@ -824,7 +825,7 @@ class GetDictValuesWithFilterHandler(base.RequestHandler):
         data = dict()
         for k in x.keys():
             data[k] = x.get(k)[0]
-        url = '{0}{1}'.format(utils.m_fs_url, self.request.uri)
+        url = '{0}{1}'.format(libiisi.cfg_fs_url, self.request.uri)
         try:
             # rep = utils.m_httpclinet_pool.request('GET',
             #                                       url,

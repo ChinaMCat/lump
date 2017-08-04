@@ -16,7 +16,7 @@ import mxpsu as mx
 
 baseurl = 'http://192.168.122.185:10005/'
 baseurl = 'http://192.168.50.83:10020/'
-# baseurl = 'http://192.168.50.55:10005/'
+baseurl = 'http://192.168.50.55:10005/'
 # baseurl = 'http://192.168.122.185:10005/'
 # baseurl = 'http://180.141.89.112:10005/'
 # baseurl = 'http://180.168.198.218:63000/'
@@ -44,7 +44,7 @@ def test_userlogin():
     rqmsg = init_head(msgif.rqUserLogin())
     # rqmsg.dev = 3
     rqmsg.unique = 'asdfhaskdfkaf'
-    rqmsg.user = u'admin" or "t"="t'
+    rqmsg.user = u'admin'
     rqmsg.pwd = '1234'
     # rqmsg.user = '管理员'
     # rqmsg.pwd = '123'
@@ -499,11 +499,13 @@ def test_querysms():
     global user_id
     print('=== querysms ===')
     url = baseurl + 'querysmsrecord'
-    # rqmsg = msgif.rqSysInfo()
+    rqmsg = msgif.rqQuerySmsRecord()
+    rqmsg.dt_end = int(time.time())
     # rqmsg.data_mark.extend([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-    data = {'uuid': user_id,
-            'pb2':
-            'Ch0IARDI5AkaDnF1ZXJ5c21zcmVjb3JkoAaFnL3DBRoFoP7p4kYiCeS4nOWFq+i3ryjPmJilBTDPiafDBQ=='}
+    # data = {'uuid': user_id,
+    #         'pb2':
+    #         'Ch0IARDI5AkaDnF1ZXJ5c21zcmVjb3JkoAaFnL3DBRoFoP7p4kYiCeS4nOWFq+i3ryjPmJilBTDPiafDBQ=='}
+    data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     print(r.data)
     msg = msgif.QuerySmsRecord()
@@ -624,8 +626,8 @@ def test_querydatamru():
     rqmsg = msgif.rqQueryDataMru()
     rqmsg.head.ver = 160328
     # rqmsg.dt_start = mx.time2stamp('2016-12-10 00:00:00')
-    # rqmsg.dt_end = mx.time2stamp('2017-01-20 00:00:00')
-    rqmsg.tml_id.extend([1300306])
+    rqmsg.dt_end = mx.time2stamp('2017-09-20 00:00:00')
+    rqmsg.tml_id.extend([])
     data = {'uuid': user_id, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
     # data = {'uuid': user_id, 'pb2': 'GAAgAA=='}
     r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
@@ -742,7 +744,7 @@ if __name__ == '__main__':
     # test_queryttbind()
     # test_sluctl()
     # test_querydatartuelec()
-    # test_querydatamru()
+    test_querydatamru()
     # test_querysms()
     # test_querysludata()
     # test_sysinfo()
@@ -755,13 +757,13 @@ if __name__ == '__main__':
     # test_userrenew()
     # test_tmlinfo()
     # test_querydataals()
-    test_errinfo()
+    # test_errinfo()
     # test_eventinfo()
     # test_rtuctl()
     # test_posttest()
     # test_userinfo()
     # test_rtudataget()
-    test_queryttdo()
+    # test_queryttdo()
     # test_sunrisetinfo()
     # # test_userdel()
     # test_ipcuplink()

@@ -10,16 +10,13 @@ import time
 import uuid
 import xml.dom.minidom as xmld
 from urllib import urlencode
-
 import mxpsu as mx
 import mxweb
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
-
 import base
-import mlib_iisi as libiisi
+import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-import utils
 
 
 @mxweb.route()
@@ -55,8 +52,9 @@ class UserLoginJKHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace(
-            '"', ''), rqmsg.pwd.replace('"', ''))
+        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace('"',
+                                                                                                ''),
+                                                              rqmsg.pwd.replace('"', ''))
 
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
@@ -70,18 +68,18 @@ class UserLoginJKHandler(base.RequestHandler):
         else:
             d = cur[0]
             # 判断用户是否已经登录
-            if len(utils.cache_user) > 0:
-                a = utils.cache_user.keys()
+            if len(libiisi.cache_user) > 0:
+                a = libiisi.cache_user.keys()
                 for k in a:
-                    ud = utils.cache_user.get(k)
+                    ud = libiisi.cache_user.get(k)
                     if ud is not None:
                         # 注销已登录用户
                         if ud['user_name'] == rqmsg.user and ud['source_dev'] == rqmsg.dev:
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
-                            user_name = utils.cache_user[k]['user_name']
+                            user_name = libiisi.cache_user[k]['user_name']
                             self.write_event(122, contents, 2, user_name=user_name)
-                            del utils.cache_user[k]
+                            del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
             user_uuid = uuid.uuid1().hex
@@ -149,21 +147,21 @@ class UserLoginJKHandler(base.RequestHandler):
             msg.area_r.extend(_area_r)
             msg.area_w.extend(_area_w)
             msg.area_x.extend(_area_x)
-            msg.tcs = int(utils.m_tcs_port)
+            msg.tcs = int(libiisi.cfg_tcs_port)
             # 加入用户缓存{uuid:dict()}
-            utils.cache_user[user_uuid] = dict(user_name=rqmsg.user,
-                                               user_auth=user_auth,
-                                               login_time=time.time(),
-                                               active_time=time.time(),
-                                               user_db=self._db_name,
-                                               area_id=0,
-                                               source_dev=rqmsg.dev,
-                                               unique=rqmsg.unique,
-                                               remote_ip=self.request.remote_ip,
-                                               area_r=set(_area_r),
-                                               area_w=set(_area_w),
-                                               area_x=set(_area_x),
-                                               is_buildin=0)
+            libiisi.cache_user[user_uuid] = dict(user_name=rqmsg.user,
+                                                 user_auth=user_auth,
+                                                 login_time=time.time(),
+                                                 active_time=time.time(),
+                                                 user_db=self._db_name,
+                                                 area_id=0,
+                                                 source_dev=rqmsg.dev,
+                                                 unique=rqmsg.unique,
+                                                 remote_ip=self.request.remote_ip,
+                                                 area_r=set(_area_r),
+                                                 area_w=set(_area_w),
+                                                 area_x=set(_area_x),
+                                                 is_buildin=0)
             del _area_r, _area_w, _area_x
 
         del cur, strsql
@@ -180,7 +178,7 @@ class UserLoginJKHandler(base.RequestHandler):
         if rqmsg.dev == 3:
             retry = False
             args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
-            url = '{0}/mobileLogin?{1}'.format(utils.m_fs_url, urlencode(args))
+            url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url, urlencode(args))
             try:
                 rep = yield self.thc.fetch(url, raise_error=True, request_timeout=10)
                 # rep = utils.m_httpclinet_pool.request('GET',
@@ -253,8 +251,9 @@ class UserLoginHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace(
-            '"', ''), rqmsg.pwd.replace('"', ''))
+        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace('"',
+                                                                                                ''),
+                                                              rqmsg.pwd.replace('"', ''))
 
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
@@ -268,18 +267,18 @@ class UserLoginHandler(base.RequestHandler):
         else:
             d = cur[0]
             # 判断用户是否已经登录
-            if len(utils.cache_user) > 0:
-                a = utils.cache_user.keys()
+            if len(libiisi.cache_user) > 0:
+                a = libiisi.cache_user.keys()
                 for k in a:
-                    ud = utils.cache_user.get(k)
+                    ud = libiisi.cache_user.get(k)
                     if ud is not None:
                         # 注销已登录用户
                         if ud['user_name'] == rqmsg.user and ud['source_dev'] == rqmsg.dev:
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
-                            user_name = utils.cache_user[k]['user_name']
+                            user_name = libiisi.cache_user[k]['user_name']
                             self.write_event(122, contents, 2, user_name=user_name)
-                            del utils.cache_user[k]
+                            del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
             user_uuid = uuid.uuid1().hex
@@ -340,21 +339,21 @@ class UserLoginHandler(base.RequestHandler):
             msg.area_r.extend(_area_r)
             msg.area_w.extend(_area_w)
             msg.area_x.extend(_area_x)
-            msg.tcs = int(utils.m_tcs_port)
+            msg.tcs = int(libiisi.cfg_tcs_port)
             # 加入用户缓存{uuid:dict()}
-            utils.cache_user[user_uuid] = dict(user_name=rqmsg.user,
-                                               user_auth=user_auth,
-                                               login_time=time.time(),
-                                               active_time=time.time(),
-                                               user_db=self._db_name,
-                                               area_id=0,
-                                               source_dev=rqmsg.dev,
-                                               unique=rqmsg.unique,
-                                               remote_ip=self.request.remote_ip,
-                                               area_r=set(_area_r),
-                                               area_w=set(_area_w),
-                                               area_x=set(_area_x),
-                                               is_buildin=0)
+            libiisi.cache_user[user_uuid] = dict(user_name=rqmsg.user,
+                                                 user_auth=user_auth,
+                                                 login_time=time.time(),
+                                                 active_time=time.time(),
+                                                 user_db=self._db_name,
+                                                 area_id=0,
+                                                 source_dev=rqmsg.dev,
+                                                 unique=rqmsg.unique,
+                                                 remote_ip=self.request.remote_ip,
+                                                 area_r=set(_area_r),
+                                                 area_w=set(_area_w),
+                                                 area_x=set(_area_x),
+                                                 is_buildin=0)
             del _area_r, _area_w, _area_x
 
         del cur, strsql
@@ -368,7 +367,7 @@ class UserLoginHandler(base.RequestHandler):
         if rqmsg.dev == 3:
             retry = False
             args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
-            url = '{0}/mobileLogin?{1}'.format(utils.m_fs_url, urlencode(args))
+            url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url, urlencode(args))
             try:
                 rep = yield self.thc.fetch(url, raise_error=True, request_timeout=10)
                 # rep = utils.m_httpclinet_pool.request('GET',
@@ -424,17 +423,17 @@ class UserLogoutHandler(base.RequestHandler):
 
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(None, None)
         user_uuid = self.get_argument('uuid')
-        if user_uuid in utils.cache_buildin_users:
+        if user_uuid in libiisi.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to logout.'
         else:
             if user_data is not None:
                 contents = 'logout from {0}'.format(self.request.remote_ip)
-                del utils.cache_user[user_uuid]
+                del libiisi.cache_user[user_uuid]
                 try:
-                    del self._cache_tml_r[user_uuid]
-                    del self._cache_tml_w[user_uuid]
-                    del self._cache_tml_x[user_uuid]
+                    del libiisi.cache_tml_r[user_uuid]
+                    del libiisi.cache_tml_w[user_uuid]
+                    del libiisi.cache_tml_x[user_uuid]
                 except:
                     pass
                 env = True
@@ -491,7 +490,7 @@ class UserAddHandler(base.RequestHandler):
         env = False
         contents = ''
 
-        if user_uuid in utils.cache_buildin_users:
+        if user_uuid in libiisi.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to add new user.'
         else:
@@ -550,7 +549,7 @@ class UserDelHandler(base.RequestHandler):
         env = False
         contents = ''
 
-        if user_uuid in utils.cache_buildin_users:
+        if user_uuid in libiisi.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to del user.'
         else:
@@ -610,7 +609,7 @@ class UserEditHandler(base.RequestHandler):
         env = False
         contents = ''
 
-        if user_uuid in utils.cache_buildin_users:
+        if user_uuid in libiisi.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to edit user.'
         else:
@@ -620,22 +619,22 @@ class UserEditHandler(base.RequestHandler):
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
                     need_fetch=1)
-                if record_total > 0 or user_data['user_auth'] in utils._can_admin:
+                if record_total > 0 or user_data['user_auth'] in libiisi.can_admin:
                     if user_data['user_name'] == rqmsg.user_name:
-                        if user_data['user_auth'] in utils._can_write:
+                        if user_data['user_auth'] in libiisi.can_write:
                             strsql = 'update {0}.user_list set user_real_name="{1}", \
                                         user_password="{2}", \
                                         user_phonenumber="{3}", \
                                         user_operator_code="{4}" \
-                                        where user_name="{5}"'.format(self._db_name, rqmsg.fullname,
-                                                                      rqmsg.pwd.replace('"', ''), rqmsg.tel,
-                                                                      rqmsg.code, rqmsg.user_name.replace('"', ''))
+                                        where user_name="{5}"'.format(
+                                self._db_name, rqmsg.fullname, rqmsg.pwd.replace('"', ''),
+                                rqmsg.tel, rqmsg.code, rqmsg.user_name.replace('"', ''))
                             self.mydata_collector(strsql, 0)
                         else:
                             msg.head.if_st = 11
                             msg.head.if_msg = 'You do not have permission to modify the information'
                     # else:
-                    #     if user_data['user_auth'] in utils._can_admin:
+                    #     if user_data['user_auth'] in libiisi.can_admin:
                     #         strsql = 'update {0}.user_list set user_real_name="{1}", \
                     #                     user_password="{2}", \
                     #                     user_phonenumber="{3}", \
@@ -654,7 +653,7 @@ class UserEditHandler(base.RequestHandler):
 
         if msg.head.if_st == 1 and rqmsg.user_sz_id > 0:
             thc = AsyncHTTPClient()
-            url = '{0}/{1}'.format(utils.m_fs_url, 'UpdatePassword')
+            url = '{0}/{1}'.format(libiisi.cfg_fs_url, 'UpdatePassword')
             data = {'user_now': rqmsg.user_sz_id, 'old_pwd': rqmsg.pwd_old, 'new_pwd': rqmsg.pwd}
             rep = yield self.thc.fetch(url, raise_error=False, request_timeout=20)
             if 'false' in rep.body:
@@ -696,7 +695,7 @@ class UserInfoHandler(base.RequestHandler):
         env = False
         contents = ''
 
-        if user_uuid in utils.cache_buildin_users:
+        if user_uuid in libiisi.cache_buildin_users:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to view user info.'
         else:
@@ -706,14 +705,14 @@ class UserInfoHandler(base.RequestHandler):
                     if user_data['user_auth'] < 4:
                         msg.head.if_st = 11
                     else:
-                        if user_data['user_auth'] in utils._can_admin:
+                        if user_data['user_auth'] in libiisi.can_admin:
                             if len(rqmsg.user_name) == 0:
                                 strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list'.format(
                                     user_data['user_db'])
                             else:
                                 strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
                                     self._db_name, rqmsg.user_name)
-                        elif user_data['user_auth'] in utils._can_read:
+                        elif user_data['user_auth'] in libiisi.can_read:
                             strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
                                 self._db_name, user_data['user_name'])
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(

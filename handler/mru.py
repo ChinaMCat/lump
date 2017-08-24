@@ -58,16 +58,20 @@ class QueryDataMruHandler(base.RequestHandler):
                         str_tmls = ' and a.rtu_id in ({0}) '.format(','.join([str(a) for a in
                                                                               tml_ids]))
                     if sdt == 0 and edt == 0:  # 最新数据
-                        strsql = '''select a.rtu_id,a.date_create,a.date_type_code,a.mru_type_code,a.mru_data 
+                        strsql = '''select a.rtu_id,a.date_create,a.date_type_code,a.mru_type_code,a.mru_data,
+                        (b.mru_ratio * a.mru_data) / 5 as elec  
                         from {0}_data.data_mru_record as a 
+                        left join {0}.para_mru as b on a.rtu_id=b.rtu_id 
                         where EXISTS 
                         (select rtu_id,date_create from 
                         (select rtu_id,max(date_create) as date_create from {0}_data.data_mru_record group by rtu_id) as t 
                         where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} {2} order by a.rtu_id,a.date_create desc'''.format(
                             self._db_name, strdt, str_tmls)
                     else:
-                        strsql = '''select a.rtu_id,a.date_create,a.date_type_code,a.mru_type_code,a.mru_data
+                        strsql = '''select a.rtu_id,a.date_create,a.date_type_code,a.mru_type_code,a.mru_data,
+                                (b.mru_ratio * a.mru_data) / 5 as elec  
                                 from {0}_data.data_mru_record as a 
+                                left join {0}.para_mru as b on a.rtu_id=b.rtu_id 
                                 where a.date_create>={1} and a.date_create<={2} {3} {4}'''.format(
                             self._db_name, sdt, edt, str_tmls, self._fetch_limited)
 
@@ -91,16 +95,11 @@ class QueryDataMruHandler(base.RequestHandler):
                             dv.date_type_code = int(d[2])
                             dv.data_mark = int(d[3])
                             dv.mru_value = float(d[4])
+                            dv.mru_elec = float(d[5])
                             msg.data_mru_view.extend([dv])
                     del cur, strsql
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data
 
@@ -183,12 +182,6 @@ class MruDataGetHandler(base.RequestHandler):
             else:
                 msg.head.if_st = 11
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data, user_uuid

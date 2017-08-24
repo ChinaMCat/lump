@@ -106,25 +106,36 @@ def save_verfile(mainver, secver):
     t = time.localtime()
     dver = '{0}{1:02d}'.format(t[1], t[2])
     tver = t[3] * 60 * 60 + t[4] * 60 + t[5]
+    y = t[0] - 2000
+    m = t[1]
+    d = t[2]
     with codecs.open('file_ver.txt', 'w', 'utf8') as f:
-        f.write(file_version_info.format(mainver, secver, dver, tver, '.'.join([str(mainver), str(
-            secver), str(dver), str(tver)])))
+        f.write(file_version_info.format(y, m, d, tver, '.'.join([str(y), str(
+            m), str(d), str(tver)])))
+        # f.write(file_version_info.format(mainver, secver, dver, tver, '.'.join([str(mainver), str(
+        #     secver), str(dver), str(tver)])))
         f.close()
 
 
-def save_verfile(mainver, secver):
+def save_verfile_zp(mainver, secver):
     t = time.localtime()
     dver = '{0}{1:02d}'.format(t[1], t[2])
     tver = t[3] * 60 * 60 + t[4] * 60 + t[5]
+    y = t[0] - 2000
+    m = t[1]
+    d = t[2]
     with codecs.open('file_ver_zp.txt', 'w', 'utf8') as f:
-        f.write(file_version_info_zp.format(mainver, secver, dver, tver, '.'.join([str(
-            mainver), str(secver), str(dver), str(tver)])))
+        f.write(file_version_info_zp.format(y, m, d, tver, '.'.join([str(y), str(
+            m), str(d), str(tver)])))
+        # f.write(file_version_info.format(mainver, secver, dver, tver, '.'.join([str(mainver), str(
+        #     secver), str(dver), str(tver)])))
         f.close()
 
 
 if __name__ == '__main__':
     mainver, secver = iisi.__ver__.split('.')[0], iisi.__ver__.split('.')[1]
     save_verfile(mainver, secver)
+    save_verfile_zp(mainver, secver)
     if os.name == 'nt':
         os.system('pyinstaller -y iisi-win.spec')
         # os.rename('.\\dist\\iisi-win\\zmq\\libzmq.pyd', '.\\dist\\iisi-win\\libzmq.pyd')

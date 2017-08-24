@@ -37,17 +37,21 @@ __author__ = 'jieluo@google.com (Jie Luo)'
 from datetime import datetime
 
 try:
-  import unittest2 as unittest
+  import unittest2 as unittest  #PY26
 except ImportError:
   import unittest
 
+from google.protobuf import any_pb2
 from google.protobuf import duration_pb2
 from google.protobuf import field_mask_pb2
+from google.protobuf import struct_pb2
 from google.protobuf import timestamp_pb2
 from google.protobuf import unittest_pb2
+from google.protobuf.internal import any_test_pb2
 from google.protobuf.internal import test_util
 from google.protobuf.internal import well_known_types
 from google.protobuf import descriptor
+from google.protobuf import text_format
 
 
 class TimeUtilTestBase(unittest.TestCase):
@@ -299,6 +303,25 @@ class TimeUtilTest(TimeUtilTestBase):
         well_known_types.ParseError,
         'Couldn\'t parse duration: 1...2s.',
         message.FromJsonString, '1...2s')
+    text = '-315576000001.000000000s'
+    self.assertRaisesRegexp(
+        well_known_types.Error,
+        r'Duration is not valid\: Seconds -315576000001 must be in range'
+        r' \[-315576000000\, 315576000000\].',
+        message.FromJsonString, text)
+    text = '315576000001.000000000s'
+    self.assertRaisesRegexp(
+        well_known_types.Error,
+        r'Duration is not valid\: Seconds 315576000001 must be in range'
+        r' \[-315576000000\, 315576000000\].',
+        message.FromJsonString, text)
+    message.seconds = -315576000001
+    message.nanos = 0
+    self.assertRaisesRegexp(
+        well_known_types.Error,
+        r'Duration is not valid\: Seconds -315576000001 must be in range'
+        r' \[-315576000000\, 315576000000\].',
+        message.ToJsonString)
 
 
 class FieldMaskTest(unittest.TestCase):
@@ -317,6 +340,20 @@ class FieldMaskTest(unittest.TestCase):
     self.assertEqual(['foo'], mask.paths)
     mask.FromJsonString('foo,bar')
     self.assertEqual(['foo', 'bar'], mask.paths)
+
+    # Test camel case
+    mask.Clear()
+    mask.paths.append('foo_bar')
+    self.assertEqual('fooBar', mask.ToJsonString())
+    mask.paths.append('bar_quz')
+    self.assertEqual('fooBar,barQuz', mask.ToJsonString())
+
+    mask.FromJsonString('')
+    self.assertEqual('', mask.ToJsonString())
+    mask.FromJsonString('fooBar')
+    self.assertEqual(['foo_bar'], mask.paths)
+    mask.FromJsonString('fooBar,barQuz')
+    self.assertEqual(['foo_bar', 'bar_quz'], mask.paths)
 
   def testDescriptorToFieldMask(self):
     mask = field_mask_pb2.FieldMask()
@@ -498,16 +535,194 @@ class FieldMaskTest(unittest.TestCase):
     nested_src.payload.repeated_int32.append(1234)
     nested_dst.payload.repeated_int32.append(5678)
     # Repeated fields will be appended by default.
-    mask.FromJsonString('payload.repeated_int32')
+    mask.FromJsonString('payload.repeatedInt32')
     mask.MergeMessage(nested_src, nested_dst)
     self.assertEqual(2, len(nested_dst.payload.repeated_int32))
     self.assertEqual(5678, nested_dst.payload.repeated_int32[0])
     self.assertEqual(1234, nested_dst.payload.repeated_int32[1])
     # Change the behavior to replace repeated fields.
-    mask.FromJsonString('payload.repeated_int32')
+    mask.FromJsonString('payload.repeatedInt32')
     mask.MergeMessage(nested_src, nested_dst, False, True)
     self.assertEqual(1, len(nested_dst.payload.repeated_int32))
     self.assertEqual(1234, nested_dst.payload.repeated_int32[0])
+
+  def testSnakeCaseToCamelCase(self):
+    self.assertEqual('fooBar',
+                     well_known_types._SnakeCaseToCamelCase('foo_bar'))
+    self.assertEqual('FooBar',
+                     well_known_types._SnakeCaseToCamelCase('_foo_bar'))
+    self.assertEqual('foo3Bar',
+                     well_known_types._SnakeCaseToCamelCase('foo3_bar'))
+
+    # No uppercase letter is allowed.
+    self.assertRaisesRegexp(
+        well_known_types.Error,
+        'Fail to print FieldMask to Json string: Path name Foo must '
+        'not contain uppercase letters.',
+        well_known_types._SnakeCaseToCamelCase,
+        'Foo')
+    # Any character after a "_" must be a lowercase letter.
+    #   1. "_" cannot be followed by another "_".
+    #   2. "_" cannot be followed by a digit.
+    #   3. "_" cannot appear as the last character.
+    self.assertRaisesRegexp(
+        well_known_types.Error,
+        'Fail to print FieldMask to Json string: The character after a '
+        '"_" must be a lowercase letter in path name foo__bar.',
+        well_known_types._SnakeCaseToCamelCase,
+        'foo__bar')
+    self.assertRaisesRegexp(
+        well_known_types.Error,
+        'Fail to print FieldMask to Json string: The character after a '
+        '"_" must be a lowercase letter in path name foo_3bar.',
+        well_known_types._SnakeCaseToCamelCase,
+        'foo_3bar')
+    self.assertRaisesRegexp(
+        well_known_types.Error,
+        'Fail to print FieldMask to Json string: Trailing "_" in path '
+        'name foo_bar_.',
+        well_known_types._SnakeCaseToCamelCase,
+        'foo_bar_')
+
+  def testCamelCaseToSnakeCase(self):
+    self.assertEqual('foo_bar',
+                     well_known_types._CamelCaseToSnakeCase('fooBar'))
+    self.assertEqual('_foo_bar',
+                     well_known_types._CamelCaseToSnakeCase('FooBar'))
+    self.assertEqual('foo3_bar',
+                     well_known_types._CamelCaseToSnakeCase('foo3Bar'))
+    self.assertRaisesRegexp(
+        well_known_types.ParseError,
+        'Fail to parse FieldMask: Path name foo_bar must not contain "_"s.',
+        well_known_types._CamelCaseToSnakeCase,
+        'foo_bar')
+
+
+class StructTest(unittest.TestCase):
+
+  def testStruct(self):
+    struct = struct_pb2.Struct()
+    struct_class = struct.__class__
+
+    struct['key1'] = 5
+    struct['key2'] = 'abc'
+    struct['key3'] = True
+    struct.get_or_create_struct('key4')['subkey'] = 11.0
+    struct_list = struct.get_or_create_list('key5')
+    struct_list.extend([6, 'seven', True, False, None])
+    struct_list.add_struct()['subkey2'] = 9
+
+    self.assertTrue(isinstance(struct, well_known_types.Struct))
+    self.assertEqual(5, struct['key1'])
+    self.assertEqual('abc', struct['key2'])
+    self.assertIs(True, struct['key3'])
+    self.assertEqual(11, struct['key4']['subkey'])
+    inner_struct = struct_class()
+    inner_struct['subkey2'] = 9
+    self.assertEqual([6, 'seven', True, False, None, inner_struct],
+                     list(struct['key5'].items()))
+
+    serialized = struct.SerializeToString()
+
+    struct2 = struct_pb2.Struct()
+    struct2.ParseFromString(serialized)
+
+    self.assertEqual(struct, struct2)
+
+    self.assertTrue(isinstance(struct2, well_known_types.Struct))
+    self.assertEqual(5, struct2['key1'])
+    self.assertEqual('abc', struct2['key2'])
+    self.assertIs(True, struct2['key3'])
+    self.assertEqual(11, struct2['key4']['subkey'])
+    self.assertEqual([6, 'seven', True, False, None, inner_struct],
+                     list(struct2['key5'].items()))
+
+    struct_list = struct2['key5']
+    self.assertEqual(6, struct_list[0])
+    self.assertEqual('seven', struct_list[1])
+    self.assertEqual(True, struct_list[2])
+    self.assertEqual(False, struct_list[3])
+    self.assertEqual(None, struct_list[4])
+    self.assertEqual(inner_struct, struct_list[5])
+
+    struct_list[1] = 7
+    self.assertEqual(7, struct_list[1])
+
+    struct_list.add_list().extend([1, 'two', True, False, None])
+    self.assertEqual([1, 'two', True, False, None],
+                     list(struct_list[6].items()))
+
+    text_serialized = str(struct)
+    struct3 = struct_pb2.Struct()
+    text_format.Merge(text_serialized, struct3)
+    self.assertEqual(struct, struct3)
+
+    struct.get_or_create_struct('key3')['replace'] = 12
+    self.assertEqual(12, struct['key3']['replace'])
+
+
+class AnyTest(unittest.TestCase):
+
+  def testAnyMessage(self):
+    # Creates and sets message.
+    msg = any_test_pb2.TestAny()
+    msg_descriptor = msg.DESCRIPTOR
+    all_types = unittest_pb2.TestAllTypes()
+    all_descriptor = all_types.DESCRIPTOR
+    all_types.repeated_string.append(u'\u00fc\ua71f')
+    # Packs to Any.
+    msg.value.Pack(all_types)
+    self.assertEqual(msg.value.type_url,
+                     'type.googleapis.com/%s' % all_descriptor.full_name)
+    self.assertEqual(msg.value.value,
+                     all_types.SerializeToString())
+    # Tests Is() method.
+    self.assertTrue(msg.value.Is(all_descriptor))
+    self.assertFalse(msg.value.Is(msg_descriptor))
+    # Unpacks Any.
+    unpacked_message = unittest_pb2.TestAllTypes()
+    self.assertTrue(msg.value.Unpack(unpacked_message))
+    self.assertEqual(all_types, unpacked_message)
+    # Unpacks to different type.
+    self.assertFalse(msg.value.Unpack(msg))
+    # Only Any messages have Pack method.
+    try:
+      msg.Pack(all_types)
+    except AttributeError:
+      pass
+    else:
+      raise AttributeError('%s should not have Pack method.' %
+                           msg_descriptor.full_name)
+
+  def testMessageName(self):
+    # Creates and sets message.
+    submessage = any_test_pb2.TestAny()
+    submessage.int_value = 12345
+    msg = any_pb2.Any()
+    msg.Pack(submessage)
+    self.assertEqual(msg.TypeName(), 'google.protobuf.internal.TestAny')
+
+  def testPackWithCustomTypeUrl(self):
+    submessage = any_test_pb2.TestAny()
+    submessage.int_value = 12345
+    msg = any_pb2.Any()
+    # Pack with a custom type URL prefix.
+    msg.Pack(submessage, 'type.myservice.com')
+    self.assertEqual(msg.type_url,
+                     'type.myservice.com/%s' % submessage.DESCRIPTOR.full_name)
+    # Pack with a custom type URL prefix ending with '/'.
+    msg.Pack(submessage, 'type.myservice.com/')
+    self.assertEqual(msg.type_url,
+                     'type.myservice.com/%s' % submessage.DESCRIPTOR.full_name)
+    # Pack with an empty type URL prefix.
+    msg.Pack(submessage, '')
+    self.assertEqual(msg.type_url,
+                     '/%s' % submessage.DESCRIPTOR.full_name)
+    # Test unpacking the type.
+    unpacked_message = any_test_pb2.TestAny()
+    self.assertTrue(msg.Unpack(unpacked_message))
+    self.assertEqual(submessage, unpacked_message)
+
 
 if __name__ == '__main__':
   unittest.main()

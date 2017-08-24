@@ -14,10 +14,12 @@ import rtu
 import slu
 import sms
 import sysinfo
-# import submit
+import elu
+import ldu
+import event
 import uas
 from error import Err404Handler
-from mlib_iisi.utils import m_debug
+import mlib_iisi.utils as libiisi
 
 hs = []
 hs.extend(mxweb.load_handler_module(dz))
@@ -30,11 +32,14 @@ hs.extend(mxweb.load_handler_module(rtu))
 hs.extend(mxweb.load_handler_module(slu))
 hs.extend(mxweb.load_handler_module(sms))
 hs.extend(mxweb.load_handler_module(sysinfo))
-# hs.extend(mxweb.load_handler_module(submit))
+hs.extend(mxweb.load_handler_module(event))
 hs.extend(mxweb.load_handler_module(user))
 hs.extend(mxweb.load_handler_module(flow))
 hs.extend(mxweb.load_handler_module(uas))
-if m_debug:
+hs.extend(mxweb.load_handler_module(elu))
+hs.extend(mxweb.load_handler_module(ldu))
+
+if libiisi.m_debug:
     hs.extend(mxweb.load_handler_module(test))
 
 handler_iisi = []

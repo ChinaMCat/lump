@@ -83,12 +83,6 @@ class QueryDataAlsHandler(base.RequestHandler):
                             del drv
                     del cur, strsql
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data, user_uuid

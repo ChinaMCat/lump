@@ -106,13 +106,7 @@ class UserLoginHandler(base.RequestHandler):
                                    2,
                                    user_name=rqmsg.user)
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
 
 
@@ -169,13 +163,7 @@ class UserAddHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         yield self.write_event(154, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
@@ -234,13 +222,7 @@ class UserEditHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         yield self.write_event(155, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
@@ -304,13 +286,7 @@ class UserDelHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         yield self.write_event(156, contents, 2, user_name=rqmsg.user)
         del msg, rqmsg
@@ -381,12 +357,6 @@ class UserInfoHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = str(ex)
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg

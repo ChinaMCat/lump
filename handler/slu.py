@@ -214,9 +214,9 @@ class QueryDataSluHandler(base.RequestHandler):
                             from (select d.ctrl_id,max(d.date_create) as date_create,d.slu_id,d.date_time_ctrl, 
                             d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm, 
                             d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}_data.data_slu_ctrl as d
-                            where d.ctrl_id>0 {1} group by d.slu_id,d.ctrl_id) as x left join {0}_data.data_slu_ctrl_lamp as a
+                            {1} group by d.slu_id,d.ctrl_id) as x left join {0}_data.data_slu_ctrl_lamp as a
                             on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id'''.format(
-                                self._db_name, str_tmls)
+                                self._db_name, str_tmls.replace('and', 'where'))
 
                             # strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor, 
                             # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set, 
@@ -301,13 +301,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                 msg.data_sluitem_view.extend([dv])
                         del cur, strsql
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data
 
@@ -330,7 +324,7 @@ class SluDataGetHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
-                    rtu_ids = rqmsg.tml_id
+                    rtu_ids = list(rqmsg.tml_id)
                 else:
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
@@ -365,13 +359,7 @@ class SluDataGetHandler(base.RequestHandler):
             else:
                 msg.head.if_st = 11
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -395,7 +383,7 @@ class SluitemDataGetHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
-                    rtu_ids = rqmsg.tml_id
+                    rtu_ids = list(rqmsg.tml_id)
                 else:
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
@@ -430,13 +418,7 @@ class SluitemDataGetHandler(base.RequestHandler):
             else:
                 msg.head.if_st = 11
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -466,7 +448,7 @@ class SluTimerCtlHandler(base.RequestHandler):
                 contents = 'user from {0} set slu timer'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
-                    rtu_ids = rqmsg.tml_id
+                    rtu_ids = list(rqmsg.tml_id)
                 else:
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
@@ -499,13 +481,7 @@ class SluTimerCtlHandler(base.RequestHandler):
             else:
                 msg.head.if_st = 11
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env and rqmsg.data_mark == 1:
             self.write_event(57, contents, 2, user_name=user_data['user_name'])
@@ -533,7 +509,7 @@ class SluCtlHandler(base.RequestHandler):
                 contents = 'user from {0} ctrl slu'.format(self.request.remote_ip)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
-                    rtu_ids = rqmsg.tml_id
+                    rtu_ids = list(rqmsg.tml_id)
                 else:
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
@@ -577,13 +553,7 @@ class SluCtlHandler(base.RequestHandler):
             else:
                 msg.head.if_st = 11
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
             self.write_event(65, contents, 2, user_name=user_data['user_name'])
@@ -608,7 +578,7 @@ class SluVerGetHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
-                    rtu_ids = rqmsg.tml_id
+                    rtu_ids = list(rqmsg.tml_id)
                 else:
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
@@ -639,12 +609,6 @@ class SluVerGetHandler(base.RequestHandler):
             else:
                 msg.head.if_st = 11
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data, user_uuid

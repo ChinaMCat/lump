@@ -12,7 +12,9 @@ from const import *
 
 m_zmq_pub = None
 m_zmq_pull = None
-m_zmq_ctx = zmq.Context()
+m_zmq_ctx = zmq.Context.instance()
+
+sub_thread_started = False
 
 
 def load_profile():
@@ -21,16 +23,19 @@ def load_profile():
         with open(os.path.join(mx.SCRIPT_DIR, '.profile'), 'r') as f:
             z = f.readlines()
         for y in z:
+            if y.startswith('#'):
+                continue
             try:
                 x = json.loads(y)
                 if 'enable_if' in x.keys():
-                    a = mx.code_string(x['enable_if'], do=1)
+                    a = mx.decode_string(x['enable_if'])
                     x['enable_if'] = tuple(a.split(','))
                     del a
                 else:
                     x['enable_if'] = tuple()
                 if 'uuid' in x.keys():
-                    uuid = x['uuid']
+                    # uuid = x['uuid']
+                    uuid = mx.decode_string(x['uuid'])
                     cache_buildin_users.add(uuid)
                     del x['uuid']
                     x['login_time'] = time.time()
@@ -40,9 +45,9 @@ def load_profile():
                     x['area_w'] = set([0])
                     x['area_x'] = set([0])
                     cache_user[uuid] = x
+                del x
             except:
                 pass
-
 
 def load_config(conf):
     global cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain
@@ -184,7 +189,10 @@ SENDWHOIS = '`{0}`'.format(sendServerMsg('', 'wlst.sys.whois'))
 
 
 def zmq_proxy():
-    global m_zmq_pub, m_zmq_pull, m_zmq_ctx
+    global m_zmq_pub, m_zmq_pull, m_zmq_ctx, sub_thread_started
+    if sub_thread_started:
+        return
+    sub_thread_started = True
 
     zmq_conf = m_config.getData('zmq_port')
     if zmq_conf.find(':') == -1:
@@ -247,6 +255,17 @@ def send_to_zmq_pub(sfilter, msg):
             m_zmq_pub.send_multipart([f, msg])
     except Exception as ex:
         print('zmq pub err:{0}'.format(ex))
+
+
+def do_cleaningwork():
+    global sub_thread_started
+    if sub_thread_started:
+        return
+    sub_thread_started = True
+
+    while True:
+        time.sleep(86400)
+        cleaningwork()
 
 
 def cleaningwork(t=time.time()):

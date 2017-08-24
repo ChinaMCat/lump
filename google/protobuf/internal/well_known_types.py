@@ -34,6 +34,7 @@ This files defines well known classes which need extra maintenance including:
   - Any
   - Duration
   - FieldMask
+  - Struct
   - Timestamp
 """
 
@@ -41,6 +42,7 @@ __author__ = 'jieluo@google.com (Jie Luo)'
 
 from datetime import datetime
 from datetime import timedelta
+import six
 
 from google.protobuf.descriptor import FieldDescriptor
 
@@ -51,6 +53,7 @@ _NANOS_PER_MICROSECOND = 1000
 _MILLIS_PER_SECOND = 1000
 _MICROS_PER_SECOND = 1000000
 _SECONDS_PER_DAY = 24 * 3600
+_DURATION_SECONDS_MAX = 315576000000
 
 
 class Error(Exception):
@@ -64,9 +67,12 @@ class ParseError(Error):
 class Any(object):
   """Class for Any Message type."""
 
-  def Pack(self, msg):
+  def Pack(self, msg, type_url_prefix='type.googleapis.com/'):
     """Packs the specified message into current Any message."""
-    self.type_url = 'type.googleapis.com/%s' % msg.DESCRIPTOR.full_name
+    if len(type_url_prefix) < 1 or type_url_prefix[-1] != '/':
+      self.type_url = '%s/%s' % (type_url_prefix, msg.DESCRIPTOR.full_name)
+    else:
+      self.type_url = '%s%s' % (type_url_prefix, msg.DESCRIPTOR.full_name)
     self.value = msg.SerializeToString()
 
   def Unpack(self, msg):
@@ -77,10 +83,14 @@ class Any(object):
     msg.ParseFromString(self.value)
     return True
 
+  def TypeName(self):
+    """Returns the protobuf type name of the inner message."""
+    # Only last part is to be used: b/25630112
+    return self.type_url.split('/')[-1]
+
   def Is(self, descriptor):
     """Checks if this Any represents the given protobuf type."""
-    # Only last part is to be used: b/25630112
-    return self.type_url.split('/')[-1] == descriptor.full_name
+    return self.TypeName() == descriptor.full_name
 
 
 class Timestamp(object):
@@ -238,6 +248,7 @@ class Duration(object):
       represent the exact Duration value. For example: "1s", "1.010s",
       "1.000000100s", "-3.100s"
     """
+    _CheckDurationValid(self.seconds, self.nanos)
     if self.seconds < 0 or self.nanos < 0:
       result = '-'
       seconds = - self.seconds + int((0 - self.nanos) // 1e9)
@@ -277,14 +288,17 @@ class Duration(object):
     try:
       pos = value.find('.')
       if pos == -1:
-        self.seconds = int(value[:-1])
-        self.nanos = 0
+        seconds = int(value[:-1])
+        nanos = 0
       else:
-        self.seconds = int(value[:pos])
+        seconds = int(value[:pos])
         if value[0] == '-':
-          self.nanos = int(round(float('-0{0}'.format(value[pos: -1])) *1e9))
+          nanos = int(round(float('-0{0}'.format(value[pos: -1])) *1e9))
         else:
-          self.nanos = int(round(float('0{0}'.format(value[pos: -1])) *1e9))
+          nanos = int(round(float('0{0}'.format(value[pos: -1])) *1e9))
+      _CheckDurationValid(seconds, nanos)
+      self.seconds = seconds
+      self.nanos = nanos
     except ValueError:
       raise ParseError(
           'Couldn\'t parse duration: {0}.'.format(value))
@@ -350,6 +364,17 @@ class Duration(object):
     self.nanos = nanos
 
 
+def _CheckDurationValid(seconds, nanos):
+  if seconds < -_DURATION_SECONDS_MAX or seconds > _DURATION_SECONDS_MAX:
+    raise Error(
+        'Duration is not valid: Seconds {0} must be in range '
+        '[-315576000000, 315576000000].'.format(seconds))
+  if nanos <= -_NANOS_PER_SECOND or nanos >= _NANOS_PER_SECOND:
+    raise Error(
+        'Duration is not valid: Nanos {0} must be in range '
+        '[-999999999, 999999999].'.format(nanos))
+
+
 def _RoundTowardZero(value, divider):
   """Truncates the remainder part after division."""
   # For some languanges, the sign of the remainder is implementation
@@ -370,13 +395,16 @@ class FieldMask(object):
 
   def ToJsonString(self):
     """Converts FieldMask to string according to proto3 JSON spec."""
-    return ','.join(self.paths)
+    camelcase_paths = []
+    for path in self.paths:
+      camelcase_paths.append(_SnakeCaseToCamelCase(path))
+    return ','.join(camelcase_paths)
 
   def FromJsonString(self, value):
     """Converts string to FieldMask according to proto3 JSON spec."""
     self.Clear()
     for path in value.split(','):
-      self.paths.append(path)
+      self.paths.append(_CamelCaseToSnakeCase(path))
 
   def IsValidForDescriptor(self, message_descriptor):
     """Checks whether the FieldMask is valid for Message Descriptor."""
@@ -461,6 +489,48 @@ def _CheckFieldMaskMessage(message):
       message_descriptor.file.name != 'google/protobuf/field_mask.proto'):
     raise ValueError('Message {0} is not a FieldMask.'.format(
         message_descriptor.full_name))
+
+
+def _SnakeCaseToCamelCase(path_name):
+  """Converts a path name from snake_case to camelCase."""
+  result = []
+  after_underscore = False
+  for c in path_name:
+    if c.isupper():
+      raise Error('Fail to print FieldMask to Json string: Path name '
+                  '{0} must not contain uppercase letters.'.format(path_name))
+    if after_underscore:
+      if c.islower():
+        result.append(c.upper())
+        after_underscore = False
+      else:
+        raise Error('Fail to print FieldMask to Json string: The '
+                    'character after a "_" must be a lowercase letter '
+                    'in path name {0}.'.format(path_name))
+    elif c == '_':
+      after_underscore = True
+    else:
+      result += c
+
+  if after_underscore:
+    raise Error('Fail to print FieldMask to Json string: Trailing "_" '
+                'in path name {0}.'.format(path_name))
+  return ''.join(result)
+
+
+def _CamelCaseToSnakeCase(path_name):
+  """Converts a field name from camelCase to snake_case."""
+  result = []
+  for c in path_name:
+    if c == '_':
+      raise ParseError('Fail to parse FieldMask: Path name '
+                       '{0} must not contain "_"s.'.format(path_name))
+    if c.isupper():
+      result += '_'
+      result += c.lower()
+    else:
+      result += c
+  return ''.join(result)
 
 
 class _FieldMaskTree(object):
@@ -614,9 +684,102 @@ def _AddFieldPaths(node, prefix, field_mask):
     _AddFieldPaths(node[name], child_path, field_mask)
 
 
+_INT_OR_FLOAT = six.integer_types + (float,)
+
+
+def _SetStructValue(struct_value, value):
+  if value is None:
+    struct_value.null_value = 0
+  elif isinstance(value, bool):
+    # Note: this check must come before the number check because in Python
+    # True and False are also considered numbers.
+    struct_value.bool_value = value
+  elif isinstance(value, six.string_types):
+    struct_value.string_value = value
+  elif isinstance(value, _INT_OR_FLOAT):
+    struct_value.number_value = value
+  else:
+    raise ValueError('Unexpected type')
+
+
+def _GetStructValue(struct_value):
+  which = struct_value.WhichOneof('kind')
+  if which == 'struct_value':
+    return struct_value.struct_value
+  elif which == 'null_value':
+    return None
+  elif which == 'number_value':
+    return struct_value.number_value
+  elif which == 'string_value':
+    return struct_value.string_value
+  elif which == 'bool_value':
+    return struct_value.bool_value
+  elif which == 'list_value':
+    return struct_value.list_value
+  elif which is None:
+    raise ValueError('Value not set')
+
+
+class Struct(object):
+  """Class for Struct message type."""
+
+  __slots__ = []
+
+  def __getitem__(self, key):
+    return _GetStructValue(self.fields[key])
+
+  def __setitem__(self, key, value):
+    _SetStructValue(self.fields[key], value)
+
+  def get_or_create_list(self, key):
+    """Returns a list for this key, creating if it didn't exist already."""
+    return self.fields[key].list_value
+
+  def get_or_create_struct(self, key):
+    """Returns a struct for this key, creating if it didn't exist already."""
+    return self.fields[key].struct_value
+
+  # TODO(haberman): allow constructing/merging from dict.
+
+
+class ListValue(object):
+  """Class for ListValue message type."""
+
+  def __len__(self):
+    return len(self.values)
+
+  def append(self, value):
+    _SetStructValue(self.values.add(), value)
+
+  def extend(self, elem_seq):
+    for value in elem_seq:
+      self.append(value)
+
+  def __getitem__(self, index):
+    """Retrieves item by the specified index."""
+    return _GetStructValue(self.values.__getitem__(index))
+
+  def __setitem__(self, index, value):
+    _SetStructValue(self.values.__getitem__(index), value)
+
+  def items(self):
+    for i in range(len(self)):
+      yield self[i]
+
+  def add_struct(self):
+    """Appends and returns a struct value as the next value in the list."""
+    return self.values.add().struct_value
+
+  def add_list(self):
+    """Appends and returns a list value as the next value in the list."""
+    return self.values.add().list_value
+
+
 WKTBASES = {
     'google.protobuf.Any': Any,
     'google.protobuf.Duration': Duration,
     'google.protobuf.FieldMask': FieldMask,
+    'google.protobuf.ListValue': ListValue,
+    'google.protobuf.Struct': Struct,
     'google.protobuf.Timestamp': Timestamp,
 }

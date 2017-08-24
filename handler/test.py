@@ -3,18 +3,23 @@
 
 import base64
 import mxweb
+import mxpsu as mx
 from tornado import gen
 import base
+import time
 import pbiisi.msg_ws_pb2 as msgws
 
 
 @mxweb.route()
 class TestHandler(base.RequestHandler):
-    root_path = r'/adf/'
 
     @gen.coroutine
     def get(self):
-        print(self.request.path)
+        # time.sleep(10005)
+        args = self.request.arguments
+        if 'scode' in args.keys():
+            scode = '{0}'.format(args.get('scode')[0])
+            self.write('scode is {0}.<br/>'.format(self.computing_security_code(scode)))
         # url = 'http://192.168.50.83:10020/test'
         # tch = AsyncHTTPClient()
         # data = {'a':1,'b':2}

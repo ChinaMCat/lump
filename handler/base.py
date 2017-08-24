@@ -27,6 +27,7 @@ class RequestHandler(mxweb.MXRequestHandler):
     _db_name = libiisi.cfg_dbname_jk
     _go_back_format = 0  # 数据返回格式设置0-base64，1-json，2-pb2 serialString
     _fetch_limited = ' limit 1000'  # 数据查询数量限制
+    _pb_format = 0  # 0-base64, 2-pb2 serialString
 
     def flush(self, include_footers=False, callback=None):
         if libiisi.cfg_enable_cross_domain:
@@ -35,7 +36,11 @@ class RequestHandler(mxweb.MXRequestHandler):
 
     @gen.coroutine
     def get(self):
-        self.render('405.html')
+        if 'help' in self.get_arguments('do'):
+            self.write(self.help_doc)
+            self.finish()
+        else:
+            self.render('405.html')
 
     # @run_on_executor
     def cache_sunriseset(self):
@@ -115,7 +120,8 @@ class RequestHandler(mxweb.MXRequestHandler):
                          paging_idx=1,
                          paging_num=100,
                          need_paging=1,
-                         multi_record=[]):
+                         multi_record=[],
+                         key_column=[]):
         '''
         Args：
             strsql: 数据查询语句,多条执行语句使用;分割，不支持多条select语句同时执行
@@ -124,11 +130,13 @@ class RequestHandler(mxweb.MXRequestHandler):
             paging_idx: 分页序号
             need_paging: 0-结果集不需要分页处理，1-结果集需要分页处理
             multi_record: 结果集字段存在主从（1对多）关系时标主键字段
+            key_column: 内容关键字段序号，若该序号字段为None则跳过该条记录处理，主要用于关联查询时排除无效数据
         return: (record_total, buffer_tag, paging_idx, paging_total, lst_data)
         '''
         if len(strsql) == 0:
             return (None, None, None, None, None)
-
+        if isinstance(key_column, int):
+            key_column = [key_column]
         # if self.debug:
         #     print(strsql)
 
@@ -208,6 +216,14 @@ class RequestHandler(mxweb.MXRequestHandler):
                     #     if d is None:
                     #         break
                     for d in cur:
+                        if len(key_column) > 0:
+                            key_none = False
+                            for a in key_column:
+                                if d[a] is None:
+                                    key_none = True
+                                    break
+                            if key_none:
+                                continue
                         if n < y and n >= x:
                             rep.append(d)
 
@@ -232,21 +248,29 @@ class RequestHandler(mxweb.MXRequestHandler):
                     #     if d is None:
                     #         break
                     for d in cur:
+                        if len(key_column) > 0:
+                            key_none = False
+                            for a in key_column:
+                                if d[a] is None:
+                                    key_none = True
+                                    break
+                            if key_none:
+                                continue
                         if n < y and n >= x:
                             rep.append(d)
                         cache_data[n] = d
                         n += 1
-
+                print(cache_data)
                 s = libiisi.m_sql.get_last_error_message()
                 if len(s) > 0:
                     logging.error(self.format_log(self.request.remote_ip, s, self.request.path,
                                                   '_MYSQL'))
                     return (None, None, None, None, None)
                 else:
-                    paging_total = n / paging_num if n % paging_num == 0 else n / paging_num + 1
-                    buffer_tag = int(time.time() * 1000000)
                     if need_paging:
+                        paging_total = n / paging_num if n % paging_num == 0 else n / paging_num + 1
                         if paging_total > 1:  # 利用后台线程写缓存
+                            buffer_tag = int(time.time() * 1000000)
                             t = threading.Thread(
                                 target=self.write_cache,
                                 args=(os.path.join(libiisi.m_cachedir, '{0}{1}'.format(buffer_tag,
@@ -500,13 +524,23 @@ class RequestHandler(mxweb.MXRequestHandler):
             use_scode == 1: (安全码是否合法，请求参数，应答数据)'''
         # 处理隐藏参数
         args = self.request.arguments
-        if 'formatmydata' in args.keys():  # 返回数据格式参数，0-base64，1-json，2-bytes，默认0
+        if 'formatmydata' in args.keys():  # 返回数据格式参数，0-base64，1-json，2-bytes，3-zlib, 默认0
             try:
-                self._go_back_format = int(args.get('givemejson'))
-            except:
+                self._go_back_format = int(args.get('formatmydata')[0])
+                if self._go_back_format in (1, 2) and 'bro' not in args.keys():
+                    self._go_back_format = 0
+            except Exception as ex:
                 self._go_back_format = 0
+        else:
+            self._go_back_format = 0
+        if 'iampb' in args.keys():
+            self._pb_format = 2  #if int(args.get('formatmydata')[0]) > 0 else 0
+        else:
+            self._pb_format = 0
         if 'tcsport' in args.keys():  # 项目设备通信端口号用于匹配数据库名称
             self._db_name = 'mydb{0}'.format(args.get('tcsport')[0])
+        else:
+            self._db_name = libiisi.cfg_dbname_jk 
         if 'fetchunlimited' in args.keys():  # 是否取消查询数据量上限
             self._fetch_limited = ''
         else:
@@ -547,30 +581,23 @@ class RequestHandler(mxweb.MXRequestHandler):
                 pb2 = args.get('pb2')[0]
 
                 try:
-                    rqmsg.ParseFromString(base64.b64decode(pb2))
+                    if self._pb_format == 2:
+                        rqmsg.ParseFromString(pb2)
+                    else:
+                        rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
                     msg.head.idx = rqmsg.head.idx
                     msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
                     msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
                     msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
                 except Exception as ex:
-                    if ' ' in pb2:
-                        try:
-                            rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
-                            msg.head.idx = rqmsg.head.idx
-                            msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
-                            msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
-                            msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
-                        except:
-                            msg.head.if_st = 46
-                            return (None, None, msg)
-                    else:
-                        msg.head.if_st = 46
-                        return (None, None, msg)
+                    msg.head.if_st = 46
+                    return (None, None, msg)
             else:
                 rqmsg = None
         else:
             rqmsg = None
             msg = self.init_msgws(msgws.CommAns())
+            msg.head.if_st = 48
             msg.head.if_msg = 'scode is not leage.'
 
         return (leage, rqmsg, msg)
@@ -600,25 +627,17 @@ class RequestHandler(mxweb.MXRequestHandler):
                 return (None, None, msg, '')
             pb2 = args.get('pb2')[0]
             try:
-                rqmsg.ParseFromString(base64.b64decode(pb2))
+                if self._pb_format == 2:
+                    rqmsg.ParseFromString(pb2)
+                else:
+                    rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
                 msg.head.idx = rqmsg.head.idx
                 msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
                 msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
                 msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
             except:
-                if ' ' in pb2:
-                    try:
-                        rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
-                        msg.head.idx = rqmsg.head.idx
-                        msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
-                        msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
-                        msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
-                    except:
-                        msg.head.if_st = 46
-                        return (None, None, msg, '')
-                else:
-                    msg.head.if_st = 46
-                    return (None, None, msg, '')
+                msg.head.if_st = 46
+                return (None, None, msg, '')
         else:
             rqmsg = None
 

@@ -100,13 +100,16 @@ if __name__ == '__main__':
                               port=3306 if len(libiisi.m_config.getData('db_host').split(':')) == 1
                               else int(libiisi.m_config.getData('db_host').split(':')[1]),
                               user=libiisi.m_config.getData('db_user'),
-                              pwd=mx.code_string(
-                                  libiisi.m_config.getData('db_pwd'), 1),
+                              pwd=mx.decode_string(libiisi.m_config.getData('db_pwd')),
                               maxconn=int(libiisi.m_config.getData('max_db_conn')))
     libiisi.m_sql.set_debug(results.debug)
 
     # 开启后台线程
-    thread.start_new_thread(libiisi.zmq_proxy, ())
+    zmq_conf = libiisi.m_config.getData('zmq_port')
+    if zmq_conf.find(':') > -1:
+        thread.start_new_thread(libiisi.do_cleaningwork, ())
+    else:
+        thread.start_new_thread(libiisi.zmq_proxy, ())
 
     settings = dict(static_path=os.path.join(mx.SCRIPT_DIR, 'static'),
                     template_path=os.path.join(mx.SCRIPT_DIR, 'templates'),
@@ -117,18 +120,19 @@ if __name__ == '__main__':
                     # xsrf_cookies=True,
                     # login_url='/userloginjk', 
                     )
-    
-    # try:
+
     from handler import handler_iisi, handler_err
     lst_handler = []
     lst_handler.extend(handler_iisi)
     lst_handler.extend(handler_err)
     application = tornado.web.Application(handlers=lst_handler, **settings)
-    application.listen(int(libiisi.cfg_bind_port))
-    logging.error('======= start the service on port {0} ======='.format(libiisi.cfg_bind_port))
-    print('======= start the service on port {0} ======='.format(libiisi.cfg_bind_port))
-    tornado.ioloop.IOLoop.instance().start()
-    # except Exception as ex:
-    #     logging.error('------- service error: {0}'.format(ex))
-    #     if os.name == 'nt':
-    #         raw_input('press any key to exit...')
+    try:
+        application.listen(int(libiisi.cfg_bind_port))
+        logging.error('======= start the service on port {0} ======='.format(libiisi.cfg_bind_port))
+        print('======= start the service on port {0} ======='.format(libiisi.cfg_bind_port))
+        tornado.ioloop.IOLoop.instance().start()
+    except Exception as ex:
+        logging.error('------- service error: {0}'.format(ex))
+        print('------- service error: {0}'.format(ex))
+        if os.name == 'nt':
+            raw_input('press any key to exit...')

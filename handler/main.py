@@ -22,7 +22,7 @@ from urllib import urlencode
 class StatusHandler(base.RequestHandler):
     help_doc = u'''服务状态检查<br/>
     <b>参数:</b><br/>
-    &nbsp;&nbsp;do - [testconfig|showhandlers|timer]'''
+    &nbsp;&nbsp;do - [testconfig|timer]'''
 
     @gen.coroutine
     def get(self):
@@ -109,16 +109,16 @@ class StatusHandler(base.RequestHandler):
                         self.write('<br/>')
                         # self.flush()
 
-                    if do == 'showhandlers' or do == 'all':
-                        self.write('<b><u>===== show handlers =====</u></b><br/>')
-                        x = self.application.handlers[0][1]
-                        for a in x:
-                            if a._path not in ('/', '/.*', '/test',
-                                               '/cleaningwork') and '%' not in a._path:
-                                self.write('<b>------- {0} -------</b><br/>'.format(a._path[1:]))
-                                self.write(a.kwargs.get('help_doc') + '<br/><br/>')
-                                # self.write('---<br/><br/>')
-                        self.write('<br/>')
+                    # if do == 'showhandlers' or do == 'all':
+                    #     self.write('<b><u>===== show handlers =====</u></b><br/>')
+                    #     x = self.application.handlers[0][1]
+                    #     for a in x:
+                    #         if a._path not in ('/', '/.*', '/test',
+                    #                            '/cleaningwork') and '%' not in a._path:
+                    #             self.write('<b>------- {0} -------</b><br/>'.format(a._path[1:]))
+                    #             self.write(a.kwargs.get('help_doc') + '<br/><br/>')
+                    #             # self.write('---<br/><br/>')
+                    #     self.write('<br/>')
                         # self.flush()
         except Exception as ex:
             print(ex)

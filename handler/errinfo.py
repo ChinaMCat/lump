@@ -13,6 +13,7 @@ from mxpbjson import pb2json
 import base
 import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
+import zlib
 
 
 @mxweb.route()
@@ -74,7 +75,7 @@ class QueryDataErrHandler(base.RequestHandler):
                         if len(str_errs) > 0:
                             strsql += ' {0}'.format(str_errs)
                         strsql += ' order by a.date_create desc {0}'.format(self._fetch_limited)
-                    else:  # 历史故障
+                    elif rqmsg.type == 1:  # 历史故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_remove, \
                         c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id \
                         from {0}_data.info_fault_history as a left join {0}.fault_types as b \
@@ -86,7 +87,23 @@ class QueryDataErrHandler(base.RequestHandler):
                         if len(str_errs) > 0:
                             strsql += ' {0}'.format(str_errs)
                         strsql += ' order by a.date_create desc {0}'.format(self._fetch_limited)
-
+                    elif rqmsg.type == 2:  # 现存仅返回数量
+                        strsql = '''select count(a.rtu_id) from {0}_data.info_fault_exist as a 
+                                    where a.date_create <={1} and a.date_create >={2}'''.format(self._db_name,
+                                                                                  edt, sdt)
+                        if len(str_tmls) > 0:
+                            strsql += ' {0}'.format(str_tmls)
+                        if len(str_errs) > 0:
+                            strsql += ' {0}'.format(str_errs)
+                    elif rqmsg.type == 3:  # 历史仅返回数量
+                        strsql = '''select count(a.rtu_id) from {0}_data.info_fault_history as a 
+                                    where a.date_create <={1} and a.date_create >={2}'''.format(self._db_name,
+                                                                                  edt, sdt)
+                        if len(str_tmls) > 0:
+                            strsql += ' {0}'.format(str_tmls)
+                        if len(str_errs) > 0:
+                            strsql += ' {0}'.format(str_errs)
+                            
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -101,30 +118,27 @@ class QueryDataErrHandler(base.RequestHandler):
                         msg.head.paging_buffer_tag = buffer_tag
                         msg.head.paging_idx = paging_idx
                         msg.head.paging_total = paging_total
-                        for d in cur:
-                            errview = msgws.QueryDataErr.ErrView()
-                            errview.err_id = int(d[0])
-                            errview.err_name = d[1] if d[1] is not None else ''
-                            errview.tml_id = int(d[2])
-                            errview.dt_create = mx.switchStamp(int(d[3]))
-                            errview.dt_remove = mx.switchStamp(int(d[4]))
-                            errview.phy_id = int(d[5]) if d[5] is not None else 0
-                            errview.tml_name = d[6] if d[6] is not None else ''
-                            errview.tml_sub_id1 = int(d[7])
-                            errview.tml_sub_id2 = int(d[8])
-                            errview.remark = d[9]
-                            errview.err_count = int(d[10])
-                            msg.err_view.extend([errview])
-                            del errview
+                        if rqmsg.type in (0, 1):
+                            for d in cur:
+                                errview = msgws.QueryDataErr.ErrView()
+                                errview.err_id = int(d[0])
+                                errview.err_name = d[1] if d[1] is not None else ''
+                                errview.tml_id = int(d[2])
+                                errview.dt_create = mx.switchStamp(int(d[3]))
+                                errview.dt_remove = mx.switchStamp(int(d[4]))
+                                errview.phy_id = int(d[5]) if d[5] is not None else 0
+                                errview.tml_name = d[6] if d[6] is not None else ''
+                                errview.tml_sub_id1 = int(d[7])
+                                errview.tml_sub_id2 = int(d[8])
+                                errview.remark = d[9]
+                                errview.err_count = int(d[10])
+                                msg.err_view.extend([errview])
+                                del errview
+                        elif rqmsg.type in (2, 3):
+                            msg.head.paging_record_total = cur[0][0]
                     del cur, strsql
 
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
-
+        self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
 
@@ -179,13 +193,8 @@ class ErrInfoHandler(base.RequestHandler):
                             del errinfoview
 
                 del cur, strsql
-
-        if self._go_back_format == 1:
-            self.write(pb2json(msg))
-        elif self._go_back_format == 2:
-            self.write(msg.SerializeToString())
-        else:
-            self.write(mx.convertProtobuf(msg))
+        
+        self.write(mx.code_pb2(msg, self._go_back_format))
 
         self.finish()
         del msg, rqmsg, user_data, user_uuid

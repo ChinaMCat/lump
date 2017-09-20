@@ -17,7 +17,7 @@ m_config.setData('log_level', 10, '日志记录等级, 10-debug, 20-info, 30-war
 m_config.setData('tcs_port', '1024', '对应通讯服务程序端口')
 m_config.setData('db_host', '127.0.0.1:3306', '数据库服务地址, ip:port, 端口默认3306')
 m_config.setData('db_user', 'root', '数据库服务用户名')
-m_config.setData('db_pwd', 'SaqabW8bK3JAQ6WWmtyYlmGbaaV2aPG=', '数据库服务密码')
+m_config.setData('db_pwd', 'Mal2cWabYcWYnJeWRkS', '数据库服务密码')
 m_config.setData('db_name_jk', 'mydb1024', '监控数据库名称')
 m_config.setData('db_name_dg', 'mydb_dg_10001', '灯杆数据库名称')
 m_config.setData('db_name_uas', 'uas', '统一验证数据库名称')

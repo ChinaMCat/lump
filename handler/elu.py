@@ -26,12 +26,13 @@ class QueryDataEluHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataElu(),
-                                                                      msgws.QueryDataElu())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqQueryDataElu(), msgws.QueryDataElu())
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
-                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                sdt, edt = self.process_input_date(
+                    rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.data_mark = rqmsg.data_mark
 
                 # 验证用户可操作的设备id
@@ -42,7 +43,8 @@ class QueryDataEluHandler(base.RequestHandler):
                         tml_ids = []
                 else:
                     if len(rqmsg.tml_id) > 0:
-                        tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+                        tml_ids = self.check_tml_r(user_uuid,
+                                                   list(rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
@@ -52,16 +54,16 @@ class QueryDataEluHandler(base.RequestHandler):
                     if len(tml_ids) == 0:
                         str_tmls = ''
                     else:
-                        str_tmls = ' and a.leak_id in ({0}) '.format(','.join([str(a) for a in
-                                                                               tml_ids]))
+                        str_tmls = ' and a.leak_id in ({0}) '.format(
+                            ','.join([str(a) for a in tml_ids]))
                 if rqmsg.data_mark == 0:  # 最新数据
                     strsql = '''select b.leak_line_name,x.leak_id,x.date_create,x.leak_line_id,
                                 a.auto_break_auto_alarm,a.state_alarm,a.state_on_off,a.upper_alarm_break_for_leak_temperature,
                                 a.time_delay_break,a.alarm_value_leak_temperature,a.current_leak_temperature,a.leak_mode
-                                from (select leak_id,max(date_create) as date_create,leak_line_id 
+                                from (select leak_id,max(date_create) as date_create,leak_line_id
                                 from {0}_data.data_leak_line_record {1} group by leak_id,leak_line_id) as x
-                                left join {0}_data.data_leak_line_record as a 
-                                on x.date_create=a.date_create and x.leak_id=a.leak_id and x.leak_line_id=a.leak_line_id 
+                                left join {0}_data.data_leak_line_record as a
+                                on x.date_create=a.date_create and x.leak_id=a.leak_id and x.leak_line_id=a.leak_line_id
                                 left join {0}.para_leak_line as b on a.leak_id=b.leak_id and a.leak_line_id=b.leak_line_id'''.format(
                         self._db_name, str_tmls.replace('and', 'where'))
                 elif rqmsg.data_mark == 1:  #历史数据
@@ -123,7 +125,8 @@ class EluDataGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqEluDataGet(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqEluDataGet(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
@@ -150,20 +153,22 @@ class EluDataGetHandler(base.RequestHandler):
                             addr = [phy_id]
                             cid = 1
                             tra = 1
-                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.elu.6259',
-                                                         addr=list(addr),
-                                                         cid=cid,
-                                                         tra=tra)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                            tcsmsg.SerializeToString())
-                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.elu.6260',
-                                                         addr=list(addr),
-                                                         cid=cid,
-                                                         tra=tra)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                            tcsmsg.SerializeToString())
+                        tcsmsg = libiisi.initRtuProtobuf(
+                            cmd='wlst.elu.6259',
+                            addr=list(addr),
+                            cid=cid,
+                            tra=tra)
+                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                            tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                                                tcsmsg.SerializeToString())
+                        tcsmsg = libiisi.initRtuProtobuf(
+                            cmd='wlst.elu.6260',
+                            addr=list(addr),
+                            cid=cid,
+                            tra=tra)
+                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                            tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -184,7 +189,8 @@ class EluCtlHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqEluCtl(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqEluCtl(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
@@ -211,18 +217,23 @@ class EluCtlHandler(base.RequestHandler):
                             addr = [phy_id]
                             cid = 1
                             tra = 1
-                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.elu.6257',
-                                                         addr=list(addr),
-                                                         cid=cid,
-                                                         tra=tra)
+                        tcsmsg = libiisi.initRtuProtobuf(
+                            cmd='wlst.elu.6257',
+                            addr=list(addr),
+                            cid=cid,
+                            tra=tra)
                         lp_do = []
-                        for loop in rqmsg.loop_id:
-                            if loop in (1, 2, 3, 4, 5, 6, 7, 8):
-                                lp_do.append(loop)
+                        i = 0
+                        for loop in range(len(rqmsg.loop_id)):
+                            if i == 8:
+                                break
+                            lp_do.append(loop if loop <= 2 else 2)
+                        if len(lp_do) < 8:
+                            lp_do.extend([2] * (8 - len(lp_do)))
                         tcsmsg.wlst_tml.wlst_elu_6257.opt_do.extend(lp_do)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                            tcsmsg.SerializeToString())
+                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                            tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 

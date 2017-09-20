@@ -27,17 +27,19 @@ def load_profile():
                 continue
             try:
                 x = json.loads(y)
-                if 'enable_if' in x.keys():
-                    a = mx.decode_string(x['enable_if'])
-                    x['enable_if'] = tuple(a.split(','))
-                    del a
-                else:
-                    x['enable_if'] = tuple()
                 if 'uuid' in x.keys():
                     # uuid = x['uuid']
                     uuid = mx.decode_string(x['uuid'])
+                    if uuid == 'You screwed up.':
+                        continue
                     cache_buildin_users.add(uuid)
                     del x['uuid']
+                    if 'enable_if' in x.keys():
+                        a = mx.decode_string(x['enable_if'])
+                        x['enable_if'] = tuple(a.split(','))
+                        del a
+                    else:
+                        x['enable_if'] = tuple()
                     x['login_time'] = time.time()
                     x['active_time'] = time.time()
                     x['is_buildin'] = 1
@@ -49,6 +51,7 @@ def load_profile():
             except:
                 pass
 
+
 def load_config(conf):
     global cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain
     load_profile()
@@ -59,13 +62,21 @@ def load_config(conf):
     cfg_dbname_dg = m_config.getData('db_name_dg')  # 灯杆数据库名称
     cfg_dbname_uas = m_config.getData('db_name_uas')  # uas数据库名称
     cfg_dz_url = m_config.getData('dz_url')  # 电桩接口地址
-    cfg_fs_url = '{0}/FlowService.asmx'.format(m_config.getData('fs_url'))  # 市政工作流接口地址
-    cfg_enable_cross_domain = 1 if m_config.getData('cross_domain').lower() == 'true' else 0
+    cfg_fs_url = '{0}/FlowService.asmx'.format(
+        m_config.getData('fs_url'))  # 市政工作流接口地址
+    cfg_enable_cross_domain = 1 if m_config.getData(
+        'cross_domain').lower() == 'true' else 0
 
 
 class SendData():
-
-    def __init__(self, msg, guardtime=0, loglevel=20, cmd='', wait4ans=False, pri=5, dtype=0):
+    def __init__(self,
+                 msg,
+                 guardtime=0,
+                 loglevel=20,
+                 cmd='',
+                 wait4ans=False,
+                 pri=5,
+                 dtype=0):
         '''发送数据包实例
 
         Args:
@@ -122,26 +133,32 @@ def initRtuJson(mod,
     j = {}
     if int(mod) == 1:
         j = {
-            "head": {"mod": int(mod),
-                     "src": int(src),
-                     "ver": int(ver),
-                     "tver": int(tver),
-                     "tra": int(tra),
-                     "ret": int(ret),
-                     "cmd": cmd, },
+            "head": {
+                "mod": int(mod),
+                "src": int(src),
+                "ver": int(ver),
+                "tver": int(tver),
+                "tra": int(tra),
+                "ret": int(ret),
+                "cmd": cmd,
+            },
         }
     elif int(mod) == 2 or int(mod) == 4:
         j = {
-            "head": {"mod": int(mod),
-                     "src": int(src),
-                     "ver": int(ver),
-                     "tver": int(tver),
-                     "tra": int(tra),
-                     "ret": int(ret),
-                     "cmd": cmd, },
-            "args": {"ip": [mx.ip2int(ip)],
-                     "port": int(port),
-                     "addr": [int(a) for a in str(addr).split(",")]},
+            "head": {
+                "mod": int(mod),
+                "src": int(src),
+                "ver": int(ver),
+                "tver": int(tver),
+                "tra": int(tra),
+                "ret": int(ret),
+                "cmd": cmd,
+            },
+            "args": {
+                "ip": [mx.ip2int(ip)],
+                "port": int(port),
+                "addr": [int(a) for a in str(addr).split(",")]
+            },
             "data": data
         }
         if len(sim) > 0:

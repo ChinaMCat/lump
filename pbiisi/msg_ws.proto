@@ -58,7 +58,7 @@ message UserLogin {
     int32 tcs = 18;  // 通讯层端口号
 }
 
-// 用户注销 
+// 用户注销
 // CommAns应答
 
 // 用户uuid续订
@@ -159,6 +159,7 @@ message AreaInfo {
         string area_name = 2;  // 区域名称
         repeated int32 tml_id = 3 [packed=true];  // 下属设备id
         int32 parent_id = 4;  // 上级区域id
+        string area_remark = 5;  // 备注
     }
     Head head = 1;
     repeated AreaView area_view = 2;
@@ -415,7 +416,7 @@ message rqIpcCtl {
     int32 dev_status = 7;  // 读取/设置设备状态,0-保留,1-停运,2-启用,3-重启
     Comm_Args comm_args = 8;  // 读取/设置通信参数
     int32 rptint = 9;  // 读取/设置主报间隔,单位 秒
-    
+
     message Comm_Args {
         int32 baud_rate = 1;  // 波特率
         int32 data_bit = 2;  // 数据位
@@ -481,6 +482,8 @@ message EventInfo {
     message EventInfoView {
         int32 event_id = 1;
         string event_name = 2;
+        string event_cls_name = 3;  // 事件类别名称
+        int32 event_cls_id = 4;  // 事件类别id
     }
     Head head = 1;
     repeated EventInfoView event_info_view = 2;
@@ -807,7 +810,7 @@ message TmlInfo {
         int32 tml_loop_id = 14;  // 终端对应的回路序号
         int32 loop_ctrl_type = 15; // 控制方式(暂不用)
         int32 loop_comm_type = 16;  // 通信方式,3-485,6-gprs
-    }    
+    }
     Head head = 1;
     repeated BaseInfo base_info = 12;  // 设备基础信息
     repeated GisInfo gis_info = 13;  // 设备地理信息
@@ -1077,8 +1080,8 @@ message QueryRtuTimeTableBind {
     message TimeTableBindView {
         int32 tml_id = 1; // 设备逻辑地址
         int32 tml_loop_id = 2;  // 设备操作回路id
-        int32 tt_on_type = 4;  // 时间表类型，1-光控，2-偏移，3-时控 
-        int32 tt_off_type = 5;  // 时间表类型，1-光控，2-偏移，3-时控 
+        int32 tt_on_type = 4;  // 时间表类型，1-光控，2-偏移，3-时控
+        int32 tt_off_type = 5;  // 时间表类型，1-光控，2-偏移，3-时控
         int64 dt_ctl = 6;  // 日期，取月，日
         int32 tt_section_id = 7;  // 时间段序号
         int32 turn_on = 8;  // 开灯时间或开灯光照，时间为hh*60+mm格式
@@ -1189,7 +1192,7 @@ message StatusRtu {
         int32 tml_id = 1;  // 设备id（界面不显示）
         int32 phy_id = 2;  // 设备物理地址
         string tml_name = 3;  // 设备名称
-        int32 is_online = 4;  // 是否在线(暂不支持，预留) 
+        int32 is_online = 4;  // 是否在线(暂不支持，预留)
         repeated int32 switch_out_st = 5 [packed=true];  // 开关量输出状态，0-断，1-通
         int32 err_num = 6;  // 当前故障总数
         int64 dt_create = 7;  // 最新数据时间
@@ -1215,7 +1218,7 @@ message StatusSlu {
         int32 tml_id = 1;  // 设备id（界面不显示）
         int32 phy_id = 2;  // 设备物理地址
         string tml_name = 3;  // 设备名称
-        int32 is_online = 4;  // 是否在线(暂不支持，预留) 
+        int32 is_online = 4;  // 是否在线(暂不支持，预留)
         repeated StatusSluitemView status_sluitem_view = 5;  // 控制器状态
         int32 err_num = 6;  // 当前故障总数
         int64 dt_create = 7;  // 最新数据采集时间
@@ -1266,4 +1269,25 @@ message rqEluCtl {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
     repeated int32 loop_id = 3 [packed=true];  // 要操作的回路标示，范围1-8，可多个回路同时操作
+}
+// 树结构
+message rqTreeInfo {
+    Head head = 1;
+    int32 data_mark = 2;  // 0-标准（区域/分组/主设备/子设备），1-仅区域/分组，2-仅主设备/子设备
+}
+message TreeInfo {
+    message TreeView {
+        int64 node_id = 1;  // 节点id
+        int64 node_parent = 2;  // 上级节点id，若为-1，表示无上级节点，该节点为根节点
+        int32 node_route = 3;  // 节点深度（1开始，1表示根节点，>1表示对应的节点深度）
+        string node_name = 4;  // 节点名称
+    }
+    Head head = 1;
+    repeated TreeView tree_view = 2;
+    int32 tree_depth = 3;  // 树的深度，如3，表示3级树
+}
+// 单灯集中器版本招测
+message rqSluVerGet {
+    Head head = 1;
+    repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的设备均执行相同的操作
 }

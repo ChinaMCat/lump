@@ -26,12 +26,13 @@ class QueryDataSluHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQueryDataSlu(),
-                                                                      msgws.QueryDataSlu())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqQueryDataSlu(), msgws.QueryDataSlu())
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
-                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                sdt, edt = self.process_input_date(
+                    rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.data_mark = rqmsg.data_mark
 
                 if rqmsg.data_mark == 0:  # 集中器数据
@@ -43,7 +44,8 @@ class QueryDataSluHandler(base.RequestHandler):
                             tml_ids = []
                     else:
                         if len(rqmsg.tml_id) > 0:
-                            tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+                            tml_ids = self.check_tml_r(user_uuid,
+                                                       list(rqmsg.tml_id))
                         else:
                             tml_ids = libiisi.cache_tml_r[user_uuid]
                         if len(tml_ids) == 0:
@@ -53,30 +55,31 @@ class QueryDataSluHandler(base.RequestHandler):
                         if len(tml_ids) == 0:
                             str_tmls = ''
                         else:
-                            str_tmls = ' and a.rtu_id in ({0}) '.format(','.join([str(
-                                a) for a in tml_ids]))
+                            str_tmls = ' and a.rtu_id in ({0}) '.format(
+                                ','.join([str(a) for a in tml_ids]))
 
                         if rqmsg.type == 0:
-                            strsql = '''select a.rtu_id,a.date_create, 
-                            a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm, 
-                            a.is_power_on,a.is_gprs,a.is_concentrator_args_error,a.is_ctrl_args_error, 
-                            a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error, 
-                            a.is_timer_error,a.unknow_ctrl_count,a.communication_channel 
-                            from {0}_data.data_slu as a 
-                            where EXISTS 
-                            (select rtu_id,date_create from 
-                            (select rtu_id,max(date_create) as date_create from {0}_data.data_slu group by rtu_id) as t 
+                            strsql = '''select a.rtu_id,a.date_create,
+                            a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm,
+                            a.is_power_on,a.is_gprs,a.is_concentrator_args_error,a.is_ctrl_args_error,
+                            a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error,
+                            a.is_timer_error,a.unknow_ctrl_count,a.communication_channel
+                            from {0}_data.data_slu as a
+                            where EXISTS
+                            (select rtu_id,date_create from
+                            (select rtu_id,max(date_create) as date_create from {0}_data.data_slu group by rtu_id) as t
                             where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.rtu_id'''.format(
                                 self._db_name, str_tmls)
                         elif rqmsg.type == 1:
-                            strsql = '''select a.rtu_id,a.date_create, 
-                            a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm, 
-                            a.is_power_on,a.is_gprs,a.is_concentrator_args_error,a.is_ctrl_args_error, 
-                            a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error, 
-                            a.is_timer_error,a.unknow_ctrl_count,a.communication_channel 
-                            from {0}_data.data_slu as a 
+                            strsql = '''select a.rtu_id,a.date_create,
+                            a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm,
+                            a.is_power_on,a.is_gprs,a.is_concentrator_args_error,a.is_ctrl_args_error,
+                            a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error,
+                            a.is_timer_error,a.unknow_ctrl_count,a.communication_channel
+                            from {0}_data.data_slu as a
                             where a.date_create>={1} and a.date_create<={2} {3} order by a.date_create desc {4}'''.format(
-                                self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                                self._db_name, sdt, edt, str_tmls,
+                                self._fetch_limited)
 
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
@@ -97,16 +100,33 @@ class QueryDataSluHandler(base.RequestHandler):
                                 if d[1] is not None:
                                     dv.tml_id = int(d[0])
                                     dv.dt_receive = mx.switchStamp(int(d[1]))
-                                    dv.reset_times.extend([int(d[2]), int(d[3]), int(d[4]), int(d[
-                                        5])])
-                                    dv.st_running.extend([int(d[6]), int(d[7]), int(d[8]), int(d[
-                                        9]), 0])
-                                    dv.st_argv.extend([int(d[10]), int(d[11]), 0])
-                                    dv.st_hw.extend([int(d[12]), int(d[13]), int(d[14]), int(d[15]),
-                                                     int(d[16])])
+                                    dv.reset_times.extend([
+                                        int(d[2]),
+                                        int(d[3]),
+                                        int(d[4]),
+                                        int(d[5])
+                                    ])
+                                    dv.st_running.extend([
+                                        int(d[6]),
+                                        int(d[7]),
+                                        int(d[8]),
+                                        int(d[9]), 0
+                                    ])
+                                    dv.st_argv.extend(
+                                        [int(d[10]), int(d[11]), 0])
+                                    dv.st_hw.extend([
+                                        int(d[12]),
+                                        int(d[13]),
+                                        int(d[14]),
+                                        int(d[15]),
+                                        int(d[16])
+                                    ])
                                     dv.unknow_sluitem_num = int(d[17])
-                                    dv.zigbee_channel.extend([int(
-                                        a) for a in '{0:016b}'.format(int(d[18]))[::-1]])
+                                    dv.zigbee_channel.extend([
+                                        int(a)
+                                        for a in '{0:016b}'.format(
+                                            int(d[18]))[::-1]
+                                    ])
                                     msg.data_slu_view.extend([dv])
                                     del dv
                         del cur, strsql
@@ -119,7 +139,8 @@ class QueryDataSluHandler(base.RequestHandler):
                             tml_ids = []
                     else:
                         if len(rqmsg.tml_id) > 0:
-                            tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+                            tml_ids = self.check_tml_r(user_uuid,
+                                                       list(rqmsg.tml_id))
                         else:
                             tml_ids = libiisi.cache_tml_r[user_uuid]
                         if len(tml_ids) == 0:
@@ -129,22 +150,23 @@ class QueryDataSluHandler(base.RequestHandler):
                         if len(tml_ids) == 0:
                             str_tmls = ''
                         else:
-                            str_tmls = ' and a.slu_id in ({0}) '.format(','.join([str(
-                                a) for a in tml_ids]))
+                            str_tmls = ' and a.slu_id in ({0}) '.format(
+                                ','.join([str(a) for a in tml_ids]))
 
                         if rqmsg.type == 0:
-                            strsql = '''select a.slu_id,a.date_create,a.ctrl_id,a.date_data_happen,a.leackage_current,a.light_data_filed 
-                            from {0}_data.data_slu_ctrl_assist as a 
-                            where EXISTS 
-                            (select slu_id,date_create from 
-                            (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_assist group by slu_id) as t 
+                            strsql = '''select a.slu_id,a.date_create,a.ctrl_id,a.date_data_happen,a.leackage_current,a.light_data_filed
+                            from {0}_data.data_slu_ctrl_assist as a
+                            where EXISTS
+                            (select slu_id,date_create from
+                            (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_assist group by slu_id) as t
                             where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.slu_id {2}'''.format(
                                 self._db_name, str_tmls, self._fetch_limited)
                         elif rqmsg.type == 1:
-                            strsql = '''select a.slu_id,a.date_create,a.ctrl_id,a.date_data_happen,a.leackage_current,a.light_data_filed 
-                            from {0}_data.data_slu_ctrl_assist as a where a.date_create >={1} and a.date_create<= {2} {3} 
+                            strsql = '''select a.slu_id,a.date_create,a.ctrl_id,a.date_data_happen,a.leackage_current,a.light_data_filed
+                            from {0}_data.data_slu_ctrl_assist as a where a.date_create >={1} and a.date_create<= {2} {3}
                             order by a.date_create desc,a.slu_id,a.ctrl_id {4}'''.format(
-                                self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                                self._db_name, sdt, edt, str_tmls,
+                                self._fetch_limited)
 
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
@@ -163,20 +185,26 @@ class QueryDataSluHandler(base.RequestHandler):
                             msg.head.paging_idx = paging_idx
                             msg.head.paging_total = paging_total
                             for d in cur:
-                                if dv.tml_id != int(d[0]) or dv.dt_receive != mx.switchStamp(int(d[
-                                        1])):
+                                if dv.tml_id != int(
+                                        d[0]
+                                ) or dv.dt_receive != mx.switchStamp(
+                                        int(d[1])):
                                     if dv.tml_id > 0:
-                                        msg.data_sluitem_assist_view.extend([dv])
-                                        dv = msgws.QueryDataSlu.DataSluitemAssistView()
+                                        msg.data_sluitem_assist_view.extend(
+                                            [dv])
+                                        dv = msgws.QueryDataSlu.DataSluitemAssistView(
+                                        )
                                     dv.tml_id = int(d[0])
                                     dv.dt_receive = mx.switchStamp(int(d[1]))
-                                dva = msgws.QueryDataSlu.DataSluitemAssistView.SluitemAssistData()
+                                dva = msgws.QueryDataSlu.DataSluitemAssistView.SluitemAssistData(
+                                )
                                 dva.sluitem_id = int(d[2])
                                 dva.dt_cache = int(d[3])
                                 dva.leackage_current = float(d[4])
                                 x = d[5].split(';')[:-1]
                                 for a in x:
-                                    dlv = msgws.QueryDataSlu.DataSluitemAssistView.SluitemLampData()
+                                    dlv = msgws.QueryDataSlu.DataSluitemAssistView.SluitemLampData(
+                                    )
                                     dlv.max_voltage = float(a.split('-')[0])
                                     dlv.max_current = float(a.split('-')[1])
                                     dlv.electricity = float(a.split('-')[2])
@@ -194,7 +222,8 @@ class QueryDataSluHandler(base.RequestHandler):
                             tml_ids = []
                     else:
                         if len(rqmsg.tml_id) > 0:
-                            tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+                            tml_ids = self.check_tml_r(user_uuid,
+                                                       list(rqmsg.tml_id))
                         else:
                             tml_ids = libiisi.cache_tml_r[user_uuid]
                         if len(tml_ids) == 0:
@@ -204,43 +233,45 @@ class QueryDataSluHandler(base.RequestHandler):
                         if len(tml_ids) == 0:
                             str_tmls = ''
                         else:
-                            str_tmls = ' and d.slu_id in ({0}) '.format(','.join([str(
-                                a) for a in tml_ids]))
+                            str_tmls = ' and d.slu_id in ({0}) '.format(
+                                ','.join([str(a) for a in tml_ids]))
 
                         if rqmsg.type == 0:
-                            strsql = '''select x.*,a.lamp_id,a.state_working_on, 
-                            a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power, 
-                            a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level 
-                            from (select d.ctrl_id,max(d.date_create) as date_create,d.slu_id,d.date_time_ctrl, 
-                            d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm, 
+                            strsql = '''select x.*,a.lamp_id,a.state_working_on,
+                            a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                            a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
+                            from (select d.ctrl_id,max(d.date_create) as date_create,d.slu_id,d.date_time_ctrl,
+                            d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
                             d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}_data.data_slu_ctrl as d
                             {1} group by d.slu_id,d.ctrl_id) as x left join {0}_data.data_slu_ctrl_lamp as a
                             on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id'''.format(
-                                self._db_name, str_tmls.replace('and', 'where'))
+                                self._db_name, str_tmls.replace(
+                                    'and', 'where'))
 
-                            # strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor, 
-                            # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set, 
-                            # d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on, 
-                            # a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power, 
-                            # a.electricity,a.electricity_total,a.active_time,a.active_time_total, 
-                            # a.power_level from {0}_data.data_slu_ctrl_lamp as a 
-                            # left join {0}_data.data_slu_ctrl as d on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id 
-                            # where EXISTS 
-                            # (select slu_id,date_create from 
-                            # (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_lamp group by slu_id) as t 
+                            # strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
+                            # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
+                            # d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
+                            # a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                            # a.electricity,a.electricity_total,a.active_time,a.active_time_total,
+                            # a.power_level from {0}_data.data_slu_ctrl_lamp as a
+                            # left join {0}_data.data_slu_ctrl as d on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
+                            # where EXISTS
+                            # (select slu_id,date_create from
+                            # (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_lamp group by slu_id) as t
                             # where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.slu_id,a.ctrl_id,a.lamp_id, a.date_create desc'''.format(
                             #     self._db_name, str_tmls)
                         elif rqmsg.type == 1:
-                            strsql = '''select x.*, 
-                                    a.lamp_id,a.state_working_on,a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power, 
-                                    a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level 
-                                    from (select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl, 
-                                    d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm, 
-                                    d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}_data.data_slu_ctrl as d 
-                                    where d.date_create>={1} and d.date_create<={2} {3} {4}) as x 
-                                    left join {0}_data.data_slu_ctrl_lamp as a on 
+                            strsql = '''select x.*,
+                                    a.lamp_id,a.state_working_on,a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                                    a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
+                                    from (select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
+                                    d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
+                                    d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}_data.data_slu_ctrl as d
+                                    where d.date_create>={1} and d.date_create<={2} {3} {4}) as x
+                                    left join {0}_data.data_slu_ctrl_lamp as a on
                                     x.date_create=a.date_create and x.slu_id=a.slu_id and x.ctrl_id=a.ctrl_id'''.format(
-                                self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                                self._db_name, sdt, edt, str_tmls,
+                                self._fetch_limited)
 
                             # strsql = 'select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor, \
                             # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set, \
@@ -271,32 +302,48 @@ class QueryDataSluHandler(base.RequestHandler):
                             msg.head.paging_total = paging_total
                             for d in cur:
 
-                                if dv.sluitem_id != int(d[0]) or dv.dt_receive != mx.switchStamp(
+                                if dv.sluitem_id != int(
+                                        d[0]
+                                ) or dv.dt_receive != mx.switchStamp(
                                         int(d[1])):
                                     if dv.sluitem_id > 0:
                                         msg.data_sluitem_view.extend([dv])
-                                        dv = msgws.QueryDataSlu.DataSluitemView()
+                                        dv = msgws.QueryDataSlu.DataSluitemView(
+                                        )
                                     dv.tml_id = int(d[2])
                                     dv.sluitem_id = int(d[0])
                                     dv.dt_receive = mx.switchStamp(int(d[1]))
                                     dv.dt_cache = mx.switchStamp(int(d[3]))
-                                    dv.st_sluitem.extend([int(d[4]), int(d[5]), int(d[6]), int(d[
-                                        7]), int(d[8]), int(d[9]), int(d[10])])
+                                    dv.st_sluitem.extend([
+                                        int(d[4]),
+                                        int(d[5]),
+                                        int(d[6]),
+                                        int(d[7]),
+                                        int(d[8]),
+                                        int(d[9]),
+                                        int(d[10])
+                                    ])
                                     dv.temperature = int(d[11])
 
-                                dvs = msgws.QueryDataSlu.DataLampView()
-                                dvs.lamp_id = int(d[12])
-                                dvs.st_lamp.extend([int(d[13]), int(d[14]), int(d[15]), int(d[16])])
-                                dvs.lamp_voltage = float(d[17])
-                                dvs.lamp_current = float(d[18])
-                                dvs.lamp_power = float(d[19])
-                                dvs.lamp_electricity = float(d[20])
-                                dvs.lamp_electricity_count = float(d[21])
-                                dvs.lamp_runtime = float(d[22])
-                                dvs.lamp_runtime_count = float(d[23])
-                                dvs.lamp_saving = float(d[24])
-                                dv.data_lamp_view.extend([dvs])
-                                del dvs
+                                if d[12] is not None:
+                                    dvs = msgws.QueryDataSlu.DataLampView()
+                                    dvs.lamp_id = int(d[12])
+                                    dvs.st_lamp.extend([
+                                        int(d[13]),
+                                        int(d[14]),
+                                        int(d[15]),
+                                        int(d[16])
+                                    ])
+                                    dvs.lamp_voltage = float(d[17])
+                                    dvs.lamp_current = float(d[18])
+                                    dvs.lamp_power = float(d[19])
+                                    dvs.lamp_electricity = float(d[20])
+                                    dvs.lamp_electricity_count = float(d[21])
+                                    dvs.lamp_runtime = float(d[22])
+                                    dvs.lamp_runtime_count = float(d[23])
+                                    dvs.lamp_saving = float(d[24])
+                                    dv.data_lamp_view.extend([dvs])
+                                    del dvs
                             if dv.sluitem_id > 0:
                                 msg.data_sluitem_view.extend([dv])
                         del cur, strsql
@@ -318,7 +365,8 @@ class SluDataGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluDataGet(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSluDataGet(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
@@ -344,18 +392,19 @@ class SluDataGetHandler(base.RequestHandler):
                             addr = [phy_id]
                             cid = 1
                             tra = 1
-                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7300',
-                                                         addr=list(addr),
-                                                         cid=cid,
-                                                         tra=tra)
+                        tcsmsg = libiisi.initRtuProtobuf(
+                            cmd='wlst.slu.7300',
+                            addr=list(addr),
+                            cid=cid,
+                            tra=tra)
                         tcsmsg.wlst_tml.wlst_slu_7300.cmd_idx = rqmsg.cmd_idx
                         tcsmsg.wlst_tml.wlst_slu_7300.sluitem_start = rqmsg.sluitem_idx
                         tcsmsg.wlst_tml.wlst_slu_7300.sluitem_count = rqmsg.sluitem_num
                         tcsmsg.wlst_tml.wlst_slu_7300.data_mark = rqmsg.data_mark
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                            tcsmsg.SerializeToString())
+                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                            tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -376,8 +425,8 @@ class SluitemDataGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluitemDataGet(),
-                                                                      None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSluitemDataGet(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
@@ -403,18 +452,19 @@ class SluitemDataGetHandler(base.RequestHandler):
                             addr = [phy_id]
                             cid = 1
                             tra = 1
-                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7a00',
-                                                         addr=list(addr),
-                                                         cid=cid,
-                                                         tra=tra)
+                        tcsmsg = libiisi.initRtuProtobuf(
+                            cmd='wlst.slu.7a00',
+                            addr=list(addr),
+                            cid=cid,
+                            tra=tra)
                         tcsmsg.wlst_tml.wlst_slu_7a00.cmd_idx = rqmsg.cmd_idx
                         tcsmsg.wlst_tml.wlst_slu_7a00.sluitem_idx = rqmsg.sluitem_idx
                         tcsmsg.wlst_tml.wlst_slu_7a00.data_mark.ParseFromString(
                             rqmsg.data_mark.SerializeToString())
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                            tcsmsg.SerializeToString())
+                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                            tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -435,7 +485,8 @@ class SluTimerCtlHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluTimerCtl(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSluTimerCtl(), None)
         env = False
         contents = ''
         if user_data is not None:
@@ -445,7 +496,8 @@ class SluTimerCtlHandler(base.RequestHandler):
                 user_auth = libiisi.can_exec & libiisi.can_read
             if user_data['user_auth'] in user_auth:
                 env = True
-                contents = 'user from {0} set slu timer'.format(self.request.remote_ip)
+                contents = 'user from {0} set slu timer'.format(
+                    self.request.remote_ip)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
                     rtu_ids = list(rqmsg.tml_id)
@@ -468,16 +520,17 @@ class SluTimerCtlHandler(base.RequestHandler):
                             addr = [phy_id]
                             cid = 1
                             tra = 1
-                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7100',
-                                                         addr=list(addr),
-                                                         cid=cid,
-                                                         tra=tra)
+                        tcsmsg = libiisi.initRtuProtobuf(
+                            cmd='wlst.slu.7100',
+                            addr=list(addr),
+                            cid=cid,
+                            tra=tra)
                         tcsmsg.wlst_tml.wlst_slu_7100.opt_mark = rqmsg.data_mark
                         tcsmsg.wlst_tml.wlst_slu_7100.force_timer = rqmsg.do_force
                         # libiisi.set_to_send(tcsmsg, 0)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                            tcsmsg.SerializeToString())
+                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                            tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -500,13 +553,15 @@ class SluCtlHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluCtl(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSluCtl(), None)
         env = False
         contents = ''
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_exec:
                 env = True
-                contents = 'user from {0} ctrl slu'.format(self.request.remote_ip)
+                contents = 'user from {0} ctrl slu'.format(
+                    self.request.remote_ip)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
                     rtu_ids = list(rqmsg.tml_id)
@@ -529,27 +584,31 @@ class SluCtlHandler(base.RequestHandler):
                             addr = [phy_id]
                             cid = 1
                             tra = 1
-                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.7400',
-                                                         addr=list(addr),
-                                                         cid=cid,
-                                                         tra=tra)
+                        tcsmsg = libiisi.initRtuProtobuf(
+                            cmd='wlst.slu.7400',
+                            addr=list(addr),
+                            cid=cid,
+                            tra=tra)
                         tcsmsg.wlst_tml.wlst_slu_7400.cmd_idx = rqmsg.cmd_idx
                         tcsmsg.wlst_tml.wlst_slu_7400.operation_type = rqmsg.operation_type
                         tcsmsg.wlst_tml.wlst_slu_7400.operation_order = rqmsg.operation_order
                         tcsmsg.wlst_tml.wlst_slu_7400.addr_type = rqmsg.addr_type
-                        tcsmsg.wlst_tml.wlst_slu_7400.addrs.extend(list(rqmsg.addrs))
-                        tcsmsg.wlst_tml.wlst_slu_7400.week_set.extend(list(rqmsg.week_set))
+                        tcsmsg.wlst_tml.wlst_slu_7400.addrs.extend(
+                            list(rqmsg.addrs))
+                        tcsmsg.wlst_tml.wlst_slu_7400.week_set.extend(
+                            list(rqmsg.week_set))
                         tcsmsg.wlst_tml.wlst_slu_7400.timer_or_offset = rqmsg.timer_or_offset
                         tcsmsg.wlst_tml.wlst_slu_7400.cmd_type = rqmsg.cmd_type
                         if rqmsg.cmd_type == 4:  # 混合控制
-                            tcsmsg.wlst_tml.wlst_slu_7400.cmd_mix.extend(list(rqmsg.cmd_mix))
+                            tcsmsg.wlst_tml.wlst_slu_7400.cmd_mix.extend(
+                                list(rqmsg.cmd_mix))
                         elif rqmsg.cmd_type == 5:  # pwm调节
                             tcsmsg.wlst_tml.wlst_slu_7400.cmd_pwm.ParseFromString(
                                 rqmsg.cmd_pwm.SerializeToString())
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                            tcsmsg.SerializeToString())
+                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                            tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -572,7 +631,8 @@ class SluVerGetHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluDataGet(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSluVerGet(), None)
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
@@ -598,14 +658,15 @@ class SluVerGetHandler(base.RequestHandler):
                             addr = [phy_id]
                             cid = 1
                             tra = 1
-                        tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.slu.5000',
-                                                         addr=list(addr),
-                                                         cid=cid,
-                                                         tra=tra)
+                        tcsmsg = libiisi.initRtuProtobuf(
+                            cmd='wlst.slu.5000',
+                            addr=list(addr),
+                            cid=cid,
+                            tra=tra)
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
-                        libiisi.send_to_zmq_pub(
-                            'tcs.req.{1}.{0}'.format(tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                            tcsmsg.SerializeToString())
+                        libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                            tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                                                tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 

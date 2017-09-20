@@ -89,14 +89,14 @@ class QuerySmsAlarmHandler(base.RequestHandler):
                                                        use_scode=1)
         if legal:
             if rqmsg.data_mark == 2:  # 市政短信
-                strsql = '''select is_alarm,record_id,rtu_name,user_phone_number 
-                            from {0}_data.record_msg_new where is_alarm=2 
+                strsql = '''select is_alarm,record_id,rtu_name,user_phone_number
+                            from {0}_data.record_msg_new where is_alarm=2
                             order by user_phone_number limit 100'''.format(self._db_name)
             else:
-                strsql = '''select is_alarm,record_id,rtu_name,user_phone_number,rtu_id,loop_id,loop_name,fault_name, 
-                         left((date_create-621356256000000000) / 10000000 / 60 ,8) as dc from {0}_data.record_msg_new 
-                         where is_alarm in (0,1)  
-                         order by user_phone_number,rtu_id,loop_id,is_alarm,dc desc limit 100'''.format(
+                strsql = '''select is_alarm,record_id,rtu_name,user_phone_number,rtu_id,loop_id,loop_name,fault_name,
+                         date_create from {0}_data.record_msg_new
+                         where is_alarm in (0,1)
+                         order by user_phone_number,rtu_id,loop_id,is_alarm,date_create desc limit 100'''.format(
                     self._db_name)
 
             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
@@ -124,7 +124,7 @@ class QuerySmsAlarmHandler(base.RequestHandler):
                         smsr.loop_id = d[5]
                         smsr.loop_name = d[6]
                         smsr.fault_name = d[7]
-                        smsr.dt_create = mx.switchStamp(d[8])
+                        smsr.dt_create = mx.switchStamp(int(d[8]))
                     msg.sms_alarm.extend([smsr])
                     del smsr
 

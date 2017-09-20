@@ -52,14 +52,12 @@ class UserLoginJKHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace('"',
-                                                                                                ''),
-                                                              rqmsg.pwd.replace('"', ''))
+        where user_name="{1}" and user_password="{2}"'.format(
+            self._db_name,
+            rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"', ''))
 
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-            strsql,
-            need_fetch=1,
-            need_paging=0)
+            strsql, need_fetch=1, need_paging=0)
 
         if record_total is None or record_total == 0:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
@@ -78,7 +76,8 @@ class UserLoginJKHandler(base.RequestHandler):
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
-                            self.write_event(122, contents, 2, user_name=user_name)
+                            self.write_event(
+                                122, contents, 2, user_name=user_name)
                             del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
@@ -87,7 +86,8 @@ class UserLoginJKHandler(base.RequestHandler):
             msg.fullname = d[1] if d[1] is not None else ''
             zmq_addr = libiisi.m_config.getData('zmq_port')
             if zmq_addr.find(':') > -1:
-                msg.zmq = '{0},{1}'.format(zmq_addr.split(':')[1], int(zmq_addr.split(':')[1]) + 1)
+                msg.zmq = '{0},{1}'.format(
+                    zmq_addr.split(':')[1], int(zmq_addr.split(':')[1]) + 1)
             else:
                 msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr) + 1)
 
@@ -107,9 +107,7 @@ class UserLoginJKHandler(base.RequestHandler):
                 strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
                     self._db_name, rqmsg.user)
                 record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
-                    strsql,
-                    need_fetch=1,
-                    need_paging=0)
+                    strsql, need_fetch=1, need_paging=0)
 
                 if record_total1 > 0:
                     for d in cur1:
@@ -123,15 +121,21 @@ class UserLoginJKHandler(base.RequestHandler):
                             if d[0] is not None:
                                 if len(d[0].split(';')[:-1]) > 0:
                                     user_auth += 4
-                                    _area_r = [int(a) for a in d[0].split(';')[:-1]]
+                                    _area_r = [
+                                        int(a) for a in d[0].split(';')[:-1]
+                                    ]
                             if d[1] is not None:
                                 if len(d[1].split(';')[:-1]) > 0:
                                     user_auth += 2
-                                    _area_w = [int(a) for a in d[1].split(';')[:-1]]
+                                    _area_w = [
+                                        int(a) for a in d[1].split(';')[:-1]
+                                    ]
                             if d[2] is not None:
                                 if len(d[2].split(';')[:-1]) > 0:
                                     user_auth += 1
-                                    _area_x = [int(a) for a in d[2].split(';')[:-1]]
+                                    _area_x = [
+                                        int(a) for a in d[2].split(';')[:-1]
+                                    ]
                 else:
                     contents = 'login failed, database version error.'
                     msg.uuid = ''
@@ -149,19 +153,20 @@ class UserLoginJKHandler(base.RequestHandler):
             msg.area_x.extend(_area_x)
             msg.tcs = int(libiisi.cfg_tcs_port)
             # 加入用户缓存{uuid:dict()}
-            libiisi.cache_user[user_uuid] = dict(user_name=rqmsg.user,
-                                                 user_auth=user_auth,
-                                                 login_time=time.time(),
-                                                 active_time=time.time(),
-                                                 user_db=self._db_name,
-                                                 area_id=0,
-                                                 source_dev=rqmsg.dev,
-                                                 unique=rqmsg.unique,
-                                                 remote_ip=self.request.remote_ip,
-                                                 area_r=set(_area_r),
-                                                 area_w=set(_area_w),
-                                                 area_x=set(_area_x),
-                                                 is_buildin=0)
+            libiisi.cache_user[user_uuid] = dict(
+                user_name=rqmsg.user,
+                user_auth=user_auth,
+                login_time=time.time(),
+                active_time=time.time(),
+                user_db=self._db_name,
+                area_id=0,
+                source_dev=rqmsg.dev,
+                unique=rqmsg.unique,
+                remote_ip=self.request.remote_ip,
+                area_r=set(_area_r),
+                area_w=set(_area_w),
+                area_x=set(_area_x),
+                is_buildin=0)
             del _area_r, _area_w, _area_x
 
         del cur, strsql
@@ -178,9 +183,11 @@ class UserLoginJKHandler(base.RequestHandler):
         if rqmsg.dev == 3:
             retry = False
             args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
-            url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url, urlencode(args))
+            url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url,
+                                               urlencode(args))
             try:
-                rep = yield self.thc.fetch(url, raise_error=True, request_timeout=10)
+                rep = yield self.thc.fetch(
+                    url, raise_error=True, request_timeout=10)
                 # rep = utils.m_httpclinet_pool.request('GET',
                 #                                       baseurl,
                 #                                       fields=args,
@@ -195,7 +202,8 @@ class UserLoginJKHandler(base.RequestHandler):
                 if not retry:
                     retry = True
                     try:
-                        rep = yield self.thc.fetch(url, raise_error=False, request_timeout=3)
+                        rep = yield self.thc.fetch(
+                            url, raise_error=False, request_timeout=3)
                         dom = xmld.parseString(rep.body)
                         root = dom.documentElement
                         msg.flow_data = root.firstChild.wholeText
@@ -245,14 +253,12 @@ class UserLoginHandler(base.RequestHandler):
 
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
-        where user_name="{1}" and user_password="{2}"'.format(self._db_name, rqmsg.user.replace('"',
-                                                                                                ''),
-                                                              rqmsg.pwd.replace('"', ''))
+        where user_name="{1}" and user_password="{2}"'.format(
+            self._db_name,
+            rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"', ''))
 
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-            strsql,
-            need_fetch=1,
-            need_paging=0)
+            strsql, need_fetch=1, need_paging=0)
 
         if record_total is None or record_total == 0:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
@@ -271,7 +277,8 @@ class UserLoginHandler(base.RequestHandler):
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
-                            self.write_event(122, contents, 2, user_name=user_name)
+                            self.write_event(
+                                122, contents, 2, user_name=user_name)
                             del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
@@ -280,7 +287,8 @@ class UserLoginHandler(base.RequestHandler):
             msg.fullname = d[1] if d[1] is not None else ''
             zmq_addr = libiisi.m_config.getData('zmq_port')
             if zmq_addr.find(':') > -1:
-                msg.zmq = '{0},{1}'.format(zmq_addr.split(':')[1], int(zmq_addr.split(':')[1]) + 1)
+                msg.zmq = '{0},{1}'.format(
+                    zmq_addr.split(':')[1], int(zmq_addr.split(':')[1]) + 1)
             else:
                 msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr) + 1)
 
@@ -292,9 +300,7 @@ class UserLoginHandler(base.RequestHandler):
                 strsql = 'select r,w,x,d from {0}.user_rwx where user_name="{1}"'.format(
                     self._db_name, rqmsg.user)
                 record_total1, buffer_tag1, paging_idx1, paging_total1, cur1 = yield self.mydata_collector(
-                    strsql,
-                    need_fetch=1,
-                    need_paging=0)
+                    strsql, need_fetch=1, need_paging=0)
 
                 if record_total1 > 0:
                     for d in cur1:
@@ -308,15 +314,21 @@ class UserLoginHandler(base.RequestHandler):
                             if d[0] is not None:
                                 if len(d[0].split(';')[:-1]) > 0:
                                     user_auth += 4
-                                    _area_r = [int(a) for a in d[0].split(';')[:-1]]
+                                    _area_r = [
+                                        int(a) for a in d[0].split(';')[:-1]
+                                    ]
                             if d[1] is not None:
                                 if len(d[1].split(';')[:-1]) > 0:
                                     user_auth += 2
-                                    _area_w = [int(a) for a in d[1].split(';')[:-1]]
+                                    _area_w = [
+                                        int(a) for a in d[1].split(';')[:-1]
+                                    ]
                             if d[2] is not None:
                                 if len(d[2].split(';')[:-1]) > 0:
                                     user_auth += 1
-                                    _area_x = [int(a) for a in d[2].split(';')[:-1]]
+                                    _area_x = [
+                                        int(a) for a in d[2].split(';')[:-1]
+                                    ]
                 else:
                     contents = 'login failed, database version error.'
                     msg.uuid = ''
@@ -335,19 +347,20 @@ class UserLoginHandler(base.RequestHandler):
             msg.area_x.extend(_area_x)
             msg.tcs = int(libiisi.cfg_tcs_port)
             # 加入用户缓存{uuid:dict()}
-            libiisi.cache_user[user_uuid] = dict(user_name=rqmsg.user,
-                                                 user_auth=user_auth,
-                                                 login_time=time.time(),
-                                                 active_time=time.time(),
-                                                 user_db=self._db_name,
-                                                 area_id=0,
-                                                 source_dev=rqmsg.dev,
-                                                 unique=rqmsg.unique,
-                                                 remote_ip=self.request.remote_ip,
-                                                 area_r=set(_area_r),
-                                                 area_w=set(_area_w),
-                                                 area_x=set(_area_x),
-                                                 is_buildin=0)
+            libiisi.cache_user[user_uuid] = dict(
+                user_name=rqmsg.user,
+                user_auth=user_auth,
+                login_time=time.time(),
+                active_time=time.time(),
+                user_db=self._db_name,
+                area_id=0,
+                source_dev=rqmsg.dev,
+                unique=rqmsg.unique,
+                remote_ip=self.request.remote_ip,
+                area_r=set(_area_r),
+                area_w=set(_area_w),
+                area_x=set(_area_x),
+                is_buildin=0)
             del _area_r, _area_w, _area_x
 
         del cur, strsql
@@ -361,9 +374,11 @@ class UserLoginHandler(base.RequestHandler):
         if rqmsg.dev == 3:
             retry = False
             args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
-            url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url, urlencode(args))
+            url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url,
+                                               urlencode(args))
             try:
-                rep = yield self.thc.fetch(url, raise_error=True, request_timeout=10)
+                rep = yield self.thc.fetch(
+                    url, raise_error=True, request_timeout=10)
                 # rep = utils.m_httpclinet_pool.request('GET',
                 #                                       baseurl,
                 #                                       fields=args,
@@ -378,7 +393,8 @@ class UserLoginHandler(base.RequestHandler):
                 if not retry:
                     retry = True
                     try:
-                        rep = yield self.thc.fetch(url, raise_error=False, request_timeout=3)
+                        rep = yield self.thc.fetch(
+                            url, raise_error=False, request_timeout=3)
                         dom = xmld.parseString(rep.body)
                         root = dom.documentElement
                         msg.flow_data = root.firstChild.wholeText
@@ -409,7 +425,8 @@ class UserLogoutHandler(base.RequestHandler):
         contents = ''
         env = False
 
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(None, None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            None, None)
         user_uuid = self.get_argument('uuid')
         if user_uuid in libiisi.cache_buildin_users:
             msg.head.if_st = 0
@@ -432,7 +449,8 @@ class UserLogoutHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(122, contents, 2, user_name=user_data['user_name'])
+            self.write_event(
+                122, contents, 2, user_name=user_data['user_name'])
         del msg, rqmsg, user_data
 
 
@@ -448,7 +466,8 @@ class UserRenewHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserRenew(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqUserRenew(), None)
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
@@ -467,7 +486,8 @@ class UserAddHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserAdd(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqUserAdd(), None)
 
         env = False
         contents = ''
@@ -482,19 +502,22 @@ class UserAddHandler(base.RequestHandler):
                 else:
                     # 判断用户是否存在
                     strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                        self._db_name, rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"', ''))
+                        self._db_name,
+                        rqmsg.user.replace('"', ''), rqmsg.pwd.replace(
+                            '"', ''))
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                        strsql,
-                        need_fetch=1)
+                        strsql, need_fetch=1)
                     if record_total > 0:
                         msg.head.if_st = 45
                         msg.head.if_msg = 'User already exists'
                     else:
                         strsql = 'insert into {0}.user_list (user_name, user_real_name, user_password, user_phonenumber, user_operator_code, date_create, date_update, date_access) \
                         values ("{1}","{2}","{3}","{4}","{5}",{6},{7},{8})'.format(
-                            self._db_name, rqmsg.user, rqmsg.fullname, rqmsg.pwd, rqmsg.tel,
-                            rqmsg.code, mx.switchStamp(int(time.time())),
-                            mx.switchStamp(int(time.time())), mx.switchStamp(int(time.time())))
+                            self._db_name, rqmsg.user, rqmsg.fullname,
+                            rqmsg.pwd, rqmsg.tel, rqmsg.code,
+                            mx.switchStamp(int(time.time())),
+                            mx.switchStamp(int(time.time())),
+                            mx.switchStamp(int(time.time())))
                         yield self.mydata_collector(strsql, need_fetch=0)
                         env = True
                         contents = 'add user {0}'.format(rqmsg.user)
@@ -504,7 +527,8 @@ class UserAddHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(154, contents, 2, user_name=user_data['user_name'])
+            self.write_event(
+                154, contents, 2, user_name=user_data['user_name'])
         del msg, rqmsg, user_data
 
 
@@ -520,7 +544,8 @@ class UserDelHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserDel(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqUserDel(), None)
 
         env = False
         contents = ''
@@ -538,8 +563,7 @@ class UserDelHandler(base.RequestHandler):
                         strsql = 'select * from {0}.user_list where user_name="{1}"'.format(
                             self._db_name, rqmsg.user_name.replace('"', ''))
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                            strsql,
-                            need_fetch=1)
+                            strsql, need_fetch=1)
                         if record_total > 0:
                             strsql = 'delete from {0}.user_list where user_name="{1}"'.format(
                                 self._db_name, rqmsg.user_name)
@@ -558,7 +582,8 @@ class UserDelHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(156, contents, 2, user_name=user_data['user_name'])
+            self.write_event(
+                156, contents, 2, user_name=user_data['user_name'])
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -574,7 +599,8 @@ class UserEditHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserEdit(), None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqUserEdit(), None)
 
         env = False
         contents = ''
@@ -585,10 +611,11 @@ class UserEditHandler(base.RequestHandler):
         else:
             if user_data is not None:
                 strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                    self._db_name, rqmsg.user_name.replace('"', ''), rqmsg.pwd_old.replace('"', ''))
+                    self._db_name,
+                    rqmsg.user_name.replace('"', ''),
+                    rqmsg.pwd_old.replace('"', ''))
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                    strsql,
-                    need_fetch=1)
+                    strsql, need_fetch=1)
                 if record_total > 0 or user_data['user_auth'] in libiisi.can_admin:
                     if user_data['user_name'] == rqmsg.user_name:
                         if user_data['user_auth'] in libiisi.can_write:
@@ -597,8 +624,9 @@ class UserEditHandler(base.RequestHandler):
                                         user_phonenumber="{3}", \
                                         user_operator_code="{4}" \
                                         where user_name="{5}"'.format(
-                                self._db_name, rqmsg.fullname, rqmsg.pwd.replace('"', ''),
-                                rqmsg.tel, rqmsg.code, rqmsg.user_name.replace('"', ''))
+                                self._db_name, rqmsg.fullname,
+                                rqmsg.pwd.replace('"', ''), rqmsg.tel,
+                                rqmsg.code, rqmsg.user_name.replace('"', ''))
                             self.mydata_collector(strsql, 0)
                         else:
                             msg.head.if_st = 11
@@ -624,8 +652,13 @@ class UserEditHandler(base.RequestHandler):
         if msg.head.if_st == 1 and rqmsg.user_sz_id > 0:
             thc = AsyncHTTPClient()
             url = '{0}/{1}'.format(libiisi.cfg_fs_url, 'UpdatePassword')
-            data = {'user_now': rqmsg.user_sz_id, 'old_pwd': rqmsg.pwd_old, 'new_pwd': rqmsg.pwd}
-            rep = yield self.thc.fetch(url, raise_error=False, request_timeout=20)
+            data = {
+                'user_now': rqmsg.user_sz_id,
+                'old_pwd': rqmsg.pwd_old,
+                'new_pwd': rqmsg.pwd
+            }
+            rep = yield self.thc.fetch(
+                url, raise_error=False, request_timeout=20)
             if 'false' in rep.body:
                 msg.head.if_st = 43
                 msg.head.if_msg = 'sz UpdatePassword error.'
@@ -653,8 +686,8 @@ class UserInfoHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqUserInfo(),
-                                                                      msgws.UserInfo())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqUserInfo(), msgws.UserInfo())
 
         env = False
         contents = ''
@@ -680,9 +713,7 @@ class UserInfoHandler(base.RequestHandler):
                             strsql = 'select user_name, user_real_name, user_password, user_phonenumber, user_operator_code from {0}.user_list where user_name="{1}"'.format(
                                 self._db_name, user_data['user_name'])
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                        strsql,
-                        need_fetch=1,
-                        need_paging=0)
+                        strsql, need_fetch=1, need_paging=0)
                     if record_total is None:
                         msg.head.if_st = 45
                     else:
@@ -693,7 +724,8 @@ class UserInfoHandler(base.RequestHandler):
                         for d in cur:
                             userview = msgws.UserInfo.UserView()
                             userview.user = d[0]
-                            userview.fullname = d[1] if d[1] is not None else ''
+                            userview.fullname = d[
+                                1] if d[1] is not None else ''
                             # userview.pwd = d[2]
                             # userview.auth = d[3]
                             userview.tel = d[3] if d[3] is not None else ''

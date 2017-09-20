@@ -17,7 +17,6 @@ import tornado.web
 from tornado.concurrent import run_on_executor
 import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
-
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -45,16 +44,20 @@ class RequestHandler(mxweb.MXRequestHandler):
     # @run_on_executor
     def cache_sunriseset(self):
         strsql = 'select date_month, date_day, time_sunrise, time_sunset \
-                from {0}.time_sunriset_info order by date_month, date_day'.format(self._db_name)
+                from {0}.time_sunriset_info order by date_month, date_day'.format(
+            self._db_name)
         cur = libiisi.m_sql.run_fetch(strsql)
         s = libiisi.m_sql.get_last_error_message()
         if len(s) > 0:
-            logging.error(self.format_log(self.request.remote_ip, s, self.request.path, '_MYSQL'))
+            logging.error(
+                self.format_log(self.request.remote_ip, s, self.request.path,
+                                '_MYSQL'))
 
         # if isinstance(cur, types.GeneratorType):
         if cur is not None:
             for d in cur:
-                libiisi.cache_sunriseset[int('{0}{1:02d}'.format(d[0], d[1]))] = (d[2], d[3])
+                libiisi.cache_sunriseset[int('{0}{1:02d}'.format(d[0], d[
+                    1]))] = (d[2], d[3])
         del cur
 
     def get_sunriseset(self, mmdd):
@@ -140,15 +143,17 @@ class RequestHandler(mxweb.MXRequestHandler):
         # if self.debug:
         #     print(strsql)
 
-        cache_head = ''.join(['{0:x}'.format(ord(a)) for a in self.url_pattern])
+        cache_head = ''.join(
+            ['{0:x}'.format(ord(a)) for a in self.url_pattern])
         # 判断是否优先读取缓存数据
-        if buffer_tag > 0 and os.path.isfile(os.path.join(libiisi.m_cachedir, '{0}{1}'.format(
-                buffer_tag, cache_head))):
+        if buffer_tag > 0 and os.path.isfile(
+                os.path.join(libiisi.m_cachedir, '{0}{1}'.format(
+                    buffer_tag, cache_head))):
             try:
                 rep = []
                 with open(
-                        os.path.join(libiisi.m_cachedir, '{0}{1}'.format(buffer_tag, cache_head)),
-                        'rb') as f:
+                        os.path.join(libiisi.m_cachedir, '{0}{1}'.format(
+                            buffer_tag, cache_head)), 'rb') as f:
                     cur = json.loads(f.read())
                     f.close()
                 c = len(cur.keys())
@@ -260,11 +265,11 @@ class RequestHandler(mxweb.MXRequestHandler):
                             rep.append(d)
                         cache_data[n] = d
                         n += 1
-                print(cache_data)
                 s = libiisi.m_sql.get_last_error_message()
                 if len(s) > 0:
-                    logging.error(self.format_log(self.request.remote_ip, s, self.request.path,
-                                                  '_MYSQL'))
+                    logging.error(
+                        self.format_log(self.request.remote_ip, s,
+                                        self.request.path, '_MYSQL'))
                     return (None, None, None, None, None)
                 else:
                     if need_paging:
@@ -273,13 +278,16 @@ class RequestHandler(mxweb.MXRequestHandler):
                             buffer_tag = int(time.time() * 1000000)
                             t = threading.Thread(
                                 target=self.write_cache,
-                                args=(os.path.join(libiisi.m_cachedir, '{0}{1}'.format(buffer_tag,
-                                                                                       cache_head)),
-                                      cache_data, ))
+                                args=(
+                                    os.path.join(libiisi.m_cachedir,
+                                                 '{0}{1}'.format(
+                                                     buffer_tag, cache_head)),
+                                    cache_data, ))
                             t.start()
                         return (n, buffer_tag, paging_idx, paging_total, rep)
                     else:
-                        return (n, buffer_tag, paging_idx, paging_total, cache_data.values())
+                        return (n, buffer_tag, paging_idx, 0,
+                                cache_data.values())
             # else:
             #     try:
             #         d = cur.next()
@@ -291,8 +299,9 @@ class RequestHandler(mxweb.MXRequestHandler):
             cur = libiisi.m_sql.run_exec(strsql)
             s = libiisi.m_sql.get_last_error_message()
             if len(s) > 0:
-                logging.error(self.format_log(self.request.remote_ip, s, self.request.path,
-                                              '_MYSQL'))
+                logging.error(
+                    self.format_log(self.request.remote_ip, s,
+                                    self.request.path, '_MYSQL'))
             return cur
 
             # @run_on_executor
@@ -323,11 +332,11 @@ class RequestHandler(mxweb.MXRequestHandler):
             #             if conn.next_result() == -1:
             #                 break
             #             x.append((conn.affected_rows(), conn.insert_id()))
-            # 
+            #
             #     conn.close()
             #     del conn
             #     return x
-            # 
+            #
             # def _mysql_generator_sql_mysql(self, strsql):
             #     '''数据库访问方法，返回迭代器'''
             #     conn = mysql.connect(host=utils.m_db_host,
@@ -402,7 +411,9 @@ class RequestHandler(mxweb.MXRequestHandler):
         cur = libiisi.m_sql.run_fetch(strsql)
         s = libiisi.m_sql.get_last_error_message()
         if len(s) > 0:
-            logging.error(self.format_log(self.request.remote_ip, s, self.request.path, '_MYSQL'))
+            logging.error(
+                self.format_log(self.request.remote_ip, s, self.request.path,
+                                '_MYSQL'))
         # if isinstance(cur, types.GeneratorType):
         if cur is not None:
             for d in cur:
@@ -434,19 +445,24 @@ class RequestHandler(mxweb.MXRequestHandler):
         if tml_type == 'r':
             libiisi.cache_tml_r[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                self._db_name, ','.join([str(a) for a in libiisi.cache_user[user_uuid]['area_r']]))
+                self._db_name, ','.join(
+                    [str(a) for a in libiisi.cache_user[user_uuid]['area_r']]))
         elif tml_type == 'w':
             libiisi.cache_tml_w[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                self._db_name, ','.join([str(a) for a in libiisi.cache_user[user_uuid]['area_w']]))
+                self._db_name, ','.join(
+                    [str(a) for a in libiisi.cache_user[user_uuid]['area_w']]))
         elif tml_type == 'x':
             libiisi.cache_tml_x[user_uuid] = set()
             strsql = 'select rtu_list from {0}.area_info where area_id in ({1})'.format(
-                self._db_name, ','.join([str(a) for a in libiisi.cache_user[user_uuid]['area_x']]))
+                self._db_name, ','.join(
+                    [str(a) for a in libiisi.cache_user[user_uuid]['area_x']]))
         cur = libiisi.m_sql.run_fetch(strsql)
         s = libiisi.m_sql.get_last_error_message()
         if len(s) > 0:
-            logging.error(self.format_log(self.request.remote_ip, s, self.request.path, '_MYSQL'))
+            logging.error(
+                self.format_log(self.request.remote_ip, s, self.request.path,
+                                '_MYSQL'))
         # record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
         #     strsql,
         #     need_fetch=1,
@@ -497,16 +513,20 @@ class RequestHandler(mxweb.MXRequestHandler):
     def write_event(self, event_id, contents, is_client_snd, **kwords):
         '''写事件记录'''
         user_name = kwords['user_name'] if 'user_name' in kwords.keys() else ''
-        device_ids = kwords['device_ids'] if 'device_ids' in kwords.keys() else ''
+        device_ids = kwords[
+            'device_ids'] if 'device_ids' in kwords.keys() else '0'
         remark = kwords['remark'] if 'remark' in kwords.keys() else ''
 
         # strsql = "insert into record_operator (date_create, user_name, operator_id, is_client_snd, device_ids, contents, remark) values ({0},'{1}',{2},{3},'{4}','{5}','{6}')".format(
         #     int(time.time()), user_name, event_id, is_client_snd, device_ids, contents, remark)
         # libiisi.SQL_DATA.execute(strsql)
-        strsql = 'insert into {0}_data.record_operator (date_create,user_name, operator_id, is_client_snd, device_ids, contents, remark) \
-                        values ({1},"{2}",{3},{4},"{5}","{6}","{7}")'.format(
-            self._db_name, mx.switchStamp(time.time()), user_name, event_id, is_client_snd,
-            device_ids, contents, remark)
+        strsql = ''
+        for rtu_id in device_ids.split(','):
+            strsql += 'insert into {0}_data.record_operator (date_create,user_name, operator_id, is_client_snd, rtu_id, contents, remark) \
+                        values ({1},"{2}",{3},{4},{5},"{6}","{7}");'.format(
+                self._db_name,
+                mx.switchStamp(time.time()), user_name, event_id,
+                is_client_snd, int(rtu_id), contents, remark)
 
         cur = self.mydata_collector(strsql, need_fetch=0)
         del cur, strsql
@@ -524,7 +544,8 @@ class RequestHandler(mxweb.MXRequestHandler):
             use_scode == 1: (安全码是否合法，请求参数，应答数据)'''
         # 处理隐藏参数
         args = self.request.arguments
-        if 'formatmydata' in args.keys():  # 返回数据格式参数，0-base64，1-json，2-bytes，3-zlib, 默认0
+        if 'formatmydata' in args.keys(
+        ):  # 返回数据格式参数，0-base64，1-json，2-bytes，3-zlib, 默认0
             try:
                 self._go_back_format = int(args.get('formatmydata')[0])
                 if self._go_back_format in (1, 2) and 'bro' not in args.keys():
@@ -540,7 +561,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         if 'tcsport' in args.keys():  # 项目设备通信端口号用于匹配数据库名称
             self._db_name = 'mydb{0}'.format(args.get('tcsport')[0])
         else:
-            self._db_name = libiisi.cfg_dbname_jk 
+            self._db_name = libiisi.cfg_dbname_jk
         if 'fetchunlimited' in args.keys():  # 是否取消查询数据量上限
             self._fetch_limited = ''
         else:
@@ -581,10 +602,14 @@ class RequestHandler(mxweb.MXRequestHandler):
                 pb2 = args.get('pb2')[0]
 
                 try:
-                    if self._pb_format == 2:
-                        rqmsg.ParseFromString(pb2)
-                    else:
-                        rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
+                    rqmsg = mx.decode_pb2(
+                        pb2, pb2obj=rqmsg, fmt=self._pb_format)
+                    if rqmsg is None:
+                        raise Exception
+                    # if self._pb_format == 2:
+                    #     rqmsg.ParseFromString(pb2)
+                    # else:
+                    #     rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
                     msg.head.idx = rqmsg.head.idx
                     msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
                     msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
@@ -627,10 +652,13 @@ class RequestHandler(mxweb.MXRequestHandler):
                 return (None, None, msg, '')
             pb2 = args.get('pb2')[0]
             try:
-                if self._pb_format == 2:
-                    rqmsg.ParseFromString(pb2)
-                else:
-                    rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
+                rqmsg = mx.decode_pb2(pb2, pb2obj=rqmsg, fmt=self._pb_format)
+                if rqmsg is None:
+                    raise Exception
+                # if self._pb_format == 2:
+                #     rqmsg.ParseFromString(pb2)
+                # else:
+                #     rqmsg.ParseFromString(base64.b64decode(pb2.replace(' ', '+')))
                 msg.head.idx = rqmsg.head.idx
                 msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
                 msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
@@ -656,27 +684,30 @@ class RequestHandler(mxweb.MXRequestHandler):
                 libiisi.cache_user[user_uuid] = user_data
                 if user_data['is_buildin'] == 1:
                     a = self.url_pattern
-                    if a[a.rfind('/') + 1:] not in user_data[
-                            'enable_if'] and 'enable_all' not in user_data['enable_if']:
+                    if a[a.rfind(
+                            '/'
+                    ) + 1:] not in user_data['enable_if'] and 'enable_all' not in user_data['enable_if']:
                         msg.head.if_st = 11
                         msg.head.if_msg = 'You do not have access to this interface'
                         user_data = None
             else:
                 if user_data['remote_ip'] != self.request.remote_ip:
-                    if not (rqmsg is not None and user_data['source_dev'] == 3 and
-                            user_data['unique'] == rqmsg.head.unique):
+                    if not (rqmsg is not None and user_data['source_dev'] == 3
+                            and user_data['unique'] == rqmsg.head.unique):
                         del libiisi.cache_user[user_uuid]
                         contents = 'User source ip is illegal'
                         msg.head.if_st = 12
                         msg.head.if_msg = contents
-                        self.write_event(123, contents, 1, user_name=user_data['user_name'])
+                        self.write_event(
+                            123, contents, 1, user_name=user_data['user_name'])
                         user_data = None
                 elif time.time() - user_data['active_time'] > 60 * 30:
                     del libiisi.cache_user[user_uuid]
                     contents = 'User login timed out'
                     msg.head.if_st = 10
                     msg.head.if_msg = contents
-                    self.write_event(122, contents, 1, user_name=user_data['user_name'])
+                    self.write_event(
+                        122, contents, 1, user_name=user_data['user_name'])
                     user_data = None
                 else:
                     user_data['active_time'] = time.time()
@@ -692,6 +723,8 @@ class RequestHandler(mxweb.MXRequestHandler):
     def add_eventlog(self, event_id, user_id, remark):
         strsql = 'insert into uas.events_log (event_id, event_time, user_id,event_ip,event_remark) \
                     values ("{0}","{1}","{2}","{3}","{4}")'.format(
-            event_id, int(time.time()), user_id, mx.ip2int(self.request.remote_ip), remark)
+            event_id,
+            int(time.time()), user_id,
+            mx.ip2int(self.request.remote_ip), remark)
         libiisi.m_sql.run_exec(strsql)
         del strsql

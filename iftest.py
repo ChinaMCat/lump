@@ -19,14 +19,14 @@ baseurl = 'http://192.168.122.185:10005/'
 baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://192.168.50.51:10005/'
 # baseurl = 'http://180.153.108.83:39995/'
-baseurl = 'http://192.168.50.55:10005/'
+# baseurl = 'http://192.168.50.55:10005/'
 # baseurl = 'http://192.168.122.185:10005/'
 # baseurl = 'http://180.141.89.112:10005/'
 # baseurl = 'http://180.168.198.218:63000/'
 # baseurl = 'http://218.202.66.19:20005/'
 # baseurl = 'http://192.168.50.80:33819/ws_BT/FlowService.asmx'
 pm = urllib3.PoolManager(num_pools=100)
-user_id = 'fe4fd44f88a711e78665806efa1666b5'
+user_id = 'ef61022b553911e6832074d435009085'
 
 # user_id = 'e9251f34735a11e7a88ffcaa14e489ec'
 
@@ -494,14 +494,14 @@ def test_areainfo():
 def test_grpinfo():
     global user_id
     print('=== grp info ===')
-    url = baseurl + 'grpinfo'
+    url = baseurl + 'groupinfo'
     msg = msgif.rqTreeInfo()
     msg.data_mark = 0
 
-    data = {'uuid': user_id,'formatmydata':0,'pb2':""}
+    data = {'uuid': user_id,'pb2':''}
     r = pm.request('POST', url, fields=data, timeout=30.0, retries=False)
-    msg = msgif.TreeInfo()
-    msg.ParseFromString(zlib.decompress(base64.b64decode(r.data)))
+    msg = msgif.GroupInfo()
+    msg.ParseFromString(base64.b64decode(r.data))
     print(msg)
     print(msg.head)
     print('post finish')
@@ -921,7 +921,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    # test_userlogin()
+    test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()
@@ -938,7 +938,7 @@ if __name__ == '__main__':
     # test_ldudataget()
     # test_eludataget()
     # test_eluctl()
-    # test_areainfo()
+    test_areainfo()
     # test_grpinfo()
     # test_ipcqueue()
     # test_rtudataquery()
@@ -950,7 +950,7 @@ if __name__ == '__main__':
     # test_errinfo()
     # test_querysmsalarm()
     # test_eventinfo()
-    test_rtuctl()
+    # test_rtuctl()
     # test_posttest()
     # test_userinfo()
     # test_rtudataget()

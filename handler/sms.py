@@ -28,20 +28,22 @@ class QuerySmsRecordHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqQuerySmsRecord(),
-                                                                      msgws.QuerySmsRecord())
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqQuerySmsRecord(), msgws.QuerySmsRecord())
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
-                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                sdt, edt = self.process_input_date(
+                    rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 if len(rqmsg.tels) > 0:
-                    str_tels = ' and send_number in ({0})'.format(','.join([str(t) for t in
-                                                                            rqmsg.tels]))
+                    str_tels = ' and send_number in ({0})'.format(
+                        ','.join([str(t) for t in rqmsg.tels]))
                 else:
                     str_tels = ''
                 strsql = 'select send_date,send_number,send_msg from {0}_data.record_msg_log \
                                 where send_date>={1} and send_date<={2} and send_msg like "%{3}%" \
-                                {4} {5}'.format(self._db_name, sdt, edt, rqmsg.msg, str_tels,
+                                {4} {5}'.format(self._db_name, sdt, edt,
+                                                rqmsg.msg, str_tels,
                                                 self._fetch_limited)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
@@ -84,14 +86,14 @@ class QuerySmsAlarmHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg = yield self.check_arguments(msgws.rqQuerySmsAlarm(),
-                                                       msgws.QuerySmsAlarm(),
-                                                       use_scode=1)
+        legal, rqmsg, msg = yield self.check_arguments(
+            msgws.rqQuerySmsAlarm(), msgws.QuerySmsAlarm(), use_scode=1)
         if legal:
             if rqmsg.data_mark == 2:  # 市政短信
                 strsql = '''select is_alarm,record_id,rtu_name,user_phone_number
                             from {0}_data.record_msg_new where is_alarm=2
-                            order by user_phone_number limit 100'''.format(self._db_name)
+                            order by user_phone_number limit 100'''.format(
+                    self._db_name)
             else:
                 strsql = '''select is_alarm,record_id,rtu_name,user_phone_number,rtu_id,loop_id,loop_name,fault_name,
                          date_create from {0}_data.record_msg_new
@@ -147,9 +149,8 @@ class UpdateSmsAlarmHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg = yield self.check_arguments(msgws.UpdateSmsAlarm(),
-                                                       msgws.CommAns(),
-                                                       use_scode=1)
+        legal, rqmsg, msg = yield self.check_arguments(
+            msgws.UpdateSmsAlarm(), msgws.CommAns(), use_scode=1)
 
         if legal:
             # 删除原始记录
@@ -163,7 +164,8 @@ class UpdateSmsAlarmHandler(base.RequestHandler):
                 msg.head.if_st = 45
             # 写入发送记录
             strsql = '''INSERT INTO {0}_data.record_msg_log(`send_date`, `send_number`,`send_msg`) VALUES ({1},{2},"{3}")'''.format(
-                self._db_name, mx.switchStamp(time.time()), rqmsg.user_tel, rqmsg.fault_msg)
+                self._db_name,
+                mx.switchStamp(time.time()), rqmsg.user_tel, rqmsg.fault_msg)
             cur = yield self.mydata_collector(strsql, need_fetch=0)
             if cur is None:
                 msg.head.if_st = 45
@@ -185,18 +187,17 @@ class CleanSmsAlarmHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg = yield self.check_arguments(msgws.CommAns(),
-                                                       msgws.CommAns(),
-                                                       use_scode=1)
+        legal, rqmsg, msg = yield self.check_arguments(
+            msgws.CommAns(), msgws.CommAns(), use_scode=1)
 
         if legal:
-            strsql = '''select count(id) from {0}_data.record_msg_log'''.format(self._db_name)
+            strsql = '''select count(1) from {0}_data.record_msg_log'''.format(
+                self._db_name)
             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                strsql,
-                need_fetch=1)
+                strsql, need_fetch=1)
             if cur[0][0] > 1000:
                 strsql = '''delete from {0}_data.record_msg_log where send_date<{1}'''.format(
-                    self._db_name, int(time.time() - 31622400))
+                    self._db_name, mx.switchStamp(int(time.time() - 31622400)))
                 cur = yield self.mydata_collector(strsql, need_fetch=0)
                 if cur is None:
                     msg.head.if_st = 45
@@ -219,16 +220,16 @@ class SubmitSmsHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        legal, rqmsg, msg = yield self.check_arguments(msgws.rqSubmitSms(),
-                                                       msgws.CommAns(),
-                                                       use_scode=1)
+        legal, rqmsg, msg = yield self.check_arguments(
+            msgws.rqSubmitSms(), msgws.CommAns(), use_scode=1)
         if legal:
             strsql = ''
             t = mx.switchStamp(int(time.time()))
             for tel in rqmsg.tels:
                 if isinstance(tel, types.LongType):
                     strsql += 'insert into {0}_data.record_msg_new (date_create,rtu_name,user_phone_number,is_alarm) values ({1},"{2}",{3},2);'.format(
-                        self._db_name, t, u'{0}'.format(str(rqmsg.msg).strip()), tel)
+                        self._db_name, t,
+                        u'{0}'.format(str(rqmsg.msg).strip()), tel)
             yield self.mydata_collector(strsql, need_fetch=0)
         # else:
         #     msg.head.if_st = 0

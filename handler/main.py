@@ -32,39 +32,53 @@ class StatusHandler(base.RequestHandler):
                 self.write(self.help_doc)
             else:
                 for do in jobs:
+                    if do == 'remoteip' or do == 'all':
+                        self.write(self.request.remote_ip)
+
                     if do == 'showsalt':
                         self.write(repr(self.salt))
                         self.write('<br/>')
-                        # self.write(os.path.join(mx.SCRIPT_DIR, '.salt'))
-                        # self.write('<br/>')
-                        # self.flush()
+
+                    if do == 'reloadprofile':
+                        libiisi.load_profile()
+                        self.write(str(len(libiisi.cache_user.keys())))
+                        self.write('<br/>')
 
                     if do == 'timer' or do == 'all':
-                        self.write('<b><u>===== show system timer =====</u></b><br/>')
-                        self.write('{0:.6f} ({1})<br/>'.format(time.time(), mx.stamp2time(time.time(
-                        ))))
+                        self.write(
+                            '<br/><b><u>===== show system timer =====</u></b><br/>'
+                        )
+                        self.write('{0:.6f} ({1})<br/>'.format(
+                            time.time(), mx.stamp2time(time.time())))
                         self.write('<br/>')
-                        # self.flush()
 
                     if do == 'testconfig' or do == 'all':
-                        self.write('<b><u>===== test config =====</u></b><br/>')
+                        self.write(
+                            '<b><u>===== test config =====</u></b><br/>')
 
-                        m = yield self.check_zmq_status(b'zmq.filter', 'zmq test message',
-                                                        b'zmq.filter')
+                        m = yield self.check_zmq_status(
+                            b'zmq.filter', 'zmq test message', b'zmq.filter')
                         if len(m) > 0:
-                            self.write('Test zmq config ... success. 『 {0} 』<br/>'.format(
-                                libiisi.m_config.getData('zmq_port')))
+                            self.write(
+                                'Test zmq config ... success. 『 {0} 』<br/>'.
+                                format(libiisi.m_config.getData('zmq_port')))
                         else:
-                            self.write('Test zmq config ... failed. 『 {0} 』<br/>'.format(
-                                libiisi.m_config.getData('zmq_port')))
+                            self.write(
+                                'Test zmq config ... failed. 『 {0} 』<br/>'.
+                                format(libiisi.m_config.getData('zmq_port')))
 
                         thc = AsyncHTTPClient()
                         url = '{0}'.format(libiisi.cfg_fs_url)
                         try:
-                            rep = yield thc.fetch(url, raise_error=True, request_timeout=30)
-                            self.write('Test flow config ... success. 『 {0} 』<br/>'.format(url))
+                            rep = yield thc.fetch(
+                                url, raise_error=True, request_timeout=30)
+                            self.write(
+                                'Test flow config ... success. 『 {0} 』<br/>'.
+                                format(url))
                         except Exception as ex:
-                            self.write('Test flow config ... failed. 『 {0} 』<br/>'.format(url))
+                            self.write(
+                                'Test flow config ... failed. 『 {0} 』<br/>'.
+                                format(url))
 
                         del url, thc
 
@@ -74,8 +88,7 @@ class StatusHandler(base.RequestHandler):
                             strsql = 'select schema_name from information_schema.schemata where schema_name in ("{0}","{1}");'.format(
                                 self._db_name, libiisi.cfg_dbname_dg)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                                strsql,
-                                need_fetch=1)
+                                strsql, need_fetch=1)
 
                             if record_total is None:
                                 jk_isok = False
@@ -88,41 +101,43 @@ class StatusHandler(base.RequestHandler):
                                         dg_isok = True
                             if jk_isok:
                                 self.write(
-                                    'Test jkdb config ... success. 『 {0} / {1} 』<br/>'.format(
-                                        libiisi.m_config.getData('db_host'), self._db_name))
+                                    'Test jkdb config ... success. 『 {0} / {1} 』<br/>'.
+                                    format(
+                                        libiisi.m_config.getData('db_host'),
+                                        self._db_name))
                             else:
-                                self.write('Test jkdb config ... failed. 『 {0} / {1} 』<br/>'.format(
-                                    libiisi.m_config.getData('db_host'), self._db_name))
+                                self.write(
+                                    'Test jkdb config ... failed. 『 {0} / {1} 』<br/>'.
+                                    format(
+                                        libiisi.m_config.getData('db_host'),
+                                        self._db_name))
                             if dg_isok:
                                 self.write(
-                                    'Test dgdb config ... success. 『 {0} / {1} 』<br/>'.format(
-                                        libiisi.m_config.getData('db_host'), libiisi.cfg_dbname_dg))
+                                    'Test dgdb config ... success. 『 {0} / {1} 』<br/>'.
+                                    format(
+                                        libiisi.m_config.getData('db_host'),
+                                        libiisi.cfg_dbname_dg))
                             else:
-                                self.write('Test dgdb config ... failed. 『 {0} / {1} 』<br/>'.format(
-                                    libiisi.m_config.getData('db_host'), libiisi.cfg_dbname_dg))
+                                self.write(
+                                    'Test dgdb config ... failed. 『 {0} / {1} 』<br/>'.
+                                    format(
+                                        libiisi.m_config.getData('db_host'),
+                                        libiisi.cfg_dbname_dg))
                             del cur
                         except:
-                            self.write('Test jkdb config ... failed. 『 {0} / {1} 』<br/>'.format(
-                                libiisi.m_config.getData('db_host'), self._db_name))
-                            self.write('Test dgdb config ... failed. 『 {0} / {1} 』<br/>'.format(
-                                libiisi.m_config.getData('db_host'), libiisi.cfg_dbname_dg))
+                            self.write(
+                                'Test jkdb config ... failed. 『 {0} / {1} 』<br/>'.
+                                format(
+                                    libiisi.m_config.getData('db_host'),
+                                    self._db_name))
+                            self.write(
+                                'Test dgdb config ... failed. 『 {0} / {1} 』<br/>'.
+                                format(
+                                    libiisi.m_config.getData('db_host'),
+                                    libiisi.cfg_dbname_dg))
                         self.write('<br/>')
-                        # self.flush()
-
-                    # if do == 'showhandlers' or do == 'all':
-                    #     self.write('<b><u>===== show handlers =====</u></b><br/>')
-                    #     x = self.application.handlers[0][1]
-                    #     for a in x:
-                    #         if a._path not in ('/', '/.*', '/test',
-                    #                            '/cleaningwork') and '%' not in a._path:
-                    #             self.write('<b>------- {0} -------</b><br/>'.format(a._path[1:]))
-                    #             self.write(a.kwargs.get('help_doc') + '<br/><br/>')
-                    #             # self.write('---<br/><br/>')
-                    #     self.write('<br/>')
-                        # self.flush()
         except Exception as ex:
-            print(ex)
-            self.write(self.help_doc)
+            self.write('<br/>' + self.help_doc)
         self.finish()
 
 
@@ -141,7 +156,6 @@ class CleaningWorkHandler(base.RequestHandler):
 
 @mxweb.route()
 class MainHandler(base.RequestHandler):
-
     @gen.coroutine
     def get(self):
         self.render('index.html')

@@ -162,9 +162,9 @@ class GroupInfoHandler(base.RequestHandler):
                             x = d[2].split(';')[:-1]
                             y = [int(b) for b in x]
                             av.tml_id.extend(y)
+                            del x, y
                         msg.group_view.extend([av])
-                        del av, x, y
-
+                        del av
                 del cur, strsql
 
         self.write(mx.code_pb2(msg, self._go_back_format))
@@ -214,25 +214,28 @@ class AreaInfoHandler(base.RequestHandler):
                                 y = [int(b) for b in x]
                                 av.tml_id.extend(y)
                             msg.area_view.extend([av])
-                            if int(d[0]) in user_data[
-                                    'area_r']:  # or user_data['user_auth'] in libiisi.can_admin:
+                            if d[2] is not None and int(
+                                    d[0]
+                            ) in user_data['area_r']:  # or user_data['user_auth'] in libiisi.can_admin:
                                 if user_uuid in libiisi.cache_tml_r.keys():
                                     libiisi.cache_tml_r[user_uuid].union(y)
                                 else:
                                     libiisi.cache_tml_r[user_uuid] = set(y)
-                            if int(d[0]) in user_data[
-                                    'area_w']:  # or user_data['user_auth'] in libiisi.can_admin:
+                            if d[2] is not None and int(
+                                    d[0]
+                            ) in user_data['area_w']:  # or user_data['user_auth'] in libiisi.can_admin:
                                 if user_uuid in libiisi.cache_tml_w.keys():
                                     libiisi.cache_tml_w[user_uuid].union(y)
                                 else:
                                     libiisi.cache_tml_w[user_uuid] = set(y)
-                            if int(d[0]) in user_data[
-                                    'area_x']:  # or user_data['user_auth'] in libiisi.can_admin:
+                            if d[2] is not None and int(
+                                    d[0]
+                            ) in user_data['area_x']:  # or user_data['user_auth'] in libiisi.can_admin:
                                 if user_uuid in libiisi.cache_tml_x.keys():
                                     libiisi.cache_tml_x[user_uuid].union(y)
                                 else:
                                     libiisi.cache_tml_x[user_uuid] = set(y)
-                            del av, x, y
+                            del av
 
                 del cur, strsql
 

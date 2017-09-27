@@ -7,6 +7,8 @@ import mxpsu as mx
 import protobuf3.msg_with_ctrl_pb2 as msgctrl
 import zmq
 import os
+import base64 as _base64
+import zlib as _xlib
 import gc
 from const import *
 
@@ -19,25 +21,24 @@ sub_thread_started = False
 
 def load_profile():
     # 判断是否存在内建用户，并读取
+    cache_user.clear()
     if os.path.isfile(os.path.join(mx.SCRIPT_DIR, '.profile')):
         with open(os.path.join(mx.SCRIPT_DIR, '.profile'), 'r') as f:
             z = f.readlines()
         for y in z:
-            if y.startswith('#'):
+            y = y.strip()
+            if y.startswith('#') or len(y) == 0:
                 continue
             try:
-                x = json.loads(y)
+                x = json.loads(mx.decode_string(y.strip()))
+                if x == 'You screwed up.':
+                    continue
                 if 'uuid' in x.keys():
-                    # uuid = x['uuid']
-                    uuid = mx.decode_string(x['uuid'])
-                    if uuid == 'You screwed up.':
-                        continue
+                    uuid = x['uuid']
                     cache_buildin_users.add(uuid)
                     del x['uuid']
                     if 'enable_if' in x.keys():
-                        a = mx.decode_string(x['enable_if'])
-                        x['enable_if'] = tuple(a.split(','))
-                        del a
+                        x['enable_if'] = tuple(x['enable_if'].split(','))
                     else:
                         x['enable_if'] = tuple()
                     x['login_time'] = time.time()
@@ -48,8 +49,8 @@ def load_profile():
                     x['area_x'] = set([0])
                     cache_user[uuid] = x
                 del x
-            except:
-                pass
+            except Exception as ex:
+                print(ex)
 
 
 def load_config(conf):

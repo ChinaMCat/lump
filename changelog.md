@@ -1,3 +1,7 @@
+[2014-09-29]
+---
+- QueryEventsTimetableDo取消rtu_reply_time字段
+
 [2017-09-27]
 ---
 - 修正接口文档中单灯控制器选测接口中关于zmq推送协议定义错误问题

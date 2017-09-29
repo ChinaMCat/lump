@@ -19,7 +19,7 @@ baseurl = 'http://192.168.122.185:10005/'
 baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://192.168.50.51:10005/'
 # baseurl = 'http://180.153.108.83:39995/'
-# baseurl = 'http://192.168.50.55:10005/'
+baseurl = 'http://192.168.50.55:5523/'
 # baseurl = 'http://192.168.122.185:10005/'
 # baseurl = 'http://180.141.89.112:10005/'
 # baseurl = 'http://180.168.198.218:63000/'
@@ -905,6 +905,21 @@ def test_eluctl():
     print(msg)
     time.sleep(0)
 
+def test_cleansms():
+    global user_id
+    print('=== clean sms ===')
+    url = baseurl + 'cleansmsalarm'
+    rqmsg = init_head(msgif.rqEluCtl())
+    # rqmsg.tml_id.extend([1600001, 1600002])
+    # rqmsg.loop_id.extend([1,2,5,8])
+    scode = mx.getMD5('{0}7ya54Gv5Y'.format(mx.stamp2time(time.time(), format_type='%Y%m%d%H')))
+    data = {'scode': scode, 'pb2': base64.b64encode(rqmsg.SerializeToString())}
+    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    msg = msgif.CommAns()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    time.sleep(0)
+
 
 
 if __name__ == '__main__':
@@ -921,7 +936,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    test_userlogin()
+    # test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()
@@ -933,12 +948,13 @@ if __name__ == '__main__':
     # test_statusrtu()
     # test_querysludata()
     # test_sysinfo()
+    test_cleansms()
     # test_errquery()
     # test_sludataget()
     # test_ldudataget()
     # test_eludataget()
     # test_eluctl()
-    test_areainfo()
+    # test_areainfo()
     # test_grpinfo()
     # test_ipcqueue()
     # test_rtudataquery()

@@ -143,7 +143,7 @@ class QueryEventsTimetableDoHandler(base.RequestHandler):
                         str_tmls = ' and a.rtu_id in ({0}) '.format(
                             ','.join([str(a) for a in tml_ids]))
 
-                    strsql = 'select a.rtu_id,a.loop_id,a.is_open,a.rtu_reply_type,a.date_create,a.rtu_reply_time \
+                    strsql = 'select a.rtu_id,a.loop_id,a.is_open,a.rtu_reply_type,a.date_create \
                                     from {0}_data.record_rtu_open_close_light_record as a \
                                     where a.date_create<={1} and a.date_create>={2} {3}'.format(
                         self._db_name, edt, sdt, str_tmls)
@@ -175,8 +175,8 @@ class QueryEventsTimetableDoHandler(base.RequestHandler):
                             env.data_mark = d[2]
                             env.data_type = d[3]
                             env.dt_send = mx.switchStamp(int(d[4]))
-                            env.dt_reply = mx.switchStamp(
-                                int(d[5])) if d[5] is not None else 0
+                            # env.dt_reply = mx.switchStamp(
+                            #     int(d[5])) if d[5] is not None else 0
                             msg.timetable_do_view.extend([env])
                             del env
                     del cur, strsql

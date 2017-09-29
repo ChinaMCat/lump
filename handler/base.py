@@ -76,8 +76,8 @@ class RequestHandler(mxweb.MXRequestHandler):
         sub = ctx.socket(zmq.SUB)
         sub.setsockopt(zmq.RCVTIMEO, 7000)
         sub.setsockopt(zmq.SUBSCRIBE, subscribe)
-        # sub.setsockopt(zmq.SUBSCRIBE, '')
         push = ctx.socket(zmq.PUSH)
+        push.setsockopt(zmq.SNDTIMEO, 3000)
 
         zmq_addr = libiisi.m_config.getData('zmq_port')
         if zmq_addr.find(':') == -1:

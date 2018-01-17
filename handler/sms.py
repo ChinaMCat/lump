@@ -40,9 +40,9 @@ class QuerySmsRecordHandler(base.RequestHandler):
                         ','.join([str(t) for t in rqmsg.tels]))
                 else:
                     str_tels = ''
-                strsql = 'select send_date,send_number,send_msg from {0}_data.record_msg_log \
+                strsql = 'select send_date,send_number,send_msg from {0}.record_msg_log \
                                 where send_date>={1} and send_date<={2} and send_msg like "%{3}%" \
-                                {4} {5}'.format(self._db_name, sdt, edt,
+                                {4} {5}'.format(self._db_name_data, sdt, edt,
                                                 rqmsg.msg, str_tels,
                                                 self._fetch_limited)
 
@@ -91,15 +91,15 @@ class QuerySmsAlarmHandler(base.RequestHandler):
         if legal:
             if rqmsg.data_mark == 2:  # 市政短信
                 strsql = '''select is_alarm,record_id,rtu_name,user_phone_number
-                            from {0}_data.record_msg_new where is_alarm=2
+                            from {0}.record_msg_new where is_alarm=2
                             order by user_phone_number limit 100'''.format(
-                    self._db_name)
+                    self._db_name_data)
             else:
                 strsql = '''select is_alarm,record_id,rtu_name,user_phone_number,rtu_id,loop_id,loop_name,fault_name,
-                         date_create from {0}_data.record_msg_new
+                         date_create from {0}.record_msg_new
                          where is_alarm in (0,1)
                          order by user_phone_number,rtu_id,loop_id,is_alarm,date_create desc limit 100'''.format(
-                    self._db_name)
+                    self._db_name_data)
 
             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                 strsql,
@@ -157,14 +157,14 @@ class UpdateSmsAlarmHandler(base.RequestHandler):
             # for a in rqmsg.record_id:
             #     strsql = '''delete from {0}_data.record_msg_new where record_id={1}'''.format(
             #         self._db_name, a)
-            strsql = '''delete from {0}_data.record_msg_new where record_id in ({1})'''.format(
-                self._db_name, ','.join([str(a) for a in rqmsg.record_id]))
+            strsql = '''delete from {0}.record_msg_new where record_id in ({1})'''.format(
+                self._db_name_data, ','.join([str(a) for a in rqmsg.record_id]))
             cur = yield self.mydata_collector(strsql, need_fetch=0)
             if cur is None:
                 msg.head.if_st = 45
             # 写入发送记录
-            strsql = '''INSERT INTO {0}_data.record_msg_log(`send_date`, `send_number`,`send_msg`) VALUES ({1},{2},"{3}")'''.format(
-                self._db_name,
+            strsql = '''INSERT INTO {0}.record_msg_log(`send_date`, `send_number`,`send_msg`) VALUES ({1},{2},"{3}")'''.format(
+                self._db_name_data,
                 mx.switchStamp(time.time()), rqmsg.user_tel, rqmsg.fault_msg)
             cur = yield self.mydata_collector(strsql, need_fetch=0)
             if cur is None:
@@ -191,16 +191,17 @@ class CleanSmsAlarmHandler(base.RequestHandler):
             msgws.CommAns(), msgws.CommAns(), use_scode=1)
 
         if legal:
-            strsql = '''select count(1) from {0}_data.record_msg_log'''.format(
-                self._db_name)
+            strsql = '''select count(1) from {0}.record_msg_log'''.format(
+                self._db_name_data)
             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                 strsql, need_fetch=1)
-            if cur[0][0] > 1000:
-                strsql = '''delete from {0}_data.record_msg_log where send_date<{1}'''.format(
-                    self._db_name, mx.switchStamp(int(time.time() - 31622400)))
-                cur = yield self.mydata_collector(strsql, need_fetch=0)
-                if cur is None:
-                    msg.head.if_st = 45
+            if cur is not None:
+                if cur[0][0] > 1000:
+                    strsql = '''delete from {0}.record_msg_log where send_date<{1}'''.format(
+                        self._db_name_data, mx.switchStamp(int(time.time() - 31622400)))
+                    cur = yield self.mydata_collector(strsql, need_fetch=0)
+                    if cur is None:
+                        msg.head.if_st = 45
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
@@ -227,8 +228,8 @@ class SubmitSmsHandler(base.RequestHandler):
             t = mx.switchStamp(int(time.time()))
             for tel in rqmsg.tels:
                 if isinstance(tel, types.LongType):
-                    strsql += 'insert into {0}_data.record_msg_new (date_create,rtu_name,user_phone_number,is_alarm) values ({1},"{2}",{3},2);'.format(
-                        self._db_name, t,
+                    strsql += 'insert into {0}.record_msg_new (date_create,rtu_name,user_phone_number,is_alarm) values ({1},"{2}",{3},2);'.format(
+                        self._db_name_data, t,
                         u'{0}'.format(str(rqmsg.msg).strip()), tel)
             yield self.mydata_collector(strsql, need_fetch=0)
         # else:

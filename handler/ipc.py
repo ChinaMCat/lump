@@ -10,6 +10,8 @@ import time
 from datetime import datetime, timedelta
 import mxpsu as mx
 import mxweb
+import json
+import os
 from tornado import gen
 import base
 import mlib_iisi.utils as libiisi
@@ -43,8 +45,8 @@ class IpcUplinkHandler(base.RequestHandler):
                     lstdata = data.split(',')
                     ym = mx.stamp2time(time.time(), format_type='%y%m')
                     for i in libiisi.qudata_sxhb:
-                        db_names.add(
-                            'sens_data_{0:03d}_month_{1}'.format(i, ym))
+                        db_names.add('sens_data_{0:03d}_month_{1}'.format(
+                            i, ym))
                     strsql = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES \
                         where TABLE_SCHEMA="{0}" and TABLE_NAME like "{1}"'.format(
                         libiisi.cfg_dbname_dg, '%sens_data_%_month_%')
@@ -128,6 +130,39 @@ class IpcUplinkHandler(base.RequestHandler):
                 else:
                     msg.head.if_st = 46
                     msg.head.if_msg = 'raw data error.'
+            elif devid[:6] == "902001":  # 武汉天河机场
+                x = "1,2,3,4,5,6,7,8,9,10"
+                if os.path.isfile("list.txt"):
+                    with open("list.txt", "r") as f:
+                        x = f.readline()
+                        f.close()
+                y = rqmsg.raw_string.split(',')
+                tcsdata=dict()
+                if y[1] == "1":  # off
+                    for i in range(1, 7):
+                        tcsdata['k{0}'.format(i)] = 0
+
+                    tcsmsg = libiisi.initRtuJson(
+                        2, 7, 1, 1, 1, 'wlst.rtu.4b00', self.request.remote_ip,
+                        0, x, tcsdata)
+                    # libiisi.set_to_send(tcsmsg, 0, False)
+                    libiisi.send_to_zmq_pub('tcs.req.{0}.wlst.rtu.2210'.format(
+                        libiisi.cfg_tcs_port),
+                                            json.dumps(
+                                                tcsmsg,
+                                                separators=(',', ':')).lower())
+                else:
+                    for i in range(1, 7):
+                        tcsdata['k{0}'.format(i)] = 1
+                    tcsmsg = libiisi.initRtuJson(
+                        2, 7, 1, 1, 1, 'wlst.rtu.4b00', self.request.remote_ip,
+                        0, x, tcsdata)
+                    # libiisi.set_to_send(tcsmsg, 0, False)
+                    libiisi.send_to_zmq_pub('tcs.req.{0}.wlst.rtu.2210'.format(
+                        libiisi.cfg_tcs_port),
+                                            json.dumps(
+                                                tcsmsg,
+                                                separators=(',', ':')).lower())
             del devid, raw_string, createsql, insertsql, db_names
         else:
             msg.head.if_st = 0

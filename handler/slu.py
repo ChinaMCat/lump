@@ -64,21 +64,21 @@ class QueryDataSluHandler(base.RequestHandler):
                             a.is_power_on,a.is_gprs,a.is_concentrator_args_error,a.is_ctrl_args_error,
                             a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error,
                             a.is_timer_error,a.unknow_ctrl_count,a.communication_channel
-                            from {0}_data.data_slu as a
+                            from {0}.data_slu as a
                             where EXISTS
                             (select rtu_id,date_create from
-                            (select rtu_id,max(date_create) as date_create from {0}_data.data_slu group by rtu_id) as t
+                            (select rtu_id,max(date_create) as date_create from {0}.data_slu group by rtu_id) as t
                             where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.rtu_id'''.format(
-                                self._db_name, str_tmls)
+                                self._db_name_data, str_tmls)
                         elif rqmsg.type == 1:
                             strsql = '''select a.rtu_id,a.date_create,
                             a.rest_0,a.rest_1,a.rest_2,a.rest_3,a.is_slu_stop,a.is_enable_alarm,
                             a.is_power_on,a.is_gprs,a.is_concentrator_args_error,a.is_ctrl_args_error,
                             a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error,
                             a.is_timer_error,a.unknow_ctrl_count,a.communication_channel
-                            from {0}_data.data_slu as a
+                            from {0}.data_slu as a
                             where a.date_create>={1} and a.date_create<={2} {3} order by a.date_create desc {4}'''.format(
-                                self._db_name, sdt, edt, str_tmls,
+                                self._db_name_data, sdt, edt, str_tmls,
                                 self._fetch_limited)
 
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
@@ -124,8 +124,8 @@ class QueryDataSluHandler(base.RequestHandler):
                                     dv.unknow_sluitem_num = int(d[17])
                                     dv.zigbee_channel.extend([
                                         int(a)
-                                        for a in '{0:016b}'.format(
-                                            int(d[18]))[::-1]
+                                        for a in '{0:016b}'.format(int(d[18]))
+                                        [::-1]
                                     ])
                                     msg.data_slu_view.extend([dv])
                                     del dv
@@ -155,17 +155,18 @@ class QueryDataSluHandler(base.RequestHandler):
 
                         if rqmsg.type == 0:
                             strsql = '''select a.slu_id,a.date_create,a.ctrl_id,a.date_data_happen,a.leackage_current,a.light_data_filed
-                            from {0}_data.data_slu_ctrl_assist as a
+                            from {0}.data_slu_ctrl_assist as a
                             where EXISTS
                             (select slu_id,date_create from
-                            (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_assist group by slu_id) as t
+                            (select slu_id,max(date_create) as date_create from {0}.data_slu_ctrl_assist group by slu_id) as t
                             where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.date_create desc, a.slu_id {2}'''.format(
-                                self._db_name, str_tmls, self._fetch_limited)
+                                self._db_name_data, str_tmls,
+                                self._fetch_limited)
                         elif rqmsg.type == 1:
                             strsql = '''select a.slu_id,a.date_create,a.ctrl_id,a.date_data_happen,a.leackage_current,a.light_data_filed
-                            from {0}_data.data_slu_ctrl_assist as a where a.date_create >={1} and a.date_create<= {2} {3}
+                            from {0}.data_slu_ctrl_assist as a where a.date_create >={1} and a.date_create<= {2} {3}
                             order by a.date_create desc,a.slu_id,a.ctrl_id {4}'''.format(
-                                self._db_name, sdt, edt, str_tmls,
+                                self._db_name_data, sdt, edt, str_tmls,
                                 self._fetch_limited)
 
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
@@ -240,13 +241,14 @@ class QueryDataSluHandler(base.RequestHandler):
                             strsql = '''select x.*,a.lamp_id,a.state_working_on,
                             a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
                             a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
-                            from (select d.ctrl_id,max(d.date_create) as date_create,d.slu_id,d.date_time_ctrl,
+                            from (select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
                             d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
-                            d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}_data.data_slu_ctrl as d
-                            {1} group by d.slu_id,d.ctrl_id) as x left join {0}_data.data_slu_ctrl_lamp as a
+                            d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}.data_slu_ctrl as d
+                            where d.date_create=(select max(date_create) from {0}.data_slu_ctrl {2}) {1}
+                            group by d.slu_id,d.ctrl_id) as x left join {0}.data_slu_ctrl_lamp as a
                             on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id'''.format(
-                                self._db_name, str_tmls.replace(
-                                    'and', 'where'))
+                                self._db_name_data,
+                                str_tmls, str_tmls.replace("and d.", "where "))
 
                             # strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
                             # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
@@ -266,11 +268,11 @@ class QueryDataSluHandler(base.RequestHandler):
                                     a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
                                     from (select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
                                     d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
-                                    d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}_data.data_slu_ctrl as d
+                                    d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}.data_slu_ctrl as d
                                     where d.date_create>={1} and d.date_create<={2} {3} {4}) as x
-                                    left join {0}_data.data_slu_ctrl_lamp as a on
+                                    left join {0}.data_slu_ctrl_lamp as a on
                                     x.date_create=a.date_create and x.slu_id=a.slu_id and x.ctrl_id=a.ctrl_id'''.format(
-                                self._db_name, sdt, edt, str_tmls,
+                                self._db_name_data, sdt, edt, str_tmls,
                                 self._fetch_limited)
 
                             # strsql = 'select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor, \
@@ -313,7 +315,10 @@ class QueryDataSluHandler(base.RequestHandler):
                                     dv.tml_id = int(d[2])
                                     dv.sluitem_id = int(d[0])
                                     dv.dt_receive = mx.switchStamp(int(d[1]))
-                                    dv.dt_cache = mx.switchStamp(int(d[3]))
+                                    try:
+                                        dv.dt_cache = mx.switchStamp(int(d[3]))
+                                    except Exception as ex:
+                                        dv.dt_cache = 0
                                     dv.st_sluitem.extend([
                                         int(d[4]),
                                         int(d[5]),
@@ -567,7 +572,6 @@ class SluCtlHandler(base.RequestHandler):
                     rtu_ids = list(rqmsg.tml_id)
                 else:
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
-
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 11
                 else:
@@ -673,3 +677,114 @@ class SluVerGetHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data, user_uuid
+
+
+@mxweb.route()
+class SluitemAddHandler(base.RequestHandler):
+
+    help_doc = u'''单灯控制器增加(post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSluitemAdd()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
+    @gen.coroutine
+    def post(self):
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluitemAdd(),None)
+        if user_data is not None:
+            if user_data['user_auth'] in libiisi.can_write:
+                # 验证用户可操作的设备id
+                if 0 in user_data['area_w'] or user_data['is_buildin'] == 1:
+                    slu_ids = rqmsg.slu_id
+                else:
+                    slu_ids = self.check_tml_w(user_uuid, rqmsg.slu_id)
+                if slu_ids == 0:
+                    msg.head.if_st = 46
+                else:
+                    strsql='select sum_of_controls from {0}.para_slu where rtu_id={1}'.format(self._db_name,rqmsg.slu_id)
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                        strsql,need_fetch=1)
+                    if len(cur) == 0 or (cur[0][0]+len(rqmsg.sluitem_args))>256:
+                        msg.head.if_st = 46
+                    else:
+                        strsql=""
+                        rtu_id = 0
+                        strsqlcheck='select max(rtu_id) from {0}.para_slu_ctrl where slu_id={1}'.format(
+                            self._db_name,rqmsg.slu_id)
+                        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                            strsqlcheck,need_fetch=1)
+                        if len(cur) > 0:
+                            rtu_id=cur[0][0]
+                            for i in rqmsg.sluitem_args:
+                                #判断条码是否有值
+                                if i.sluitem_barcode>0:
+                                    strsqlcheck='select COUNT(*) from {0}.para_slu_ctrl where slu_id={1} and bar_code_id={2};'.format(
+                                        self._db_name,rqmsg.slu_id,i.sluitem_barcode)
+                                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                                        strsqlcheck,need_fetch=1)
+                                    #判断sluitem_barcode 不为重复
+                                    if cur is not None and cur[0][0]==0:
+                                        #判断参数
+                                        rtu_id+=1
+                                        order_id=i.sluitem_order if i.sluitem_order>0 else rtu_id
+                                        sluitem_name=i.sluitem_name if int(i.sluitem_order)>0 else '控制器'+str(rtu_id)
+                                        sluitem_phy_id=i.sluitem_phy_id if i.sluitem_phy_id >0 else rtu_id
+                                        sluitem_lamp_id=i.sluitem_lamp_id if len(i.sluitem_lamp_id)>0 else str(rtu_id)
+                                        sluitem_loop_num=i.sluitem_loop_num if i.sluitem_loop_num >0 else 2
+                                        sluitem_power_uplimit=i.sluitem_power_uplimit if i.sluitem_power_uplimit >0 else 120
+                                        sluitem_power_lowlimit=i.sluitem_power_lowlimit if i.sluitem_power_lowlimit >0 else 80
+                                        sluitem_gis_x=i.sluitem_gis_x if i.sluitem_gis_x >0 else 0
+                                        sluitem_gis_y=i.sluitem_gis_y if i.sluitem_gis_y >0 else 0
+                                        sluitem_route=i.sluitem_route if len(i.sluitem_route)>=4 else list(i.sluitem_route)+ list(int(4-len(i.sluitem_route)) * [1])
+                                        sluitem_st_poweron=i.sluitem_st_poweron if len(i.sluitem_st_poweron)>=4 else [a if a<2 else 1 for a in i.sluitem_st_poweron]+ list(int(4-len(i.sluitem_st_poweron)) *  [1])
+                                        sluitem_vector = []
+                                        x = [1,2,3,4]
+                                        if len(i.sluitem_vector)>0:
+                                            for j in range(4):
+                                                if i.sluitem_vector[j] in x:
+                                                    sluitem_vector.append(i.sluitem_vector[j])
+                                                    x.remove(i.sluitem_vector[j])
+                                        if len(x) > 0:
+                                            sluitem_vector.extend(x)
+                                        # sluitem_vector=i.sluitem_vector if len(i.sluitem_vector)>=4 else list(i.sluitem_vector )+ list(int(4-len(i.sluitem_vector)) *  [1])
+                                        sluitem_rated_power=i.sluitem_rated_power if len(i.sluitem_rated_power)>=4 else [a if a <=15 else 6 for a in i.sluitem_rated_power]+ list(int(4-len(i.sluitem_rated_power)) *  [6])
+
+                                        strsql=strsql+'INSERT INTO {0}.para_slu_ctrl (rtu_id,slu_id,order_id,bar_code_id,rtu_name,is_used,is_alarm_auto,' \
+                                                        'vector_loop_1,vector_loop_2,vector_loop_3,vector_loop_4,power_rate_1,power_rate_2,' \
+                                                        'power_rate_3,power_rate_4,light_count,upper_power,lower_power,' \
+                                                        'route_pass_1,route_pass_2,route_pass_3,route_pass_4,phy_id,lamp_code,is_auto_open_light_when_elec1,' \
+                                                        'is_auto_open_light_when_elec2,is_auto_open_light_when_elec3,is_auto_open_light_when_elec4,ctrl_gis_x,ctrl_gis_y' \
+                                                        ') VALUES({1},{2},{3},{4},"{5}",{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},' \
+                                                        '{22},{23},"{24}",{25},{26},{27},{28},{29},{30});'.format(
+                                            self._db_name,rtu_id,rqmsg.slu_id,order_id,i.sluitem_barcode,sluitem_name,i.sluitem_st,i.sluitem_alarm,
+                                            sluitem_vector[0],sluitem_vector[1],sluitem_vector[2],sluitem_vector[3],sluitem_rated_power[0],sluitem_rated_power[1],
+                                            sluitem_rated_power[2],sluitem_rated_power[3],sluitem_loop_num,sluitem_power_uplimit,sluitem_power_lowlimit,
+                                            sluitem_route[0],sluitem_route[1],sluitem_route[2],sluitem_route[3],sluitem_phy_id,sluitem_lamp_id,sluitem_st_poweron[0],
+                                            sluitem_st_poweron[1],sluitem_st_poweron[2],sluitem_st_poweron[3],sluitem_gis_x,sluitem_gis_y)
+
+                                        # cur = yield self.mydata_collector(strsql, need_fetch=0)
+                                        # if cur is not None:
+                                        #     strsql='UPDATE {0}.para_slu set sum_of_controls={1} WHERE rtu_id={2}'.format(self._db_name,rtu_id,rqmsg.slu_id)
+                                        #     cur = yield self.mydata_collector(strsql, need_fetch=0)
+                                        # msg.head.if_st=1
+                                    else:
+                                        msg.head.if_st=46
+                                        break
+                                else:
+                                    msg.head.if_st=46
+                                    break
+                            if msg.head.if_st == 1:
+                                strsql = strsql + "update {0}.para_slu set sum_of_controls=(select count(1) from {0}.para_slu_ctrl where slu_id={1}) where rtu_id={1};".format(self._db_name,rqmsg.slu_id)
+
+                                cur = yield self.mydata_collector(strsql, need_fetch=0)
+                                if cur is None:
+                                    msg.head.if_st = 45
+                        else:
+                            msg.head.if_st = 46
+            else:
+                msg.head.if_st=11
+
+        self.write(mx.code_pb2(msg, self._go_back_format))
+        self.finish()
+        del msg, rqmsg, user_data

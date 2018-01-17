@@ -7,7 +7,7 @@ python build_iisi.py
 
 chmod a-x dist/iisi/*.so*
 upx dist/iisi/iisi
-upx dist/iisi/zmqproxy
+# upx dist/iisi/zmqproxy
 
 pyinstaller --clean -y iisi-setup.spec
 tar -Jcvf dist/iisi-setup/_imps.so -C dist/ iisi

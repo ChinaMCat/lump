@@ -18,6 +18,7 @@ import elu
 import ldu
 import event
 import uas
+import uas_bak
 from error import Err404Handler
 import mlib_iisi.utils as libiisi
 
@@ -38,6 +39,8 @@ hs.extend(mxweb.load_handler_module(flow))
 hs.extend(mxweb.load_handler_module(uas))
 hs.extend(mxweb.load_handler_module(elu))
 hs.extend(mxweb.load_handler_module(ldu))
+hs.extend(mxweb.load_handler_module(uas_bak))
+
 
 if libiisi.m_debug:
     hs.extend(mxweb.load_handler_module(test))

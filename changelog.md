@@ -1,4 +1,31 @@
-[2014-09-29]
+[2018-01-18]
+---
+- 修正单灯控制器最新数据查询sql语句错误问题
+- 优化数据库/缓存访问逻辑
+- 修正故障数据查询sql语句错误
+
+[2018-01-12]
+---
+- 修正终端最新数据查询分页错误问题
+- 修正故障数量统计数据库名称错误问题
+
+[2018-01-05]
+---
+- statusrtu 修正视图查询的数据重复问题
+
+[2017-12-19]
+---
+- .profile 增加area_r,w,x字段处理
+
+[2017-12-12]
+---
+- userloginjk,userlogin接口增加is_user_operator_code,user_operator_code两个字段
+
+[2017-11-16]
+---
+- 修正user模块中部分user_name字段为user_id
+
+[2017-09-29]
 ---
 - QueryEventsTimetableDo取消rtu_reply_time字段
 

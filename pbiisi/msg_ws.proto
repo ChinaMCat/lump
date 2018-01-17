@@ -56,6 +56,8 @@ message UserLogin {
     string remark = 16; // 备注
     string user = 17;  // 用户名
     int32 tcs = 18;  // 通讯层端口号
+    int32 is_user_operator_code = 19;
+    string code = 20;  // 安全码(移动用)
 }
 
 // 用户注销
@@ -80,7 +82,7 @@ message rqUserAdd {
     int32 auth = 6;  // 新用户权限值
     string code = 8;  // 新用户移动设备操作码(开关灯操作时输入)
     string dbname = 9;  // 用户管理的数据库名称
-    int32 mobile = 7;  // 用户手机
+    string mobile = 7;  // 用户手机
     string tel = 14;  // 用户电话
     string email = 15; // 用户邮箱
     string remark = 16; // 备注
@@ -113,7 +115,7 @@ message rqUserEdit {
     string code = 8;  // 新用户移动设备操作码(开关灯操作时输入)
     string pwd_old = 9;  // 旧密码(uuid为管理员时不需要)
     int32 user_sz_id = 10;  // 市政用户id(若移动用户填充该值,则自动尝试调用市政的用户密码修改接口,同步密码修改)
-    int32 mobile = 7;  // 用户手机
+    string mobile = 7;  // 用户手机
     string tel = 14;  // 用户电话
     string email = 15; // 用户邮箱
     string remark = 16; // 备注
@@ -135,13 +137,13 @@ message UserInfo {
         string fullname = 2;  // 用户全名
         string pwd = 3;  // 用户密码
         int32 auth = 4;  // 用户权限值
-        string tel = 5;  // 用户手机号
+        string tel = 5;  // 用户电话
         string code = 6;  // 用户移动设备操作码(开关灯操作时输入)
         int32 user_id = 7;  // 用户id
         int32 area_id = 8;  // 所属区域id
         string db_name = 9;  // 所属数据库名称
         string remark = 10;  // 备注
-        int32 mobile = 11;  // 手机号
+        string mobile = 11;  // 手机号
     }
     Head head = 1;
     repeated UserView user_view = 2;
@@ -623,7 +625,7 @@ message QueryDataSlu {
 // 设备参数
 message rqTmlInfo {
     Head head = 1;
-    repeated int32 data_mark = 5 [packed=true];  // 请求数种类,1-baseinfo,2-gisinfo,3-updateinfo(仅填充baseinfo中的tml_id,tml_dt_update两个字段),4-rtuinfo,6-sluinfo,7-lduinfo,8-alsinfo,9-mruinfo,10-esuinfo(暂不做),11-slubaseinfo(单灯简要信息)
+    repeated int32 data_mark = 5 [packed=true];  // 请求数种类,1-baseinfo,2-gisinfo,3-updateinfo(仅填充baseinfo中的tml_id,tml_dt_update两个字段),4-rtuinfo,5-sluitemgrpinfo,6-sluinfo,7-lduinfo,8-alsinfo,9-mruinfo,10-esuinfo(暂不做),11-slubaseinfo(单灯简要信息)
     repeated int32 tml_id = 6 [packed=true];  // 请求的设备id,留空-返回所有数据
 }
 // 应答
@@ -642,7 +644,7 @@ message TmlInfo {
         string tml_desc = 11;  // 备注
         int64 tml_dt_update = 12;  // 最后更新时间
         string tml_street = 13;  // 安装位置
-        string tml_guid=14;  // 唯一识别号
+        string tml_guid = 14;  // 唯一识别号
     }
     message GisInfo {
         int32 tml_id = 1;  // 设备逻辑地址
@@ -654,7 +656,7 @@ message TmlInfo {
     message RtuInfo {
         int32 tml_id = 1;  // 设备逻辑地址
         int32 heart_beat = 2;  // 心跳周期,(单位分钟,默认60)(界面建议不呈现)
-        int32 active_report = 3;  // 主报周期,(单位分钟,默认260)(界面建议不呈现)
+        int32 active_report = 3;  // 主报周期,(单位分钟,默认247)(界面建议不呈现)
         int32 alarm_delay = 4;  // 报警延迟,(单位秒,默认15)(界面建议不呈现)
         repeated int32 work_mark = 5 [packed=true];  // 工作标志(界面建议不呈现),默认[1,0,0,1,1,1,0,1],0-false,1-true,[允许滚动显示(),允许声响报警,禁止报警,允许呼叫,允许开机申请,允许自检,禁止主报,禁止路由]
         int32 voltage_range = 6;  // 电压量程 -
@@ -662,6 +664,7 @@ message TmlInfo {
         int32 voltage_lowlimit = 8;  // 电压下限
         int32 loop_st_switch_by_current = 9;  // 采用电流判断是否吸合，0-不采用，1-采用
         repeated RtuLoopItem loop_item = 12;  // 回路信息
+        repeated RtuSwitchOutInfo switch_out_info = 13;  // 开关量输出信息
     }
     message SluInfo {
         int32 tml_id = 1;  // 设备逻辑地址
@@ -710,38 +713,38 @@ message TmlInfo {
     }
     message EsuInfo {
         int32 tml_id = 1;  // 设备逻辑地址
-		bool esu_used = 28;  // 有效标示  0-不用,1-使用
-		int32 esu_preheating_time = 2;  // 预热时间 默认2分钟
-		int32 esu_close_time = 4;  // 关机时间 不设置
-		int32 esu_open_time = 5;  // 开机时间 不设置
-		int32 esu_ct_radio_a = 6;  // A相接触器变比 50~500 默认150
-		int32 esu_ct_radio_b = 7;  // B相接触器变比 50~500 默认150
-		int32 esu_ct_radio_c = 8;  // C相接触器变比 50~500 默认150
-		int32 esu_time_mode = 25;  // 时间模式：0 为定时模式 ；1为延时模式；默认1
-		int32 esu_run_mode = 26;  // 运行模式：0 自动，1 手动； 默认 0
-		int32 esu_fansatrt_temp = 9;  // 风机启动温度 默认45
-		int32 esu_fanclose_temp = 10;  // 风机关闭温度 默认35
-		int32 esu_enery_save_temp = 11;  // 退出节能温度 默认 70 界面设置
-		int32 esu_mandatory_protect_temp = 12;  // 强制保护温度 默认85
-		int32 esu_recover_temp = 13;  // 恢复节能温度 默认50
-		double esu_input_overvoltage_limit = 14;  // 输入过压门限值 默认270
-		double esu_Input_undervoltage_limit = 15;  // 输入欠压门限值 默认170
-		double esu_output_undervoltage_limit = 16;  // 输出欠压门限值 默认160
-		double esu_output_overload_limit = 17;  // 输出过载门限值 默认 144 电流
-		int32 esu_regulating_speed = 18;  // 调压速度 仅模式为延时模式时有效 默认10 6~60
-		int32 esu_power_phases = 19;  // 供电相数  默认3 不提供界面设置
-		int32 esu_comm_type = 23;  // 通信模式 ：0 通过终端；1 通过通信模块 默认0
-		int32 esu_work_mode = 24;  // 工作模式：0 通用模式；1 特殊模式；不提供界面设置 默认0
-		int32 esu_auto_alarm = 20;  // 是否主动报警 0-false,1-true,0
-		int32 esu_alarm_delay = 21;  // 报警延时时间  默认10秒钟
-		int32 esu_mode = 22;  // 节能模式：0 接触器模式；1 IGBT模式 默认1
+        bool esu_used = 28;  // 有效标示  0-不用,1-使用
+        int32 esu_preheating_time = 2;  // 预热时间 默认2分钟
+        int32 esu_close_time = 4;  // 关机时间 不设置
+        int32 esu_open_time = 5;  // 开机时间 不设置
+        int32 esu_ct_radio_a = 6;  // A相接触器变比 30~500 默认150
+        int32 esu_ct_radio_b = 7;  // B相接触器变比 30~500 默认150
+        int32 esu_ct_radio_c = 8;  // C相接触器变比 30~500 默认150
+        int32 esu_time_mode = 25;  // 时间模式：0 为定时模式 ；1为延时模式；默认1
+        int32 esu_run_mode = 26;  // 运行模式：0 自动，1 手动； 默认 0
+        int32 esu_fansatrt_temp = 9;  // 风机启动温度 默认45
+        int32 esu_fanclose_temp = 10;  // 风机关闭温度 默认35
+        int32 esu_enery_save_temp = 11;  // 退出节能温度 默认 70 界面设置
+        int32 esu_mandatory_protect_temp = 12;  // 强制保护温度 默认85
+        int32 esu_recover_temp = 13;  // 恢复节能温度 默认50
+        double esu_input_overvoltage_limit = 14;  // 输入过压门限值 默认270
+        double esu_Input_undervoltage_limit = 15;  // 输入欠压门限值 默认170
+        double esu_output_undervoltage_limit = 16;  // 输出欠压门限值 默认160
+        double esu_output_overload_limit = 17;  // 输出过载门限值 默认 144 电流
+        int32 esu_regulating_speed = 18;  // 调压速度 仅模式为延时模式时有效 默认10 6~60
+        int32 esu_power_phases = 19;  // 供电相数  默认3 不提供界面设置
+        int32 esu_comm_type = 23;  // 通信模式 ：0 通过终端；1 通过通信模块 默认0
+        int32 esu_work_mode = 24;  // 工作模式：0 通用模式；1 特殊模式；不提供界面设置 默认0
+        int32 esu_auto_alarm = 20;  // 是否主动报警 0-false,1-true,0
+        int32 esu_alarm_delay = 21;  // 报警延时时间  默认10秒钟
+        int32 esu_mode = 22;  // 节能模式：0 接触器模式；1 IGBT模式 默认1
         repeated EsuAdjustVoltage esu_adjust_voltage = 27;
     }
     message EsuAdjustVoltage {
-    	int32 esu_operate_id = 2;  // 操作序号 共有8个时间需要 1~8
-    	int32 esu_operatoe_value = 3;  // 操作节能值
-    	int32 esu_operate_time = 4;  // 操作时间 如00：30  则为30 时*60+分
-    	int64 esu_update_time = 5;  // 本条信息更新时间
+        int32 esu_operate_id = 2;  // 操作序号 共有8个时间需要 1~8
+        int32 esu_operatoe_value = 3;  // 操作节能值
+        int32 esu_operate_time = 4;  // 操作时间 如00：30  则为30 时*60+分
+        int64 esu_update_time = 5;  // 本条信息更新时间
     }
     message RtuLoopItem {
         int32 loop_id = 1;  // 回路序号
@@ -763,6 +766,11 @@ message TmlInfo {
         double loop_light_rate_alarm = 19;  // 亮灯率报警值
         int32 current_uplimit = 20;  // 回路电流主动上限报警值
         int32 current_lowlimit = 21;  // 回路电流主动下限报警值
+    }
+    message RtuSwitchOutInfo {
+        int32 loop_switchout_id = 1;  // 回路对应的开关量输出id(1-16), 0-表示无对应开关量输出
+        string loop_switchout_name = 2;  // 开关量输出名称
+        int32 loop_switchout_vector = 3;  // 开关量输出矢量
     }
     message SluitemGrpInfo {
         message SluitemGrpView {
@@ -821,7 +829,7 @@ message TmlInfo {
     repeated MruInfo mru_info = 19;  // 抄表设备填充
     repeated EsuInfo esu_info = 20;  // 节能设备填充
     repeated SluitemGrpInfo sluitem_grpinfo = 21;  // 单灯分组信息填充
-    repeated int32 data_mark = 3 [packed=true];  // 请求数种类,1-baseinfo,2-gisinfo,3-updateinfo(仅填充baseinfo中的tml_id,tml_dt_update两个字段),4-rtuinfo,5-sluitemgrpinfo,6-sluinfo,7-lduinfo,8-alsinfo,9-mruinfo,10-esuinfo(暂不做),11-slubaseinfo(单灯简要信息)
+    repeated int32 data_mark = 3 [packed=true];  // 请求数种类，同请求
 }
 
 // 短信发送记录查询
@@ -859,6 +867,7 @@ message QueryDataMru {
         int32 dt_mark = 4;  // 抄表时间段,0-当前，1-上月，2-上上月
         double mru_value = 5;  // 抄表值
         double mru_elec = 6;  // 计算的电量
+        string mru_name = 7;  // 电表名称
     }
     Head head = 1;
     repeated DataMruView data_mru_view = 3;
@@ -871,6 +880,7 @@ message rqMruDataGet {
     int32 data_mark = 3;  // 抄表类型,1-A相，2-B相，3-C相，4-总电量
     int32 dt_mark = 4;  // 抄表时间段,0-当前，1-上月，2-上上月
     int32 dev_ver = 5;  // 电表协议,1-1997协议,2-2007协议
+    int32 baud_rate = 6;  // 波特率
 }
 
 // 终端估算电量查询
@@ -1032,7 +1042,7 @@ message LocationInfo {
 }
 
 // 设备时间表操作记录查询
-message rqQueryTimetableDo {
+message rqQueryEventsTimetableDo {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 设备逻辑地址
     int32 data_mark = 3;  // 查询标记，0-关灯，1-开灯，2-全部
@@ -1041,7 +1051,7 @@ message rqQueryTimetableDo {
     int64 dt_end = 6;  // 查询结束日期
 }
 // 应答
-message QueryTimetableDo {
+message QueryEventsTimetableDo {
     message TimetableDoView {
         int32 tml_id = 1; // 设备逻辑地址
         int32 tml_loop_id = 2;  // 设备操作回路id
@@ -1115,6 +1125,7 @@ message QueryDataAls {
         int32 tml_id = 1; // 设备逻辑地址
         int64 dt_receive = 2;  // 数据时间
         float lux_value = 3;  // 光照度数据
+        string lux_name = 4;  // 名称
     }
     Head head = 1;
     repeated DataAlsView data_als_view = 2;
@@ -1176,6 +1187,7 @@ message QueryDataElu {
         int32 alarm_value = 10;  // 报警值
         int32 el_value = 11; // 漏电电流值
         int32 data_mode = 12;  // 数据模式，1-漏电检测模式，2-温度检测模式
+        string elu_name = 13;   // 名称
     }
     Head head = 1;
     repeated DataEluView data_elu_view = 2;
@@ -1281,6 +1293,7 @@ message TreeInfo {
         int64 node_parent = 2;  // 上级节点id，若为-1，表示无上级节点，该节点为根节点
         int32 node_route = 3;  // 节点深度（1开始，1表示根节点，>1表示对应的节点深度）
         string node_name = 4;  // 节点名称
+        string node_sim = 5;  // 节点sim卡号
     }
     Head head = 1;
     repeated TreeView tree_view = 2;
@@ -1290,4 +1303,58 @@ message TreeInfo {
 message rqSluVerGet {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的设备均执行相同的操作
+}
+//消息推送
+message rqMsgSettingInfo {
+    Head head = 1;  // 协议头信息
+    int32 user_id = 2;  // 用户id
+}
+message MsgSettingInfo {
+    message MsgView {
+        string msg_name = 1;  // 消息名称，可为空，当为空时，使用msg_filter内容替代。
+        // 实时操作类消息名称与交互式接口中的消息名称相同
+        // 故障类消息名称与故障信息中故障id对应的故障名称相同
+        // 其他类型消息名称见文档下方定义
+        int32 msg_type = 2;  // 消息类别，1-实时操作，2-故障报警，99-其他
+        string msg_filter = 3;  // 消息过滤器
+        string msg_remark = 4;  // 备注
+    }
+    Head head = 1;  // 协议头信息
+    repeated MsgView msg_view = 2;
+}
+message rqMsgSettingEdit {
+    Head head = 1;  // 协议头信息
+    message MsgView {
+        string msg_name = 1;  // 消息名称，可为空，当为空时，使用msg_filter内容替代。
+        // 实时操作类消息名称与交互式接口中的消息名称相同
+        // 故障类消息名称与故障信息中故障id对应的故障名称相同
+        // 其他类型消息名称见文档下方定义
+        int32 msg_type = 2;  // 消息类别，1-实时操作，2-故障报警，99-其他
+        string msg_filter = 3;  // 消息过滤器
+        string msg_remark = 4;  // 消息备注
+    }
+    repeated MsgView msg_view = 2;
+}
+message rqSluitemAdd {
+    Head head = 1;
+    int64 slu_id = 2;  // 集中器id
+    repeated SluItemArgs sluitem_args = 3;  // 控制器参数
+    message SluItemArgs {
+        int64 sluitem_barcode = 2;  // 条码
+        int32 sluitem_power_uplimit = 3;  // 功率上限
+        int32 sluitem_power_lowlimit = 4;  // 功率下限
+        repeated int32 sluitem_route = 5 [packed=true];  // 控制器路由(前4级通信控制器编号1,2,3...)
+        int32 sluitem_order = 6;  // 开灯序号
+        repeated int32 sluitem_st_poweron = 7 [packed=true];  // 4路上电状态,0-关灯,1-开灯,默认[1,1,1,1]
+        int32 sluitem_st = 8;  // 控制器状态,0-停运,1-投运
+        int32 sluitem_alarm = 9;  // 控制器主报,0-不允许,1-允许
+        repeated int32 sluitem_vector = 10 [packed=true];  // 4路矢量,默认[1,2,3,4]
+        int32 sluitem_loop_num = 11; // 回路数量
+        repeated int32 sluitem_rated_power = 12 [packed=true];  // 4路额定功率(w),0-不设置,1-0:20,2-76:100,3-101:120,4-121:150,5-151:200,6-201:250,7-251:300,8-301:400,9-401:600,10-601:800,11-800:1000,12-1001:1500,13-1501:2000,14-21:50,15-51:75
+        string sluitem_name = 13;  // 名称
+        int32 sluitem_phy_id = 15; // 物理地址,可变
+        string sluitem_lamp_id = 16;  // 灯杆编号/名称
+        double sluitem_gis_x = 17;  // x坐标
+        double sluitem_gis_y = 18;  // y坐标
+    }
 }

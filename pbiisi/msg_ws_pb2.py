@@ -17,7 +17,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='msg_ws.proto',
   package='wlst.ws',
   syntax='proto3',
-  serialized_pb=b'\n\x0cmsg_ws.proto\x12\x07wlst.ws\"\xfe\x01\n\x04Head\x12\x0b\n\x03idx\x18\x01 \x01(\x03\x12\x0b\n\x03ver\x18\x02 \x01(\x05\x12\x0f\n\x07if_name\x18\x03 \x01(\t\x12\x0e\n\x06unique\x18\x05 \x01(\t\x12\r\n\x05if_dt\x18\x64 \x01(\x03\x12\r\n\x05if_st\x18\x65 \x01(\x05\x12\x0e\n\x06if_msg\x18\x66 \x01(\t\x12\x12\n\nmsg_filter\x18g \x03(\t\x12\x13\n\npaging_num\x18\xc8\x01 \x01(\x05\x12\x13\n\npaging_idx\x18\xc9\x01 \x01(\x05\x12\x15\n\x0cpaging_total\x18\xca\x01 \x01(\x05\x12\x1a\n\x11paging_buffer_tag\x18\xcb\x01 \x01(\x03\x12\x1c\n\x13paging_record_total\x18\xcc\x01 \x01(\x05\"&\n\x07\x43ommAns\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"|\n\x0brqUserLogin\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0b\n\x03\x64\x65v\x18\x02 \x01(\x05\x12\x0e\n\x06unique\x18\x03 \x01(\t\x12\x0c\n\x04user\x18\x04 \x01(\t\x12\x0b\n\x03pwd\x18\x05 \x01(\t\x12\x0b\n\x03lon\x18\x06 \x01(\x01\x12\x0b\n\x03lat\x18\x07 \x01(\x01\"\xbe\x02\n\tUserLogin\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04uuid\x18\x02 \x01(\t\x12\x0c\n\x04\x61uth\x18\x03 \x01(\x05\x12\x10\n\x08\x66ullname\x18\x04 \x01(\t\x12\x0f\n\x07user_db\x18\x05 \x01(\t\x12\x11\n\tuser_area\x18\x06 \x01(\x05\x12\x0b\n\x03zmq\x18\x07 \x01(\t\x12\x11\n\tflow_data\x18\x08 \x01(\t\x12\x12\n\x06\x61rea_r\x18\t \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06\x61rea_w\x18\n \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06\x61rea_x\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x0f\n\x07user_id\x18\x0c \x01(\x05\x12\x0e\n\x06mobile\x18\r \x01(\x05\x12\x0b\n\x03tel\x18\x0e \x01(\t\x12\r\n\x05\x65mail\x18\x0f \x01(\t\x12\x0e\n\x06remark\x18\x10 \x01(\t\x12\x0c\n\x04user\x18\x11 \x01(\t\x12\x0b\n\x03tcs\x18\x12 \x01(\x05\"G\n\x0brqUserRenew\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0b\n\x03\x64\x65v\x18\x02 \x01(\x05\x12\x0e\n\x06unique\x18\x03 \x01(\t\"\xe1\x01\n\trqUserAdd\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x10\n\x08\x66ullname\x18\x03 \x01(\t\x12\x0b\n\x03pwd\x18\x04 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x05 \x01(\x05\x12\x0c\n\x04\x61uth\x18\x06 \x01(\x05\x12\x0c\n\x04\x63ode\x18\x08 \x01(\t\x12\x0e\n\x06\x64\x62name\x18\t \x01(\t\x12\x0e\n\x06mobile\x18\x07 \x01(\x05\x12\x0b\n\x03tel\x18\x0e \x01(\t\x12\r\n\x05\x65mail\x18\x0f \x01(\t\x12\x0e\n\x06remark\x18\x10 \x01(\t\x12\x11\n\tadmin_pwd\x18\x11 \x01(\t\"7\n\x07UserAdd\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\"g\n\trqUserDel\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x0b\n\x03pwd\x18\x03 \x01(\t\x12\x11\n\tadmin_pwd\x18\x04 \x01(\t\x12\x0f\n\x07user_id\x18\x05 \x01(\x05\"\x88\x02\n\nrqUserEdit\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x10\n\x08\x66ullname\x18\x03 \x01(\t\x12\x0b\n\x03pwd\x18\x04 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x05 \x01(\x05\x12\x0c\n\x04\x61uth\x18\x06 \x01(\x05\x12\x0c\n\x04\x63ode\x18\x08 \x01(\t\x12\x0f\n\x07pwd_old\x18\t \x01(\t\x12\x12\n\nuser_sz_id\x18\n \x01(\x05\x12\x0e\n\x06mobile\x18\x07 \x01(\x05\x12\x0b\n\x03tel\x18\x0e \x01(\t\x12\r\n\x05\x65mail\x18\x0f \x01(\t\x12\x0e\n\x06remark\x18\x10 \x01(\t\x12\x11\n\tadmin_pwd\x18\x11 \x01(\t\x12\x0f\n\x07user_id\x18\x12 \x01(\x05\"<\n\nrqUserInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tuser_name\x18\x02 \x01(\t\"\x8c\x02\n\x08UserInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12-\n\tuser_view\x18\x02 \x03(\x0b\x32\x1a.wlst.ws.UserInfo.UserView\x1a\xb3\x01\n\x08UserView\x12\x0c\n\x04user\x18\x01 \x01(\t\x12\x10\n\x08\x66ullname\x18\x02 \x01(\t\x12\x0b\n\x03pwd\x18\x03 \x01(\t\x12\x0c\n\x04\x61uth\x18\x04 \x01(\x05\x12\x0b\n\x03tel\x18\x05 \x01(\t\x12\x0c\n\x04\x63ode\x18\x06 \x01(\t\x12\x0f\n\x07user_id\x18\x07 \x01(\x05\x12\x0f\n\x07\x61rea_id\x18\x08 \x01(\x05\x12\x0f\n\x07\x64\x62_name\x18\t \x01(\t\x12\x0e\n\x06remark\x18\n \x01(\t\x12\x0e\n\x06mobile\x18\x0b \x01(\x05\"Q\n\nrqAreaInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x13\n\x07\x61rea_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tget_child\x18\x03 \x01(\x05\"\xc2\x01\n\x08\x41reaInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12-\n\tarea_view\x18\x02 \x03(\x0b\x32\x1a.wlst.ws.AreaInfo.AreaView\x1aj\n\x08\x41reaView\x12\x0f\n\x07\x61rea_id\x18\x01 \x01(\x05\x12\x11\n\tarea_name\x18\x02 \x01(\t\x12\x12\n\x06tml_id\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tparent_id\x18\x04 \x01(\x05\x12\x13\n\x0b\x61rea_remark\x18\x05 \x01(\t\"*\n\x0brqGroupInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"\xc2\x01\n\tGroupInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x30\n\ngroup_view\x18\x02 \x03(\x0b\x32\x1c.wlst.ws.GroupInfo.GroupView\x1a\x66\n\tGroupView\x12\x0e\n\x06grp_id\x18\x01 \x01(\x05\x12\x10\n\x08grp_name\x18\x02 \x01(\t\x12\x12\n\x06tml_id\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08grp_area\x18\x04 \x01(\x05\x12\x11\n\tgrp_order\x18\x05 \x01(\x05\"?\n\trqSysInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x15\n\tdata_mark\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xa3\x01\n\x07SysInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x15\n\tdata_mark\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08sys_name\x18\x03 \x01(\t\x12\x13\n\x07tml_num\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07\x65rr_num\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06st_svr\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08tml_type\x18\x07 \x03(\x05\x42\x02\x10\x01\":\n\trqSysEdit\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08sys_name\x18\x02 \x01(\t\"\x8d\x01\n\x0crqSluDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x04 \x01(\x05\x12\x13\n\x0bsluitem_num\x18\x05 \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\x06 \x01(\x05\"\xd7\x02\n\x10rqSluitemDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0bsluitem_idx\x18\x03 \x01(\x05\x12\x36\n\tdata_mark\x18\x04 \x01(\x0b\x32#.wlst.ws.rqSluitemDataGet.Data_mark\x12\x0f\n\x07\x63md_idx\x18\x05 \x01(\x05\x1a\xb3\x01\n\tData_mark\x12\x11\n\tread_data\x18\x01 \x01(\x05\x12\x12\n\nread_timer\x18\x02 \x01(\x05\x12\x11\n\tread_args\x18\x03 \x01(\x05\x12\x12\n\nread_group\x18\x04 \x01(\x05\x12\x10\n\x08read_ver\x18\x05 \x01(\x05\x12\x17\n\x0fread_sunriseset\x18\x06 \x01(\x05\x12\x16\n\x0eread_timetable\x18\x07 \x01(\x05\x12\x15\n\rread_ctrldata\x18\x08 \x01(\x05\"\xf8\x02\n\x08rqSluCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nsubitem_id\x18\x0e \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\x03 \x01(\x05\x12\x16\n\x0eoperation_type\x18\x04 \x01(\x05\x12\x17\n\x0foperation_order\x18\x05 \x01(\x05\x12\x11\n\taddr_type\x18\x06 \x01(\x05\x12\x11\n\x05\x61\x64\x64rs\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08week_set\x18\x08 \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0ftimer_or_offset\x18\t \x01(\x05\x12\x10\n\x08\x63md_type\x18\n \x01(\x05\x12\x13\n\x07\x63md_mix\x18\x0b \x03(\x05\x42\x02\x10\x01\x12)\n\x07\x63md_pwm\x18\x0c \x01(\x0b\x32\x18.wlst.ws.rqSluCtl.CmdPWM\x1a>\n\x06\x43mdPWM\x12\x17\n\x0bloop_can_do\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\r\n\x05scale\x18\x02 \x01(\x05\x12\x0c\n\x04rate\x18\x03 \x01(\x05\"e\n\rrqSluTimerCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x10\n\x08\x64o_force\x18\x04 \x01(\x05\"?\n\x0crqRtuDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"\x8f\x01\n\x08rqRtuCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\'\n\x06rtu_do\x18\x02 \x03(\x0b\x32\x17.wlst.ws.rqRtuCtl.RtuDo\x1a=\n\x05RtuDo\x12\x0b\n\x03opt\x18\x01 \x01(\x05\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07loop_do\x18\x03 \x03(\x05\x42\x02\x10\x01\"\xb9\x01\n\x11rqQueryDataEvents\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x15\n\tevents_id\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x0f\n\x07user_id\x18\x08 \x03(\t\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\x12\x16\n\nproject_id\x18\n \x03(\x05\x42\x02\x10\x01\x12\x11\n\tremote_ip\x18\x0b \x01(\x05\"\x9f\x02\n\x0fQueryDataEvents\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x41\n\x10\x64\x61ta_events_view\x18\x02 \x03(\x0b\x32\'.wlst.ws.QueryDataEvents.DataEventsView\x1a\xab\x01\n\x0e\x44\x61taEventsView\x12\x11\n\tevents_id\x18\x01 \x01(\x05\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x0e\n\x06tml_id\x18\x03 \x01(\x05\x12\x12\n\nevents_msg\x18\x04 \x01(\t\x12\x11\n\tdt_happen\x18\x05 \x01(\x03\x12\x13\n\x0b\x65vents_name\x18\x06 \x01(\t\x12\x14\n\x0cproject_name\x18\x07 \x01(\t\x12\x11\n\tremote_ip\x18\x08 \x01(\x05\"\x85\x01\n\x0erqQueryDataErr\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x0c\n\x04type\x18\x07 \x01(\x05\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06\x65rr_id\x18\n \x03(\x05\x42\x02\x10\x01\"\xbd\x02\n\x0cQueryDataErr\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04type\x18\x02 \x01(\x05\x12/\n\x08\x65rr_view\x18\x03 \x03(\x0b\x32\x1d.wlst.ws.QueryDataErr.ErrView\x1a\xd0\x01\n\x07\x45rrView\x12\x0e\n\x06\x65rr_id\x18\x01 \x01(\x05\x12\x10\n\x08\x65rr_name\x18\x02 \x01(\t\x12\x0e\n\x06tml_id\x18\x05 \x01(\x05\x12\x11\n\tdt_create\x18\x06 \x01(\x03\x12\x11\n\tdt_remove\x18\x07 \x01(\x03\x12\x0e\n\x06phy_id\x18\x08 \x01(\x03\x12\x10\n\x08tml_name\x18\t \x01(\t\x12\x13\n\x0btml_sub_id1\x18\n \x01(\x05\x12\x13\n\x0btml_sub_id2\x18\x0b \x01(\x05\x12\x0e\n\x06remark\x18\x0c \x01(\t\x12\x11\n\terr_count\x18\r \x01(\x05\"H\n\nrqSmsQueue\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x04tels\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x0b\n\x03msg\x18\x03 \x01(\t\"N\n\x0brqIpcUplink\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0e\n\x06\x64\x65v_id\x18\x02 \x01(\t\x12\x12\n\nraw_string\x18\x03 \x01(\t\"^\n\rrqQueryEMData\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0e\n\x06\x64\x65v_id\x18\x02 \x01(\t\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\"\x82\x03\n\x0bQueryEMData\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0e\n\x06\x64\x65v_id\x18\x02 \x01(\t\x12+\n\x06qudata\x18\x03 \x03(\x0b\x32\x1b.wlst.ws.QueryEMData.Qudata\x1a\x98\x02\n\x06Qudata\x12\x0c\n\x04temp\x18\x01 \x01(\x02\x12\x0c\n\x04rehu\x18\x02 \x01(\x02\x12\x0c\n\x04wsds\x18\x03 \x01(\x02\x12\x0c\n\x04wdis\x18\x04 \x01(\x02\x12\x0c\n\x04ripm\x18\x05 \x01(\x02\x12\x0c\n\x04luxs\x18\x06 \x01(\x02\x12\x0c\n\x04\x61tms\x18\x07 \x01(\x02\x12\x0c\n\x04svol\x18\x08 \x01(\x02\x12\n\n\x02no\x18\t \x01(\x02\x12\x0b\n\x03no2\x18\n \x01(\x02\x12\n\n\x02\x63o\x18\x0b \x01(\x02\x12\x0b\n\x03\x63o2\x18\x0c \x01(\x02\x12\n\n\x02o3\x18\r \x01(\x02\x12\x0b\n\x03so2\x18\x0e \x01(\x02\x12\x0b\n\x03pm1\x18\x0f \x01(\x02\x12\x0c\n\x04pm25\x18\x10 \x01(\x02\x12\x0c\n\x04pm10\x18\x11 \x01(\x02\x12\x0c\n\x04tvoc\x18\x12 \x01(\x02\x12\x0b\n\x03h2s\x18\x13 \x01(\x02\x12\x0f\n\x07\x64t_data\x18\x14 \x01(\x03\"\xe5\x02\n\x08rqIpcCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0e\n\x06\x64\x65v_id\x18\x0c \x03(\t\x12\x0f\n\x07\x63tl_cmd\x18\n \x01(\t\x12\x16\n\nctl_target\x18\x0b \x03(\x03\x42\x02\x10\x01\x12\x0f\n\x07\x64\x65v_ver\x18\x02 \x01(\t\x12\x14\n\x0c\x64\x65v_supplier\x18\x03 \x01(\t\x12\x10\n\x08\x64\x65v_name\x18\x04 \x01(\t\x12\x10\n\x08\x64\x65v_cmds\x18\x05 \x01(\t\x12\x14\n\x0c\x64\x65v_datetime\x18\x06 \x01(\x03\x12\x12\n\ndev_status\x18\x07 \x01(\x05\x12.\n\tcomm_args\x18\x08 \x01(\x0b\x32\x1b.wlst.ws.rqIpcCtl.Comm_Args\x12\x0e\n\x06rptint\x18\t \x01(\x05\x1aN\n\tComm_Args\x12\x11\n\tbaud_rate\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x61ta_bit\x18\x02 \x01(\x05\x12\x0e\n\x06parity\x18\x03 \x01(\x05\x12\x0c\n\x04stop\x18\x04 \x01(\x05\"-\n\x0erqSunrisetInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"\xc0\x01\n\x0cSunrisetInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x42\n\x12\x64\x61ta_sunriset_view\x18\x02 \x03(\x0b\x32&.wlst.ws.SunrisetInfo.DataSunrisetView\x1aO\n\x10\x44\x61taSunrisetView\x12\r\n\x05month\x18\x01 \x01(\x05\x12\x0b\n\x03\x64\x61y\x18\x02 \x01(\x05\x12\x0f\n\x07sunrise\x18\x04 \x01(\x05\x12\x0e\n\x06sunset\x18\x05 \x01(\x05\"I\n\x0brqSubmitSms\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x04tels\x18\x02 \x03(\x03\x42\x02\x10\x01\x12\x0b\n\x03msg\x18\x03 \x01(\t\"(\n\trqErrInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"\xcf\x02\n\x07\x45rrInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x33\n\rerr_info_view\x18\x02 \x03(\x0b\x32\x1c.wlst.ws.ErrInfo.ErrInfoView\x1a\xf1\x01\n\x0b\x45rrInfoView\x12\x0e\n\x06\x65rr_id\x18\x01 \x01(\x05\x12\x10\n\x08\x65rr_name\x18\x02 \x01(\t\x12\x18\n\x10\x65rr_name_custome\x18\x03 \x01(\t\x12\x12\n\nerr_remark\x18\x04 \x01(\t\x12\x11\n\terr_level\x18\x05 \x01(\x05\x12\x14\n\x0c\x65nable_alarm\x18\x06 \x01(\x05\x12\x19\n\x11\x65rr_check_keyword\x18\x07 \x01(\t\x12\x14\n\x0c\x65rr_time_set\x18\x08 \x01(\x05\x12\x1c\n\x14\x64t_err_custome_start\x18\t \x01(\x05\x12\x1a\n\x12\x64t_err_custome_end\x18\n \x01(\x05\"*\n\x0brqEventInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"\xc8\x01\n\tEventInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x39\n\x0f\x65vent_info_view\x18\x02 \x03(\x0b\x32 .wlst.ws.EventInfo.EventInfoView\x1a\x63\n\rEventInfoView\x12\x10\n\x08\x65vent_id\x18\x01 \x01(\x05\x12\x12\n\nevent_name\x18\x02 \x01(\t\x12\x16\n\x0e\x65vent_cls_name\x18\x03 \x01(\t\x12\x14\n\x0c\x65vent_cls_id\x18\x04 \x01(\x05\"q\n\x0erqQueryDataRtu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x0c\n\x04type\x18\x07 \x01(\x05\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\"\x8e\x05\n\x0cQueryDataRtu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04type\x18\x02 \x01(\x05\x12\x38\n\rdata_rtu_view\x18\x03 \x03(\x0b\x32!.wlst.ws.QueryDataRtu.DataRtuView\x1a\xcb\x01\n\x08LoopView\x12\x0f\n\x07voltage\x18\x01 \x01(\x01\x12\x0f\n\x07\x63urrent\x18\x02 \x01(\x01\x12\r\n\x05power\x18\x03 \x01(\x01\x12\x0c\n\x04rate\x18\x04 \x01(\x01\x12\x0e\n\x06\x66\x61\x63tor\x18\x05 \x01(\x01\x12\x14\n\x0cswitch_in_st\x18\x06 \x01(\x05\x12\x1a\n\x12voltage_over_range\x18\x07 \x01(\x05\x12\x1a\n\x12\x63urrent_over_range\x18\x08 \x01(\x05\x12\x11\n\tloop_name\x18\t \x01(\t\x12\x0f\n\x07loop_id\x18\n \x01(\x05\x1a\xca\x02\n\x0b\x44\x61taRtuView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x10\n\x08tml_name\x18\r \x01(\t\x12\x12\n\ndt_receive\x18\x03 \x01(\x03\x12\x31\n\tloop_view\x18\x04 \x03(\x0b\x32\x1e.wlst.ws.QueryDataRtu.LoopView\x12\x19\n\rswitch_out_st\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rcurrent_sum_a\x18\x06 \x01(\x01\x12\x15\n\rcurrent_sum_b\x18\x07 \x01(\x01\x12\x15\n\rcurrent_sum_c\x18\x08 \x01(\x01\x12\x11\n\tvoltage_a\x18\t \x01(\x01\x12\x11\n\tvoltage_b\x18\n \x01(\x01\x12\x11\n\tvoltage_c\x18\x0b \x01(\x01\x12\x14\n\x08\x61larm_st\x18\x0c \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0btemperature\x18\x0e \x01(\x05\"\x84\x01\n\x0erqQueryDataSlu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x0c\n\x04type\x18\x07 \x01(\x05\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\n \x01(\x05\"\x82\x0e\n\x0cQueryDataSlu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\x12\x38\n\rdata_slu_view\x18\x03 \x03(\x0b\x32!.wlst.ws.QueryDataSlu.DataSluView\x12@\n\x11\x64\x61ta_sluitem_view\x18\x04 \x03(\x0b\x32%.wlst.ws.QueryDataSlu.DataSluitemView\x12M\n\x18\x64\x61ta_sluitem_assist_view\x18\x05 \x03(\x0b\x32+.wlst.ws.QueryDataSlu.DataSluitemAssistView\x12\x42\n\x10sluitem_phy_view\x18\x06 \x03(\x0b\x32(.wlst.ws.QueryDataSlu.DataSluitemPhyView\x1a\xe4\x01\n\x0b\x44\x61taSluView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x10\n\x08tml_name\x18\n \x01(\t\x12\x12\n\ndt_receive\x18\x03 \x01(\x03\x12\x17\n\x0breset_times\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x16\n\nst_running\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07st_argv\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x11\n\x05st_hw\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x1a\n\x12unknow_sluitem_num\x18\x08 \x01(\x05\x12\x1a\n\x0ezigbee_channel\x18\t \x03(\x05\x42\x02\x10\x01\x1a\xfc\x01\n\x0f\x44\x61taSluitemView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x10\n\x08tml_name\x18\n \x01(\t\x12\x12\n\nsluitem_id\x18\x0b \x01(\x05\x12\x14\n\x0csluitem_name\x18\x0c \x01(\t\x12\x12\n\ndt_receive\x18\x03 \x01(\x03\x12\x10\n\x08\x64t_cache\x18\x05 \x01(\x03\x12\x16\n\nst_sluitem\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0btemperature\x18\x07 \x01(\x05\x12:\n\x0e\x64\x61ta_lamp_view\x18\t \x03(\x0b\x32\".wlst.ws.QueryDataSlu.DataLampView\x1a\xf5\x01\n\x0c\x44\x61taLampView\x12\x0f\n\x07lamp_id\x18\x08 \x01(\x05\x12\x13\n\x07st_lamp\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0clamp_voltage\x18\x02 \x01(\x01\x12\x14\n\x0clamp_current\x18\x03 \x01(\x01\x12\x12\n\nlamp_power\x18\x04 \x01(\x01\x12\x18\n\x10lamp_electricity\x18\x05 \x01(\x01\x12\x1e\n\x16lamp_electricity_count\x18\t \x01(\x01\x12\x14\n\x0clamp_runtime\x18\x06 \x01(\x01\x12\x1a\n\x12lamp_runtime_count\x18\n \x01(\x01\x12\x13\n\x0blamp_saving\x18\x07 \x01(\x01\x1a\x97\x03\n\x15\x44\x61taSluitemAssistView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\ndt_receive\x18\x02 \x01(\x03\x12Z\n\x13sluitem_assist_data\x18\x03 \x03(\x0b\x32=.wlst.ws.QueryDataSlu.DataSluitemAssistView.SluitemAssistData\x1aP\n\x0fSluitemLampData\x12\x13\n\x0bmax_voltage\x18\x01 \x01(\x01\x12\x13\n\x0bmax_current\x18\x02 \x01(\x01\x12\x13\n\x0b\x65lectricity\x18\x03 \x01(\x01\x1a\xab\x01\n\x11SluitemAssistData\x12\x12\n\nsluitem_id\x18\x03 \x01(\x05\x12\x10\n\x08\x64t_cache\x18\x04 \x01(\x03\x12\x18\n\x10leackage_current\x18\x05 \x01(\x01\x12V\n\x11sluitem_lamp_data\x18\x06 \x03(\x0b\x32;.wlst.ws.QueryDataSlu.DataSluitemAssistView.SluitemLampData\x1a\xba\x02\n\x12\x44\x61taSluitemPhyView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x12\n\ndt_receive\x18\x03 \x01(\x03\x12\x12\n\nsluitem_id\x18\x04 \x01(\x05\x12\x17\n\x0fsignal_strength\x18\x05 \x01(\x05\x12\x0f\n\x07routing\x18\x06 \x01(\x05\x12\r\n\x05phase\x18\x07 \x01(\x05\x12\x14\n\x0c\x63omm_success\x18\x08 \x01(\x05\x12\x10\n\x08\x63omm_all\x18\t \x01(\x05\x12\x15\n\rsluitem_loops\x18\n \x01(\x05\x12\x14\n\x0cpower_saving\x18\x0b \x01(\x05\x12\x13\n\x0bhas_leakage\x18\x0c \x01(\x05\x12\x17\n\x0fhas_temperature\x18\r \x01(\x05\x12\x11\n\thas_timer\x18\x0e \x01(\x05\x12\r\n\x05model\x18\x0f \x01(\x05\"S\n\trqTmlInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x15\n\tdata_mark\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06tml_id\x18\x06 \x03(\x05\x42\x02\x10\x01\"\x81#\n\x07TmlInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12,\n\tbase_info\x18\x0c \x03(\x0b\x32\x19.wlst.ws.TmlInfo.BaseInfo\x12*\n\x08gis_info\x18\r \x03(\x0b\x32\x18.wlst.ws.TmlInfo.GisInfo\x12*\n\x08rtu_info\x18\x0f \x03(\x0b\x32\x18.wlst.ws.TmlInfo.RtuInfo\x12*\n\x08slu_info\x18\x10 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.SluInfo\x12*\n\x08ldu_info\x18\x11 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.LduInfo\x12*\n\x08\x61ls_info\x18\x12 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.AlsInfo\x12*\n\x08mru_info\x18\x13 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.MruInfo\x12*\n\x08\x65su_info\x18\x14 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.EsuInfo\x12\x38\n\x0fsluitem_grpinfo\x18\x15 \x03(\x0b\x32\x1f.wlst.ws.TmlInfo.SluitemGrpInfo\x12\x15\n\tdata_mark\x18\x03 \x03(\x05\x42\x02\x10\x01\x1a\x95\x02\n\x08\x42\x61seInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x10\n\x08tml_type\x18\x03 \x01(\x05\x12\x0e\n\x06tml_st\x18\x04 \x01(\x05\x12\x10\n\x08tml_name\x18\x05 \x01(\t\x12\x12\n\ntml_com_sn\x18\x06 \x01(\t\x12\x12\n\ntml_com_ip\x18\x07 \x01(\x05\x12\x11\n\ttml_model\x18\x08 \x01(\x05\x12\x15\n\rtml_parent_id\x18\t \x01(\x05\x12\x14\n\x0ctml_dt_setup\x18\n \x01(\x03\x12\x10\n\x08tml_desc\x18\x0b \x01(\t\x12\x15\n\rtml_dt_update\x18\x0c \x01(\x03\x12\x12\n\ntml_street\x18\r \x01(\t\x12\x10\n\x08tml_guid\x18\x0e \x01(\t\x1a\x65\n\x07GisInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x11\n\ttml_pix_x\x18\x05 \x01(\x01\x12\x11\n\ttml_pix_y\x18\x02 \x01(\x01\x12\x11\n\ttml_gis_x\x18\x03 \x01(\x01\x12\x11\n\ttml_gis_y\x18\x04 \x01(\x01\x1a\x8e\x02\n\x07RtuInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\nheart_beat\x18\x02 \x01(\x05\x12\x15\n\ractive_report\x18\x03 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x04 \x01(\x05\x12\x15\n\twork_mark\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rvoltage_range\x18\x06 \x01(\x05\x12\x17\n\x0fvoltage_uplimit\x18\x07 \x01(\x05\x12\x18\n\x10voltage_lowlimit\x18\x08 \x01(\x05\x12!\n\x19loop_st_switch_by_current\x18\t \x01(\x05\x12/\n\tloop_item\x18\x0c \x03(\x0b\x32\x1c.wlst.ws.TmlInfo.RtuLoopItem\x1a\xc0\x04\n\x07SluInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x16\n\x0eslu_auto_alarm\x18\x02 \x01(\x05\x12\x17\n\x0fslu_auto_patrol\x18\x03 \x01(\x05\x12\x17\n\x0fslu_auto_resend\x18\x04 \x01(\x05\x12\x14\n\x0cslu_suls_num\x18\x05 \x01(\x05\x12\x12\n\nslu_bt_pin\x18\x06 \x01(\x05\x12\x12\n\nslu_domain\x18\x07 \x01(\x05\x12\x1b\n\x13slu_voltage_uplimit\x18\x08 \x01(\x05\x12\x1c\n\x14slu_voltage_lowlimit\x18\t \x01(\x05\x12\x15\n\rslu_zigbee_id\x18\n \x01(\x03\x12\x1b\n\x13slu_comm_fail_count\x18\x0b \x01(\x05\x12\x18\n\x10slu_power_factor\x18\x0c \x01(\x01\x12\x1b\n\x0fslu_zigbee_comm\x18\r \x03(\x05\x42\x02\x10\x01\x12\x19\n\x11slu_current_range\x18\x0e \x01(\x01\x12\x17\n\x0fslu_power_range\x18\x0f \x01(\x05\x12\x0f\n\x07slu_lon\x18\x10 \x01(\x01\x12\x0f\n\x07slu_lat\x18\x11 \x01(\x01\x12\x11\n\tslu_route\x18\x12 \x01(\x05\x12\x15\n\rslu_is_zigbee\x18\x13 \x01(\x05\x12\x17\n\x0fslu_saving_mode\x18\x14 \x01(\x05\x12\x14\n\x0cslu_pwm_rate\x18\x15 \x01(\x05\x12\x14\n\x0cslu_off_line\x18\x17 \x01(\x05\x12\x32\n\x0csluitem_info\x18\x16 \x03(\x0b\x32\x1c.wlst.ws.TmlInfo.SluItemInfo\x1a\x61\n\x07LduInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\nlduitem_id\x18\x02 \x01(\x05\x12\x32\n\x0clduitem_info\x18\x03 \x03(\x0b\x32\x1c.wlst.ws.TmlInfo.LduItemInfo\x1av\n\x07\x41lsInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61ls_id\x18\x02 \x01(\x05\x12\x11\n\tals_range\x18\x03 \x01(\x05\x12\x10\n\x08\x61ls_mode\x18\x04 \x01(\x05\x12\x14\n\x0c\x61ls_interval\x18\x05 \x01(\x05\x12\x10\n\x08\x61ls_comm\x18\x06 \x01(\x05\x1ao\n\x07MruInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\x06mru_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rmru_baud_rate\x18\x03 \x01(\x05\x12\x17\n\x0fmru_transformer\x18\x04 \x01(\x05\x12\x10\n\x08mru_type\x18\x05 \x01(\x05\x1a\xfa\x05\n\x07\x45suInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x10\n\x08\x65su_used\x18\x1c \x01(\x08\x12\x1b\n\x13\x65su_preheating_time\x18\x02 \x01(\x05\x12\x16\n\x0e\x65su_close_time\x18\x04 \x01(\x05\x12\x15\n\resu_open_time\x18\x05 \x01(\x05\x12\x16\n\x0e\x65su_ct_radio_a\x18\x06 \x01(\x05\x12\x16\n\x0e\x65su_ct_radio_b\x18\x07 \x01(\x05\x12\x16\n\x0e\x65su_ct_radio_c\x18\x08 \x01(\x05\x12\x15\n\resu_time_mode\x18\x19 \x01(\x05\x12\x14\n\x0c\x65su_run_mode\x18\x1a \x01(\x05\x12\x19\n\x11\x65su_fansatrt_temp\x18\t \x01(\x05\x12\x19\n\x11\x65su_fanclose_temp\x18\n \x01(\x05\x12\x1b\n\x13\x65su_enery_save_temp\x18\x0b \x01(\x05\x12\"\n\x1a\x65su_mandatory_protect_temp\x18\x0c \x01(\x05\x12\x18\n\x10\x65su_recover_temp\x18\r \x01(\x05\x12#\n\x1b\x65su_input_overvoltage_limit\x18\x0e \x01(\x01\x12$\n\x1c\x65su_Input_undervoltage_limit\x18\x0f \x01(\x01\x12%\n\x1d\x65su_output_undervoltage_limit\x18\x10 \x01(\x01\x12!\n\x19\x65su_output_overload_limit\x18\x11 \x01(\x01\x12\x1c\n\x14\x65su_regulating_speed\x18\x12 \x01(\x05\x12\x18\n\x10\x65su_power_phases\x18\x13 \x01(\x05\x12\x15\n\resu_comm_type\x18\x17 \x01(\x05\x12\x15\n\resu_work_mode\x18\x18 \x01(\x05\x12\x16\n\x0e\x65su_auto_alarm\x18\x14 \x01(\x05\x12\x17\n\x0f\x65su_alarm_delay\x18\x15 \x01(\x05\x12\x10\n\x08\x65su_mode\x18\x16 \x01(\x05\x12=\n\x12\x65su_adjust_voltage\x18\x1b \x03(\x0b\x32!.wlst.ws.TmlInfo.EsuAdjustVoltage\x1ay\n\x10\x45suAdjustVoltage\x12\x16\n\x0e\x65su_operate_id\x18\x02 \x01(\x05\x12\x1a\n\x12\x65su_operatoe_value\x18\x03 \x01(\x05\x12\x18\n\x10\x65su_operate_time\x18\x04 \x01(\x05\x12\x17\n\x0f\x65su_update_time\x18\x05 \x01(\x03\x1a\xfd\x03\n\x0bRtuLoopItem\x12\x0f\n\x07loop_id\x18\x01 \x01(\x05\x12\x11\n\tloop_name\x18\x02 \x01(\t\x12\x12\n\nloop_phase\x18\x03 \x01(\x05\x12\x1a\n\x12loop_current_range\x18\x04 \x01(\x05\x12\x19\n\x11loop_switchout_id\x18\x07 \x01(\x05\x12\x1b\n\x13loop_switchout_name\x18\x08 \x01(\t\x12\x1d\n\x15loop_switchout_vector\x18\t \x01(\x05\x12\x18\n\x10loop_switchin_id\x18\n \x01(\x05\x12\x1c\n\x14loop_switchin_vector\x18\x0b \x01(\x05\x12\x18\n\x10loop_transformer\x18\x0c \x01(\x05\x12\x1c\n\x14loop_transformer_num\x18\r \x01(\x05\x12\x17\n\x0floop_step_alarm\x18\x0e \x01(\x05\x12\x16\n\x0eloop_st_switch\x18\x0f \x01(\x05\x12\x16\n\x0eloop_is_shield\x18\x10 \x01(\x05\x12\x1c\n\x14shield_small_current\x18\x11 \x01(\x05\x12\x1a\n\x12loop_light_rate_bm\x18\x12 \x01(\x01\x12\x1d\n\x15loop_light_rate_alarm\x18\x13 \x01(\x01\x12\x17\n\x0f\x63urrent_uplimit\x18\x14 \x01(\x05\x12\x18\n\x10\x63urrent_lowlimit\x18\x15 \x01(\x05\x1a\xc9\x01\n\x0eSluitemGrpInfo\x12\x0e\n\x06slu_id\x18\x01 \x01(\x05\x12H\n\x10sluitem_grp_view\x18\x02 \x03(\x0b\x32..wlst.ws.TmlInfo.SluitemGrpInfo.SluitemGrpView\x1a]\n\x0eSluitemGrpView\x12\x0e\n\x06grp_id\x18\x02 \x01(\x05\x12\x10\n\x08grp_name\x18\x03 \x01(\t\x12\x11\n\tdt_update\x18\x04 \x01(\x03\x12\x16\n\nsluitem_id\x18\x05 \x03(\x05\x42\x02\x10\x01\x1a\xc2\x03\n\x0bSluItemInfo\x12\x17\n\x0fsluitem_barcode\x18\x02 \x01(\x03\x12\x1d\n\x15sluitem_power_uplimit\x18\x03 \x01(\x05\x12\x1e\n\x16sluitem_power_lowlimit\x18\x04 \x01(\x05\x12\x19\n\rsluitem_route\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rsluitem_order\x18\x06 \x01(\x05\x12\x1e\n\x12sluitem_st_poweron\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nsluitem_st\x18\x08 \x01(\x05\x12\x15\n\rsluitem_alarm\x18\t \x01(\x05\x12\x1a\n\x0esluitem_vector\x18\n \x03(\x05\x42\x02\x10\x01\x12\x18\n\x10sluitem_loop_num\x18\x0b \x01(\x05\x12\x1f\n\x13sluitem_rated_power\x18\x0c \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0csluitem_name\x18\r \x01(\t\x12\x12\n\nsluitem_id\x18\x0e \x01(\x05\x12\x16\n\x0esluitem_phy_id\x18\x0f \x01(\x05\x12\x17\n\x0fsluitem_lamp_id\x18\x10 \x01(\t\x12\x15\n\rsluitem_gis_x\x18\x11 \x01(\x01\x12\x15\n\rsluitem_gis_y\x18\x12 \x01(\x01\x1a\xfd\x02\n\x0bLduItemInfo\x12\x0f\n\x07loop_id\x18\x01 \x01(\x05\x12\x11\n\tloop_name\x18\x02 \x01(\t\x12\x0f\n\x07loop_st\x18\x03 \x01(\x05\x12\x18\n\x10loop_transformer\x18\x04 \x01(\x05\x12\x12\n\nloop_phase\x18\x05 \x01(\x05\x12\x15\n\rloop_lamppost\x18\x06 \x01(\t\x12\x17\n\x0floop_lighton_ss\x18\x07 \x01(\x05\x12\x18\n\x10loop_lightoff_ss\x18\x08 \x01(\x05\x12\x17\n\x0floop_lighton_ia\x18\t \x01(\x05\x12\x18\n\x10loop_lightoff_ia\x18\n \x01(\x05\x12\x1a\n\x12loop_lighting_rate\x18\x0b \x01(\x05\x12\x1a\n\x0eloop_alarm_set\x18\x0c \x03(\x05\x42\x02\x10\x01\x12\x11\n\tloop_desc\x18\r \x01(\t\x12\x13\n\x0btml_loop_id\x18\x0e \x01(\x05\x12\x16\n\x0eloop_ctrl_type\x18\x0f \x01(\x05\x12\x16\n\x0eloop_comm_type\x18\x10 \x01(\x05\"p\n\x10rqQuerySmsRecord\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x04tels\x18\x03 \x03(\x03\x42\x02\x10\x01\x12\x0b\n\x03msg\x18\x04 \x01(\t\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\"\x9c\x01\n\x0eQuerySmsRecord\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x35\n\nsms_record\x18\x03 \x03(\x0b\x32!.wlst.ws.QuerySmsRecord.SmsRecord\x1a\x36\n\tSmsRecord\x12\x0f\n\x07\x64t_send\x18\x01 \x01(\x03\x12\x0b\n\x03tel\x18\x02 \x01(\x03\x12\x0b\n\x03msg\x18\x03 \x01(\t\"c\n\x0erqQueryDataMru\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x04 \x01(\x03\"\xe0\x01\n\x0cQueryDataMru\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x38\n\rdata_mru_view\x18\x03 \x03(\x0b\x32!.wlst.ws.QueryDataMru.DataMruView\x1ay\n\x0b\x44\x61taMruView\x12\x11\n\tdt_create\x18\x01 \x01(\x03\x12\x0e\n\x06tml_id\x18\x02 \x01(\x05\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x0f\n\x07\x64t_mark\x18\x04 \x01(\x05\x12\x11\n\tmru_value\x18\x05 \x01(\x01\x12\x10\n\x08mru_elec\x18\x06 \x01(\x01\"t\n\x0crqMruDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x0f\n\x07\x64t_mark\x18\x04 \x01(\x05\x12\x0f\n\x07\x64\x65v_ver\x18\x05 \x01(\x05\"z\n\x12rqQueryDataRtuElec\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x07 \x01(\x05\"\xe9\x01\n\x10QueryDataRtuElec\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x45\n\x12\x64\x61ta_rtu_elec_view\x18\x02 \x03(\x0b\x32).wlst.ws.QueryDataRtuElec.DataRtuElecView\x1aq\n\x0f\x44\x61taRtuElecView\x12\x10\n\x08\x64t_count\x18\x01 \x01(\x03\x12\x0e\n\x06tml_id\x18\x02 \x01(\x05\x12\x0f\n\x07loop_id\x18\x03 \x01(\x05\x12\x13\n\x0b\x64\x61ta_lenght\x18\x04 \x01(\x05\x12\x16\n\x0e\x65stimate_value\x18\x05 \x01(\x01\"S\n\rrqRtuTimerCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\">\n\x0brqRtuVerGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"D\n\rrqProjectInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x16\n\nproject_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xf1\x02\n\x0bProjectInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x36\n\x0cproject_view\x18\x02 \x03(\x0b\x32 .wlst.ws.ProjectInfo.ProjectView\x1a\x8c\x02\n\x0bProjectView\x12\x12\n\nproject_id\x18\x01 \x01(\x05\x12\x14\n\x0cproject_name\x18\x02 \x01(\t\x12\x17\n\x0fproject_address\x18\x03 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x04 \x01(\x05\x12\x16\n\x0eproject_remark\x18\x05 \x01(\t\x12\x11\n\ttml_total\x18\x06 \x01(\x05\x12\x12\n\ntml_online\x18\x07 \x01(\x05\x12\x11\n\ttml_error\x18\x08 \x01(\x05\x12\x19\n\rserver_status\x18\t \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0clocation_lon\x18\n \x01(\x01\x12\x14\n\x0clocation_lat\x18\x0b \x01(\x01\x12\x10\n\x08tcs_port\x18\x0c \x01(\x05\"\xfb\x01\n\x0crqProjectAdd\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x14\n\x0cproject_name\x18\x02 \x01(\t\x12\x12\n\nproject_ip\x18\x03 \x01(\t\x12\x14\n\x0cproject_port\x18\x04 \x01(\x05\x12\x14\n\x0cproject_root\x18\x05 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x06 \x01(\x05\x12\x16\n\x0eproject_remark\x18\x07 \x01(\t\x12\x11\n\tadmin_pwd\x18\x08 \x01(\t\x12\x14\n\x0clocation_lon\x18\n \x01(\x01\x12\x14\n\x0clocation_lat\x18\x0b \x01(\x01\x12\x10\n\x08tcs_port\x18\x0c \x01(\x05\"\x90\x02\n\rrqProjectEdit\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x14\n\x0cproject_name\x18\x02 \x01(\t\x12\x12\n\nproject_ip\x18\x03 \x01(\t\x12\x14\n\x0cproject_port\x18\x04 \x01(\x05\x12\x14\n\x0cproject_root\x18\x05 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x06 \x01(\x05\x12\x16\n\x0eproject_remark\x18\x07 \x01(\t\x12\x11\n\tadmin_pwd\x18\t \x01(\t\x12\x12\n\nproject_id\x18\x08 \x01(\x05\x12\x14\n\x0clocation_lon\x18\n \x01(\x01\x12\x14\n\x0clocation_lat\x18\x0b \x01(\x01\x12\x10\n\x08tcs_port\x18\x0c \x01(\x05\"R\n\x0crqProjectDel\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\nproject_id\x18\x02 \x01(\x05\x12\x11\n\tadmin_pwd\x18\x03 \x01(\t\"\xc0\x01\n\rrqUserAuthSet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\x12\x38\n\x0cproject_auth\x18\x03 \x03(\x0b\x32\".wlst.ws.rqUserAuthSet.ProjectAuth\x12\x11\n\tadmin_pwd\x18\x04 \x01(\t\x1a\x34\n\x0bProjectAuth\x12\x12\n\nproject_id\x18\x01 \x01(\x05\x12\x11\n\tuser_auth\x18\x02 \x01(\x05\"x\n\trqAreaAdd\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tarea_name\x18\x02 \x01(\t\x12\x13\n\x0b\x61rea_parent\x18\x03 \x01(\x05\x12\x13\n\x0b\x61rea_remark\x18\x04 \x01(\t\x12\x11\n\tadmin_pwd\x18\x05 \x01(\t\"\x8a\x01\n\nrqAreaEdit\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07\x61rea_id\x18\x02 \x01(\x05\x12\x11\n\tarea_name\x18\x03 \x01(\t\x12\x13\n\x0b\x61rea_parent\x18\x04 \x01(\x05\x12\x13\n\x0b\x61rea_remark\x18\x05 \x01(\t\x12\x11\n\tadmin_pwd\x18\x06 \x01(\t\"L\n\trqAreaDel\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07\x61rea_id\x18\x02 \x01(\x05\x12\x11\n\tadmin_pwd\x18\x03 \x01(\t\"\x88\x01\n\x0erqLocationInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\x12\x16\n\x0elocation_name1\x18\x03 \x01(\t\x12\x16\n\x0elocation_name2\x18\x04 \x01(\t\x12\x16\n\x0elocation_name3\x18\x05 \x01(\t\"\xeb\x01\n\x0cLocationInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x39\n\rlocation_view\x18\x02 \x03(\x0b\x32\".wlst.ws.LocationInfo.LocationView\x1a\x82\x01\n\x0cLocationView\x12\x16\n\x0elocation_name1\x18\x01 \x01(\t\x12\x16\n\x0elocation_name2\x18\x02 \x01(\t\x12\x16\n\x0elocation_name3\x18\x03 \x01(\t\x12\x14\n\x0clocation_lon\x18\x04 \x01(\x01\x12\x14\n\x0clocation_lat\x18\x05 \x01(\x01\"\x8d\x01\n\x12rqQueryTimetableDo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x11\n\tdata_type\x18\x04 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\"\xf6\x01\n\x10QueryTimetableDo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x44\n\x11timetable_do_view\x18\x03 \x03(\x0b\x32).wlst.ws.QueryTimetableDo.TimetableDoView\x1a\x7f\n\x0fTimetableDoView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x13\n\x0btml_loop_id\x18\x02 \x01(\x05\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x11\n\tdata_type\x18\x04 \x01(\x05\x12\x0f\n\x07\x64t_send\x18\x05 \x01(\x03\x12\x10\n\x08\x64t_reply\x18\x06 \x01(\x03\"\xc8\x01\n\x06Mahalo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12/\n\x0bmahalo_view\x18\x02 \x03(\x0b\x32\x1a.wlst.ws.Mahalo.MahaloView\x1ap\n\nMahaloView\x12\x12\n\nproject_id\x18\x01 \x01(\x05\x12\x0e\n\x06ifname\x18\x02 \x01(\t\x12\x0b\n\x03pb2\x18\x03 \x01(\t\x12\x17\n\x0fproject_if_addr\x18\x04 \x01(\t\x12\x18\n\x10project_tcs_port\x18\x05 \x01(\x05\"\x98\x01\n\x17rqQueryRtuTimeTableBind\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x04 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x05 \x01(\x03\x12\x17\n\x0btml_loop_id\x18\x06 \x03(\x05\x42\x02\x10\x01\"\xc4\x02\n\x15QueryRtuTimeTableBind\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\x12M\n\x13timetable_bind_view\x18\x03 \x03(\x0b\x32\x30.wlst.ws.QueryRtuTimeTableBind.TimeTableBindView\x1a\xab\x01\n\x11TimeTableBindView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x13\n\x0btml_loop_id\x18\x02 \x01(\x05\x12\x12\n\ntt_on_type\x18\x04 \x01(\x05\x12\x13\n\x0btt_off_type\x18\x05 \x01(\x05\x12\x0e\n\x06\x64t_ctl\x18\x06 \x01(\x03\x12\x15\n\rtt_section_id\x18\x07 \x01(\x05\x12\x0f\n\x07turn_on\x18\x08 \x01(\x05\x12\x10\n\x08turn_off\x18\t \x01(\x05\"U\n\rrqUserAuthGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\x12\x16\n\nproject_id\x18\x03 \x03(\x05\x42\x02\x10\x01\"u\n\x0bUserAuthGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\x12\x38\n\x0cproject_auth\x18\x03 \x03(\x0b\x32\".wlst.ws.rqUserAuthSet.ProjectAuth\"c\n\x0erqQueryDataAls\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x04 \x01(\x03\"\xab\x01\n\x0cQueryDataAls\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x38\n\rdata_als_view\x18\x02 \x03(\x0b\x32!.wlst.ws.QueryDataAls.DataAlsView\x1a\x44\n\x0b\x44\x61taAlsView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\ndt_receive\x18\x02 \x01(\x03\x12\x11\n\tlux_value\x18\x03 \x01(\x02\"v\n\x0erqQueryDataLdu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x04 \x01(\x03\x12\x11\n\tdata_mark\x18\x05 \x01(\x05\"\xe2\x03\n\x0cQueryDataLdu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x38\n\rdata_ldu_view\x18\x02 \x03(\x0b\x32!.wlst.ws.QueryDataLdu.DataLduView\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x1a\xe7\x02\n\x0b\x44\x61taLduView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\ndt_receive\x18\x02 \x01(\x03\x12\x0f\n\x07loop_id\x18\x03 \x01(\x05\x12\x11\n\tloop_name\x18\x04 \x01(\t\x12\x0f\n\x07voltage\x18\x05 \x01(\x01\x12\x0f\n\x07\x63urrent\x18\x06 \x01(\x01\x12\x14\n\x0c\x61\x63tive_power\x18\x07 \x01(\x01\x12\x16\n\x0ereactive_power\x18\x08 \x01(\x01\x12\x13\n\x0bloop_status\x18\t \x01(\x05\x12\x11\n\talarm_set\x18\n \x01(\x05\x12\x14\n\x0c\x61larm_status\x18\x0b \x01(\x05\x12\x14\n\x0cpower_factor\x18\x0c \x01(\x01\x12\x15\n\rlighting_rate\x18\r \x01(\x01\x12\x17\n\x0fsignal_strength\x18\x0e \x01(\x05\x12\x11\n\timpedance\x18\x0f \x01(\x05\x12\x15\n\ruseful_signal\x18\x10 \x01(\x05\x12\x12\n\nall_signal\x18\x11 \x01(\x05\"v\n\x0erqQueryDataElu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x04 \x01(\x03\x12\x11\n\tdata_mark\x18\x05 \x01(\x05\"\xed\x02\n\x0cQueryDataElu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x38\n\rdata_elu_view\x18\x02 \x03(\x0b\x32!.wlst.ws.QueryDataElu.DataEluView\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x1a\xf2\x01\n\x0b\x44\x61taEluView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\ndt_receive\x18\x02 \x01(\x03\x12\x0f\n\x07loop_id\x18\x03 \x01(\x05\x12\x11\n\tloop_name\x18\x04 \x01(\t\x12\x11\n\talarm_set\x18\x05 \x01(\x05\x12\x14\n\x0c\x61larm_status\x18\x06 \x01(\x05\x12\x13\n\x0b\x64oor_status\x18\x07 \x01(\x05\x12\x10\n\x08up_limit\x18\x08 \x01(\x05\x12\x11\n\topt_delay\x18\t \x01(\x05\x12\x13\n\x0b\x61larm_value\x18\n \x01(\x05\x12\x10\n\x08\x65l_value\x18\x0b \x01(\x05\x12\x11\n\tdata_mode\x18\x0c \x01(\x05\">\n\x0brqStatusRtu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xf9\x01\n\tStatusRtu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x39\n\x0fstatus_rtu_view\x18\x02 \x03(\x0b\x32 .wlst.ws.StatusRtu.StatusRtuView\x1a\x93\x01\n\rStatusRtuView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x05\x12\x10\n\x08tml_name\x18\x03 \x01(\t\x12\x11\n\tis_online\x18\x04 \x01(\x05\x12\x19\n\rswitch_out_st\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x0f\n\x07\x65rr_num\x18\x06 \x01(\x05\x12\x11\n\tdt_create\x18\x07 \x01(\x03\">\n\x0brqStatusSlu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xca\x03\n\tStatusSlu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x39\n\x0fstatus_slu_view\x18\x02 \x03(\x0b\x32 .wlst.ws.StatusSlu.StatusSluView\x1a\xa6\x01\n\x11StatusSluitemView\x12\x12\n\nsluitem_id\x18\x01 \x01(\x05\x12\x14\n\x0csluitem_name\x18\x02 \x01(\t\x12\x12\n\nst_sluitem\x18\x03 \x01(\x05\x12\x13\n\x07st_lamp\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08\x65rr_lamp\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\tleak_lamp\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdt_create\x18\x07 \x01(\x03\x1a\xbb\x01\n\rStatusSluView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x05\x12\x10\n\x08tml_name\x18\x03 \x01(\t\x12\x11\n\tis_online\x18\x04 \x01(\x05\x12\x41\n\x13status_sluitem_view\x18\x05 \x03(\x0b\x32$.wlst.ws.StatusSlu.StatusSluitemView\x12\x0f\n\x07\x65rr_num\x18\x06 \x01(\x05\x12\x11\n\tdt_create\x18\x07 \x01(\x03\"A\n\x0frqQuerySmsAlarm\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\"\x92\x02\n\rQuerySmsAlarm\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x32\n\tsms_alarm\x18\x03 \x03(\x0b\x32\x1f.wlst.ws.QuerySmsAlarm.SmsAlarm\x1a\xaf\x01\n\x08SmsAlarm\x12\x11\n\tdata_mark\x18\x01 \x01(\x05\x12\x11\n\trecord_id\x18\x02 \x01(\x03\x12\x0e\n\x06tml_id\x18\x03 \x01(\x03\x12\x10\n\x08tml_name\x18\x04 \x01(\t\x12\x0f\n\x07loop_id\x18\x05 \x01(\x05\x12\x11\n\tloop_name\x18\x06 \x01(\t\x12\x12\n\nfault_name\x18\x07 \x01(\t\x12\x10\n\x08user_tel\x18\x08 \x01(\x03\x12\x11\n\tdt_create\x18\t \x01(\x03\"i\n\x0eUpdateSmsAlarm\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x15\n\trecord_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08user_tel\x18\x03 \x01(\x03\x12\x11\n\tfault_msg\x18\x04 \x01(\t\"T\n\x0crqLduDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07loop_id\x18\x03 \x03(\x05\x42\x02\x10\x01\"?\n\x0crqEluDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"P\n\x08rqEluCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07loop_id\x18\x03 \x03(\x05\x42\x02\x10\x01\"<\n\nrqTreeInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\"\xc3\x01\n\x08TreeInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12-\n\ttree_view\x18\x02 \x03(\x0b\x32\x1a.wlst.ws.TreeInfo.TreeView\x12\x12\n\ntree_depth\x18\x03 \x01(\x05\x1aW\n\x08TreeView\x12\x0f\n\x07node_id\x18\x01 \x01(\x03\x12\x13\n\x0bnode_parent\x18\x02 \x01(\x03\x12\x12\n\nnode_route\x18\x03 \x01(\x05\x12\x11\n\tnode_name\x18\x04 \x01(\t\">\n\x0brqSluVerGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x42\x02H\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0cmsg_ws.proto\x12\x07wlst.ws\"\xfe\x01\n\x04Head\x12\x0b\n\x03idx\x18\x01 \x01(\x03\x12\x0b\n\x03ver\x18\x02 \x01(\x05\x12\x0f\n\x07if_name\x18\x03 \x01(\t\x12\x0e\n\x06unique\x18\x05 \x01(\t\x12\r\n\x05if_dt\x18\x64 \x01(\x03\x12\r\n\x05if_st\x18\x65 \x01(\x05\x12\x0e\n\x06if_msg\x18\x66 \x01(\t\x12\x12\n\nmsg_filter\x18g \x03(\t\x12\x13\n\npaging_num\x18\xc8\x01 \x01(\x05\x12\x13\n\npaging_idx\x18\xc9\x01 \x01(\x05\x12\x15\n\x0cpaging_total\x18\xca\x01 \x01(\x05\x12\x1a\n\x11paging_buffer_tag\x18\xcb\x01 \x01(\x03\x12\x1c\n\x13paging_record_total\x18\xcc\x01 \x01(\x05\"&\n\x07\x43ommAns\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"|\n\x0brqUserLogin\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0b\n\x03\x64\x65v\x18\x02 \x01(\x05\x12\x0e\n\x06unique\x18\x03 \x01(\t\x12\x0c\n\x04user\x18\x04 \x01(\t\x12\x0b\n\x03pwd\x18\x05 \x01(\t\x12\x0b\n\x03lon\x18\x06 \x01(\x01\x12\x0b\n\x03lat\x18\x07 \x01(\x01\"\xeb\x02\n\tUserLogin\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04uuid\x18\x02 \x01(\t\x12\x0c\n\x04\x61uth\x18\x03 \x01(\x05\x12\x10\n\x08\x66ullname\x18\x04 \x01(\t\x12\x0f\n\x07user_db\x18\x05 \x01(\t\x12\x11\n\tuser_area\x18\x06 \x01(\x05\x12\x0b\n\x03zmq\x18\x07 \x01(\t\x12\x11\n\tflow_data\x18\x08 \x01(\t\x12\x12\n\x06\x61rea_r\x18\t \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06\x61rea_w\x18\n \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06\x61rea_x\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x0f\n\x07user_id\x18\x0c \x01(\x05\x12\x0e\n\x06mobile\x18\r \x01(\x05\x12\x0b\n\x03tel\x18\x0e \x01(\t\x12\r\n\x05\x65mail\x18\x0f \x01(\t\x12\x0e\n\x06remark\x18\x10 \x01(\t\x12\x0c\n\x04user\x18\x11 \x01(\t\x12\x0b\n\x03tcs\x18\x12 \x01(\x05\x12\x1d\n\x15is_user_operator_code\x18\x13 \x01(\x05\x12\x0c\n\x04\x63ode\x18\x14 \x01(\t\"G\n\x0brqUserRenew\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0b\n\x03\x64\x65v\x18\x02 \x01(\x05\x12\x0e\n\x06unique\x18\x03 \x01(\t\"\xe1\x01\n\trqUserAdd\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x10\n\x08\x66ullname\x18\x03 \x01(\t\x12\x0b\n\x03pwd\x18\x04 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x05 \x01(\x05\x12\x0c\n\x04\x61uth\x18\x06 \x01(\x05\x12\x0c\n\x04\x63ode\x18\x08 \x01(\t\x12\x0e\n\x06\x64\x62name\x18\t \x01(\t\x12\x0e\n\x06mobile\x18\x07 \x01(\t\x12\x0b\n\x03tel\x18\x0e \x01(\t\x12\r\n\x05\x65mail\x18\x0f \x01(\t\x12\x0e\n\x06remark\x18\x10 \x01(\t\x12\x11\n\tadmin_pwd\x18\x11 \x01(\t\"7\n\x07UserAdd\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\"g\n\trqUserDel\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x0b\n\x03pwd\x18\x03 \x01(\t\x12\x11\n\tadmin_pwd\x18\x04 \x01(\t\x12\x0f\n\x07user_id\x18\x05 \x01(\x05\"\x88\x02\n\nrqUserEdit\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x10\n\x08\x66ullname\x18\x03 \x01(\t\x12\x0b\n\x03pwd\x18\x04 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x05 \x01(\x05\x12\x0c\n\x04\x61uth\x18\x06 \x01(\x05\x12\x0c\n\x04\x63ode\x18\x08 \x01(\t\x12\x0f\n\x07pwd_old\x18\t \x01(\t\x12\x12\n\nuser_sz_id\x18\n \x01(\x05\x12\x0e\n\x06mobile\x18\x07 \x01(\t\x12\x0b\n\x03tel\x18\x0e \x01(\t\x12\r\n\x05\x65mail\x18\x0f \x01(\t\x12\x0e\n\x06remark\x18\x10 \x01(\t\x12\x11\n\tadmin_pwd\x18\x11 \x01(\t\x12\x0f\n\x07user_id\x18\x12 \x01(\x05\"<\n\nrqUserInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tuser_name\x18\x02 \x01(\t\"\x8c\x02\n\x08UserInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12-\n\tuser_view\x18\x02 \x03(\x0b\x32\x1a.wlst.ws.UserInfo.UserView\x1a\xb3\x01\n\x08UserView\x12\x0c\n\x04user\x18\x01 \x01(\t\x12\x10\n\x08\x66ullname\x18\x02 \x01(\t\x12\x0b\n\x03pwd\x18\x03 \x01(\t\x12\x0c\n\x04\x61uth\x18\x04 \x01(\x05\x12\x0b\n\x03tel\x18\x05 \x01(\t\x12\x0c\n\x04\x63ode\x18\x06 \x01(\t\x12\x0f\n\x07user_id\x18\x07 \x01(\x05\x12\x0f\n\x07\x61rea_id\x18\x08 \x01(\x05\x12\x0f\n\x07\x64\x62_name\x18\t \x01(\t\x12\x0e\n\x06remark\x18\n \x01(\t\x12\x0e\n\x06mobile\x18\x0b \x01(\t\"Q\n\nrqAreaInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x13\n\x07\x61rea_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tget_child\x18\x03 \x01(\x05\"\xc2\x01\n\x08\x41reaInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12-\n\tarea_view\x18\x02 \x03(\x0b\x32\x1a.wlst.ws.AreaInfo.AreaView\x1aj\n\x08\x41reaView\x12\x0f\n\x07\x61rea_id\x18\x01 \x01(\x05\x12\x11\n\tarea_name\x18\x02 \x01(\t\x12\x12\n\x06tml_id\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tparent_id\x18\x04 \x01(\x05\x12\x13\n\x0b\x61rea_remark\x18\x05 \x01(\t\"*\n\x0brqGroupInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"\xc2\x01\n\tGroupInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x30\n\ngroup_view\x18\x02 \x03(\x0b\x32\x1c.wlst.ws.GroupInfo.GroupView\x1a\x66\n\tGroupView\x12\x0e\n\x06grp_id\x18\x01 \x01(\x05\x12\x10\n\x08grp_name\x18\x02 \x01(\t\x12\x12\n\x06tml_id\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08grp_area\x18\x04 \x01(\x05\x12\x11\n\tgrp_order\x18\x05 \x01(\x05\"?\n\trqSysInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x15\n\tdata_mark\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xa3\x01\n\x07SysInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x15\n\tdata_mark\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08sys_name\x18\x03 \x01(\t\x12\x13\n\x07tml_num\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07\x65rr_num\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06st_svr\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08tml_type\x18\x07 \x03(\x05\x42\x02\x10\x01\":\n\trqSysEdit\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08sys_name\x18\x02 \x01(\t\"\x8d\x01\n\x0crqSluDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x13\n\x0bsluitem_idx\x18\x04 \x01(\x05\x12\x13\n\x0bsluitem_num\x18\x05 \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\x06 \x01(\x05\"\xd7\x02\n\x10rqSluitemDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0bsluitem_idx\x18\x03 \x01(\x05\x12\x36\n\tdata_mark\x18\x04 \x01(\x0b\x32#.wlst.ws.rqSluitemDataGet.Data_mark\x12\x0f\n\x07\x63md_idx\x18\x05 \x01(\x05\x1a\xb3\x01\n\tData_mark\x12\x11\n\tread_data\x18\x01 \x01(\x05\x12\x12\n\nread_timer\x18\x02 \x01(\x05\x12\x11\n\tread_args\x18\x03 \x01(\x05\x12\x12\n\nread_group\x18\x04 \x01(\x05\x12\x10\n\x08read_ver\x18\x05 \x01(\x05\x12\x17\n\x0fread_sunriseset\x18\x06 \x01(\x05\x12\x16\n\x0eread_timetable\x18\x07 \x01(\x05\x12\x15\n\rread_ctrldata\x18\x08 \x01(\x05\"\xf8\x02\n\x08rqSluCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nsubitem_id\x18\x0e \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\x03 \x01(\x05\x12\x16\n\x0eoperation_type\x18\x04 \x01(\x05\x12\x17\n\x0foperation_order\x18\x05 \x01(\x05\x12\x11\n\taddr_type\x18\x06 \x01(\x05\x12\x11\n\x05\x61\x64\x64rs\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08week_set\x18\x08 \x03(\x05\x42\x02\x10\x01\x12\x17\n\x0ftimer_or_offset\x18\t \x01(\x05\x12\x10\n\x08\x63md_type\x18\n \x01(\x05\x12\x13\n\x07\x63md_mix\x18\x0b \x03(\x05\x42\x02\x10\x01\x12)\n\x07\x63md_pwm\x18\x0c \x01(\x0b\x32\x18.wlst.ws.rqSluCtl.CmdPWM\x1a>\n\x06\x43mdPWM\x12\x17\n\x0bloop_can_do\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\r\n\x05scale\x18\x02 \x01(\x05\x12\x0c\n\x04rate\x18\x03 \x01(\x05\"e\n\rrqSluTimerCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x10\n\x08\x64o_force\x18\x04 \x01(\x05\"?\n\x0crqRtuDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"\x8f\x01\n\x08rqRtuCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\'\n\x06rtu_do\x18\x02 \x03(\x0b\x32\x17.wlst.ws.rqRtuCtl.RtuDo\x1a=\n\x05RtuDo\x12\x0b\n\x03opt\x18\x01 \x01(\x05\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07loop_do\x18\x03 \x03(\x05\x42\x02\x10\x01\"\xb9\x01\n\x11rqQueryDataEvents\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x15\n\tevents_id\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x0f\n\x07user_id\x18\x08 \x03(\t\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\x12\x16\n\nproject_id\x18\n \x03(\x05\x42\x02\x10\x01\x12\x11\n\tremote_ip\x18\x0b \x01(\x05\"\x9f\x02\n\x0fQueryDataEvents\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x41\n\x10\x64\x61ta_events_view\x18\x02 \x03(\x0b\x32\'.wlst.ws.QueryDataEvents.DataEventsView\x1a\xab\x01\n\x0e\x44\x61taEventsView\x12\x11\n\tevents_id\x18\x01 \x01(\x05\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x0e\n\x06tml_id\x18\x03 \x01(\x05\x12\x12\n\nevents_msg\x18\x04 \x01(\t\x12\x11\n\tdt_happen\x18\x05 \x01(\x03\x12\x13\n\x0b\x65vents_name\x18\x06 \x01(\t\x12\x14\n\x0cproject_name\x18\x07 \x01(\t\x12\x11\n\tremote_ip\x18\x08 \x01(\x05\"\x85\x01\n\x0erqQueryDataErr\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x0c\n\x04type\x18\x07 \x01(\x05\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06\x65rr_id\x18\n \x03(\x05\x42\x02\x10\x01\"\xbd\x02\n\x0cQueryDataErr\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04type\x18\x02 \x01(\x05\x12/\n\x08\x65rr_view\x18\x03 \x03(\x0b\x32\x1d.wlst.ws.QueryDataErr.ErrView\x1a\xd0\x01\n\x07\x45rrView\x12\x0e\n\x06\x65rr_id\x18\x01 \x01(\x05\x12\x10\n\x08\x65rr_name\x18\x02 \x01(\t\x12\x0e\n\x06tml_id\x18\x05 \x01(\x05\x12\x11\n\tdt_create\x18\x06 \x01(\x03\x12\x11\n\tdt_remove\x18\x07 \x01(\x03\x12\x0e\n\x06phy_id\x18\x08 \x01(\x03\x12\x10\n\x08tml_name\x18\t \x01(\t\x12\x13\n\x0btml_sub_id1\x18\n \x01(\x05\x12\x13\n\x0btml_sub_id2\x18\x0b \x01(\x05\x12\x0e\n\x06remark\x18\x0c \x01(\t\x12\x11\n\terr_count\x18\r \x01(\x05\"H\n\nrqSmsQueue\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x04tels\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x0b\n\x03msg\x18\x03 \x01(\t\"N\n\x0brqIpcUplink\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0e\n\x06\x64\x65v_id\x18\x02 \x01(\t\x12\x12\n\nraw_string\x18\x03 \x01(\t\"^\n\rrqQueryEMData\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0e\n\x06\x64\x65v_id\x18\x02 \x01(\t\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\"\x82\x03\n\x0bQueryEMData\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0e\n\x06\x64\x65v_id\x18\x02 \x01(\t\x12+\n\x06qudata\x18\x03 \x03(\x0b\x32\x1b.wlst.ws.QueryEMData.Qudata\x1a\x98\x02\n\x06Qudata\x12\x0c\n\x04temp\x18\x01 \x01(\x02\x12\x0c\n\x04rehu\x18\x02 \x01(\x02\x12\x0c\n\x04wsds\x18\x03 \x01(\x02\x12\x0c\n\x04wdis\x18\x04 \x01(\x02\x12\x0c\n\x04ripm\x18\x05 \x01(\x02\x12\x0c\n\x04luxs\x18\x06 \x01(\x02\x12\x0c\n\x04\x61tms\x18\x07 \x01(\x02\x12\x0c\n\x04svol\x18\x08 \x01(\x02\x12\n\n\x02no\x18\t \x01(\x02\x12\x0b\n\x03no2\x18\n \x01(\x02\x12\n\n\x02\x63o\x18\x0b \x01(\x02\x12\x0b\n\x03\x63o2\x18\x0c \x01(\x02\x12\n\n\x02o3\x18\r \x01(\x02\x12\x0b\n\x03so2\x18\x0e \x01(\x02\x12\x0b\n\x03pm1\x18\x0f \x01(\x02\x12\x0c\n\x04pm25\x18\x10 \x01(\x02\x12\x0c\n\x04pm10\x18\x11 \x01(\x02\x12\x0c\n\x04tvoc\x18\x12 \x01(\x02\x12\x0b\n\x03h2s\x18\x13 \x01(\x02\x12\x0f\n\x07\x64t_data\x18\x14 \x01(\x03\"\xe5\x02\n\x08rqIpcCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0e\n\x06\x64\x65v_id\x18\x0c \x03(\t\x12\x0f\n\x07\x63tl_cmd\x18\n \x01(\t\x12\x16\n\nctl_target\x18\x0b \x03(\x03\x42\x02\x10\x01\x12\x0f\n\x07\x64\x65v_ver\x18\x02 \x01(\t\x12\x14\n\x0c\x64\x65v_supplier\x18\x03 \x01(\t\x12\x10\n\x08\x64\x65v_name\x18\x04 \x01(\t\x12\x10\n\x08\x64\x65v_cmds\x18\x05 \x01(\t\x12\x14\n\x0c\x64\x65v_datetime\x18\x06 \x01(\x03\x12\x12\n\ndev_status\x18\x07 \x01(\x05\x12.\n\tcomm_args\x18\x08 \x01(\x0b\x32\x1b.wlst.ws.rqIpcCtl.Comm_Args\x12\x0e\n\x06rptint\x18\t \x01(\x05\x1aN\n\tComm_Args\x12\x11\n\tbaud_rate\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x61ta_bit\x18\x02 \x01(\x05\x12\x0e\n\x06parity\x18\x03 \x01(\x05\x12\x0c\n\x04stop\x18\x04 \x01(\x05\"-\n\x0erqSunrisetInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"\xc0\x01\n\x0cSunrisetInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x42\n\x12\x64\x61ta_sunriset_view\x18\x02 \x03(\x0b\x32&.wlst.ws.SunrisetInfo.DataSunrisetView\x1aO\n\x10\x44\x61taSunrisetView\x12\r\n\x05month\x18\x01 \x01(\x05\x12\x0b\n\x03\x64\x61y\x18\x02 \x01(\x05\x12\x0f\n\x07sunrise\x18\x04 \x01(\x05\x12\x0e\n\x06sunset\x18\x05 \x01(\x05\"I\n\x0brqSubmitSms\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x04tels\x18\x02 \x03(\x03\x42\x02\x10\x01\x12\x0b\n\x03msg\x18\x03 \x01(\t\"(\n\trqErrInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"\xcf\x02\n\x07\x45rrInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x33\n\rerr_info_view\x18\x02 \x03(\x0b\x32\x1c.wlst.ws.ErrInfo.ErrInfoView\x1a\xf1\x01\n\x0b\x45rrInfoView\x12\x0e\n\x06\x65rr_id\x18\x01 \x01(\x05\x12\x10\n\x08\x65rr_name\x18\x02 \x01(\t\x12\x18\n\x10\x65rr_name_custome\x18\x03 \x01(\t\x12\x12\n\nerr_remark\x18\x04 \x01(\t\x12\x11\n\terr_level\x18\x05 \x01(\x05\x12\x14\n\x0c\x65nable_alarm\x18\x06 \x01(\x05\x12\x19\n\x11\x65rr_check_keyword\x18\x07 \x01(\t\x12\x14\n\x0c\x65rr_time_set\x18\x08 \x01(\x05\x12\x1c\n\x14\x64t_err_custome_start\x18\t \x01(\x05\x12\x1a\n\x12\x64t_err_custome_end\x18\n \x01(\x05\"*\n\x0brqEventInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\"\xc8\x01\n\tEventInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x39\n\x0f\x65vent_info_view\x18\x02 \x03(\x0b\x32 .wlst.ws.EventInfo.EventInfoView\x1a\x63\n\rEventInfoView\x12\x10\n\x08\x65vent_id\x18\x01 \x01(\x05\x12\x12\n\nevent_name\x18\x02 \x01(\t\x12\x16\n\x0e\x65vent_cls_name\x18\x03 \x01(\t\x12\x14\n\x0c\x65vent_cls_id\x18\x04 \x01(\x05\"q\n\x0erqQueryDataRtu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x0c\n\x04type\x18\x07 \x01(\x05\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\"\x8e\x05\n\x0cQueryDataRtu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0c\n\x04type\x18\x02 \x01(\x05\x12\x38\n\rdata_rtu_view\x18\x03 \x03(\x0b\x32!.wlst.ws.QueryDataRtu.DataRtuView\x1a\xcb\x01\n\x08LoopView\x12\x0f\n\x07voltage\x18\x01 \x01(\x01\x12\x0f\n\x07\x63urrent\x18\x02 \x01(\x01\x12\r\n\x05power\x18\x03 \x01(\x01\x12\x0c\n\x04rate\x18\x04 \x01(\x01\x12\x0e\n\x06\x66\x61\x63tor\x18\x05 \x01(\x01\x12\x14\n\x0cswitch_in_st\x18\x06 \x01(\x05\x12\x1a\n\x12voltage_over_range\x18\x07 \x01(\x05\x12\x1a\n\x12\x63urrent_over_range\x18\x08 \x01(\x05\x12\x11\n\tloop_name\x18\t \x01(\t\x12\x0f\n\x07loop_id\x18\n \x01(\x05\x1a\xca\x02\n\x0b\x44\x61taRtuView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x10\n\x08tml_name\x18\r \x01(\t\x12\x12\n\ndt_receive\x18\x03 \x01(\x03\x12\x31\n\tloop_view\x18\x04 \x03(\x0b\x32\x1e.wlst.ws.QueryDataRtu.LoopView\x12\x19\n\rswitch_out_st\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rcurrent_sum_a\x18\x06 \x01(\x01\x12\x15\n\rcurrent_sum_b\x18\x07 \x01(\x01\x12\x15\n\rcurrent_sum_c\x18\x08 \x01(\x01\x12\x11\n\tvoltage_a\x18\t \x01(\x01\x12\x11\n\tvoltage_b\x18\n \x01(\x01\x12\x11\n\tvoltage_c\x18\x0b \x01(\x01\x12\x14\n\x08\x61larm_st\x18\x0c \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0btemperature\x18\x0e \x01(\x05\"\x84\x01\n\x0erqQueryDataSlu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x0c\n\x04type\x18\x07 \x01(\x05\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\n \x01(\x05\"\x82\x0e\n\x0cQueryDataSlu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\x12\x38\n\rdata_slu_view\x18\x03 \x03(\x0b\x32!.wlst.ws.QueryDataSlu.DataSluView\x12@\n\x11\x64\x61ta_sluitem_view\x18\x04 \x03(\x0b\x32%.wlst.ws.QueryDataSlu.DataSluitemView\x12M\n\x18\x64\x61ta_sluitem_assist_view\x18\x05 \x03(\x0b\x32+.wlst.ws.QueryDataSlu.DataSluitemAssistView\x12\x42\n\x10sluitem_phy_view\x18\x06 \x03(\x0b\x32(.wlst.ws.QueryDataSlu.DataSluitemPhyView\x1a\xe4\x01\n\x0b\x44\x61taSluView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x10\n\x08tml_name\x18\n \x01(\t\x12\x12\n\ndt_receive\x18\x03 \x01(\x03\x12\x17\n\x0breset_times\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x16\n\nst_running\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07st_argv\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x11\n\x05st_hw\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x1a\n\x12unknow_sluitem_num\x18\x08 \x01(\x05\x12\x1a\n\x0ezigbee_channel\x18\t \x03(\x05\x42\x02\x10\x01\x1a\xfc\x01\n\x0f\x44\x61taSluitemView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x10\n\x08tml_name\x18\n \x01(\t\x12\x12\n\nsluitem_id\x18\x0b \x01(\x05\x12\x14\n\x0csluitem_name\x18\x0c \x01(\t\x12\x12\n\ndt_receive\x18\x03 \x01(\x03\x12\x10\n\x08\x64t_cache\x18\x05 \x01(\x03\x12\x16\n\nst_sluitem\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0btemperature\x18\x07 \x01(\x05\x12:\n\x0e\x64\x61ta_lamp_view\x18\t \x03(\x0b\x32\".wlst.ws.QueryDataSlu.DataLampView\x1a\xf5\x01\n\x0c\x44\x61taLampView\x12\x0f\n\x07lamp_id\x18\x08 \x01(\x05\x12\x13\n\x07st_lamp\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0clamp_voltage\x18\x02 \x01(\x01\x12\x14\n\x0clamp_current\x18\x03 \x01(\x01\x12\x12\n\nlamp_power\x18\x04 \x01(\x01\x12\x18\n\x10lamp_electricity\x18\x05 \x01(\x01\x12\x1e\n\x16lamp_electricity_count\x18\t \x01(\x01\x12\x14\n\x0clamp_runtime\x18\x06 \x01(\x01\x12\x1a\n\x12lamp_runtime_count\x18\n \x01(\x01\x12\x13\n\x0blamp_saving\x18\x07 \x01(\x01\x1a\x97\x03\n\x15\x44\x61taSluitemAssistView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\ndt_receive\x18\x02 \x01(\x03\x12Z\n\x13sluitem_assist_data\x18\x03 \x03(\x0b\x32=.wlst.ws.QueryDataSlu.DataSluitemAssistView.SluitemAssistData\x1aP\n\x0fSluitemLampData\x12\x13\n\x0bmax_voltage\x18\x01 \x01(\x01\x12\x13\n\x0bmax_current\x18\x02 \x01(\x01\x12\x13\n\x0b\x65lectricity\x18\x03 \x01(\x01\x1a\xab\x01\n\x11SluitemAssistData\x12\x12\n\nsluitem_id\x18\x03 \x01(\x05\x12\x10\n\x08\x64t_cache\x18\x04 \x01(\x03\x12\x18\n\x10leackage_current\x18\x05 \x01(\x01\x12V\n\x11sluitem_lamp_data\x18\x06 \x03(\x0b\x32;.wlst.ws.QueryDataSlu.DataSluitemAssistView.SluitemLampData\x1a\xba\x02\n\x12\x44\x61taSluitemPhyView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x12\n\ndt_receive\x18\x03 \x01(\x03\x12\x12\n\nsluitem_id\x18\x04 \x01(\x05\x12\x17\n\x0fsignal_strength\x18\x05 \x01(\x05\x12\x0f\n\x07routing\x18\x06 \x01(\x05\x12\r\n\x05phase\x18\x07 \x01(\x05\x12\x14\n\x0c\x63omm_success\x18\x08 \x01(\x05\x12\x10\n\x08\x63omm_all\x18\t \x01(\x05\x12\x15\n\rsluitem_loops\x18\n \x01(\x05\x12\x14\n\x0cpower_saving\x18\x0b \x01(\x05\x12\x13\n\x0bhas_leakage\x18\x0c \x01(\x05\x12\x17\n\x0fhas_temperature\x18\r \x01(\x05\x12\x11\n\thas_timer\x18\x0e \x01(\x05\x12\r\n\x05model\x18\x0f \x01(\x05\"S\n\trqTmlInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x15\n\tdata_mark\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06tml_id\x18\x06 \x03(\x05\x42\x02\x10\x01\"\xa8$\n\x07TmlInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12,\n\tbase_info\x18\x0c \x03(\x0b\x32\x19.wlst.ws.TmlInfo.BaseInfo\x12*\n\x08gis_info\x18\r \x03(\x0b\x32\x18.wlst.ws.TmlInfo.GisInfo\x12*\n\x08rtu_info\x18\x0f \x03(\x0b\x32\x18.wlst.ws.TmlInfo.RtuInfo\x12*\n\x08slu_info\x18\x10 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.SluInfo\x12*\n\x08ldu_info\x18\x11 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.LduInfo\x12*\n\x08\x61ls_info\x18\x12 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.AlsInfo\x12*\n\x08mru_info\x18\x13 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.MruInfo\x12*\n\x08\x65su_info\x18\x14 \x03(\x0b\x32\x18.wlst.ws.TmlInfo.EsuInfo\x12\x38\n\x0fsluitem_grpinfo\x18\x15 \x03(\x0b\x32\x1f.wlst.ws.TmlInfo.SluitemGrpInfo\x12\x15\n\tdata_mark\x18\x03 \x03(\x05\x42\x02\x10\x01\x1a\x95\x02\n\x08\x42\x61seInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x03\x12\x10\n\x08tml_type\x18\x03 \x01(\x05\x12\x0e\n\x06tml_st\x18\x04 \x01(\x05\x12\x10\n\x08tml_name\x18\x05 \x01(\t\x12\x12\n\ntml_com_sn\x18\x06 \x01(\t\x12\x12\n\ntml_com_ip\x18\x07 \x01(\x05\x12\x11\n\ttml_model\x18\x08 \x01(\x05\x12\x15\n\rtml_parent_id\x18\t \x01(\x05\x12\x14\n\x0ctml_dt_setup\x18\n \x01(\x03\x12\x10\n\x08tml_desc\x18\x0b \x01(\t\x12\x15\n\rtml_dt_update\x18\x0c \x01(\x03\x12\x12\n\ntml_street\x18\r \x01(\t\x12\x10\n\x08tml_guid\x18\x0e \x01(\t\x1a\x65\n\x07GisInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x11\n\ttml_pix_x\x18\x05 \x01(\x01\x12\x11\n\ttml_pix_y\x18\x02 \x01(\x01\x12\x11\n\ttml_gis_x\x18\x03 \x01(\x01\x12\x11\n\ttml_gis_y\x18\x04 \x01(\x01\x1a\xca\x02\n\x07RtuInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\nheart_beat\x18\x02 \x01(\x05\x12\x15\n\ractive_report\x18\x03 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x04 \x01(\x05\x12\x15\n\twork_mark\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rvoltage_range\x18\x06 \x01(\x05\x12\x17\n\x0fvoltage_uplimit\x18\x07 \x01(\x05\x12\x18\n\x10voltage_lowlimit\x18\x08 \x01(\x05\x12!\n\x19loop_st_switch_by_current\x18\t \x01(\x05\x12/\n\tloop_item\x18\x0c \x03(\x0b\x32\x1c.wlst.ws.TmlInfo.RtuLoopItem\x12:\n\x0fswitch_out_info\x18\r \x03(\x0b\x32!.wlst.ws.TmlInfo.RtuSwitchOutInfo\x1a\xc0\x04\n\x07SluInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x16\n\x0eslu_auto_alarm\x18\x02 \x01(\x05\x12\x17\n\x0fslu_auto_patrol\x18\x03 \x01(\x05\x12\x17\n\x0fslu_auto_resend\x18\x04 \x01(\x05\x12\x14\n\x0cslu_suls_num\x18\x05 \x01(\x05\x12\x12\n\nslu_bt_pin\x18\x06 \x01(\x05\x12\x12\n\nslu_domain\x18\x07 \x01(\x05\x12\x1b\n\x13slu_voltage_uplimit\x18\x08 \x01(\x05\x12\x1c\n\x14slu_voltage_lowlimit\x18\t \x01(\x05\x12\x15\n\rslu_zigbee_id\x18\n \x01(\x03\x12\x1b\n\x13slu_comm_fail_count\x18\x0b \x01(\x05\x12\x18\n\x10slu_power_factor\x18\x0c \x01(\x01\x12\x1b\n\x0fslu_zigbee_comm\x18\r \x03(\x05\x42\x02\x10\x01\x12\x19\n\x11slu_current_range\x18\x0e \x01(\x01\x12\x17\n\x0fslu_power_range\x18\x0f \x01(\x05\x12\x0f\n\x07slu_lon\x18\x10 \x01(\x01\x12\x0f\n\x07slu_lat\x18\x11 \x01(\x01\x12\x11\n\tslu_route\x18\x12 \x01(\x05\x12\x15\n\rslu_is_zigbee\x18\x13 \x01(\x05\x12\x17\n\x0fslu_saving_mode\x18\x14 \x01(\x05\x12\x14\n\x0cslu_pwm_rate\x18\x15 \x01(\x05\x12\x14\n\x0cslu_off_line\x18\x17 \x01(\x05\x12\x32\n\x0csluitem_info\x18\x16 \x03(\x0b\x32\x1c.wlst.ws.TmlInfo.SluItemInfo\x1a\x61\n\x07LduInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\nlduitem_id\x18\x02 \x01(\x05\x12\x32\n\x0clduitem_info\x18\x03 \x03(\x0b\x32\x1c.wlst.ws.TmlInfo.LduItemInfo\x1av\n\x07\x41lsInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61ls_id\x18\x02 \x01(\x05\x12\x11\n\tals_range\x18\x03 \x01(\x05\x12\x10\n\x08\x61ls_mode\x18\x04 \x01(\x05\x12\x14\n\x0c\x61ls_interval\x18\x05 \x01(\x05\x12\x10\n\x08\x61ls_comm\x18\x06 \x01(\x05\x1ao\n\x07MruInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\x06mru_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rmru_baud_rate\x18\x03 \x01(\x05\x12\x17\n\x0fmru_transformer\x18\x04 \x01(\x05\x12\x10\n\x08mru_type\x18\x05 \x01(\x05\x1a\xfa\x05\n\x07\x45suInfo\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x10\n\x08\x65su_used\x18\x1c \x01(\x08\x12\x1b\n\x13\x65su_preheating_time\x18\x02 \x01(\x05\x12\x16\n\x0e\x65su_close_time\x18\x04 \x01(\x05\x12\x15\n\resu_open_time\x18\x05 \x01(\x05\x12\x16\n\x0e\x65su_ct_radio_a\x18\x06 \x01(\x05\x12\x16\n\x0e\x65su_ct_radio_b\x18\x07 \x01(\x05\x12\x16\n\x0e\x65su_ct_radio_c\x18\x08 \x01(\x05\x12\x15\n\resu_time_mode\x18\x19 \x01(\x05\x12\x14\n\x0c\x65su_run_mode\x18\x1a \x01(\x05\x12\x19\n\x11\x65su_fansatrt_temp\x18\t \x01(\x05\x12\x19\n\x11\x65su_fanclose_temp\x18\n \x01(\x05\x12\x1b\n\x13\x65su_enery_save_temp\x18\x0b \x01(\x05\x12\"\n\x1a\x65su_mandatory_protect_temp\x18\x0c \x01(\x05\x12\x18\n\x10\x65su_recover_temp\x18\r \x01(\x05\x12#\n\x1b\x65su_input_overvoltage_limit\x18\x0e \x01(\x01\x12$\n\x1c\x65su_Input_undervoltage_limit\x18\x0f \x01(\x01\x12%\n\x1d\x65su_output_undervoltage_limit\x18\x10 \x01(\x01\x12!\n\x19\x65su_output_overload_limit\x18\x11 \x01(\x01\x12\x1c\n\x14\x65su_regulating_speed\x18\x12 \x01(\x05\x12\x18\n\x10\x65su_power_phases\x18\x13 \x01(\x05\x12\x15\n\resu_comm_type\x18\x17 \x01(\x05\x12\x15\n\resu_work_mode\x18\x18 \x01(\x05\x12\x16\n\x0e\x65su_auto_alarm\x18\x14 \x01(\x05\x12\x17\n\x0f\x65su_alarm_delay\x18\x15 \x01(\x05\x12\x10\n\x08\x65su_mode\x18\x16 \x01(\x05\x12=\n\x12\x65su_adjust_voltage\x18\x1b \x03(\x0b\x32!.wlst.ws.TmlInfo.EsuAdjustVoltage\x1ay\n\x10\x45suAdjustVoltage\x12\x16\n\x0e\x65su_operate_id\x18\x02 \x01(\x05\x12\x1a\n\x12\x65su_operatoe_value\x18\x03 \x01(\x05\x12\x18\n\x10\x65su_operate_time\x18\x04 \x01(\x05\x12\x17\n\x0f\x65su_update_time\x18\x05 \x01(\x03\x1a\xfd\x03\n\x0bRtuLoopItem\x12\x0f\n\x07loop_id\x18\x01 \x01(\x05\x12\x11\n\tloop_name\x18\x02 \x01(\t\x12\x12\n\nloop_phase\x18\x03 \x01(\x05\x12\x1a\n\x12loop_current_range\x18\x04 \x01(\x05\x12\x19\n\x11loop_switchout_id\x18\x07 \x01(\x05\x12\x1b\n\x13loop_switchout_name\x18\x08 \x01(\t\x12\x1d\n\x15loop_switchout_vector\x18\t \x01(\x05\x12\x18\n\x10loop_switchin_id\x18\n \x01(\x05\x12\x1c\n\x14loop_switchin_vector\x18\x0b \x01(\x05\x12\x18\n\x10loop_transformer\x18\x0c \x01(\x05\x12\x1c\n\x14loop_transformer_num\x18\r \x01(\x05\x12\x17\n\x0floop_step_alarm\x18\x0e \x01(\x05\x12\x16\n\x0eloop_st_switch\x18\x0f \x01(\x05\x12\x16\n\x0eloop_is_shield\x18\x10 \x01(\x05\x12\x1c\n\x14shield_small_current\x18\x11 \x01(\x05\x12\x1a\n\x12loop_light_rate_bm\x18\x12 \x01(\x01\x12\x1d\n\x15loop_light_rate_alarm\x18\x13 \x01(\x01\x12\x17\n\x0f\x63urrent_uplimit\x18\x14 \x01(\x05\x12\x18\n\x10\x63urrent_lowlimit\x18\x15 \x01(\x05\x1ai\n\x10RtuSwitchOutInfo\x12\x19\n\x11loop_switchout_id\x18\x01 \x01(\x05\x12\x1b\n\x13loop_switchout_name\x18\x02 \x01(\t\x12\x1d\n\x15loop_switchout_vector\x18\x03 \x01(\x05\x1a\xc9\x01\n\x0eSluitemGrpInfo\x12\x0e\n\x06slu_id\x18\x01 \x01(\x05\x12H\n\x10sluitem_grp_view\x18\x02 \x03(\x0b\x32..wlst.ws.TmlInfo.SluitemGrpInfo.SluitemGrpView\x1a]\n\x0eSluitemGrpView\x12\x0e\n\x06grp_id\x18\x02 \x01(\x05\x12\x10\n\x08grp_name\x18\x03 \x01(\t\x12\x11\n\tdt_update\x18\x04 \x01(\x03\x12\x16\n\nsluitem_id\x18\x05 \x03(\x05\x42\x02\x10\x01\x1a\xc2\x03\n\x0bSluItemInfo\x12\x17\n\x0fsluitem_barcode\x18\x02 \x01(\x03\x12\x1d\n\x15sluitem_power_uplimit\x18\x03 \x01(\x05\x12\x1e\n\x16sluitem_power_lowlimit\x18\x04 \x01(\x05\x12\x19\n\rsluitem_route\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rsluitem_order\x18\x06 \x01(\x05\x12\x1e\n\x12sluitem_st_poweron\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nsluitem_st\x18\x08 \x01(\x05\x12\x15\n\rsluitem_alarm\x18\t \x01(\x05\x12\x1a\n\x0esluitem_vector\x18\n \x03(\x05\x42\x02\x10\x01\x12\x18\n\x10sluitem_loop_num\x18\x0b \x01(\x05\x12\x1f\n\x13sluitem_rated_power\x18\x0c \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0csluitem_name\x18\r \x01(\t\x12\x12\n\nsluitem_id\x18\x0e \x01(\x05\x12\x16\n\x0esluitem_phy_id\x18\x0f \x01(\x05\x12\x17\n\x0fsluitem_lamp_id\x18\x10 \x01(\t\x12\x15\n\rsluitem_gis_x\x18\x11 \x01(\x01\x12\x15\n\rsluitem_gis_y\x18\x12 \x01(\x01\x1a\xfd\x02\n\x0bLduItemInfo\x12\x0f\n\x07loop_id\x18\x01 \x01(\x05\x12\x11\n\tloop_name\x18\x02 \x01(\t\x12\x0f\n\x07loop_st\x18\x03 \x01(\x05\x12\x18\n\x10loop_transformer\x18\x04 \x01(\x05\x12\x12\n\nloop_phase\x18\x05 \x01(\x05\x12\x15\n\rloop_lamppost\x18\x06 \x01(\t\x12\x17\n\x0floop_lighton_ss\x18\x07 \x01(\x05\x12\x18\n\x10loop_lightoff_ss\x18\x08 \x01(\x05\x12\x17\n\x0floop_lighton_ia\x18\t \x01(\x05\x12\x18\n\x10loop_lightoff_ia\x18\n \x01(\x05\x12\x1a\n\x12loop_lighting_rate\x18\x0b \x01(\x05\x12\x1a\n\x0eloop_alarm_set\x18\x0c \x03(\x05\x42\x02\x10\x01\x12\x11\n\tloop_desc\x18\r \x01(\t\x12\x13\n\x0btml_loop_id\x18\x0e \x01(\x05\x12\x16\n\x0eloop_ctrl_type\x18\x0f \x01(\x05\x12\x16\n\x0eloop_comm_type\x18\x10 \x01(\x05\"p\n\x10rqQuerySmsRecord\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x04tels\x18\x03 \x03(\x03\x42\x02\x10\x01\x12\x0b\n\x03msg\x18\x04 \x01(\t\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\"\x9c\x01\n\x0eQuerySmsRecord\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x35\n\nsms_record\x18\x03 \x03(\x0b\x32!.wlst.ws.QuerySmsRecord.SmsRecord\x1a\x36\n\tSmsRecord\x12\x0f\n\x07\x64t_send\x18\x01 \x01(\x03\x12\x0b\n\x03tel\x18\x02 \x01(\x03\x12\x0b\n\x03msg\x18\x03 \x01(\t\"c\n\x0erqQueryDataMru\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x04 \x01(\x03\"\xf3\x01\n\x0cQueryDataMru\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x38\n\rdata_mru_view\x18\x03 \x03(\x0b\x32!.wlst.ws.QueryDataMru.DataMruView\x1a\x8b\x01\n\x0b\x44\x61taMruView\x12\x11\n\tdt_create\x18\x01 \x01(\x03\x12\x0e\n\x06tml_id\x18\x02 \x01(\x05\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x0f\n\x07\x64t_mark\x18\x04 \x01(\x05\x12\x11\n\tmru_value\x18\x05 \x01(\x01\x12\x10\n\x08mru_elec\x18\x06 \x01(\x01\x12\x10\n\x08mru_name\x18\x07 \x01(\t\"\x87\x01\n\x0crqMruDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x0f\n\x07\x64t_mark\x18\x04 \x01(\x05\x12\x0f\n\x07\x64\x65v_ver\x18\x05 \x01(\x05\x12\x11\n\tbaud_rate\x18\x06 \x01(\x05\"z\n\x12rqQueryDataRtuElec\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\x12\x12\n\x06tml_id\x18\t \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x07 \x01(\x05\"\xe9\x01\n\x10QueryDataRtuElec\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x45\n\x12\x64\x61ta_rtu_elec_view\x18\x02 \x03(\x0b\x32).wlst.ws.QueryDataRtuElec.DataRtuElecView\x1aq\n\x0f\x44\x61taRtuElecView\x12\x10\n\x08\x64t_count\x18\x01 \x01(\x03\x12\x0e\n\x06tml_id\x18\x02 \x01(\x05\x12\x0f\n\x07loop_id\x18\x03 \x01(\x05\x12\x13\n\x0b\x64\x61ta_lenght\x18\x04 \x01(\x05\x12\x16\n\x0e\x65stimate_value\x18\x05 \x01(\x01\"S\n\rrqRtuTimerCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\">\n\x0brqRtuVerGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"D\n\rrqProjectInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x16\n\nproject_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xf1\x02\n\x0bProjectInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x36\n\x0cproject_view\x18\x02 \x03(\x0b\x32 .wlst.ws.ProjectInfo.ProjectView\x1a\x8c\x02\n\x0bProjectView\x12\x12\n\nproject_id\x18\x01 \x01(\x05\x12\x14\n\x0cproject_name\x18\x02 \x01(\t\x12\x17\n\x0fproject_address\x18\x03 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x04 \x01(\x05\x12\x16\n\x0eproject_remark\x18\x05 \x01(\t\x12\x11\n\ttml_total\x18\x06 \x01(\x05\x12\x12\n\ntml_online\x18\x07 \x01(\x05\x12\x11\n\ttml_error\x18\x08 \x01(\x05\x12\x19\n\rserver_status\x18\t \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0clocation_lon\x18\n \x01(\x01\x12\x14\n\x0clocation_lat\x18\x0b \x01(\x01\x12\x10\n\x08tcs_port\x18\x0c \x01(\x05\"\xfb\x01\n\x0crqProjectAdd\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x14\n\x0cproject_name\x18\x02 \x01(\t\x12\x12\n\nproject_ip\x18\x03 \x01(\t\x12\x14\n\x0cproject_port\x18\x04 \x01(\x05\x12\x14\n\x0cproject_root\x18\x05 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x06 \x01(\x05\x12\x16\n\x0eproject_remark\x18\x07 \x01(\t\x12\x11\n\tadmin_pwd\x18\x08 \x01(\t\x12\x14\n\x0clocation_lon\x18\n \x01(\x01\x12\x14\n\x0clocation_lat\x18\x0b \x01(\x01\x12\x10\n\x08tcs_port\x18\x0c \x01(\x05\"\x90\x02\n\rrqProjectEdit\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x14\n\x0cproject_name\x18\x02 \x01(\t\x12\x12\n\nproject_ip\x18\x03 \x01(\t\x12\x14\n\x0cproject_port\x18\x04 \x01(\x05\x12\x14\n\x0cproject_root\x18\x05 \x01(\t\x12\x0f\n\x07\x61rea_id\x18\x06 \x01(\x05\x12\x16\n\x0eproject_remark\x18\x07 \x01(\t\x12\x11\n\tadmin_pwd\x18\t \x01(\t\x12\x12\n\nproject_id\x18\x08 \x01(\x05\x12\x14\n\x0clocation_lon\x18\n \x01(\x01\x12\x14\n\x0clocation_lat\x18\x0b \x01(\x01\x12\x10\n\x08tcs_port\x18\x0c \x01(\x05\"R\n\x0crqProjectDel\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\nproject_id\x18\x02 \x01(\x05\x12\x11\n\tadmin_pwd\x18\x03 \x01(\t\"\xc0\x01\n\rrqUserAuthSet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\x12\x38\n\x0cproject_auth\x18\x03 \x03(\x0b\x32\".wlst.ws.rqUserAuthSet.ProjectAuth\x12\x11\n\tadmin_pwd\x18\x04 \x01(\t\x1a\x34\n\x0bProjectAuth\x12\x12\n\nproject_id\x18\x01 \x01(\x05\x12\x11\n\tuser_auth\x18\x02 \x01(\x05\"x\n\trqAreaAdd\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tarea_name\x18\x02 \x01(\t\x12\x13\n\x0b\x61rea_parent\x18\x03 \x01(\x05\x12\x13\n\x0b\x61rea_remark\x18\x04 \x01(\t\x12\x11\n\tadmin_pwd\x18\x05 \x01(\t\"\x8a\x01\n\nrqAreaEdit\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07\x61rea_id\x18\x02 \x01(\x05\x12\x11\n\tarea_name\x18\x03 \x01(\t\x12\x13\n\x0b\x61rea_parent\x18\x04 \x01(\x05\x12\x13\n\x0b\x61rea_remark\x18\x05 \x01(\t\x12\x11\n\tadmin_pwd\x18\x06 \x01(\t\"L\n\trqAreaDel\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07\x61rea_id\x18\x02 \x01(\x05\x12\x11\n\tadmin_pwd\x18\x03 \x01(\t\"\x88\x01\n\x0erqLocationInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\x12\x16\n\x0elocation_name1\x18\x03 \x01(\t\x12\x16\n\x0elocation_name2\x18\x04 \x01(\t\x12\x16\n\x0elocation_name3\x18\x05 \x01(\t\"\xeb\x01\n\x0cLocationInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x39\n\rlocation_view\x18\x02 \x03(\x0b\x32\".wlst.ws.LocationInfo.LocationView\x1a\x82\x01\n\x0cLocationView\x12\x16\n\x0elocation_name1\x18\x01 \x01(\t\x12\x16\n\x0elocation_name2\x18\x02 \x01(\t\x12\x16\n\x0elocation_name3\x18\x03 \x01(\t\x12\x14\n\x0clocation_lon\x18\x04 \x01(\x01\x12\x14\n\x0clocation_lat\x18\x05 \x01(\x01\"\x93\x01\n\x18rqQueryEventsTimetableDo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x11\n\tdata_type\x18\x04 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x05 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x06 \x01(\x03\"\x82\x02\n\x16QueryEventsTimetableDo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12J\n\x11timetable_do_view\x18\x03 \x03(\x0b\x32/.wlst.ws.QueryEventsTimetableDo.TimetableDoView\x1a\x7f\n\x0fTimetableDoView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x13\n\x0btml_loop_id\x18\x02 \x01(\x05\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x11\n\tdata_type\x18\x04 \x01(\x05\x12\x0f\n\x07\x64t_send\x18\x05 \x01(\x03\x12\x10\n\x08\x64t_reply\x18\x06 \x01(\x03\"\xc8\x01\n\x06Mahalo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12/\n\x0bmahalo_view\x18\x02 \x03(\x0b\x32\x1a.wlst.ws.Mahalo.MahaloView\x1ap\n\nMahaloView\x12\x12\n\nproject_id\x18\x01 \x01(\x05\x12\x0e\n\x06ifname\x18\x02 \x01(\t\x12\x0b\n\x03pb2\x18\x03 \x01(\t\x12\x17\n\x0fproject_if_addr\x18\x04 \x01(\t\x12\x18\n\x10project_tcs_port\x18\x05 \x01(\x05\"\x98\x01\n\x17rqQueryRtuTimeTableBind\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x04 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x05 \x01(\x03\x12\x17\n\x0btml_loop_id\x18\x06 \x03(\x05\x42\x02\x10\x01\"\xc4\x02\n\x15QueryRtuTimeTableBind\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\x12M\n\x13timetable_bind_view\x18\x03 \x03(\x0b\x32\x30.wlst.ws.QueryRtuTimeTableBind.TimeTableBindView\x1a\xab\x01\n\x11TimeTableBindView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x13\n\x0btml_loop_id\x18\x02 \x01(\x05\x12\x12\n\ntt_on_type\x18\x04 \x01(\x05\x12\x13\n\x0btt_off_type\x18\x05 \x01(\x05\x12\x0e\n\x06\x64t_ctl\x18\x06 \x01(\x03\x12\x15\n\rtt_section_id\x18\x07 \x01(\x05\x12\x0f\n\x07turn_on\x18\x08 \x01(\x05\x12\x10\n\x08turn_off\x18\t \x01(\x05\"U\n\rrqUserAuthGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\x12\x16\n\nproject_id\x18\x03 \x03(\x05\x42\x02\x10\x01\"u\n\x0bUserAuthGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\x12\x38\n\x0cproject_auth\x18\x03 \x03(\x0b\x32\".wlst.ws.rqUserAuthSet.ProjectAuth\"c\n\x0erqQueryDataAls\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x04 \x01(\x03\"\xbd\x01\n\x0cQueryDataAls\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x38\n\rdata_als_view\x18\x02 \x03(\x0b\x32!.wlst.ws.QueryDataAls.DataAlsView\x1aV\n\x0b\x44\x61taAlsView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\ndt_receive\x18\x02 \x01(\x03\x12\x11\n\tlux_value\x18\x03 \x01(\x02\x12\x10\n\x08lux_name\x18\x04 \x01(\t\"v\n\x0erqQueryDataLdu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x04 \x01(\x03\x12\x11\n\tdata_mark\x18\x05 \x01(\x05\"\xe2\x03\n\x0cQueryDataLdu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x38\n\rdata_ldu_view\x18\x02 \x03(\x0b\x32!.wlst.ws.QueryDataLdu.DataLduView\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x1a\xe7\x02\n\x0b\x44\x61taLduView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\ndt_receive\x18\x02 \x01(\x03\x12\x0f\n\x07loop_id\x18\x03 \x01(\x05\x12\x11\n\tloop_name\x18\x04 \x01(\t\x12\x0f\n\x07voltage\x18\x05 \x01(\x01\x12\x0f\n\x07\x63urrent\x18\x06 \x01(\x01\x12\x14\n\x0c\x61\x63tive_power\x18\x07 \x01(\x01\x12\x16\n\x0ereactive_power\x18\x08 \x01(\x01\x12\x13\n\x0bloop_status\x18\t \x01(\x05\x12\x11\n\talarm_set\x18\n \x01(\x05\x12\x14\n\x0c\x61larm_status\x18\x0b \x01(\x05\x12\x14\n\x0cpower_factor\x18\x0c \x01(\x01\x12\x15\n\rlighting_rate\x18\r \x01(\x01\x12\x17\n\x0fsignal_strength\x18\x0e \x01(\x05\x12\x11\n\timpedance\x18\x0f \x01(\x05\x12\x15\n\ruseful_signal\x18\x10 \x01(\x05\x12\x12\n\nall_signal\x18\x11 \x01(\x05\"v\n\x0erqQueryDataElu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x04 \x01(\x03\x12\x11\n\tdata_mark\x18\x05 \x01(\x05\"\xff\x02\n\x0cQueryDataElu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x38\n\rdata_elu_view\x18\x02 \x03(\x0b\x32!.wlst.ws.QueryDataElu.DataEluView\x12\x11\n\tdata_mark\x18\x03 \x01(\x05\x1a\x84\x02\n\x0b\x44\x61taEluView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x12\n\ndt_receive\x18\x02 \x01(\x03\x12\x0f\n\x07loop_id\x18\x03 \x01(\x05\x12\x11\n\tloop_name\x18\x04 \x01(\t\x12\x11\n\talarm_set\x18\x05 \x01(\x05\x12\x14\n\x0c\x61larm_status\x18\x06 \x01(\x05\x12\x13\n\x0b\x64oor_status\x18\x07 \x01(\x05\x12\x10\n\x08up_limit\x18\x08 \x01(\x05\x12\x11\n\topt_delay\x18\t \x01(\x05\x12\x13\n\x0b\x61larm_value\x18\n \x01(\x05\x12\x10\n\x08\x65l_value\x18\x0b \x01(\x05\x12\x11\n\tdata_mode\x18\x0c \x01(\x05\x12\x10\n\x08\x65lu_name\x18\r \x01(\t\">\n\x0brqStatusRtu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xf9\x01\n\tStatusRtu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x39\n\x0fstatus_rtu_view\x18\x02 \x03(\x0b\x32 .wlst.ws.StatusRtu.StatusRtuView\x1a\x93\x01\n\rStatusRtuView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x05\x12\x10\n\x08tml_name\x18\x03 \x01(\t\x12\x11\n\tis_online\x18\x04 \x01(\x05\x12\x19\n\rswitch_out_st\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x0f\n\x07\x65rr_num\x18\x06 \x01(\x05\x12\x11\n\tdt_create\x18\x07 \x01(\x03\">\n\x0brqStatusSlu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"\xca\x03\n\tStatusSlu\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x39\n\x0fstatus_slu_view\x18\x02 \x03(\x0b\x32 .wlst.ws.StatusSlu.StatusSluView\x1a\xa6\x01\n\x11StatusSluitemView\x12\x12\n\nsluitem_id\x18\x01 \x01(\x05\x12\x14\n\x0csluitem_name\x18\x02 \x01(\t\x12\x12\n\nst_sluitem\x18\x03 \x01(\x05\x12\x13\n\x07st_lamp\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x14\n\x08\x65rr_lamp\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\tleak_lamp\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tdt_create\x18\x07 \x01(\x03\x1a\xbb\x01\n\rStatusSluView\x12\x0e\n\x06tml_id\x18\x01 \x01(\x05\x12\x0e\n\x06phy_id\x18\x02 \x01(\x05\x12\x10\n\x08tml_name\x18\x03 \x01(\t\x12\x11\n\tis_online\x18\x04 \x01(\x05\x12\x41\n\x13status_sluitem_view\x18\x05 \x03(\x0b\x32$.wlst.ws.StatusSlu.StatusSluitemView\x12\x0f\n\x07\x65rr_num\x18\x06 \x01(\x05\x12\x11\n\tdt_create\x18\x07 \x01(\x03\"A\n\x0frqQuerySmsAlarm\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\"\x92\x02\n\rQuerySmsAlarm\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x32\n\tsms_alarm\x18\x03 \x03(\x0b\x32\x1f.wlst.ws.QuerySmsAlarm.SmsAlarm\x1a\xaf\x01\n\x08SmsAlarm\x12\x11\n\tdata_mark\x18\x01 \x01(\x05\x12\x11\n\trecord_id\x18\x02 \x01(\x03\x12\x0e\n\x06tml_id\x18\x03 \x01(\x03\x12\x10\n\x08tml_name\x18\x04 \x01(\t\x12\x0f\n\x07loop_id\x18\x05 \x01(\x05\x12\x11\n\tloop_name\x18\x06 \x01(\t\x12\x12\n\nfault_name\x18\x07 \x01(\t\x12\x10\n\x08user_tel\x18\x08 \x01(\x03\x12\x11\n\tdt_create\x18\t \x01(\x03\"i\n\x0eUpdateSmsAlarm\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x15\n\trecord_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08user_tel\x18\x03 \x01(\x03\x12\x11\n\tfault_msg\x18\x04 \x01(\t\"T\n\x0crqLduDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07loop_id\x18\x03 \x03(\x05\x42\x02\x10\x01\"?\n\x0crqEluDataGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"P\n\x08rqEluCtl\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x07loop_id\x18\x03 \x03(\x05\x42\x02\x10\x01\"<\n\nrqTreeInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\"\xd5\x01\n\x08TreeInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12-\n\ttree_view\x18\x02 \x03(\x0b\x32\x1a.wlst.ws.TreeInfo.TreeView\x12\x12\n\ntree_depth\x18\x03 \x01(\x05\x1ai\n\x08TreeView\x12\x0f\n\x07node_id\x18\x01 \x01(\x03\x12\x13\n\x0bnode_parent\x18\x02 \x01(\x03\x12\x12\n\nnode_route\x18\x03 \x01(\x05\x12\x11\n\tnode_name\x18\x04 \x01(\t\x12\x10\n\x08node_sim\x18\x05 \x01(\t\">\n\x0brqSluVerGet\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x12\n\x06tml_id\x18\x02 \x03(\x05\x42\x02\x10\x01\"@\n\x10rqMsgSettingInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\"\xb7\x01\n\x0eMsgSettingInfo\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x31\n\x08msg_view\x18\x02 \x03(\x0b\x32\x1f.wlst.ws.MsgSettingInfo.MsgView\x1aU\n\x07MsgView\x12\x10\n\x08msg_name\x18\x01 \x01(\t\x12\x10\n\x08msg_type\x18\x02 \x01(\x05\x12\x12\n\nmsg_filter\x18\x03 \x01(\t\x12\x12\n\nmsg_remark\x18\x04 \x01(\t\"\xbb\x01\n\x10rqMsgSettingEdit\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x33\n\x08msg_view\x18\x02 \x03(\x0b\x32!.wlst.ws.rqMsgSettingEdit.MsgView\x1aU\n\x07MsgView\x12\x10\n\x08msg_name\x18\x01 \x01(\t\x12\x10\n\x08msg_type\x18\x02 \x01(\x05\x12\x12\n\nmsg_filter\x18\x03 \x01(\t\x12\x12\n\nmsg_remark\x18\x04 \x01(\t\"\xa5\x04\n\x0crqSluitemAdd\x12\x1b\n\x04head\x18\x01 \x01(\x0b\x32\r.wlst.ws.Head\x12\x0e\n\x06slu_id\x18\x02 \x01(\x03\x12\x37\n\x0csluitem_args\x18\x03 \x03(\x0b\x32!.wlst.ws.rqSluitemAdd.SluItemArgs\x1a\xae\x03\n\x0bSluItemArgs\x12\x17\n\x0fsluitem_barcode\x18\x02 \x01(\x03\x12\x1d\n\x15sluitem_power_uplimit\x18\x03 \x01(\x05\x12\x1e\n\x16sluitem_power_lowlimit\x18\x04 \x01(\x05\x12\x19\n\rsluitem_route\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rsluitem_order\x18\x06 \x01(\x05\x12\x1e\n\x12sluitem_st_poweron\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nsluitem_st\x18\x08 \x01(\x05\x12\x15\n\rsluitem_alarm\x18\t \x01(\x05\x12\x1a\n\x0esluitem_vector\x18\n \x03(\x05\x42\x02\x10\x01\x12\x18\n\x10sluitem_loop_num\x18\x0b \x01(\x05\x12\x1f\n\x13sluitem_rated_power\x18\x0c \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0csluitem_name\x18\r \x01(\t\x12\x16\n\x0esluitem_phy_id\x18\x0f \x01(\x05\x12\x17\n\x0fsluitem_lamp_id\x18\x10 \x01(\t\x12\x15\n\rsluitem_gis_x\x18\x11 \x01(\x01\x12\x15\n\rsluitem_gis_y\x18\x12 \x01(\x01\x42\x02H\x01\x62\x06proto3'
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -376,6 +376,20 @@ _USERLOGIN = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='is_user_operator_code', full_name='wlst.ws.UserLogin.is_user_operator_code', index=18,
+      number=19, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='code', full_name='wlst.ws.UserLogin.code', index=19,
+      number=20, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -389,7 +403,7 @@ _USERLOGIN = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=449,
-  serialized_end=767,
+  serialized_end=812,
 )
 
 
@@ -433,8 +447,8 @@ _RQUSERRENEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=769,
-  serialized_end=840,
+  serialized_start=814,
+  serialized_end=885,
 )
 
 
@@ -503,8 +517,8 @@ _RQUSERADD = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='mobile', full_name='wlst.ws.rqUserAdd.mobile', index=8,
-      number=7, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -548,8 +562,8 @@ _RQUSERADD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=843,
-  serialized_end=1068,
+  serialized_start=888,
+  serialized_end=1113,
 )
 
 
@@ -586,8 +600,8 @@ _USERADD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1070,
-  serialized_end=1125,
+  serialized_start=1115,
+  serialized_end=1170,
 )
 
 
@@ -645,8 +659,8 @@ _RQUSERDEL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1127,
-  serialized_end=1230,
+  serialized_start=1172,
+  serialized_end=1275,
 )
 
 
@@ -722,8 +736,8 @@ _RQUSEREDIT = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='mobile', full_name='wlst.ws.rqUserEdit.mobile', index=9,
-      number=7, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -774,8 +788,8 @@ _RQUSEREDIT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1233,
-  serialized_end=1497,
+  serialized_start=1278,
+  serialized_end=1542,
 )
 
 
@@ -812,8 +826,8 @@ _RQUSERINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1499,
-  serialized_end=1559,
+  serialized_start=1544,
+  serialized_end=1604,
 )
 
 
@@ -896,8 +910,8 @@ _USERINFO_USERVIEW = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='mobile', full_name='wlst.ws.UserInfo.UserView.mobile', index=10,
-      number=11, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      number=11, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -913,8 +927,8 @@ _USERINFO_USERVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1651,
-  serialized_end=1830,
+  serialized_start=1696,
+  serialized_end=1875,
 )
 
 _USERINFO = _descriptor.Descriptor(
@@ -950,8 +964,8 @@ _USERINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1562,
-  serialized_end=1830,
+  serialized_start=1607,
+  serialized_end=1875,
 )
 
 
@@ -995,8 +1009,8 @@ _RQAREAINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1832,
-  serialized_end=1913,
+  serialized_start=1877,
+  serialized_end=1958,
 )
 
 
@@ -1054,8 +1068,8 @@ _AREAINFO_AREAVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2004,
-  serialized_end=2110,
+  serialized_start=2049,
+  serialized_end=2155,
 )
 
 _AREAINFO = _descriptor.Descriptor(
@@ -1091,8 +1105,8 @@ _AREAINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1916,
-  serialized_end=2110,
+  serialized_start=1961,
+  serialized_end=2155,
 )
 
 
@@ -1122,8 +1136,8 @@ _RQGROUPINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2112,
-  serialized_end=2154,
+  serialized_start=2157,
+  serialized_end=2199,
 )
 
 
@@ -1181,8 +1195,8 @@ _GROUPINFO_GROUPVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2249,
-  serialized_end=2351,
+  serialized_start=2294,
+  serialized_end=2396,
 )
 
 _GROUPINFO = _descriptor.Descriptor(
@@ -1218,8 +1232,8 @@ _GROUPINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2157,
-  serialized_end=2351,
+  serialized_start=2202,
+  serialized_end=2396,
 )
 
 
@@ -1256,8 +1270,8 @@ _RQSYSINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2353,
-  serialized_end=2416,
+  serialized_start=2398,
+  serialized_end=2461,
 )
 
 
@@ -1329,8 +1343,8 @@ _SYSINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2419,
-  serialized_end=2582,
+  serialized_start=2464,
+  serialized_end=2627,
 )
 
 
@@ -1367,8 +1381,8 @@ _RQSYSEDIT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2584,
-  serialized_end=2642,
+  serialized_start=2629,
+  serialized_end=2687,
 )
 
 
@@ -1433,8 +1447,8 @@ _RQSLUDATAGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2645,
-  serialized_end=2786,
+  serialized_start=2690,
+  serialized_end=2831,
 )
 
 
@@ -1513,8 +1527,8 @@ _RQSLUITEMDATAGET_DATA_MARK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2953,
-  serialized_end=3132,
+  serialized_start=2998,
+  serialized_end=3177,
 )
 
 _RQSLUITEMDATAGET = _descriptor.Descriptor(
@@ -1571,8 +1585,8 @@ _RQSLUITEMDATAGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2789,
-  serialized_end=3132,
+  serialized_start=2834,
+  serialized_end=3177,
 )
 
 
@@ -1616,8 +1630,8 @@ _RQSLUCTL_CMDPWM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3449,
-  serialized_end=3511,
+  serialized_start=3494,
+  serialized_end=3556,
 )
 
 _RQSLUCTL = _descriptor.Descriptor(
@@ -1730,8 +1744,8 @@ _RQSLUCTL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3135,
-  serialized_end=3511,
+  serialized_start=3180,
+  serialized_end=3556,
 )
 
 
@@ -1782,8 +1796,8 @@ _RQSLUTIMERCTL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3513,
-  serialized_end=3614,
+  serialized_start=3558,
+  serialized_end=3659,
 )
 
 
@@ -1820,8 +1834,8 @@ _RQRTUDATAGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3616,
-  serialized_end=3679,
+  serialized_start=3661,
+  serialized_end=3724,
 )
 
 
@@ -1865,8 +1879,8 @@ _RQRTUCTL_RTUDO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3764,
-  serialized_end=3825,
+  serialized_start=3809,
+  serialized_end=3870,
 )
 
 _RQRTUCTL = _descriptor.Descriptor(
@@ -1902,8 +1916,8 @@ _RQRTUCTL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3682,
-  serialized_end=3825,
+  serialized_start=3727,
+  serialized_end=3870,
 )
 
 
@@ -1982,8 +1996,8 @@ _RQQUERYDATAEVENTS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3828,
-  serialized_end=4013,
+  serialized_start=3873,
+  serialized_end=4058,
 )
 
 
@@ -2062,8 +2076,8 @@ _QUERYDATAEVENTS_DATAEVENTSVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4132,
-  serialized_end=4303,
+  serialized_start=4177,
+  serialized_end=4348,
 )
 
 _QUERYDATAEVENTS = _descriptor.Descriptor(
@@ -2099,8 +2113,8 @@ _QUERYDATAEVENTS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4016,
-  serialized_end=4303,
+  serialized_start=4061,
+  serialized_end=4348,
 )
 
 
@@ -2165,8 +2179,8 @@ _RQQUERYDATAERR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4306,
-  serialized_end=4439,
+  serialized_start=4351,
+  serialized_end=4484,
 )
 
 
@@ -2266,8 +2280,8 @@ _QUERYDATAERR_ERRVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4551,
-  serialized_end=4759,
+  serialized_start=4596,
+  serialized_end=4804,
 )
 
 _QUERYDATAERR = _descriptor.Descriptor(
@@ -2310,8 +2324,8 @@ _QUERYDATAERR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4442,
-  serialized_end=4759,
+  serialized_start=4487,
+  serialized_end=4804,
 )
 
 
@@ -2355,8 +2369,8 @@ _RQSMSQUEUE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4761,
-  serialized_end=4833,
+  serialized_start=4806,
+  serialized_end=4878,
 )
 
 
@@ -2400,8 +2414,8 @@ _RQIPCUPLINK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4835,
-  serialized_end=4913,
+  serialized_start=4880,
+  serialized_end=4958,
 )
 
 
@@ -2452,8 +2466,8 @@ _RQQUERYEMDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4915,
-  serialized_end=5009,
+  serialized_start=4960,
+  serialized_end=5054,
 )
 
 
@@ -2616,8 +2630,8 @@ _QUERYEMDATA_QUDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5118,
-  serialized_end=5398,
+  serialized_start=5163,
+  serialized_end=5443,
 )
 
 _QUERYEMDATA = _descriptor.Descriptor(
@@ -2660,8 +2674,8 @@ _QUERYEMDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5012,
-  serialized_end=5398,
+  serialized_start=5057,
+  serialized_end=5443,
 )
 
 
@@ -2712,8 +2726,8 @@ _RQIPCCTL_COMM_ARGS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5680,
-  serialized_end=5758,
+  serialized_start=5725,
+  serialized_end=5803,
 )
 
 _RQIPCCTL = _descriptor.Descriptor(
@@ -2819,8 +2833,8 @@ _RQIPCCTL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5401,
-  serialized_end=5758,
+  serialized_start=5446,
+  serialized_end=5803,
 )
 
 
@@ -2850,8 +2864,8 @@ _RQSUNRISETINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5760,
-  serialized_end=5805,
+  serialized_start=5805,
+  serialized_end=5850,
 )
 
 
@@ -2902,8 +2916,8 @@ _SUNRISETINFO_DATASUNRISETVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5921,
-  serialized_end=6000,
+  serialized_start=5966,
+  serialized_end=6045,
 )
 
 _SUNRISETINFO = _descriptor.Descriptor(
@@ -2939,8 +2953,8 @@ _SUNRISETINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5808,
-  serialized_end=6000,
+  serialized_start=5853,
+  serialized_end=6045,
 )
 
 
@@ -2984,8 +2998,8 @@ _RQSUBMITSMS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6002,
-  serialized_end=6075,
+  serialized_start=6047,
+  serialized_end=6120,
 )
 
 
@@ -3015,8 +3029,8 @@ _RQERRINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6077,
-  serialized_end=6117,
+  serialized_start=6122,
+  serialized_end=6162,
 )
 
 
@@ -3109,8 +3123,8 @@ _ERRINFO_ERRINFOVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6214,
-  serialized_end=6455,
+  serialized_start=6259,
+  serialized_end=6500,
 )
 
 _ERRINFO = _descriptor.Descriptor(
@@ -3146,8 +3160,8 @@ _ERRINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6120,
-  serialized_end=6455,
+  serialized_start=6165,
+  serialized_end=6500,
 )
 
 
@@ -3177,8 +3191,8 @@ _RQEVENTINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6457,
-  serialized_end=6499,
+  serialized_start=6502,
+  serialized_end=6544,
 )
 
 
@@ -3229,8 +3243,8 @@ _EVENTINFO_EVENTINFOVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6603,
-  serialized_end=6702,
+  serialized_start=6648,
+  serialized_end=6747,
 )
 
 _EVENTINFO = _descriptor.Descriptor(
@@ -3266,8 +3280,8 @@ _EVENTINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6502,
-  serialized_end=6702,
+  serialized_start=6547,
+  serialized_end=6747,
 )
 
 
@@ -3325,8 +3339,8 @@ _RQQUERYDATARTU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6704,
-  serialized_end=6817,
+  serialized_start=6749,
+  serialized_end=6862,
 )
 
 
@@ -3419,8 +3433,8 @@ _QUERYDATARTU_LOOPVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6938,
-  serialized_end=7141,
+  serialized_start=6983,
+  serialized_end=7186,
 )
 
 _QUERYDATARTU_DATARTUVIEW = _descriptor.Descriptor(
@@ -3540,8 +3554,8 @@ _QUERYDATARTU_DATARTUVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7144,
-  serialized_end=7474,
+  serialized_start=7189,
+  serialized_end=7519,
 )
 
 _QUERYDATARTU = _descriptor.Descriptor(
@@ -3584,8 +3598,8 @@ _QUERYDATARTU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6820,
-  serialized_end=7474,
+  serialized_start=6865,
+  serialized_end=7519,
 )
 
 
@@ -3650,8 +3664,8 @@ _RQQUERYDATASLU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7477,
-  serialized_end=7609,
+  serialized_start=7522,
+  serialized_end=7654,
 )
 
 
@@ -3744,8 +3758,8 @@ _QUERYDATASLU_DATASLUVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7948,
-  serialized_end=8176,
+  serialized_start=7993,
+  serialized_end=8221,
 )
 
 _QUERYDATASLU_DATASLUITEMVIEW = _descriptor.Descriptor(
@@ -3837,8 +3851,8 @@ _QUERYDATASLU_DATASLUITEMVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8179,
-  serialized_end=8431,
+  serialized_start=8224,
+  serialized_end=8476,
 )
 
 _QUERYDATASLU_DATALAMPVIEW = _descriptor.Descriptor(
@@ -3930,8 +3944,8 @@ _QUERYDATASLU_DATALAMPVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8434,
-  serialized_end=8679,
+  serialized_start=8479,
+  serialized_end=8724,
 )
 
 _QUERYDATASLU_DATASLUITEMASSISTVIEW_SLUITEMLAMPDATA = _descriptor.Descriptor(
@@ -3974,8 +3988,8 @@ _QUERYDATASLU_DATASLUITEMASSISTVIEW_SLUITEMLAMPDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8835,
-  serialized_end=8915,
+  serialized_start=8880,
+  serialized_end=8960,
 )
 
 _QUERYDATASLU_DATASLUITEMASSISTVIEW_SLUITEMASSISTDATA = _descriptor.Descriptor(
@@ -4025,8 +4039,8 @@ _QUERYDATASLU_DATASLUITEMASSISTVIEW_SLUITEMASSISTDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8918,
-  serialized_end=9089,
+  serialized_start=8963,
+  serialized_end=9134,
 )
 
 _QUERYDATASLU_DATASLUITEMASSISTVIEW = _descriptor.Descriptor(
@@ -4069,8 +4083,8 @@ _QUERYDATASLU_DATASLUITEMASSISTVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8682,
-  serialized_end=9089,
+  serialized_start=8727,
+  serialized_end=9134,
 )
 
 _QUERYDATASLU_DATASLUITEMPHYVIEW = _descriptor.Descriptor(
@@ -4197,8 +4211,8 @@ _QUERYDATASLU_DATASLUITEMPHYVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9092,
-  serialized_end=9406,
+  serialized_start=9137,
+  serialized_end=9451,
 )
 
 _QUERYDATASLU = _descriptor.Descriptor(
@@ -4262,8 +4276,8 @@ _QUERYDATASLU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7612,
-  serialized_end=9406,
+  serialized_start=7657,
+  serialized_end=9451,
 )
 
 
@@ -4307,8 +4321,8 @@ _RQTMLINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9408,
-  serialized_end=9491,
+  serialized_start=9453,
+  serialized_end=9536,
 )
 
 
@@ -4429,8 +4443,8 @@ _TMLINFO_BASEINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9970,
-  serialized_end=10247,
+  serialized_start=10015,
+  serialized_end=10292,
 )
 
 _TMLINFO_GISINFO = _descriptor.Descriptor(
@@ -4487,8 +4501,8 @@ _TMLINFO_GISINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=10249,
-  serialized_end=10350,
+  serialized_start=10294,
+  serialized_end=10395,
 )
 
 _TMLINFO_RTUINFO = _descriptor.Descriptor(
@@ -4568,6 +4582,13 @@ _TMLINFO_RTUINFO = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='switch_out_info', full_name='wlst.ws.TmlInfo.RtuInfo.switch_out_info', index=10,
+      number=13, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -4580,8 +4601,8 @@ _TMLINFO_RTUINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=10353,
-  serialized_end=10623,
+  serialized_start=10398,
+  serialized_end=10728,
 )
 
 _TMLINFO_SLUINFO = _descriptor.Descriptor(
@@ -4764,8 +4785,8 @@ _TMLINFO_SLUINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=10626,
-  serialized_end=11202,
+  serialized_start=10731,
+  serialized_end=11307,
 )
 
 _TMLINFO_LDUINFO = _descriptor.Descriptor(
@@ -4808,8 +4829,8 @@ _TMLINFO_LDUINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11204,
-  serialized_end=11301,
+  serialized_start=11309,
+  serialized_end=11406,
 )
 
 _TMLINFO_ALSINFO = _descriptor.Descriptor(
@@ -4873,8 +4894,8 @@ _TMLINFO_ALSINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11303,
-  serialized_end=11421,
+  serialized_start=11408,
+  serialized_end=11526,
 )
 
 _TMLINFO_MRUINFO = _descriptor.Descriptor(
@@ -4931,8 +4952,8 @@ _TMLINFO_MRUINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11423,
-  serialized_end=11534,
+  serialized_start=11528,
+  serialized_end=11639,
 )
 
 _TMLINFO_ESUINFO = _descriptor.Descriptor(
@@ -5143,8 +5164,8 @@ _TMLINFO_ESUINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11537,
-  serialized_end=12299,
+  serialized_start=11642,
+  serialized_end=12404,
 )
 
 _TMLINFO_ESUADJUSTVOLTAGE = _descriptor.Descriptor(
@@ -5194,8 +5215,8 @@ _TMLINFO_ESUADJUSTVOLTAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=12301,
-  serialized_end=12422,
+  serialized_start=12406,
+  serialized_end=12527,
 )
 
 _TMLINFO_RTULOOPITEM = _descriptor.Descriptor(
@@ -5350,8 +5371,52 @@ _TMLINFO_RTULOOPITEM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=12425,
-  serialized_end=12934,
+  serialized_start=12530,
+  serialized_end=13039,
+)
+
+_TMLINFO_RTUSWITCHOUTINFO = _descriptor.Descriptor(
+  name='RtuSwitchOutInfo',
+  full_name='wlst.ws.TmlInfo.RtuSwitchOutInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='loop_switchout_id', full_name='wlst.ws.TmlInfo.RtuSwitchOutInfo.loop_switchout_id', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='loop_switchout_name', full_name='wlst.ws.TmlInfo.RtuSwitchOutInfo.loop_switchout_name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='loop_switchout_vector', full_name='wlst.ws.TmlInfo.RtuSwitchOutInfo.loop_switchout_vector', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=13041,
+  serialized_end=13146,
 )
 
 _TMLINFO_SLUITEMGRPINFO_SLUITEMGRPVIEW = _descriptor.Descriptor(
@@ -5401,8 +5466,8 @@ _TMLINFO_SLUITEMGRPINFO_SLUITEMGRPVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13045,
-  serialized_end=13138,
+  serialized_start=13257,
+  serialized_end=13350,
 )
 
 _TMLINFO_SLUITEMGRPINFO = _descriptor.Descriptor(
@@ -5438,8 +5503,8 @@ _TMLINFO_SLUITEMGRPINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=12937,
-  serialized_end=13138,
+  serialized_start=13149,
+  serialized_end=13350,
 )
 
 _TMLINFO_SLUITEMINFO = _descriptor.Descriptor(
@@ -5580,8 +5645,8 @@ _TMLINFO_SLUITEMINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13141,
-  serialized_end=13591,
+  serialized_start=13353,
+  serialized_end=13803,
 )
 
 _TMLINFO_LDUITEMINFO = _descriptor.Descriptor(
@@ -5715,8 +5780,8 @@ _TMLINFO_LDUITEMINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13594,
-  serialized_end=13975,
+  serialized_start=13806,
+  serialized_end=14187,
 )
 
 _TMLINFO = _descriptor.Descriptor(
@@ -5806,7 +5871,7 @@ _TMLINFO = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_TMLINFO_BASEINFO, _TMLINFO_GISINFO, _TMLINFO_RTUINFO, _TMLINFO_SLUINFO, _TMLINFO_LDUINFO, _TMLINFO_ALSINFO, _TMLINFO_MRUINFO, _TMLINFO_ESUINFO, _TMLINFO_ESUADJUSTVOLTAGE, _TMLINFO_RTULOOPITEM, _TMLINFO_SLUITEMGRPINFO, _TMLINFO_SLUITEMINFO, _TMLINFO_LDUITEMINFO, ],
+  nested_types=[_TMLINFO_BASEINFO, _TMLINFO_GISINFO, _TMLINFO_RTUINFO, _TMLINFO_SLUINFO, _TMLINFO_LDUINFO, _TMLINFO_ALSINFO, _TMLINFO_MRUINFO, _TMLINFO_ESUINFO, _TMLINFO_ESUADJUSTVOLTAGE, _TMLINFO_RTULOOPITEM, _TMLINFO_RTUSWITCHOUTINFO, _TMLINFO_SLUITEMGRPINFO, _TMLINFO_SLUITEMINFO, _TMLINFO_LDUITEMINFO, ],
   enum_types=[
   ],
   options=None,
@@ -5815,8 +5880,8 @@ _TMLINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9494,
-  serialized_end=13975,
+  serialized_start=9539,
+  serialized_end=14187,
 )
 
 
@@ -5874,8 +5939,8 @@ _RQQUERYSMSRECORD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13977,
-  serialized_end=14089,
+  serialized_start=14189,
+  serialized_end=14301,
 )
 
 
@@ -5919,8 +5984,8 @@ _QUERYSMSRECORD_SMSRECORD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14194,
-  serialized_end=14248,
+  serialized_start=14406,
+  serialized_end=14460,
 )
 
 _QUERYSMSRECORD = _descriptor.Descriptor(
@@ -5956,8 +6021,8 @@ _QUERYSMSRECORD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14092,
-  serialized_end=14248,
+  serialized_start=14304,
+  serialized_end=14460,
 )
 
 
@@ -6008,8 +6073,8 @@ _RQQUERYDATAMRU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14250,
-  serialized_end=14349,
+  serialized_start=14462,
+  serialized_end=14561,
 )
 
 
@@ -6062,6 +6127,13 @@ _QUERYDATAMRU_DATAMRUVIEW = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='mru_name', full_name='wlst.ws.QueryDataMru.DataMruView.mru_name', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -6074,8 +6146,8 @@ _QUERYDATAMRU_DATAMRUVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14455,
-  serialized_end=14576,
+  serialized_start=14668,
+  serialized_end=14807,
 )
 
 _QUERYDATAMRU = _descriptor.Descriptor(
@@ -6111,8 +6183,8 @@ _QUERYDATAMRU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14352,
-  serialized_end=14576,
+  serialized_start=14564,
+  serialized_end=14807,
 )
 
 
@@ -6158,6 +6230,13 @@ _RQMRUDATAGET = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='baud_rate', full_name='wlst.ws.rqMruDataGet.baud_rate', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -6170,8 +6249,8 @@ _RQMRUDATAGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14578,
-  serialized_end=14694,
+  serialized_start=14810,
+  serialized_end=14945,
 )
 
 
@@ -6229,8 +6308,8 @@ _RQQUERYDATARTUELEC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14696,
-  serialized_end=14818,
+  serialized_start=14947,
+  serialized_end=15069,
 )
 
 
@@ -6288,8 +6367,8 @@ _QUERYDATARTUELEC_DATARTUELECVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14941,
-  serialized_end=15054,
+  serialized_start=15192,
+  serialized_end=15305,
 )
 
 _QUERYDATARTUELEC = _descriptor.Descriptor(
@@ -6325,8 +6404,8 @@ _QUERYDATARTUELEC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14821,
-  serialized_end=15054,
+  serialized_start=15072,
+  serialized_end=15305,
 )
 
 
@@ -6370,8 +6449,8 @@ _RQRTUTIMERCTL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=15056,
-  serialized_end=15139,
+  serialized_start=15307,
+  serialized_end=15390,
 )
 
 
@@ -6408,8 +6487,8 @@ _RQRTUVERGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=15141,
-  serialized_end=15203,
+  serialized_start=15392,
+  serialized_end=15454,
 )
 
 
@@ -6446,8 +6525,8 @@ _RQPROJECTINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=15205,
-  serialized_end=15273,
+  serialized_start=15456,
+  serialized_end=15524,
 )
 
 
@@ -6554,8 +6633,8 @@ _PROJECTINFO_PROJECTVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=15377,
-  serialized_end=15645,
+  serialized_start=15628,
+  serialized_end=15896,
 )
 
 _PROJECTINFO = _descriptor.Descriptor(
@@ -6591,8 +6670,8 @@ _PROJECTINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=15276,
-  serialized_end=15645,
+  serialized_start=15527,
+  serialized_end=15896,
 )
 
 
@@ -6692,8 +6771,8 @@ _RQPROJECTADD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=15648,
-  serialized_end=15899,
+  serialized_start=15899,
+  serialized_end=16150,
 )
 
 
@@ -6800,8 +6879,8 @@ _RQPROJECTEDIT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=15902,
-  serialized_end=16174,
+  serialized_start=16153,
+  serialized_end=16425,
 )
 
 
@@ -6845,8 +6924,8 @@ _RQPROJECTDEL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=16176,
-  serialized_end=16258,
+  serialized_start=16427,
+  serialized_end=16509,
 )
 
 
@@ -6883,8 +6962,8 @@ _RQUSERAUTHSET_PROJECTAUTH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=16401,
-  serialized_end=16453,
+  serialized_start=16652,
+  serialized_end=16704,
 )
 
 _RQUSERAUTHSET = _descriptor.Descriptor(
@@ -6934,8 +7013,8 @@ _RQUSERAUTHSET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=16261,
-  serialized_end=16453,
+  serialized_start=16512,
+  serialized_end=16704,
 )
 
 
@@ -6993,8 +7072,8 @@ _RQAREAADD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=16455,
-  serialized_end=16575,
+  serialized_start=16706,
+  serialized_end=16826,
 )
 
 
@@ -7059,8 +7138,8 @@ _RQAREAEDIT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=16578,
-  serialized_end=16716,
+  serialized_start=16829,
+  serialized_end=16967,
 )
 
 
@@ -7104,8 +7183,8 @@ _RQAREADEL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=16718,
-  serialized_end=16794,
+  serialized_start=16969,
+  serialized_end=17045,
 )
 
 
@@ -7163,8 +7242,8 @@ _RQLOCATIONINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=16797,
-  serialized_end=16933,
+  serialized_start=17048,
+  serialized_end=17184,
 )
 
 
@@ -7222,8 +7301,8 @@ _LOCATIONINFO_LOCATIONVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17041,
-  serialized_end=17171,
+  serialized_start=17292,
+  serialized_end=17422,
 )
 
 _LOCATIONINFO = _descriptor.Descriptor(
@@ -7259,55 +7338,55 @@ _LOCATIONINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=16936,
-  serialized_end=17171,
+  serialized_start=17187,
+  serialized_end=17422,
 )
 
 
-_RQQUERYTIMETABLEDO = _descriptor.Descriptor(
-  name='rqQueryTimetableDo',
-  full_name='wlst.ws.rqQueryTimetableDo',
+_RQQUERYEVENTSTIMETABLEDO = _descriptor.Descriptor(
+  name='rqQueryEventsTimetableDo',
+  full_name='wlst.ws.rqQueryEventsTimetableDo',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='head', full_name='wlst.ws.rqQueryTimetableDo.head', index=0,
+      name='head', full_name='wlst.ws.rqQueryEventsTimetableDo.head', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='tml_id', full_name='wlst.ws.rqQueryTimetableDo.tml_id', index=1,
+      name='tml_id', full_name='wlst.ws.rqQueryEventsTimetableDo.tml_id', index=1,
       number=2, type=5, cpp_type=1, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')),
     _descriptor.FieldDescriptor(
-      name='data_mark', full_name='wlst.ws.rqQueryTimetableDo.data_mark', index=2,
+      name='data_mark', full_name='wlst.ws.rqQueryEventsTimetableDo.data_mark', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='data_type', full_name='wlst.ws.rqQueryTimetableDo.data_type', index=3,
+      name='data_type', full_name='wlst.ws.rqQueryEventsTimetableDo.data_type', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='dt_start', full_name='wlst.ws.rqQueryTimetableDo.dt_start', index=4,
+      name='dt_start', full_name='wlst.ws.rqQueryEventsTimetableDo.dt_start', index=4,
       number=5, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='dt_end', full_name='wlst.ws.rqQueryTimetableDo.dt_end', index=5,
+      name='dt_end', full_name='wlst.ws.rqQueryEventsTimetableDo.dt_end', index=5,
       number=6, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -7325,55 +7404,55 @@ _RQQUERYTIMETABLEDO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17174,
-  serialized_end=17315,
+  serialized_start=17425,
+  serialized_end=17572,
 )
 
 
-_QUERYTIMETABLEDO_TIMETABLEDOVIEW = _descriptor.Descriptor(
+_QUERYEVENTSTIMETABLEDO_TIMETABLEDOVIEW = _descriptor.Descriptor(
   name='TimetableDoView',
-  full_name='wlst.ws.QueryTimetableDo.TimetableDoView',
+  full_name='wlst.ws.QueryEventsTimetableDo.TimetableDoView',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='tml_id', full_name='wlst.ws.QueryTimetableDo.TimetableDoView.tml_id', index=0,
+      name='tml_id', full_name='wlst.ws.QueryEventsTimetableDo.TimetableDoView.tml_id', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='tml_loop_id', full_name='wlst.ws.QueryTimetableDo.TimetableDoView.tml_loop_id', index=1,
+      name='tml_loop_id', full_name='wlst.ws.QueryEventsTimetableDo.TimetableDoView.tml_loop_id', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='data_mark', full_name='wlst.ws.QueryTimetableDo.TimetableDoView.data_mark', index=2,
+      name='data_mark', full_name='wlst.ws.QueryEventsTimetableDo.TimetableDoView.data_mark', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='data_type', full_name='wlst.ws.QueryTimetableDo.TimetableDoView.data_type', index=3,
+      name='data_type', full_name='wlst.ws.QueryEventsTimetableDo.TimetableDoView.data_type', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='dt_send', full_name='wlst.ws.QueryTimetableDo.TimetableDoView.dt_send', index=4,
+      name='dt_send', full_name='wlst.ws.QueryEventsTimetableDo.TimetableDoView.dt_send', index=4,
       number=5, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='dt_reply', full_name='wlst.ws.QueryTimetableDo.TimetableDoView.dt_reply', index=5,
+      name='dt_reply', full_name='wlst.ws.QueryEventsTimetableDo.TimetableDoView.dt_reply', index=5,
       number=6, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -7391,26 +7470,26 @@ _QUERYTIMETABLEDO_TIMETABLEDOVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17437,
-  serialized_end=17564,
+  serialized_start=17706,
+  serialized_end=17833,
 )
 
-_QUERYTIMETABLEDO = _descriptor.Descriptor(
-  name='QueryTimetableDo',
-  full_name='wlst.ws.QueryTimetableDo',
+_QUERYEVENTSTIMETABLEDO = _descriptor.Descriptor(
+  name='QueryEventsTimetableDo',
+  full_name='wlst.ws.QueryEventsTimetableDo',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='head', full_name='wlst.ws.QueryTimetableDo.head', index=0,
+      name='head', full_name='wlst.ws.QueryEventsTimetableDo.head', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='timetable_do_view', full_name='wlst.ws.QueryTimetableDo.timetable_do_view', index=1,
+      name='timetable_do_view', full_name='wlst.ws.QueryEventsTimetableDo.timetable_do_view', index=1,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -7419,7 +7498,7 @@ _QUERYTIMETABLEDO = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_QUERYTIMETABLEDO_TIMETABLEDOVIEW, ],
+  nested_types=[_QUERYEVENTSTIMETABLEDO_TIMETABLEDOVIEW, ],
   enum_types=[
   ],
   options=None,
@@ -7428,8 +7507,8 @@ _QUERYTIMETABLEDO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17318,
-  serialized_end=17564,
+  serialized_start=17575,
+  serialized_end=17833,
 )
 
 
@@ -7487,8 +7566,8 @@ _MAHALO_MAHALOVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17655,
-  serialized_end=17767,
+  serialized_start=17924,
+  serialized_end=18036,
 )
 
 _MAHALO = _descriptor.Descriptor(
@@ -7524,8 +7603,8 @@ _MAHALO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17567,
-  serialized_end=17767,
+  serialized_start=17836,
+  serialized_end=18036,
 )
 
 
@@ -7590,8 +7669,8 @@ _RQQUERYRTUTIMETABLEBIND = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17770,
-  serialized_end=17922,
+  serialized_start=18039,
+  serialized_end=18191,
 )
 
 
@@ -7670,8 +7749,8 @@ _QUERYRTUTIMETABLEBIND_TIMETABLEBINDVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18078,
-  serialized_end=18249,
+  serialized_start=18347,
+  serialized_end=18518,
 )
 
 _QUERYRTUTIMETABLEBIND = _descriptor.Descriptor(
@@ -7714,8 +7793,8 @@ _QUERYRTUTIMETABLEBIND = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17925,
-  serialized_end=18249,
+  serialized_start=18194,
+  serialized_end=18518,
 )
 
 
@@ -7759,8 +7838,8 @@ _RQUSERAUTHGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18251,
-  serialized_end=18336,
+  serialized_start=18520,
+  serialized_end=18605,
 )
 
 
@@ -7804,8 +7883,8 @@ _USERAUTHGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18338,
-  serialized_end=18455,
+  serialized_start=18607,
+  serialized_end=18724,
 )
 
 
@@ -7856,8 +7935,8 @@ _RQQUERYDATAALS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18457,
-  serialized_end=18556,
+  serialized_start=18726,
+  serialized_end=18825,
 )
 
 
@@ -7889,6 +7968,13 @@ _QUERYDATAALS_DATAALSVIEW = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='lux_name', full_name='wlst.ws.QueryDataAls.DataAlsView.lux_name', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -7901,8 +7987,8 @@ _QUERYDATAALS_DATAALSVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18662,
-  serialized_end=18730,
+  serialized_start=18931,
+  serialized_end=19017,
 )
 
 _QUERYDATAALS = _descriptor.Descriptor(
@@ -7938,8 +8024,8 @@ _QUERYDATAALS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18559,
-  serialized_end=18730,
+  serialized_start=18828,
+  serialized_end=19017,
 )
 
 
@@ -7997,8 +8083,8 @@ _RQQUERYDATALDU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18732,
-  serialized_end=18850,
+  serialized_start=19019,
+  serialized_end=19137,
 )
 
 
@@ -8140,8 +8226,8 @@ _QUERYDATALDU_DATALDUVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18976,
-  serialized_end=19335,
+  serialized_start=19263,
+  serialized_end=19622,
 )
 
 _QUERYDATALDU = _descriptor.Descriptor(
@@ -8184,8 +8270,8 @@ _QUERYDATALDU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18853,
-  serialized_end=19335,
+  serialized_start=19140,
+  serialized_end=19622,
 )
 
 
@@ -8243,8 +8329,8 @@ _RQQUERYDATAELU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=19337,
-  serialized_end=19455,
+  serialized_start=19624,
+  serialized_end=19742,
 )
 
 
@@ -8339,6 +8425,13 @@ _QUERYDATAELU_DATAELUVIEW = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='elu_name', full_name='wlst.ws.QueryDataElu.DataEluView.elu_name', index=12,
+      number=13, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -8351,8 +8444,8 @@ _QUERYDATAELU_DATAELUVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=19581,
-  serialized_end=19823,
+  serialized_start=19868,
+  serialized_end=20128,
 )
 
 _QUERYDATAELU = _descriptor.Descriptor(
@@ -8395,8 +8488,8 @@ _QUERYDATAELU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=19458,
-  serialized_end=19823,
+  serialized_start=19745,
+  serialized_end=20128,
 )
 
 
@@ -8433,8 +8526,8 @@ _RQSTATUSRTU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=19825,
-  serialized_end=19887,
+  serialized_start=20130,
+  serialized_end=20192,
 )
 
 
@@ -8506,8 +8599,8 @@ _STATUSRTU_STATUSRTUVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=19992,
-  serialized_end=20139,
+  serialized_start=20297,
+  serialized_end=20444,
 )
 
 _STATUSRTU = _descriptor.Descriptor(
@@ -8543,8 +8636,8 @@ _STATUSRTU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=19890,
-  serialized_end=20139,
+  serialized_start=20195,
+  serialized_end=20444,
 )
 
 
@@ -8581,8 +8674,8 @@ _RQSTATUSSLU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=20141,
-  serialized_end=20203,
+  serialized_start=20446,
+  serialized_end=20508,
 )
 
 
@@ -8654,8 +8747,8 @@ _STATUSSLU_STATUSSLUITEMVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=20308,
-  serialized_end=20474,
+  serialized_start=20613,
+  serialized_end=20779,
 )
 
 _STATUSSLU_STATUSSLUVIEW = _descriptor.Descriptor(
@@ -8726,8 +8819,8 @@ _STATUSSLU_STATUSSLUVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=20477,
-  serialized_end=20664,
+  serialized_start=20782,
+  serialized_end=20969,
 )
 
 _STATUSSLU = _descriptor.Descriptor(
@@ -8763,8 +8856,8 @@ _STATUSSLU = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=20206,
-  serialized_end=20664,
+  serialized_start=20511,
+  serialized_end=20969,
 )
 
 
@@ -8801,8 +8894,8 @@ _RQQUERYSMSALARM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=20666,
-  serialized_end=20731,
+  serialized_start=20971,
+  serialized_end=21036,
 )
 
 
@@ -8888,8 +8981,8 @@ _QUERYSMSALARM_SMSALARM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=20833,
-  serialized_end=21008,
+  serialized_start=21138,
+  serialized_end=21313,
 )
 
 _QUERYSMSALARM = _descriptor.Descriptor(
@@ -8925,8 +9018,8 @@ _QUERYSMSALARM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=20734,
-  serialized_end=21008,
+  serialized_start=21039,
+  serialized_end=21313,
 )
 
 
@@ -8977,8 +9070,8 @@ _UPDATESMSALARM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=21010,
-  serialized_end=21115,
+  serialized_start=21315,
+  serialized_end=21420,
 )
 
 
@@ -9022,8 +9115,8 @@ _RQLDUDATAGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=21117,
-  serialized_end=21201,
+  serialized_start=21422,
+  serialized_end=21506,
 )
 
 
@@ -9060,8 +9153,8 @@ _RQELUDATAGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=21203,
-  serialized_end=21266,
+  serialized_start=21508,
+  serialized_end=21571,
 )
 
 
@@ -9105,8 +9198,8 @@ _RQELUCTL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=21268,
-  serialized_end=21348,
+  serialized_start=21573,
+  serialized_end=21653,
 )
 
 
@@ -9143,8 +9236,8 @@ _RQTREEINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=21350,
-  serialized_end=21410,
+  serialized_start=21655,
+  serialized_end=21715,
 )
 
 
@@ -9183,6 +9276,13 @@ _TREEINFO_TREEVIEW = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='node_sim', full_name='wlst.ws.TreeInfo.TreeView.node_sim', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -9195,8 +9295,8 @@ _TREEINFO_TREEVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=21521,
-  serialized_end=21608,
+  serialized_start=21826,
+  serialized_end=21931,
 )
 
 _TREEINFO = _descriptor.Descriptor(
@@ -9239,8 +9339,8 @@ _TREEINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=21413,
-  serialized_end=21608,
+  serialized_start=21718,
+  serialized_end=21931,
 )
 
 
@@ -9277,8 +9377,404 @@ _RQSLUVERGET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=21610,
-  serialized_end=21672,
+  serialized_start=21933,
+  serialized_end=21995,
+)
+
+
+_RQMSGSETTINGINFO = _descriptor.Descriptor(
+  name='rqMsgSettingInfo',
+  full_name='wlst.ws.rqMsgSettingInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='head', full_name='wlst.ws.rqMsgSettingInfo.head', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='user_id', full_name='wlst.ws.rqMsgSettingInfo.user_id', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=21997,
+  serialized_end=22061,
+)
+
+
+_MSGSETTINGINFO_MSGVIEW = _descriptor.Descriptor(
+  name='MsgView',
+  full_name='wlst.ws.MsgSettingInfo.MsgView',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='msg_name', full_name='wlst.ws.MsgSettingInfo.MsgView.msg_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='msg_type', full_name='wlst.ws.MsgSettingInfo.MsgView.msg_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='msg_filter', full_name='wlst.ws.MsgSettingInfo.MsgView.msg_filter', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='msg_remark', full_name='wlst.ws.MsgSettingInfo.MsgView.msg_remark', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=22162,
+  serialized_end=22247,
+)
+
+_MSGSETTINGINFO = _descriptor.Descriptor(
+  name='MsgSettingInfo',
+  full_name='wlst.ws.MsgSettingInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='head', full_name='wlst.ws.MsgSettingInfo.head', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='msg_view', full_name='wlst.ws.MsgSettingInfo.msg_view', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_MSGSETTINGINFO_MSGVIEW, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=22064,
+  serialized_end=22247,
+)
+
+
+_RQMSGSETTINGEDIT_MSGVIEW = _descriptor.Descriptor(
+  name='MsgView',
+  full_name='wlst.ws.rqMsgSettingEdit.MsgView',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='msg_name', full_name='wlst.ws.rqMsgSettingEdit.MsgView.msg_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='msg_type', full_name='wlst.ws.rqMsgSettingEdit.MsgView.msg_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='msg_filter', full_name='wlst.ws.rqMsgSettingEdit.MsgView.msg_filter', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='msg_remark', full_name='wlst.ws.rqMsgSettingEdit.MsgView.msg_remark', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=22162,
+  serialized_end=22247,
+)
+
+_RQMSGSETTINGEDIT = _descriptor.Descriptor(
+  name='rqMsgSettingEdit',
+  full_name='wlst.ws.rqMsgSettingEdit',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='head', full_name='wlst.ws.rqMsgSettingEdit.head', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='msg_view', full_name='wlst.ws.rqMsgSettingEdit.msg_view', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_RQMSGSETTINGEDIT_MSGVIEW, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=22250,
+  serialized_end=22437,
+)
+
+
+_RQSLUITEMADD_SLUITEMARGS = _descriptor.Descriptor(
+  name='SluItemArgs',
+  full_name='wlst.ws.rqSluitemAdd.SluItemArgs',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='sluitem_barcode', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_barcode', index=0,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_power_uplimit', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_power_uplimit', index=1,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_power_lowlimit', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_power_lowlimit', index=2,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_route', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_route', index=3,
+      number=5, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')),
+    _descriptor.FieldDescriptor(
+      name='sluitem_order', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_order', index=4,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_st_poweron', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_st_poweron', index=5,
+      number=7, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')),
+    _descriptor.FieldDescriptor(
+      name='sluitem_st', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_st', index=6,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_alarm', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_alarm', index=7,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_vector', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_vector', index=8,
+      number=10, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')),
+    _descriptor.FieldDescriptor(
+      name='sluitem_loop_num', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_loop_num', index=9,
+      number=11, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_rated_power', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_rated_power', index=10,
+      number=12, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')),
+    _descriptor.FieldDescriptor(
+      name='sluitem_name', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_name', index=11,
+      number=13, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_phy_id', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_phy_id', index=12,
+      number=15, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_lamp_id', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_lamp_id', index=13,
+      number=16, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_gis_x', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_gis_x', index=14,
+      number=17, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_gis_y', full_name='wlst.ws.rqSluitemAdd.SluItemArgs.sluitem_gis_y', index=15,
+      number=18, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=22559,
+  serialized_end=22989,
+)
+
+_RQSLUITEMADD = _descriptor.Descriptor(
+  name='rqSluitemAdd',
+  full_name='wlst.ws.rqSluitemAdd',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='head', full_name='wlst.ws.rqSluitemAdd.head', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='slu_id', full_name='wlst.ws.rqSluitemAdd.slu_id', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_args', full_name='wlst.ws.rqSluitemAdd.sluitem_args', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_RQSLUITEMADD_SLUITEMARGS, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=22440,
+  serialized_end=22989,
 )
 
 _COMMANS.fields_by_name['head'].message_type = _HEAD
@@ -9372,6 +9868,7 @@ _RQTMLINFO.fields_by_name['head'].message_type = _HEAD
 _TMLINFO_BASEINFO.containing_type = _TMLINFO
 _TMLINFO_GISINFO.containing_type = _TMLINFO
 _TMLINFO_RTUINFO.fields_by_name['loop_item'].message_type = _TMLINFO_RTULOOPITEM
+_TMLINFO_RTUINFO.fields_by_name['switch_out_info'].message_type = _TMLINFO_RTUSWITCHOUTINFO
 _TMLINFO_RTUINFO.containing_type = _TMLINFO
 _TMLINFO_SLUINFO.fields_by_name['sluitem_info'].message_type = _TMLINFO_SLUITEMINFO
 _TMLINFO_SLUINFO.containing_type = _TMLINFO
@@ -9383,6 +9880,7 @@ _TMLINFO_ESUINFO.fields_by_name['esu_adjust_voltage'].message_type = _TMLINFO_ES
 _TMLINFO_ESUINFO.containing_type = _TMLINFO
 _TMLINFO_ESUADJUSTVOLTAGE.containing_type = _TMLINFO
 _TMLINFO_RTULOOPITEM.containing_type = _TMLINFO
+_TMLINFO_RTUSWITCHOUTINFO.containing_type = _TMLINFO
 _TMLINFO_SLUITEMGRPINFO_SLUITEMGRPVIEW.containing_type = _TMLINFO_SLUITEMGRPINFO
 _TMLINFO_SLUITEMGRPINFO.fields_by_name['sluitem_grp_view'].message_type = _TMLINFO_SLUITEMGRPINFO_SLUITEMGRPVIEW
 _TMLINFO_SLUITEMGRPINFO.containing_type = _TMLINFO
@@ -9430,10 +9928,10 @@ _RQLOCATIONINFO.fields_by_name['head'].message_type = _HEAD
 _LOCATIONINFO_LOCATIONVIEW.containing_type = _LOCATIONINFO
 _LOCATIONINFO.fields_by_name['head'].message_type = _HEAD
 _LOCATIONINFO.fields_by_name['location_view'].message_type = _LOCATIONINFO_LOCATIONVIEW
-_RQQUERYTIMETABLEDO.fields_by_name['head'].message_type = _HEAD
-_QUERYTIMETABLEDO_TIMETABLEDOVIEW.containing_type = _QUERYTIMETABLEDO
-_QUERYTIMETABLEDO.fields_by_name['head'].message_type = _HEAD
-_QUERYTIMETABLEDO.fields_by_name['timetable_do_view'].message_type = _QUERYTIMETABLEDO_TIMETABLEDOVIEW
+_RQQUERYEVENTSTIMETABLEDO.fields_by_name['head'].message_type = _HEAD
+_QUERYEVENTSTIMETABLEDO_TIMETABLEDOVIEW.containing_type = _QUERYEVENTSTIMETABLEDO
+_QUERYEVENTSTIMETABLEDO.fields_by_name['head'].message_type = _HEAD
+_QUERYEVENTSTIMETABLEDO.fields_by_name['timetable_do_view'].message_type = _QUERYEVENTSTIMETABLEDO_TIMETABLEDOVIEW
 _MAHALO_MAHALOVIEW.containing_type = _MAHALO
 _MAHALO.fields_by_name['head'].message_type = _HEAD
 _MAHALO.fields_by_name['mahalo_view'].message_type = _MAHALO_MAHALOVIEW
@@ -9479,6 +9977,16 @@ _TREEINFO_TREEVIEW.containing_type = _TREEINFO
 _TREEINFO.fields_by_name['head'].message_type = _HEAD
 _TREEINFO.fields_by_name['tree_view'].message_type = _TREEINFO_TREEVIEW
 _RQSLUVERGET.fields_by_name['head'].message_type = _HEAD
+_RQMSGSETTINGINFO.fields_by_name['head'].message_type = _HEAD
+_MSGSETTINGINFO_MSGVIEW.containing_type = _MSGSETTINGINFO
+_MSGSETTINGINFO.fields_by_name['head'].message_type = _HEAD
+_MSGSETTINGINFO.fields_by_name['msg_view'].message_type = _MSGSETTINGINFO_MSGVIEW
+_RQMSGSETTINGEDIT_MSGVIEW.containing_type = _RQMSGSETTINGEDIT
+_RQMSGSETTINGEDIT.fields_by_name['head'].message_type = _HEAD
+_RQMSGSETTINGEDIT.fields_by_name['msg_view'].message_type = _RQMSGSETTINGEDIT_MSGVIEW
+_RQSLUITEMADD_SLUITEMARGS.containing_type = _RQSLUITEMADD
+_RQSLUITEMADD.fields_by_name['head'].message_type = _HEAD
+_RQSLUITEMADD.fields_by_name['sluitem_args'].message_type = _RQSLUITEMADD_SLUITEMARGS
 DESCRIPTOR.message_types_by_name['Head'] = _HEAD
 DESCRIPTOR.message_types_by_name['CommAns'] = _COMMANS
 DESCRIPTOR.message_types_by_name['rqUserLogin'] = _RQUSERLOGIN
@@ -9545,8 +10053,8 @@ DESCRIPTOR.message_types_by_name['rqAreaEdit'] = _RQAREAEDIT
 DESCRIPTOR.message_types_by_name['rqAreaDel'] = _RQAREADEL
 DESCRIPTOR.message_types_by_name['rqLocationInfo'] = _RQLOCATIONINFO
 DESCRIPTOR.message_types_by_name['LocationInfo'] = _LOCATIONINFO
-DESCRIPTOR.message_types_by_name['rqQueryTimetableDo'] = _RQQUERYTIMETABLEDO
-DESCRIPTOR.message_types_by_name['QueryTimetableDo'] = _QUERYTIMETABLEDO
+DESCRIPTOR.message_types_by_name['rqQueryEventsTimetableDo'] = _RQQUERYEVENTSTIMETABLEDO
+DESCRIPTOR.message_types_by_name['QueryEventsTimetableDo'] = _QUERYEVENTSTIMETABLEDO
 DESCRIPTOR.message_types_by_name['Mahalo'] = _MAHALO
 DESCRIPTOR.message_types_by_name['rqQueryRtuTimeTableBind'] = _RQQUERYRTUTIMETABLEBIND
 DESCRIPTOR.message_types_by_name['QueryRtuTimeTableBind'] = _QUERYRTUTIMETABLEBIND
@@ -9571,6 +10079,10 @@ DESCRIPTOR.message_types_by_name['rqEluCtl'] = _RQELUCTL
 DESCRIPTOR.message_types_by_name['rqTreeInfo'] = _RQTREEINFO
 DESCRIPTOR.message_types_by_name['TreeInfo'] = _TREEINFO
 DESCRIPTOR.message_types_by_name['rqSluVerGet'] = _RQSLUVERGET
+DESCRIPTOR.message_types_by_name['rqMsgSettingInfo'] = _RQMSGSETTINGINFO
+DESCRIPTOR.message_types_by_name['MsgSettingInfo'] = _MSGSETTINGINFO
+DESCRIPTOR.message_types_by_name['rqMsgSettingEdit'] = _RQMSGSETTINGEDIT
+DESCRIPTOR.message_types_by_name['rqSluitemAdd'] = _RQSLUITEMADD
 
 Head = _reflection.GeneratedProtocolMessageType('Head', (_message.Message,), dict(
   DESCRIPTOR = _HEAD,
@@ -10135,6 +10647,13 @@ TmlInfo = _reflection.GeneratedProtocolMessageType('TmlInfo', (_message.Message,
     ))
   ,
 
+  RtuSwitchOutInfo = _reflection.GeneratedProtocolMessageType('RtuSwitchOutInfo', (_message.Message,), dict(
+    DESCRIPTOR = _TMLINFO_RTUSWITCHOUTINFO,
+    __module__ = 'msg_ws_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.ws.TmlInfo.RtuSwitchOutInfo)
+    ))
+  ,
+
   SluitemGrpInfo = _reflection.GeneratedProtocolMessageType('SluitemGrpInfo', (_message.Message,), dict(
 
     SluitemGrpView = _reflection.GeneratedProtocolMessageType('SluitemGrpView', (_message.Message,), dict(
@@ -10177,6 +10696,7 @@ _sym_db.RegisterMessage(TmlInfo.MruInfo)
 _sym_db.RegisterMessage(TmlInfo.EsuInfo)
 _sym_db.RegisterMessage(TmlInfo.EsuAdjustVoltage)
 _sym_db.RegisterMessage(TmlInfo.RtuLoopItem)
+_sym_db.RegisterMessage(TmlInfo.RtuSwitchOutInfo)
 _sym_db.RegisterMessage(TmlInfo.SluitemGrpInfo)
 _sym_db.RegisterMessage(TmlInfo.SluitemGrpInfo.SluitemGrpView)
 _sym_db.RegisterMessage(TmlInfo.SluItemInfo)
@@ -10370,27 +10890,27 @@ LocationInfo = _reflection.GeneratedProtocolMessageType('LocationInfo', (_messag
 _sym_db.RegisterMessage(LocationInfo)
 _sym_db.RegisterMessage(LocationInfo.LocationView)
 
-rqQueryTimetableDo = _reflection.GeneratedProtocolMessageType('rqQueryTimetableDo', (_message.Message,), dict(
-  DESCRIPTOR = _RQQUERYTIMETABLEDO,
+rqQueryEventsTimetableDo = _reflection.GeneratedProtocolMessageType('rqQueryEventsTimetableDo', (_message.Message,), dict(
+  DESCRIPTOR = _RQQUERYEVENTSTIMETABLEDO,
   __module__ = 'msg_ws_pb2'
-  # @@protoc_insertion_point(class_scope:wlst.ws.rqQueryTimetableDo)
+  # @@protoc_insertion_point(class_scope:wlst.ws.rqQueryEventsTimetableDo)
   ))
-_sym_db.RegisterMessage(rqQueryTimetableDo)
+_sym_db.RegisterMessage(rqQueryEventsTimetableDo)
 
-QueryTimetableDo = _reflection.GeneratedProtocolMessageType('QueryTimetableDo', (_message.Message,), dict(
+QueryEventsTimetableDo = _reflection.GeneratedProtocolMessageType('QueryEventsTimetableDo', (_message.Message,), dict(
 
   TimetableDoView = _reflection.GeneratedProtocolMessageType('TimetableDoView', (_message.Message,), dict(
-    DESCRIPTOR = _QUERYTIMETABLEDO_TIMETABLEDOVIEW,
+    DESCRIPTOR = _QUERYEVENTSTIMETABLEDO_TIMETABLEDOVIEW,
     __module__ = 'msg_ws_pb2'
-    # @@protoc_insertion_point(class_scope:wlst.ws.QueryTimetableDo.TimetableDoView)
+    # @@protoc_insertion_point(class_scope:wlst.ws.QueryEventsTimetableDo.TimetableDoView)
     ))
   ,
-  DESCRIPTOR = _QUERYTIMETABLEDO,
+  DESCRIPTOR = _QUERYEVENTSTIMETABLEDO,
   __module__ = 'msg_ws_pb2'
-  # @@protoc_insertion_point(class_scope:wlst.ws.QueryTimetableDo)
+  # @@protoc_insertion_point(class_scope:wlst.ws.QueryEventsTimetableDo)
   ))
-_sym_db.RegisterMessage(QueryTimetableDo)
-_sym_db.RegisterMessage(QueryTimetableDo.TimetableDoView)
+_sym_db.RegisterMessage(QueryEventsTimetableDo)
+_sym_db.RegisterMessage(QueryEventsTimetableDo.TimetableDoView)
 
 Mahalo = _reflection.GeneratedProtocolMessageType('Mahalo', (_message.Message,), dict(
 
@@ -10640,6 +11160,58 @@ rqSluVerGet = _reflection.GeneratedProtocolMessageType('rqSluVerGet', (_message.
   ))
 _sym_db.RegisterMessage(rqSluVerGet)
 
+rqMsgSettingInfo = _reflection.GeneratedProtocolMessageType('rqMsgSettingInfo', (_message.Message,), dict(
+  DESCRIPTOR = _RQMSGSETTINGINFO,
+  __module__ = 'msg_ws_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.ws.rqMsgSettingInfo)
+  ))
+_sym_db.RegisterMessage(rqMsgSettingInfo)
+
+MsgSettingInfo = _reflection.GeneratedProtocolMessageType('MsgSettingInfo', (_message.Message,), dict(
+
+  MsgView = _reflection.GeneratedProtocolMessageType('MsgView', (_message.Message,), dict(
+    DESCRIPTOR = _MSGSETTINGINFO_MSGVIEW,
+    __module__ = 'msg_ws_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.ws.MsgSettingInfo.MsgView)
+    ))
+  ,
+  DESCRIPTOR = _MSGSETTINGINFO,
+  __module__ = 'msg_ws_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.ws.MsgSettingInfo)
+  ))
+_sym_db.RegisterMessage(MsgSettingInfo)
+_sym_db.RegisterMessage(MsgSettingInfo.MsgView)
+
+rqMsgSettingEdit = _reflection.GeneratedProtocolMessageType('rqMsgSettingEdit', (_message.Message,), dict(
+
+  MsgView = _reflection.GeneratedProtocolMessageType('MsgView', (_message.Message,), dict(
+    DESCRIPTOR = _RQMSGSETTINGEDIT_MSGVIEW,
+    __module__ = 'msg_ws_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.ws.rqMsgSettingEdit.MsgView)
+    ))
+  ,
+  DESCRIPTOR = _RQMSGSETTINGEDIT,
+  __module__ = 'msg_ws_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.ws.rqMsgSettingEdit)
+  ))
+_sym_db.RegisterMessage(rqMsgSettingEdit)
+_sym_db.RegisterMessage(rqMsgSettingEdit.MsgView)
+
+rqSluitemAdd = _reflection.GeneratedProtocolMessageType('rqSluitemAdd', (_message.Message,), dict(
+
+  SluItemArgs = _reflection.GeneratedProtocolMessageType('SluItemArgs', (_message.Message,), dict(
+    DESCRIPTOR = _RQSLUITEMADD_SLUITEMARGS,
+    __module__ = 'msg_ws_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.ws.rqSluitemAdd.SluItemArgs)
+    ))
+  ,
+  DESCRIPTOR = _RQSLUITEMADD,
+  __module__ = 'msg_ws_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.ws.rqSluitemAdd)
+  ))
+_sym_db.RegisterMessage(rqSluitemAdd)
+_sym_db.RegisterMessage(rqSluitemAdd.SluItemArgs)
+
 
 DESCRIPTOR.has_options = True
 DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), b'H\001')
@@ -10767,8 +11339,8 @@ _RQPROJECTINFO.fields_by_name['project_id'].has_options = True
 _RQPROJECTINFO.fields_by_name['project_id']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
 _PROJECTINFO_PROJECTVIEW.fields_by_name['server_status'].has_options = True
 _PROJECTINFO_PROJECTVIEW.fields_by_name['server_status']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
-_RQQUERYTIMETABLEDO.fields_by_name['tml_id'].has_options = True
-_RQQUERYTIMETABLEDO.fields_by_name['tml_id']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
+_RQQUERYEVENTSTIMETABLEDO.fields_by_name['tml_id'].has_options = True
+_RQQUERYEVENTSTIMETABLEDO.fields_by_name['tml_id']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
 _RQQUERYRTUTIMETABLEBIND.fields_by_name['tml_id'].has_options = True
 _RQQUERYRTUTIMETABLEBIND.fields_by_name['tml_id']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
 _RQQUERYRTUTIMETABLEBIND.fields_by_name['tml_loop_id'].has_options = True
@@ -10807,4 +11379,12 @@ _RQELUCTL.fields_by_name['loop_id'].has_options = True
 _RQELUCTL.fields_by_name['loop_id']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
 _RQSLUVERGET.fields_by_name['tml_id'].has_options = True
 _RQSLUVERGET.fields_by_name['tml_id']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
+_RQSLUITEMADD_SLUITEMARGS.fields_by_name['sluitem_route'].has_options = True
+_RQSLUITEMADD_SLUITEMARGS.fields_by_name['sluitem_route']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
+_RQSLUITEMADD_SLUITEMARGS.fields_by_name['sluitem_st_poweron'].has_options = True
+_RQSLUITEMADD_SLUITEMARGS.fields_by_name['sluitem_st_poweron']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
+_RQSLUITEMADD_SLUITEMARGS.fields_by_name['sluitem_vector'].has_options = True
+_RQSLUITEMADD_SLUITEMARGS.fields_by_name['sluitem_vector']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
+_RQSLUITEMADD_SLUITEMARGS.fields_by_name['sluitem_rated_power'].has_options = True
+_RQSLUITEMADD_SLUITEMARGS.fields_by_name['sluitem_rated_power']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), b'\020\001')
 # @@protoc_insertion_point(module_scope)

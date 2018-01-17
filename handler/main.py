@@ -26,118 +26,118 @@ class StatusHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        try:
-            jobs = self.get_arguments('do')
-            if len(jobs) == 0:
-                self.write(self.help_doc)
-            else:
-                for do in jobs:
-                    if do == 'remoteip' or do == 'all':
-                        self.write(self.request.remote_ip)
+        # try:
+        jobs = self.get_arguments('do')
+        if len(jobs) == 0:
+            self.write(self.help_doc)
+        else:
+            for do in jobs:
+                if do == 'remoteip' or do == 'all':
+                    self.write(self.request.remote_ip)
 
-                    if do == 'showsalt':
-                        self.write(repr(self.salt))
-                        self.write('<br/>')
+                if do == 'showsalt':
+                    self.write(repr(self.salt))
+                    self.write('<br/>')
 
-                    if do == 'reloadprofile':
-                        libiisi.load_profile()
-                        self.write(str(len(libiisi.cache_user.keys())))
-                        self.write('<br/>')
+                if do == 'reloadprofile':
+                    libiisi.load_profile()
+                    self.write(str(len(libiisi.cache_user.keys())))
+                    self.write('<br/>')
 
-                    if do == 'timer' or do == 'all':
+                if do == 'timer' or do == 'all':
+                    self.write(
+                        '<br/><b><u>===== show system timer =====</u></b><br/>'
+                    )
+                    self.write('{0:.6f} ({1})<br/>'.format(
+                        time.time(), mx.stamp2time(time.time())))
+                    self.write('<br/>')
+
+                if do == 'testconfig' or do == 'all':
+                    self.write(
+                        '<b><u>===== test config =====</u></b><br/>')
+
+                    m = yield self.check_zmq_status(
+                        b'zmq.filter', 'zmq test message', b'zmq.filter')
+                    if len(m) > 0:
                         self.write(
-                            '<br/><b><u>===== show system timer =====</u></b><br/>'
-                        )
-                        self.write('{0:.6f} ({1})<br/>'.format(
-                            time.time(), mx.stamp2time(time.time())))
-                        self.write('<br/>')
-
-                    if do == 'testconfig' or do == 'all':
+                            'Test zmq config ... success. 『 {0} 』<br/>'.
+                            format(libiisi.m_config.getData('zmq_port')))
+                    else:
                         self.write(
-                            '<b><u>===== test config =====</u></b><br/>')
+                            'Test zmq config ... failed. 『 {0} 』<br/>'.
+                            format(libiisi.m_config.getData('zmq_port')))
 
-                        m = yield self.check_zmq_status(
-                            b'zmq.filter', 'zmq test message', b'zmq.filter')
-                        if len(m) > 0:
-                            self.write(
-                                'Test zmq config ... success. 『 {0} 』<br/>'.
-                                format(libiisi.m_config.getData('zmq_port')))
-                        else:
-                            self.write(
-                                'Test zmq config ... failed. 『 {0} 』<br/>'.
-                                format(libiisi.m_config.getData('zmq_port')))
+                    thc = AsyncHTTPClient()
+                    url = '{0}'.format(libiisi.cfg_fs_url)
+                    try:
+                        rep = yield thc.fetch(
+                            url, raise_error=True, request_timeout=30)
+                        self.write(
+                            'Test flow config ... success. 『 {0} 』<br/>'.
+                            format(url))
+                    except Exception as ex:
+                        self.write(
+                            'Test flow config ... failed. 『 {0} 』<br/>'.
+                            format(url))
 
-                        thc = AsyncHTTPClient()
-                        url = '{0}'.format(libiisi.cfg_fs_url)
-                        try:
-                            rep = yield thc.fetch(
-                                url, raise_error=True, request_timeout=30)
-                            self.write(
-                                'Test flow config ... success. 『 {0} 』<br/>'.
-                                format(url))
-                        except Exception as ex:
-                            self.write(
-                                'Test flow config ... failed. 『 {0} 』<br/>'.
-                                format(url))
+                    del url, thc
 
-                        del url, thc
+                    try:
+                        jk_isok = False
+                        dg_isok = False
+                        strsql = 'select schema_name from information_schema.schemata where schema_name in ("{0}","{1}");'.format(
+                            self._db_name, libiisi.cfg_dbname_dg)
+                        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                            strsql, need_fetch=1)
 
-                        try:
+                        if record_total is None:
                             jk_isok = False
                             dg_isok = False
-                            strsql = 'select schema_name from information_schema.schemata where schema_name in ("{0}","{1}");'.format(
-                                self._db_name, libiisi.cfg_dbname_dg)
-                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                                strsql, need_fetch=1)
-
-                            if record_total is None:
-                                jk_isok = False
-                                dg_isok = False
-                            else:
-                                for d in cur:
-                                    if d[0] == self._db_name:
-                                        jk_isok = True
-                                    elif d[0] == libiisi.cfg_dbname_dg:
-                                        dg_isok = True
-                            if jk_isok:
-                                self.write(
-                                    'Test jkdb config ... success. 『 {0} / {1} 』<br/>'.
-                                    format(
-                                        libiisi.m_config.getData('db_host'),
-                                        self._db_name))
-                            else:
-                                self.write(
-                                    'Test jkdb config ... failed. 『 {0} / {1} 』<br/>'.
-                                    format(
-                                        libiisi.m_config.getData('db_host'),
-                                        self._db_name))
-                            if dg_isok:
-                                self.write(
-                                    'Test dgdb config ... success. 『 {0} / {1} 』<br/>'.
-                                    format(
-                                        libiisi.m_config.getData('db_host'),
-                                        libiisi.cfg_dbname_dg))
-                            else:
-                                self.write(
-                                    'Test dgdb config ... failed. 『 {0} / {1} 』<br/>'.
-                                    format(
-                                        libiisi.m_config.getData('db_host'),
-                                        libiisi.cfg_dbname_dg))
-                            del cur
-                        except:
+                        else:
+                            for d in cur:
+                                if d[0] == self._db_name:
+                                    jk_isok = True
+                                elif d[0] == libiisi.cfg_dbname_dg:
+                                    dg_isok = True
+                        if jk_isok:
+                            self.write(
+                                'Test jkdb config ... success. 『 {0} / {1} 』<br/>'.
+                                format(
+                                    libiisi.m_config.getData('db_host'),
+                                    self._db_name))
+                        else:
                             self.write(
                                 'Test jkdb config ... failed. 『 {0} / {1} 』<br/>'.
                                 format(
                                     libiisi.m_config.getData('db_host'),
                                     self._db_name))
+                        if dg_isok:
+                            self.write(
+                                'Test dgdb config ... success. 『 {0} / {1} 』<br/>'.
+                                format(
+                                    libiisi.m_config.getData('db_host'),
+                                    libiisi.cfg_dbname_dg))
+                        else:
                             self.write(
                                 'Test dgdb config ... failed. 『 {0} / {1} 』<br/>'.
                                 format(
                                     libiisi.m_config.getData('db_host'),
                                     libiisi.cfg_dbname_dg))
-                        self.write('<br/>')
-        except Exception as ex:
-            self.write('<br/>' + self.help_doc)
+                        del cur
+                    except:
+                        self.write(
+                            'Test jkdb config ... failed. 『 {0} / {1} 』<br/>'.
+                            format(
+                                libiisi.m_config.getData('db_host'),
+                                self._db_name))
+                        self.write(
+                            'Test dgdb config ... failed. 『 {0} / {1} 』<br/>'.
+                            format(
+                                libiisi.m_config.getData('db_host'),
+                                libiisi.cfg_dbname_dg))
+                    self.write('<br/>')
+        # except Exception as ex:
+        #     self.write('<br/>' + self.help_doc)
         self.finish()
 
 

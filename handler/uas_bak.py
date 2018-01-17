@@ -23,7 +23,7 @@ class UserLoginHandler(base.RequestHandler):
     <b>返回:</b><br/>
     &nbsp;&nbsp;UserLogin()结构序列化并经过base64编码后的字符串'''
 
-    root_path = r'/uas/'
+    root_path = r'/uas_bak/'
 
     @gen.coroutine
     def post(self):
@@ -40,23 +40,28 @@ class UserLoginHandler(base.RequestHandler):
             msg.head.if_st = 46
 
         # 检查用户名密码是否合法
-        strsql = 'select user_id,user_name,user_pwd from  uas.user_info \
-        where user_name="{0}" and user_pwd="{1}"'.format(rqmsg.user, rqmsg.pwd)
+        strsql = 'select user_id,user_name,user_pwd,user_mobile,user_tel,user_email,user_remark from  {2}.user_info \
+        where binary user_name="{0}" and user_pwd="{1}"'.format(rqmsg.user,rqmsg.pwd,self._db_uas)
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql,
             need_fetch=1,
             need_paging=0)
-        for d in cur:
-            msg.user_id = d[0]
-
         if record_total is None or record_total == 0:
             yield self.add_eventlog(4, 0, 'Wrong username or password')
-            msg.head.if_st = 40
+            msg.head.if_st = 47
             msg.head.if_msg = 'Wrong username or password'
         else:
+            for d in cur:
+                msg.user_id = d[0]
+                msg.fullname=d[1]
+                msg.mobile=d[3] if d[3] is not None else 0
+                msg.tel=d[4] if d[4] is not None else ''
+                msg.email=d[5] if d[5] is not None else ''
+                msg.remark=d[6] if d[6] is not None else ''
+                break
             yield self.add_eventlog(4, msg.user_id, 'successfully to login')
-            msg.head.if_st = 1
             msg.head.if_msg = 'successfully to login'
+        print msg
         self.write(mx.convertProtobuf(msg))
         self.finish()
 
@@ -70,7 +75,7 @@ class UserAddHandler(base.RequestHandler):
     <b>返回:</b><br/>
     &nbsp;&nbsp;UserAdd()结构序列化并经过base64编码后的字符串'''
 
-    root_path = r'/uas/'
+    root_path = r'/uas_bak/'
 
     @gen.coroutine
     def post(self):
@@ -88,10 +93,10 @@ class UserAddHandler(base.RequestHandler):
 
         try:
             # 检查用户名密码是否存在
-            strsql = 'insert into uas.user_info (user_name, user_pwd, user_alias, create_time, user_remark) \
-                        values ("{0}","{1}","{2}","{3}","{4}")'.format(
-                rqmsg.user, rqmsg.pwd, rqmsg.fullname, int(time.time()),
-                mx.ip2int(self.request.remote_ip))
+            strsql = 'insert into {8}.user_info (user_name, user_pwd, user_alias,user_mobile,user_tel,user_email, create_time, user_remark) \
+                        values ("{0}","{1}","{2}","{3}","{4}","{5}","{6}","{7}")'.format(
+                rqmsg.user, rqmsg.pwd, rqmsg.fullname,rqmsg.mobile,rqmsg.tel,rqmsg.email, int(time.time()),
+                rqmsg.remark,self._db_uas)
             cur = yield self.mydata_collector(strsql, need_fetch=0)
             affected_rows = cur[0][0]
             msg.user_id = cur[0][1]
@@ -121,7 +126,7 @@ class UserEditHandler(base.RequestHandler):
     <b>返回:</b><br/>
     &nbsp;&nbsp;UserEdit()结构序列化并经过base64编码后的字符串'''
 
-    root_path = r'/uas/'
+    root_path = r'/uas_bak/'
 
     @gen.coroutine
     def post(self):
@@ -138,23 +143,25 @@ class UserEditHandler(base.RequestHandler):
             msg.head.if_st = 46
 
         try:
-            # 检查用户名密码是否存在并更新
-            strsql = 'update uas.user_info set \
-            user_pwd="{2}",user_alias="{3}",user_mobile="{4}",user_tel="{5}",user_email="{6}",user_remark="{7}" \
-            where user_name="{0}" and user_pwd="{1}"'.format(rqmsg.user, rqmsg.pwd_old, rqmsg.pwd,
-                                                             rqmsg.fullname, rqmsg.mobile,
-                                                             rqmsg.tel, rqmsg.email, rqmsg.remark)
-            cur = yield self.mydata_collector(strsql, need_fetch=0, need_paging=0)
-            affected_rows = cur[0][0]
-            if affected_rows > 0:
-                yield self.add_eventlog(2, rqmsg.user_id,
-                                        'successfully to edit user {0}'.format(rqmsg.user))
-                msg.head.if_st = 1
-                msg.head.if_msg = 'successfully to edit user {0}'.format(rqmsg.user)
+            strsql=''
+            # 是否提交了用户旧密码
+            if rqmsg.pwd_old:
+                strsql = 'update {0}.user_info set user_name="{1}",user_alias="{2}", user_pwd="{3}",user_remark="{4}" \
+                where user_name="{5}" and user_pwd="{6}"'.format(self._db_uas,rqmsg.user,rqmsg.fullname, rqmsg.pwd,
+                                                                 rqmsg.remark,rqmsg.user,rqmsg.pwd_old)
+                cur = yield self.mydata_collector(strsql, need_fetch=0, need_paging=0)
+                affected_rows = cur[0][0]
+                if affected_rows > 0:
+                    yield self.add_eventlog(2, rqmsg.user_id,
+                                            'successfully to edit user {0}'.format(rqmsg.user))
+                    msg.head.if_st = 1
+                    msg.head.if_msg = 'successfully to edit user {0}'.format(rqmsg.user)
+                else:
+                    yield self.add_eventlog(2,rqmsg.user_id, 'Wrong username or password')
+                    msg.head.if_st = 40
+                    msg.head.if_msg = 'Wrong username or password'
             else:
-                yield self.add_eventlog(2, rqmsg.user_id, 'Wrong username or password')
-                msg.head.if_st = 1
-                msg.head.if_msg = 'Wrong username or password'
+                msg.head.if_st=45
         except Exception as ex:
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
@@ -172,7 +179,7 @@ class UserDelHandler(base.RequestHandler):
     <b>返回:</b><br/>
     &nbsp;&nbsp;UserDel()结构序列化并经过base64编码后的字符串'''
 
-    root_path = r'/uas/'
+    root_path = r'/uas_bak/'
 
     @gen.coroutine
     def post(self):
@@ -193,8 +200,7 @@ class UserDelHandler(base.RequestHandler):
             #判断是否admin账户，是则返回异常，不是则可以删除
             if rqmsg.user != 'admin':
                 # 检查用户名密码是否合法并且删除该用户
-                strsql = 'delete from uas.user_info where user_name="{0}" and user_pwd="{1}"'.format(
-                    rqmsg.user, rqmsg.pwd)
+                strsql = 'delete from {1}.user_info where user_name="{0}" '.format(rqmsg.user,self._db_uas)
                 cur = yield self.mydata_collector(strsql, need_fetch=0, need_paging=0)
                 affected_rows = cur[0][0]
                 if affected_rows > 0:
@@ -218,6 +224,7 @@ class UserDelHandler(base.RequestHandler):
         self.finish()
 
 
+
 @mxweb.route()
 class QueryDataEventsHandler(base.RequestHandler):
 
@@ -227,7 +234,7 @@ class QueryDataEventsHandler(base.RequestHandler):
     <b>返回:</b><br/>
     &nbsp;&nbsp;QueryDataEvents()结构序列化并经过base64编码后的字符串'''
 
-    root_path = r'/uas/'
+    root_path = r'/uas_bak/'
 
     @gen.coroutine
     def post(self):

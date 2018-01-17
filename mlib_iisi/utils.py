@@ -14,7 +14,7 @@ from const import *
 
 m_zmq_pub = None
 m_zmq_pull = None
-m_zmq_ctx = zmq.Context.instance()
+m_zmq_ctx = zmq.Context().instance()
 
 sub_thread_started = False
 
@@ -44,22 +44,43 @@ def load_profile():
                     x['login_time'] = time.time()
                     x['active_time'] = time.time()
                     x['is_buildin'] = 1
-                    x['area_r'] = set([0])
-                    x['area_w'] = set([0])
-                    x['area_x'] = set([0])
+                    if 'area_r' in x.keys():
+                        x['area_r'] = set(
+                            [int(a) for a in x['area_r'].split(',')])
+                        x['is_buildin'] = 0
+                    else:
+                        x['area_r'] = set([0])
+                    if 'area_w' in x.keys():
+                        x['area_w'] = set(
+                            [int(a) for a in x['area_w'].split(',')])
+                        x['is_buildin'] = 0
+                    else:
+                        x['area_w'] = set([0])
+                    if 'area_x' in x.keys():
+                        x['area_x'] = set(
+                            [int(a) for a in x['area_x'].split(',')])
+                        x['is_buildin'] = 0
+                    else:
+                        x['area_x'] = set([0])
                     cache_user[uuid] = x
                 del x
             except Exception as ex:
-                print(ex)
+                print('profile', ex)
 
 
 def load_config(conf):
-    global cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain
+    global cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_jk_data, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain
     load_profile()
     m_config.loadConfig(conf)
     cfg_bind_port = m_config.getData('bind_port')
     cfg_tcs_port = m_config.getData('tcs_port')  # 监控通讯层端口号
-    cfg_dbname_jk = m_config.getData('db_name_jk')  # 监控数据库名称
+    dbn = m_config.getData('db_name_jk')  # 监控数据库名称
+    if ',' in dbn:
+        cfg_dbname_jk = dbn.split(',')[0]
+        cfg_dbname_jk_data = dbn.split(',')[1]
+    else:
+        cfg_dbname_jk = dbn
+        cfg_dbname_jk_data = dbn + "_data"
     cfg_dbname_dg = m_config.getData('db_name_dg')  # 灯杆数据库名称
     cfg_dbname_uas = m_config.getData('db_name_uas')  # uas数据库名称
     cfg_dz_url = m_config.getData('dz_url')  # 电桩接口地址
@@ -250,6 +271,7 @@ def zmq_proxy():
 
 def send_to_zmq_pub(sfilter, msg):
     global m_zmq_pub, m_zmq_pull, m_zmq_ctx
+    print(sfilter, msg)
     try:
         if m_zmq_pub is None:
             zmq_conf = m_config.getData('zmq_port')
@@ -264,7 +286,6 @@ def send_to_zmq_pub(sfilter, msg):
             else:
                 time.sleep(0.5)
                 m_zmq_pub.send_multipart([b'ka', '3a533ba0'.decode('hex')])
-
         if m_zmq_pub is not None:
             try:
                 f = bytes(sfilter)

@@ -51,7 +51,7 @@ class UserLoginJKHandler(base.RequestHandler):
             msg.head.if_st = 46
 
         # 检查用户名密码是否合法
-        strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
+        strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code,is_user_user_operator_code from {0}.user_list \
         where user_name="{1}" and user_password="{2}"'.format(
             self._db_name,
             rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"', ''))
@@ -84,6 +84,8 @@ class UserLoginJKHandler(base.RequestHandler):
             user_uuid = uuid.uuid1().hex
             msg.uuid = user_uuid
             msg.fullname = d[1] if d[1] is not None else ''
+            msg.is_user_operator_code = d[4] if d[4] is not None else 0
+            msg.code = d[3] if d[3] is not None else ""
             zmq_addr = libiisi.m_config.getData('zmq_port')
             if zmq_addr.find(':') > -1:
                 msg.zmq = '{0},{1}'.format(
@@ -252,14 +254,14 @@ class UserLoginHandler(base.RequestHandler):
             msg.head.if_st = 46
 
         # 检查用户名密码是否合法
-        strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code from {0}.user_list \
+        strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code,is_user_user_operator_code from {0}.user_list \
         where user_name="{1}" and user_password="{2}"'.format(
             self._db_name,
             rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"', ''))
 
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql, need_fetch=1, need_paging=0)
-
+        print(record_total, buffer_tag, paging_idx, paging_total, cur)
         if record_total is None or record_total == 0:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
             msg.head.if_st = 40
@@ -285,6 +287,8 @@ class UserLoginHandler(base.RequestHandler):
             user_uuid = uuid.uuid1().hex
             msg.uuid = user_uuid
             msg.fullname = d[1] if d[1] is not None else ''
+            msg.is_user_operator_code = d[4] if d[4] is not None else 0
+            msg.code = d[3] if d[3] is not None else ""
             zmq_addr = libiisi.m_config.getData('zmq_port')
             if zmq_addr.find(':') > -1:
                 msg.zmq = '{0},{1}'.format(
@@ -336,7 +340,6 @@ class UserLoginHandler(base.RequestHandler):
                     msg.head.if_msg = 'login failed, database version error.'
                 del cur1
             except:
-                print('user rwx error')
                 user_auth = 15
                 _area_r = [0]
                 _area_w = [0]
@@ -514,7 +517,7 @@ class UserAddHandler(base.RequestHandler):
                         strsql = 'insert into {0}.user_list (user_name, user_real_name, user_password, user_phonenumber, user_operator_code, date_create, date_update, date_access) \
                         values ("{1}","{2}","{3}","{4}","{5}",{6},{7},{8})'.format(
                             self._db_name, rqmsg.user, rqmsg.fullname,
-                            rqmsg.pwd, rqmsg.tel, rqmsg.code,
+                            rqmsg.pwd, rqmsg.mobile, rqmsg.code,
                             mx.switchStamp(int(time.time())),
                             mx.switchStamp(int(time.time())),
                             mx.switchStamp(int(time.time())))
@@ -561,15 +564,15 @@ class UserDelHandler(base.RequestHandler):
                     # 删除用户
                     try:
                         strsql = 'select * from {0}.user_list where user_name="{1}"'.format(
-                            self._db_name, rqmsg.user_name.replace('"', ''))
+                            self._db_name, rqmsg.user.replace('"', ''))
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql, need_fetch=1)
                         if record_total > 0:
                             strsql = 'delete from {0}.user_list where user_name="{1}"'.format(
-                                self._db_name, rqmsg.user_name)
+                                self._db_name, rqmsg.user)
                             yield self.mydata_collector(strsql, need_fetch=0)
                             env = True
-                            contents = 'del user {0}'.format(rqmsg.user_name)
+                            contents = 'del user {0}'.format(rqmsg.user)
                         else:
                             msg.head.if_st = 46
                             msg.head.if_msg = 'no such user'
@@ -612,12 +615,12 @@ class UserEditHandler(base.RequestHandler):
             if user_data is not None:
                 strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
                     self._db_name,
-                    rqmsg.user_name.replace('"', ''),
-                    rqmsg.pwd_old.replace('"', ''))
+                    rqmsg.user.replace('"', ''), rqmsg.pwd_old.replace(
+                        '"', ''))
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql, need_fetch=1)
                 if record_total > 0 or user_data['user_auth'] in libiisi.can_admin:
-                    if user_data['user_name'] == rqmsg.user_name:
+                    if user_data['user_name'] == rqmsg.user:
                         if user_data['user_auth'] in libiisi.can_write:
                             strsql = 'update {0}.user_list set user_real_name="{1}", \
                                         user_password="{2}", \
@@ -625,25 +628,25 @@ class UserEditHandler(base.RequestHandler):
                                         user_operator_code="{4}" \
                                         where user_name="{5}"'.format(
                                 self._db_name, rqmsg.fullname,
-                                rqmsg.pwd.replace('"', ''), rqmsg.tel,
-                                rqmsg.code, rqmsg.user_name.replace('"', ''))
+                                rqmsg.pwd.replace('"', ''), rqmsg.mobile,
+                                rqmsg.code, rqmsg.user.replace('"', ''))
                             self.mydata_collector(strsql, 0)
                         else:
                             msg.head.if_st = 11
                             msg.head.if_msg = 'You do not have permission to modify the information'
-                    # else:
-                    #     if user_data['user_auth'] in libiisi.can_admin:
-                    #         strsql = 'update {0}.user_list set user_real_name="{1}", \
-                    #                     user_password="{2}", \
-                    #                     user_phonenumber="{3}", \
-                    #                     user_operator_code="{4}" \
-                    #                     where user_name="{5}"'.format(
-                    #             self._db_name, rqmsg.fullname, rqmsg.pwd, rqmsg.tel, rqmsg.code,
-                    #             rqmsg.user_name)
-                    #         self.mydata_collector(strsql, 0)
-                    #     else:
-                    #         msg.head.if_st = 11
-                    #         msg.head.if_msg = 'You do not have permission to modify the information to others'
+                    else:
+                        if user_data['user_auth'] in libiisi.can_admin:
+                            strsql = 'update {0}.user_list set user_real_name="{1}", \
+                                        user_password="{2}", \
+                                        user_phonenumber="{3}", \
+                                        user_operator_code="{4}" \
+                                        where user_name="{5}"'.format(
+                                self._db_name, rqmsg.fullname, rqmsg.pwd,
+                                rqmsg.tel, rqmsg.code, rqmsg.user)
+                            self.mydata_collector(strsql, 0)
+                        else:
+                            msg.head.if_st = 11
+                            msg.head.if_msg = 'You do not have permission to modify the information to others'
                 else:
                     msg.head.if_st = 46
                     msg.head.if_msg = 'User old password error'
@@ -665,7 +668,7 @@ class UserEditHandler(base.RequestHandler):
                 # strsql = 'update {0}.user_list set \
                 #             user_password="{1}", \
                 #             where user_name="{2}"'.format(self._db_name, rqmsg.old_pwd,
-                #                                           rqmsg.user_name)
+                #                                           rqmsg.user_id)
                 # self.mydata_collector(strsql, 0)
                 # del strsql
 
@@ -728,7 +731,7 @@ class UserInfoHandler(base.RequestHandler):
                                 1] if d[1] is not None else ''
                             # userview.pwd = d[2]
                             # userview.auth = d[3]
-                            userview.tel = d[3] if d[3] is not None else ''
+                            userview.mobile = d[3] if d[3] is not None else ''
                             userview.code = d[4] if d[4] is not None else ''
                             # userview.area_id = d[5]
                             msg.user_view.extend([userview])

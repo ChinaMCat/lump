@@ -45,28 +45,29 @@ class QueryDataEventsHandler(base.RequestHandler):
                     str_tmls = ' a.rtu_id in ({0}) '.format(
                         ','.join([str(a) for a in rqmsg.tml_id]))
                 # 额外判断是否管理员,非管理员只能查询自己以及系统事件
-                if user_data['user_auth'] in libiisi.can_admin:
-                    if len(rqmsg.user_name) == 0:
+                if user_data['user_auth'] in libiisi.can_admin or user_data['is_buildin'] == 1:
+                    if len(rqmsg.user_id) == 0:
                         str_users = ''
                     else:
-                        str_users = ' a.user_name in ("{0}") '.format(
-                            ','.join(rqmsg.user_name))
+                        str_users = ' instr("{0}",a.user_name) '.format(
+                            ','.join([str(b) for b in rqmsg.user_id]))
                 else:
                     str_users = ' a.user_name in ("{0}", "应答", "上次未发送成功...", "时间表:新建时间表", "补开时间表:新建时间表") '.format(
                         user_data['user_name'])
 
                 strsql = 'select a.date_create,a.user_name,a.operator_id,a.is_client_snd,a.rtu_id,a.contents,a.remark,b.name \
-                                from {0}_data.record_operator as a \
-                                left join {0}_data.operator_id_assign as b on a.operator_id=b.id \
+                                from {3}.record_operator as a \
+                                left join {3}.operator_id_assign as b on a.operator_id=b.id \
                                 where a.date_create<={1} and a.date_create>={2}'.format(
-                    self._db_name, edt, sdt)
+                    self._db_name, edt, sdt, self._db_name_data)
+
                 if len(str_events) > 0:
                     strsql += ' and {0}'.format(str_events)
                 if len(str_tmls) > 0:
                     strsql += ' and {0}'.format(str_tmls)
                 if len(str_users) > 0:
                     strsql += ' and {0}'.format(str_users)
-                strsql += self._fetch_limited
+                strsql += ' ORDER BY a.date_create desc ' + self._fetch_limited
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
@@ -95,7 +96,6 @@ class QueryDataEventsHandler(base.RequestHandler):
                         del env
 
                 del cur, strsql
-
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data
@@ -114,7 +114,7 @@ class QueryEventsTimetableDoHandler(base.RequestHandler):
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
-            msgws.rqQueryTimetableDo(), msgws.QueryTimetableDo())
+            msgws.rqQueryEventsTimetableDo(), msgws.QueryEventsTimetableDo())
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
@@ -144,9 +144,9 @@ class QueryEventsTimetableDoHandler(base.RequestHandler):
                             ','.join([str(a) for a in tml_ids]))
 
                     strsql = 'select a.rtu_id,a.loop_id,a.is_open,a.rtu_reply_type,a.date_create \
-                                    from {0}_data.record_rtu_open_close_light_record as a \
+                                    from {0}.record_rtu_open_close_light_record as a \
                                     where a.date_create<={1} and a.date_create>={2} {3}'.format(
-                        self._db_name, edt, sdt, str_tmls)
+                        self._db_name_data, edt, sdt, str_tmls)
 
                     if rqmsg.data_mark in (0, 1):
                         strsql += ' and is_open={0}'.format(rqmsg.data_mark)
@@ -169,7 +169,8 @@ class QueryEventsTimetableDoHandler(base.RequestHandler):
                         msg.head.paging_idx = paging_idx
                         msg.head.paging_total = paging_total
                         for d in cur:
-                            env = msgws.QueryTimetableDo.TimetableDoView()
+                            env = msgws.QueryEventsTimetableDo.TimetableDoView(
+                            )
                             env.tml_id = d[0]
                             env.tml_loop_id = d[1]
                             env.data_mark = d[2]

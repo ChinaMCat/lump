@@ -16,10 +16,10 @@ class TestHandler(base.RequestHandler):
     @gen.coroutine
     def get(self):
         # time.sleep(10005)
-        args = self.request.arguments
-        if 'scode' in args.keys():
-            scode = '{0}'.format(args.get('scode')[0])
-            self.write('scode is {0}.<br/>'.format(self.computing_security_code(scode)))
+        # args = self.request.arguments
+        # if 'scode' in args.keys():
+        #     scode = '{0}'.format(args.get('scode')[0])
+        #     self.write('scode is {0}.<br/>'.format(self.computing_security_code(scode)))
         # url = 'http://192.168.50.83:10020/test'
         # tch = AsyncHTTPClient()
         # data = {'a':1,'b':2}
@@ -38,8 +38,8 @@ class TestHandler(base.RequestHandler):
         # self.write(str(dir(self)))
         # print(dir(self.request))
         # print(self.request.uri)
-        self.write(str(self.request.arguments))
-        self.finish('<br/>get test done.')
+        # self.write(str(self.request.arguments))
+        self.finish()
 
     @gen.coroutine
     def post(self):

@@ -59,21 +59,23 @@ class QueryDataEluHandler(base.RequestHandler):
                 if rqmsg.data_mark == 0:  # 最新数据
                     strsql = '''select b.leak_line_name,x.leak_id,x.date_create,x.leak_line_id,
                                 a.auto_break_auto_alarm,a.state_alarm,a.state_on_off,a.upper_alarm_break_for_leak_temperature,
-                                a.time_delay_break,a.alarm_value_leak_temperature,a.current_leak_temperature,a.leak_mode
+                                a.time_delay_break,a.alarm_value_leak_temperature,a.current_leak_temperature,a.leak_mode, c.rtu_name
                                 from (select leak_id,max(date_create) as date_create,leak_line_id
-                                from {0}_data.data_leak_line_record {1} group by leak_id,leak_line_id) as x
-                                left join {0}_data.data_leak_line_record as a
+                                from {2}.data_leak_line_record {1} group by leak_id,leak_line_id) as x
+                                left join {2}.data_leak_line_record as a
                                 on x.date_create=a.date_create and x.leak_id=a.leak_id and x.leak_line_id=a.leak_line_id
-                                left join {0}.para_leak_line as b on a.leak_id=b.leak_id and a.leak_line_id=b.leak_line_id'''.format(
-                        self._db_name, str_tmls.replace('and', 'where'))
+                                left join {0}.para_leak_line as b on a.leak_id=b.leak_id and a.leak_line_id=b.leak_line_id
+                                left join {0}.para_base_equipment as c on a.leak_id=c.rtu_id'''.format(
+                        self._db_name, str_tmls.replace('and', 'where'), self._db_name_data)
                 elif rqmsg.data_mark == 1:  #历史数据
                     strsql = '''select b.leak_line_name,a.leak_id,a.date_create,a.leak_line_id,
                 				a.auto_break_auto_alarm,a.state_alarm,a.state_on_off,a.upper_alarm_break_for_leak_temperature,
-                				a.time_delay_break,a.alarm_value_leak_temperature,a.current_leak_temperature,a.leak_mode
-                				from {0}_data.data_leak_line_record as a
+                				a.time_delay_break,a.alarm_value_leak_temperature,a.current_leak_temperature,a.leak_mode,c.rtu_name
+                				from {5}.data_leak_line_record as a
                 				left join {0}.para_leak_line as b on a.leak_id=b.leak_id and a.leak_line_id=b.leak_line_id
+                                left join {0}.para_base_equipment as c on a.leak_id=c.rtu_id
                 				where a.date_create>={1} and a.date_create<={2} {3} {4}'''.format(
-                        self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                        self._db_name, sdt, edt, str_tmls, self._fetch_limited, self._db_name_data)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
@@ -104,6 +106,7 @@ class QueryDataEluHandler(base.RequestHandler):
                         dv.alarm_value = d[9]
                         dv.el_value = d[10]
                         dv.data_mode = d[11]
+                        dv.elu_name = d[12] if d[12] is not None else ''
                         msg.data_elu_view.extend([dv])
                         del dv
                 del cur, strsql

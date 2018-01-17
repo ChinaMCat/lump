@@ -24,9 +24,12 @@ class RequestHandler(mxweb.MXRequestHandler):
     executor = ThreadPoolExecutor(200)
 
     _db_name = libiisi.cfg_dbname_jk
+    _db_uas = libiisi.cfg_dbname_uas
+    _db_name_data = libiisi.cfg_dbname_jk_data
     _go_back_format = 0  # 数据返回格式设置0-base64，1-json，2-pb2 serialString
     _fetch_limited = ' limit 1000'  # 数据查询数量限制
     _pb_format = 0  # 0-base64, 2-pb2 serialString
+    _ctx = zmq.Context().instance()
 
     def flush(self, include_footers=False, callback=None):
         if libiisi.cfg_enable_cross_domain:
@@ -56,8 +59,8 @@ class RequestHandler(mxweb.MXRequestHandler):
         # if isinstance(cur, types.GeneratorType):
         if cur is not None:
             for d in cur:
-                libiisi.cache_sunriseset[int('{0}{1:02d}'.format(d[0], d[
-                    1]))] = (d[2], d[3])
+                libiisi.cache_sunriseset[int('{0}{1:02d}'.format(
+                    d[0], d[1]))] = (d[2], d[3])
         del cur
 
     def get_sunriseset(self, mmdd):
@@ -69,15 +72,33 @@ class RequestHandler(mxweb.MXRequestHandler):
         else:
             return a
 
+    def zmq_send_test(self, req_filter, req_msg):
+        zmq_addr = libiisi.m_config.getData('zmq_port')
+        if zmq_addr.find(':') == -1:
+            ip = '127.0.0.1'
+            port = zmq_addr
+        else:
+            ip, port = zmq_addr.split(':')
+        ctx = zmq.Context()
+        push = ctx.socket(zmq.PUSH)
+        # push.setsockopt(zmq.SNDTIMEO, 2000)
+        push.connect('tcp://{0}:{1}'.format(ip, int(port)))
+        push.send_multipart([req_filter, req_msg])
+        try:
+            push.close()
+        except:
+            pass
+        del push
+        del ctx
+
     @run_on_executor
     def check_zmq_status(self, req_filter, req_msg, subscribe=b''):
         rep_value = ''
         ctx = zmq.Context()
         sub = ctx.socket(zmq.SUB)
-        sub.setsockopt(zmq.RCVTIMEO, 7000)
+        sub.setsockopt(zmq.RCVTIMEO, 2000)
         sub.setsockopt(zmq.SUBSCRIBE, subscribe)
-        push = ctx.socket(zmq.PUSH)
-        push.setsockopt(zmq.SNDTIMEO, 3000)
+        # push = ctx.socket(zmq.PUSH)
 
         zmq_addr = libiisi.m_config.getData('zmq_port')
         if zmq_addr.find(':') == -1:
@@ -86,25 +107,26 @@ class RequestHandler(mxweb.MXRequestHandler):
         else:
             ip, port = zmq_addr.split(':')
         sub.connect('tcp://{0}:{1}'.format(ip, int(port) + 1))
-        push.connect('tcp://{0}:{1}'.format(ip, int(port)))
+        # push.connect('tcp://{0}:{1}'.format(ip, int(port)))
         try:
-            push.send_multipart([req_filter, req_msg])
+            # libiisi.send_to_zmq_pub(req_filter, req_msg)
+            t = threading.Thread(
+                target=self.zmq_send_test, args=(req_filter, req_msg))
+            t.start()
+            # push.send_multipart([req_filter,req_msg])
             f, m = sub.recv_multipart()
             rep_value = m
-        except:
+        except Exception as ex:
+            print(ex)
             rep_value = ''
 
         try:
             sub.close()
         except:
             pass
-        try:
-            push.close()
-        except:
-            pass
         finally:
             del sub
-            del push
+        del ctx
 
         return rep_value
 
@@ -145,156 +167,101 @@ class RequestHandler(mxweb.MXRequestHandler):
 
         cache_head = ''.join(
             ['{0:x}'.format(ord(a)) for a in self.url_pattern])
-        # 判断是否优先读取缓存数据
-        if buffer_tag > 0 and os.path.isfile(
-                os.path.join(libiisi.m_cachedir, '{0}{1}'.format(
-                    buffer_tag, cache_head))):
-            try:
-                rep = []
-                with open(
-                        os.path.join(libiisi.m_cachedir, '{0}{1}'.format(
-                            buffer_tag, cache_head)), 'rb') as f:
-                    cur = json.loads(f.read())
-                    f.close()
-                c = len(cur.keys())
-                paging_total = c / paging_num if c % paging_num == 0 else c / paging_num + 1
-                x = (paging_idx - 1) * paging_num
-                y = paging_idx * paging_num
-                n = 0
-                old_record = [0] * len(multi_record)
-                if len(multi_record) > 0:
-                    i = 0
-                    while i < c:
-                        d = cur.get(i)
-                        if n < y and n >= x:
-                            rep.append(d)
-                        got_change = False
-                        for a in multi_record:
-                            if d[a] != old_record[a]:
-                                got_change = True
-                                old_record[a] = d[a]
-                        if got_change:
-                            n += 1
-                        i += 1
-                else:
-                    while n < c:
-                        d = cur.get(str(n))
-                        if n < y and n >= x:
-                            rep.append(d)
-                        n += 1
-                paging_total = n / paging_num if n % paging_num == 0 else n / paging_num + 1
-                del cur
-                return (n, buffer_tag, paging_idx, paging_total, rep)
-            except Exception as ex:
-                print('read cache error: {0}'.format(ex))
-
+        rep = []
+        cache_data = dict()
         if need_fetch:
-            # 向数据库请求最新结果集
-            cur = None
-            cur = libiisi.m_sql.run_fetch(strsql)
-            # print(cur, isinstance(cur, types.GeneratorType))
-            # 若返回的不是迭代器，则认为数据库操作失败
-            # if not isinstance(cur, types.GeneratorType):
-            if cur is None:
-                return (None, None, None, None, None)
+            # 判断是否优先读取缓存数据
+            if buffer_tag > 0 and os.path.isfile(
+                    os.path.join(libiisi.m_cachedir, '{0}{1}'.format(
+                        buffer_tag, cache_head))):
+                try:
+                    rep = []
+                    with open(
+                            os.path.join(libiisi.m_cachedir, '{0}{1}'.format(
+                                buffer_tag, cache_head)), 'rb') as f:
+                        cache_data = json.loads(f.read())
+                        f.close()
+                except Exception as ex:
+                    print('read cache error: {0}'.format(ex))
             else:
-                # if need_fetch:  # 遍历结果集
-                rep = []
-                cache_data = dict()
-                if need_paging:  # 计算分页索引
-                    x = (paging_idx - 1) * paging_num
-                    y = paging_idx * paging_num
-                else:
-                    x = 0
-                    y = 0
-                n = 0
-                old_record = [0] * len(multi_record)
-                if len(multi_record) > 0:
-                    i = 0
-                    # while True:
-                    #     try:
-                    #         d = cur.next()
-                    #     except Exception as ex:
-                    #         cur.close()
-                    #         del cur
-                    #         break
-                    #     if d is None:
-                    #         break
-                    for d in cur:
-                        if len(key_column) > 0:
-                            key_none = False
-                            for a in key_column:
-                                if d[a] is None:
-                                    key_none = True
-                                    break
-                            if key_none:
-                                continue
-                        if n < y and n >= x:
-                            rep.append(d)
-
-                        got_change = False
-                        for a in multi_record:  # 判断主键字段是否变化，发生变化则换行
-                            if d[a] != old_record[a]:
-                                got_change = True
-                                old_record[a] = d[a]
-                        if got_change:
-                            n += 1
-
-                        cache_data[i] = d
-                        i += 1
-                else:
-                    # while True:
-                    #     try:
-                    #         d = cur.next()
-                    #     except Exception as ex:
-                    #         cur.close()
-                    #         del cur
-                    #         break
-                    #     if d is None:
-                    #         break
-                    for d in cur:
-                        if len(key_column) > 0:
-                            key_none = False
-                            for a in key_column:
-                                if d[a] is None:
-                                    key_none = True
-                                    break
-                            if key_none:
-                                continue
-                        if n < y and n >= x:
-                            rep.append(d)
-                        cache_data[n] = d
-                        n += 1
-                s = libiisi.m_sql.get_last_error_message()
-                if len(s) > 0:
-                    logging.error(
-                        self.format_log(self.request.remote_ip, s,
-                                        self.request.path, '_MYSQL'))
+                # 向数据库请求最新结果集
+                cur = None
+                cur = libiisi.m_sql.run_fetch(strsql)
+                if cur is None:
                     return (None, None, None, None, None)
                 else:
+                    s = libiisi.m_sql.get_last_error_message()
+                    if len(s) > 0:
+                        logging.error(
+                            self.format_log(self.request.remote_ip, s,
+                                            self.request.path, '_MYSQL'))
+                        return (None, None, None, None, None)
+                    i = 0
+                    for d in cur:
+                        if len(key_column) > 0:
+                            key_none = False
+                            for a in key_column:
+                                if d[a] is None:
+                                    key_none = True
+                                    break
+                            if key_none:
+                                continue
+                        cache_data[i] = d
+                        i += 1
                     if need_paging:
-                        paging_total = n / paging_num if n % paging_num == 0 else n / paging_num + 1
-                        if paging_total > 1:  # 利用后台线程写缓存
-                            buffer_tag = int(time.time() * 1000000)
-                            t = threading.Thread(
-                                target=self.write_cache,
-                                args=(
-                                    os.path.join(libiisi.m_cachedir,
-                                                 '{0}{1}'.format(
-                                                     buffer_tag, cache_head)),
-                                    cache_data, ))
-                            t.start()
-                        return (n, buffer_tag, paging_idx, paging_total, rep)
+                        # 利用后台线程写缓存
+                        buffer_tag = int(time.time() * 1000000)
+                        t = threading.Thread(
+                            target=self.write_cache,
+                            args=(
+                                os.path.join(libiisi.m_cachedir,
+                                             '{0}{1}'.format(
+                                                 buffer_tag, cache_head)),
+                                cache_data,
+                            ))
+                        t.start()
+            # 开始分页处理
+            # 判断是否需要分页处理
+            x = 0  # 所需页的起始记录序号
+            y = 0  # 结束记录序号
+            if need_paging:
+                x = (paging_idx - 1) * paging_num
+                y = paging_idx * paging_num
+            p = 0
+            i = 0
+            rep = []
+            old_record = dict()
+            if len(multi_record) > 0:  # 多列判断
+                for d in cache_data.values():
+                    if need_paging:
+                        if p < y and p >= x:
+                            rep.append(d)
+                            p += 1
                     else:
-                        return (n, buffer_tag, paging_idx, 0,
-                                cache_data.values())
-            # else:
-            #     try:
-            #         d = cur.next()
-            #     except:
-            #         cur.close()
-            #         del cur
-            #     return (0, None, None, None, None)
+                        rep.append(d)
+                        p += 1
+                    if i == 0:
+                        i += 1
+                        for a in multi_record:
+                            old_record[a] = d[a]
+                    got_change = False
+                    for a in multi_record:  # 判断主键字段是否变化，发生变化则换行
+                        if d[a] != old_record[a]:
+                            got_change = True
+                            old_record[a] = d[a]
+                    if got_change:
+                        p += 1
+            else:
+                for d in cache_data.values():
+                    if need_paging:
+                        if p < y and p >= x:
+                            rep.append(d)
+                            p += 1
+                    else:
+                        rep.append(d)
+                        p += 1
+            paging_total = p / paging_num if p % paging_num == 0 else p / paging_num + 1
+            return (p, buffer_tag, paging_idx, paging_total, rep)
         else:
             cur = libiisi.m_sql.run_exec(strsql)
             s = libiisi.m_sql.get_last_error_message()
@@ -303,71 +270,6 @@ class RequestHandler(mxweb.MXRequestHandler):
                     self.format_log(self.request.remote_ip, s,
                                     self.request.path, '_MYSQL'))
             return cur
-
-            # @run_on_executor
-            # def _mysql_no_fetch(self, strsql):
-            #     '''数据库访问方法，用于执行delet，insert，update语句，支持多条语句一起提交，用‘;’分割
-            #     返回:
-            #     [(affected_rows,insert_id),...]'''
-            #     conn = mysql.connect(host=utils.m_db_host,
-            #                          user=utils.m_db_user,
-            #                          passwd=utils.m_db_pwd,
-            #                          port=utils.m_db_port,
-            #                         #  compress=1,
-            #                          client_flag=32 | 65536 | 131072,  # compress,multi_statements,multi_results
-            #                          conv=utils.m_conv,
-            #                          connect_timeout=5,
-            #                          #  charset='utf8',
-            #                          )
-            #     conn.set_character_set('utf8')
-            #     x = []
-            #     try:
-            #         conn.query(strsql)
-            #     except Exception as ex:
-            #         logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
-            #     else:
-            #         conn.use_result()
-            #         x.append((conn.affected_rows(), conn.insert_id()))
-            #         while True:
-            #             if conn.next_result() == -1:
-            #                 break
-            #             x.append((conn.affected_rows(), conn.insert_id()))
-            #
-            #     conn.close()
-            #     del conn
-            #     return x
-            #
-            # def _mysql_generator_sql_mysql(self, strsql):
-            #     '''数据库访问方法，返回迭代器'''
-            #     conn = mysql.connect(host=utils.m_db_host,
-            #                          user=utils.m_db_user,
-            #                          passwd=utils.m_db_pwd,
-            #                          port=utils.m_db_port,
-            #                         #  compress=1,
-            #                          client_flag=32 | 65536,  # compress,multi_statements
-            #                          conv=utils.m_conv,
-            #                          connect_timeout=5,
-            #                          #  charset='utf8',
-            #                          )
-            #     conn.set_character_set('utf8')
-            #     try:
-            #         conn.query(strsql)
-            #     except Exception as ex:
-            #         logging.error(self.format_log(self.request.remote_ip, ex, self.request.path, '_MYSQL'))
-            #     else:
-            #         cur = conn.use_result()
-            #         if cur is not None:
-            #             while True:
-            #                 d = cur.fetch_row(619)
-            #                 if len(d) == 0:
-            #                     break
-            #                 else:
-            #                     for i in d:
-            #                         yield i
-            #         else:
-            #             yield -1
-            #     conn.close()
-            #     del conn
 
     def init_msgws(self, msgpb, if_name=''):
         '''初始化消息头'''
@@ -522,9 +424,9 @@ class RequestHandler(mxweb.MXRequestHandler):
         # libiisi.SQL_DATA.execute(strsql)
         strsql = ''
         for rtu_id in device_ids.split(','):
-            strsql += 'insert into {0}_data.record_operator (date_create,user_name, operator_id, is_client_snd, rtu_id, contents, remark) \
+            strsql += 'insert into {0}.record_operator (date_create,user_name, operator_id, is_client_snd, rtu_id, contents, remark) \
                         values ({1},"{2}",{3},{4},{5},"{6}","{7}");'.format(
-                self._db_name,
+                self._db_name_data,
                 mx.switchStamp(time.time()), user_name, event_id,
                 is_client_snd, int(rtu_id), contents, remark)
 

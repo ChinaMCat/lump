@@ -159,17 +159,17 @@ class QueryDataRtuElecHandler(base.RequestHandler):
 
                     if rqmsg.data_mark == 0:
                         strsql = 'select a.date_create,a.rtu_id,a.loop_id,a.minutes_open,a.power \
-                        from {0}_data.info_rtu_elec as a \
+                        from {5}.info_rtu_elec as a \
                         where a.date_create>={1} and a.date_create<={2} {3} \
                         order by a.date_create desc,a.rtu_id,a.loop_id {4}'.format(
-                            self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                            self._db_name, sdt, edt, str_tmls, self._fetch_limited, self._db_name_data)
                     else:
                         strsql = 'select a.rtu_id,a.rtu_id,a.loop_id,sum(a.minutes_open) as m,sum(a.power) as p \
-                        from {0}_data.info_rtu_elec as a \
+                        from {5}.info_rtu_elec as a \
                         where a.date_create>={1} and a.date_create<={2} {3} \
                         group by a.rtu_id,a.loop_id \
                         order by a.rtu_id,a.loop_id {4}'.format(self._db_name, sdt, edt, str_tmls,
-                                                                self._fetch_limited)
+                                                                self._fetch_limited, self._db_name_data)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
@@ -263,24 +263,24 @@ class QueryDataRtuHandler(base.RequestHandler):
                                     a.rtu_alarm,a.switch_out_attraction,a.loop_id,a.v,a.a,a.power,
                                     a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range,a.temperature,
                                     c.loop_name,b.rtu_phy_id,b.rtu_name
-                                    from {0}_data.data_rtu_view_new as a 
-                                    left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id 
-                                    left join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id 
-                                    where a.temperature>-1 {1} 
-                                    order by a.rtu_id,a.loop_id'''.format(self._db_name, str_tmls)
+                                    from {2}.data_rtu_view_new as a
+                                    left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id
+                                    left join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id
+                                    where a.temperature>-1 {1}
+                                    order by a.rtu_id,a.loop_id'''.format(self._db_name, str_tmls, self._db_name_data)
                         else:
                             strsql = '''select x.*,a.rtu_voltage_a,a.rtu_voltage_b,a.rtu_voltage_c,
                                     a.rtu_current_sum_a,a.rtu_current_sum_b, a.rtu_current_sum_c,a.rtu_alarm,a.switch_out_attraction,
                                     d.loop_id,d.v,d.a,d.power,d.power_factor,d.bright_rate,d.switch_in_state,d.a_over_range,d.v_over_range,a.temperature,
                                     c.loop_name,b.rtu_phy_id,b.rtu_name
-                                    from 
-                                    (select max(date_create) as date_create,rtu_id
-                                    from {0}_data.data_rtu_record where temperature>-1 {1} group by rtu_id) as x
-                                    left join {0}_data.data_rtu_record as a on x.rtu_id=a.rtu_id and x.date_create=a.date_create 
-                                    left join {0}_data.data_rtu_loop_record as d on x.rtu_id=d.rtu_id and x.date_create=d.date_create
+                                    from
+                                    (select max(a.date_create) as date_create,a.rtu_id
+                                    from {2}.data_rtu_record as a where a.temperature>-1 {1} group by a.rtu_id) as x
+                                    left join {2}.data_rtu_record as a on x.rtu_id=a.rtu_id and x.date_create=a.date_create
+                                    left join {2}.data_rtu_loop_record as d on x.rtu_id=d.rtu_id and x.date_create=d.date_create
                                     left join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
                                     left join {0}.para_rtu_loop_info as c on d.rtu_id=c.rtu_id and d.loop_id=c.loop_id'''.format(
-                                self._db_name, str_tmls)
+                                self._db_name, str_tmls, self._db_name_data)
 
                             # strsql = 'select a.date_create,a.rtu_id,a.rtu_voltage_a,a.rtu_voltage_b,a.rtu_voltage_c, \
                             # a.rtu_current_sum_a,a.rtu_current_sum_b, a.rtu_current_sum_c,a.rtu_alarm,a.switch_out_attraction, \
@@ -292,27 +292,27 @@ class QueryDataRtuHandler(base.RequestHandler):
                             # where t.rtu_id=a.rtu_id and t.date_create=a.date_create) {1} order by a.date_create desc,a.rtu_id,a.loop_id;'.format(
                             #     self._db_name, str_tmls)
                     else:
-                        strsql = '''select x.*,c.loop_name,b.rtu_phy_id,b.rtu_name from 
+                        strsql = '''select x.*,c.loop_name,b.rtu_phy_id,b.rtu_name from
                                 (select a.date_create, a.rtu_id,a.rtu_voltage_a,a.rtu_voltage_b,a.rtu_voltage_c,
                                 a.rtu_current_sum_a,a.rtu_current_sum_b,a.rtu_current_sum_c,
                                 a.rtu_alarm,a.switch_out_attraction,a.loop_id,a.v,a.a,a.power,
-                                a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range,a.temperature 
-                                from {0}_data.data_rtu_view as a 
-                                where a.date_create>={1} and a.date_create<={2} {3} {4}) as x 
-                                left join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id 
+                                a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range,a.temperature
+                                from {5}.data_rtu_view as a
+                                where a.date_create>={1} and a.date_create<={2} {3} {4}) as x
+                                left join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
                                 left join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id'''.format(
-                            self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                            self._db_name, sdt, edt, str_tmls, self._fetch_limited, self._db_name_data)
 
                         # strsql = '''select a.date_create, a.rtu_id,a.rtu_voltage_a,a.rtu_voltage_b,a.rtu_voltage_c,
                         # a.rtu_current_sum_a,a.rtu_current_sum_b,a.rtu_current_sum_c,
                         # a.rtu_alarm,a.switch_out_attraction,a.loop_id,a.v,a.a,a.power,
-                        # a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range, 
-                        # c.loop_name from {0}_data.data_rtu_view as a 
-                        # left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id 
-                        # where a.date_create>={1} and a.date_create<={2} {3} 
+                        # a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range,
+                        # c.loop_name from {0}_data.data_rtu_view as a
+                        # left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id
+                        # where a.date_create>={1} and a.date_create<={2} {3}
                         # order by a.rtu_id,a.date_create desc,a.loop_id'''.format(self._db_name, sdt,
                         #                                                          edt, str_tmls)
-
+                        
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,

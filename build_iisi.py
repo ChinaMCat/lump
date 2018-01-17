@@ -50,7 +50,7 @@ VSVersionInfo(
         StringStruct(u'OriginalFilename', u'iisi.exe'),
         StringStruct(u'ProductName', u'Interactive Integrated Services Interface'),
         StringStruct(u'ProductVersion', u'{4}')])
-      ]), 
+      ]),
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]
 )
@@ -95,7 +95,7 @@ VSVersionInfo(
         StringStruct(u'OriginalFilename', u'zmqproxy.exe'),
         StringStruct(u'ProductName', u'zmq message proxy'),
         StringStruct(u'ProductVersion', u'{4}')])
-      ]), 
+      ]),
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]
 )
@@ -157,14 +157,14 @@ if __name__ == '__main__':
         os.system('rmdir /Q /S dist\\iisi-win\\tk\\')
         os.system('mkdir dist\\iisi-win\\tcl\\')
         os.system('mkdir dist\\iisi-win\\tk\\')
-        os.system('pyinstaller -y zmqproxy-win.spec')
-        os.system('copy dist\\zmqproxy-win\\zmqproxy.exe dist\\iisi-win\\ /Y')
+        # os.system('pyinstaller -y zmqproxy-win.spec')
+        # os.system('copy dist\\zmqproxy-win\\zmqproxy.exe dist\\iisi-win\\ /Y')
     else:
         os.system('pyinstaller -y iisi.spec')
         os.system('cp -f -r static dist/iisi/')
         os.system('cp -f -r templates dist/iisi/')
         os.system('\\rm -rf dist/iisi/certifi/ dist/iisi/include/ dist/iisi/lib64')
-        os.system('pyinstaller -y zmqproxy.spec')
-        os.system('cp -f -r dist/zmqproxy/zmqproxy dist/iisi/')
-        os.system('cp -f -r dist/zmqproxy/mxlog.so dist/iisi/')
+        # os.system('pyinstaller -y zmqproxy.spec')
+        # os.system('cp -f -r dist/zmqproxy/zmqproxy dist/iisi/')
+        # os.system('cp -f -r dist/zmqproxy/mxlog.so dist/iisi/')
         os.system('cp -f -r .profile dist/iisi/')

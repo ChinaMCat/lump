@@ -55,10 +55,11 @@ class QueryDataAlsHandler(base.RequestHandler):
                         str_tmls = ' and a.rtu_id in ({0}) '.format(','.join([str(a) for a in
                                                                               tml_ids]))
 
-                    strsql = '''select rtu_id,date_create,lux_data 
-                            from {0}_data.data_lux_record 
-                            where date_create>={1} and date_create<={2} {3} {4}'''.format(
-                        self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                    strsql = '''select a.rtu_id,a.date_create,a.lux_data,b.rtu_name
+                            from {5}.data_lux_record as a
+                            left join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id
+                            where a.date_create>={1} and a.date_create<={2} {3} {4}'''.format(
+                        self._db_name, sdt, edt, str_tmls, self._fetch_limited,self._db_name_data)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
@@ -79,6 +80,7 @@ class QueryDataAlsHandler(base.RequestHandler):
                             drv.tml_id = int(d[0])
                             drv.dt_receive = mx.switchStamp(int(d[1]))
                             drv.lux_value = float(d[2])
+                            drv.lux_name = d[3]
                             msg.data_als_view.extend([drv])
                             del drv
                     del cur, strsql

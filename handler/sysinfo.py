@@ -90,11 +90,13 @@ class TreeInfoHandler(base.RequestHandler):
                                     x[c] = d[0]
 
                         if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
-                            strsql = '''select rtu_id,rtu_name,rtu_fid,case when rtu_fid>0 then 4 else 3 end from {0}.para_base_equipment'''.format(
+                            strsql = '''select a.rtu_id,a.rtu_name,a.rtu_fid,case when a.rtu_fid>0 then 4 else 3 end,b.mobile_no from {0}.para_base_equipment as a
+                                        left join {0}.para_rtu_gprs as b on a.rtu_id=b.rtu_id'''.format(
                                 self._db_name)
                         else:
-                            strsql = '''select rtu_id,rtu_name,rtu_fid,case when rtu_fid>0 then 4 else 3 end
-                                        from {0}.para_base_equipment where rtu_id in ({1})'''.format(
+                            strsql = '''select a.rtu_id,a.rtu_name,a.rtu_fid,case when a.rtu_fid>0 then 4 else 3 end,b.mobile_no
+                                        from {0}.para_base_equipment as a left join {0}.para_rtu_gprs as b on a.rtu_id=b.rtu_id
+                                        where a.rtu_id in ({1})'''.format(
                                 self._db_name, ','.join([
                                     str(a)
                                     for a in libiisi.cache_tml_r[user_uuid]
@@ -111,6 +113,7 @@ class TreeInfoHandler(base.RequestHandler):
                                 tv.node_parent = d[2] if d[2] > 0 else x.get(
                                     d[0]) if d[0] in x.keys() else 0
                                 tv.node_route = d[3]
+                                tv.node_sim = d[4] if d[4] is not None else ''
                                 msg.tree_view.extend([tv])
                     del x
                 del cur, strsql
@@ -138,7 +141,7 @@ class GroupInfoHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read:
                 strsql = 'select grp_id,grp_name,rtu_list,area_id,orderx from {0}.area_equipment_group'.format(
                     self._db_name)
-                if user_data['user_auth'] not in libiisi.can_admin:
+                if user_data['user_auth'] not in libiisi.can_admin and user_data['is_buildin'] != 1:
                     z = user_data['area_r'].union(user_data['area_w']).union(
                         user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(
@@ -189,7 +192,7 @@ class AreaInfoHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read:
                 strsql = 'select area_id,area_name,rtu_list from {0}.area_info'.format(
                     self._db_name)
-                if user_data['user_auth'] not in libiisi.can_admin:
+                if user_data['user_auth'] not in libiisi.can_admin and user_data['is_buildin'] != 1:
                     z = user_data['area_r'].union(user_data['area_w']).union(
                         user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(
@@ -262,8 +265,8 @@ class EventInfoHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
 
-                strsql = 'select id,name,id_class,name_class from {0}_data.operator_id_assign order by id_class'.format(
-                    self._db_name)
+                strsql = 'select id,name,id_class,name_class from {0}.operator_id_assign order by id_class'.format(
+                    self._db_name_data)
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql, need_fetch=1, need_paging=0)
                 if record_total is None:
@@ -283,8 +286,8 @@ class EventInfoHandler(base.RequestHandler):
                         envinfoview = msgws.EventInfo.EventInfoView()
                         envinfoview.event_id = int(d[0])
                         envinfoview.event_name = d[1]
-                        eveinfoview.event_cls_id = d[2]
-                        eveinfoview.event_cls_name = d[3]
+                        envinfoview.event_cls_id = d[2]
+                        envinfoview.event_cls_name = d[3]
                         msg.event_info_view.extend([envinfoview])
                         del envinfoview
 
@@ -428,11 +431,11 @@ class SysInfoHandler(base.RequestHandler):
 
                     del cur, strsql
                 if 3 in msg.data_mark:
-                    strsql = 'select count(*) as a from {0}_data.info_fault_exist union all \
-                    select count(*) as a from {0}_data.info_fault_exist where rtu_id<1100000 union all \
-                    select count(*) as a from {0}_data.info_fault_exist where rtu_id<1600000 and rtu_id>=1500000 union all\
-                    select count(*) as a from {0}_data.info_fault_exist where rtu_id<1200000 and rtu_id>=1100000 \
-                    '.format(self._db_name)
+                    strsql = 'select count(*) as a from {0}.info_fault_exist union all \
+                    select count(*) as a from {0}.info_fault_exist where rtu_id<1100000 union all \
+                    select count(*) as a from {0}.info_fault_exist where rtu_id<1600000 and rtu_id>=1500000 union all\
+                    select count(*) as a from {0}.info_fault_exist where rtu_id<1200000 and rtu_id>=1100000 \
+                    '.format(self._db_name_data)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql, need_fetch=1, need_paging=0)
                     if record_total is None:
@@ -569,9 +572,8 @@ class TmlInfoHandler(base.RequestHandler):
                                 for d in cur:
                                     baseinfo = msgws.TmlInfo.BaseInfo()
                                     # 加入/更新地址对照缓存
-                                    libiisi.tml_phy[int(d[0])] = (int(d[1]),
-                                                                  int(d[7]),
-                                                                  d[3])
+                                    libiisi.tml_phy[int(d[0])] = (int(
+                                        d[1]), int(d[7]), d[3])
 
                                     baseinfo.tml_id = int(d[0])
                                     baseinfo.tml_dt_update = mx.switchStamp(
@@ -686,11 +688,13 @@ class TmlInfoHandler(base.RequestHandler):
                                 msg.head.paging_buffer_tag = buffer_tag
                                 msg.head.paging_idx = paging_idx
                                 msg.head.paging_total = paging_total
+                                oldswitchid = 0
                                 for d in cur:
                                     if rtuinfo.tml_id != int(d[0]):
                                         if rtuinfo.tml_id > 0:
                                             msg.rtu_info.extend([rtuinfo])
                                             rtuinfo = msgws.TmlInfo.RtuInfo()
+                                            oldswitchid = 0
                                         rtuinfo.tml_id = int(d[0])
                                         rtuinfo.heart_beat = int(
                                             d[1]) if d[1] is not None else 0
@@ -706,7 +710,6 @@ class TmlInfoHandler(base.RequestHandler):
                                         rtuinfo.voltage_lowlimit = int(d[7])
                                         rtuinfo.loop_st_switch_by_current = int(
                                             d[8])
-
                                     if d[9] is not None:
                                         loopinfo = msgws.TmlInfo.RtuLoopItem()
                                         loopinfo.loop_id = int(d[9])
@@ -735,6 +738,16 @@ class TmlInfoHandler(base.RequestHandler):
                                         loopinfo.current_uplimit = int(d[23])
                                         loopinfo.current_lowlimit = int(d[24])
                                         rtuinfo.loop_item.extend([loopinfo])
+                                        if oldswitchid != loopinfo.loop_switchout_id:
+                                            oldswitchid = loopinfo.loop_switchout_id
+                                            switchinfo = msgws.TmlInfo.RtuSwitchOutInfo(
+                                            )
+                                            switchinfo.loop_switchout_id = loopinfo.loop_switchout_id
+                                            switchinfo.loop_switchout_name = loopinfo.loop_switchout_name
+                                            switchinfo.loop_switchout_vector = loopinfo.loop_switchout_vector
+                                            rtuinfo.switch_out_info.extend(
+                                                [switchinfo])
+                                            del switchinfo
                                         del loopinfo
                                 if rtuinfo.tml_id > 0:
                                     msg.rtu_info.extend([rtuinfo])
@@ -961,8 +974,8 @@ class TmlInfoHandler(base.RequestHandler):
                                     iteminfo.loop_lighting_rate = int(d[12])
                                     iteminfo.loop_alarm_set.extend([
                                         int(a)
-                                        for a in '{0:08b}'.format(
-                                            int(d[13]))[::-1]
+                                        for a in '{0:08b}'.format(int(d[13]))
+                                        [::-1]
                                     ])
                                     iteminfo.loop_desc = d[14]
                                     iteminfo.tml_loop_id = int(d[15])
@@ -1111,25 +1124,25 @@ class StatusRtuHandler(base.RequestHandler):
                             has_view = True
                     del cur
                     if has_view:
-                        strsql = '''select a.date_create,a.rtu_id,a.switch_out_attraction,
+                        strsql = '''select max(a.date_create) as date_create,a.rtu_id,a.switch_out_attraction,
                                 b.rtu_phy_id,b.rtu_name,c.err_num
-                                from {0}_data.data_rtu_view_new as a
+                                from {2}.data_rtu_view_new as a
                                 left join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id
                                 left join (select count(rtu_id) as err_num,rtu_id
-                                from {0}_data.info_fault_exist where rtu_id<1100000 group by rtu_id) as c
+                                from {2}.info_fault_exist where rtu_id<1100000 group by rtu_id) as c
                                 on a.rtu_id=c.rtu_id
-                                where a.temperature>-1 {1}'''.format(
-                            self._db_name, str_tmls)
+                                where a.temperature>-1 {1} group by a.rtu_id'''.format(
+                            self._db_name, str_tmls, self._db_name_data)
                     else:
                         strsql = '''select x.*,b.rtu_phy_id,b.rtu_name,c.err_num
                                 from
                                 (select max(a.date_create) as date_create,a.rtu_id,a.switch_out_attraction
-                                from {0}_data.data_rtu_record as a where a.temperature>-1 {1} group by a.rtu_id) as x
+                                from {2}.data_rtu_record as a where a.temperature>-1 {1} group by a.rtu_id) as x
                                 left join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
                                 left join (select count(rtu_id) as err_num,rtu_id
-                                from {0}_data.info_fault_exist where rtu_id<1100000 group by rtu_id) as c
+                                from {2}.info_fault_exist where rtu_id<1100000 group by rtu_id) as c
                                 on x.rtu_id=c.rtu_id'''.format(
-                            self._db_name, str_tmls)
+                            self._db_name, str_tmls, self._db_name_data)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -1209,16 +1222,16 @@ class StatusSluHandler(base.RequestHandler):
                               a.fault,a.is_leakage,b.rtu_phy_id,b.rtu_name,c.err_num
                               from (select d.slu_id,d.ctrl_id,max(d.date_create) as date_create,
                               d.date_time_ctrl,d.status
-                              from {0}_data.data_slu_ctrl as d where d.date_create>{2} {1}
-                              group by d.slu_id,d.ctrl_id) as x left join {0}_data.data_slu_ctrl_lamp as a
+                              from {3}.data_slu_ctrl as d where d.date_create>{2} {1}
+                              group by d.slu_id,d.ctrl_id) as x left join {3}.data_slu_ctrl_lamp as a
                               on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id
                               left join {0}.para_base_equipment as b on x.slu_id=b.rtu_id
                               left join (select count(rtu_id) as err_num,rtu_id
-                              from {0}_data.info_fault_exist where rtu_id<1600000 and rtu_id>1500000
+                              from {3}.info_fault_exist where rtu_id<1600000 and rtu_id>1500000
                     		  group by rtu_id) as c on x.slu_id=c.rtu_id'''.format(
                         self._db_name, str_tmls,
-                        mx.switchStamp(time.time() - 60 * 60 * 24 * 30))
-
+                        mx.switchStamp(time.time() - 60 * 60 * 24 * 30),
+                        self._db_name_data)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -1248,10 +1261,11 @@ class StatusSluHandler(base.RequestHandler):
                                 dv.tml_id = d[0]
                                 dv.phy_id = d[9]
                                 dv.tml_name = d[10]
-                                dv.err_num = d[11]
-                                dv.dt_create = d[2]
+                                dv.err_num = int(
+                                    d[11]) if d[11] is not None else 0
+                                dv.dt_create = mx.switchStamp(int(d[2]))
                                 dtv.sluitem_id = d[1]
-                                # dtv.sluitem_name = '控制器{0}'.format(d[1])
+                                dtv.sluitem_name = '控制器{0}'.format(d[1])
                                 try:
                                     dtv.dt_create = mx.switchStamp(
                                         d[3]) if d[3] > 0 else 0
@@ -1263,7 +1277,7 @@ class StatusSluHandler(base.RequestHandler):
                                 dtv.leak_lamp.append(d[8])
                             else:
                                 if dtv.sluitem_id != d[1]:
-                                    if sluitem_id > 0:
+                                    if dtv.sluitem_id > 0:
                                         dv.status_sluitem_view.extend([dtv])
                                         dtv = msgws.StatusSlu.StatusSluitemView(
                                         )

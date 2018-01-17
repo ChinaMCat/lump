@@ -59,22 +59,22 @@ class QueryDataLduHandler(base.RequestHandler):
                     strsql = '''select b.ldu_line_name,x.rtu_id,x.date_create,x.loop_id,a.ldu_voltage,a.ldu_current,
                                 a.ldu_active_power,a.ldu_reactive_power,a.ldu_fault_param,a.ldu_fault_data,
                                 a.ldu_pf_compensate,a.ldu_bright_rate,a.ldu_puse,
-                                a.ldu_impedance,a.ldu_impedance_count,a.ldu_hop_count,a.remark from 
-                                (select rtu_id,max(date_create) as date_create,loop_id 
-                                from {0}_data.data_ldu_loop_record {1} group by rtu_id,loop_id) as x
-                                left join {0}_data.data_ldu_loop_record as a on x.date_create=a.date_create 
+                                a.ldu_impedance,a.ldu_impedance_count,a.ldu_hop_count,a.remark from
+                                (select rtu_id,max(date_create) as date_create,loop_id
+                                from {2}.data_ldu_loop_record {1} group by rtu_id,loop_id) as x
+                                left join {2}.data_ldu_loop_record as a on x.date_create=a.date_create
                                 and x.rtu_id=a.rtu_id and x.loop_id=a.loop_id
                                 left join {0}.para_ldu_line as b on a.rtu_id=b.ldu_fid and a.loop_id=b.ldu_line_id'''.format(
-                        self._db_name, str_tmls.replace('and', 'where'))
+                        self._db_name, str_tmls.replace('and', 'where'), self._db_name_data)
                 elif rqmsg.data_mark == 1:  #历史数据
                     strsql = '''select b.ldu_line_name,a.rtu_id,a.date_create,a.loop_id,a.ldu_voltage,a.ldu_current,
                                 a.ldu_active_power,a.ldu_reactive_power,a.ldu_fault_param,a.ldu_fault_data,
                                 a.ldu_pf_compensate,a.ldu_bright_rate,a.ldu_puse,
-                                a.ldu_impedance,a.ldu_impedance_count,a.ldu_hop_count,a.remark 
-                                from {0}_data.data_ldu_loop_record as a 
-                                left join {0}.para_ldu_line as b on a.rtu_id=b.ldu_fid and a.loop_id=b.ldu_line_id 
+                                a.ldu_impedance,a.ldu_impedance_count,a.ldu_hop_count,a.remark
+                                from {5}.data_ldu_loop_record as a
+                                left join {0}.para_ldu_line as b on a.rtu_id=b.ldu_fid and a.loop_id=b.ldu_line_id
                                 where a.date_create>={1} and a.date_create<={2} {3} {4}'''.format(
-                        self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                        self._db_name, sdt, edt, str_tmls, self._fetch_limited, self._db_name_data)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,
@@ -152,7 +152,7 @@ class LduDataGetHandler(base.RequestHandler):
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqLduDataGet(), None)
-        
+
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
                 # 验证用户可操作的设备id

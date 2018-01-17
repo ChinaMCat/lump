@@ -59,21 +59,23 @@ class QueryDataMruHandler(base.RequestHandler):
                                                                               tml_ids]))
                     if sdt == 0 and edt == 0:  # 最新数据
                         strsql = '''select a.rtu_id,a.date_create,a.date_type_code,a.mru_type_code,a.mru_data,
-                        (b.mru_ratio * a.mru_data) / 5 as elec  
-                        from {0}_data.data_mru_record as a 
-                        left join {0}.para_mru as b on a.rtu_id=b.rtu_id 
-                        where EXISTS 
-                        (select rtu_id,date_create from 
-                        (select rtu_id,max(date_create) as date_create from {0}_data.data_mru_record group by rtu_id) as t 
+                        (b.mru_ratio * a.mru_data) / 5 as elec,c.rtu_name
+                        from {3}.data_mru_record as a
+                        left join {0}.para_mru as b on a.rtu_id=b.rtu_id
+                        left join {0}.para_base_equipment as c on c.rtu_id = a.rtu_id
+                        where EXISTS
+                        (select rtu_id,date_create from
+                        (select rtu_id,max(date_create) as date_create from {3}.data_mru_record group by rtu_id) as t
                         where a.rtu_id=t.rtu_id and a.date_create=t.date_create) {1} {2} order by a.rtu_id,a.date_create desc'''.format(
-                            self._db_name, strdt, str_tmls)
+                            self._db_name, strdt, str_tmls, self._db_name_data)
                     else:
                         strsql = '''select a.rtu_id,a.date_create,a.date_type_code,a.mru_type_code,a.mru_data,
-                                (b.mru_ratio * a.mru_data) / 5 as elec  
-                                from {0}_data.data_mru_record as a 
-                                left join {0}.para_mru as b on a.rtu_id=b.rtu_id 
+                                (b.mru_ratio * a.mru_data) / 5 as elec,c.rtu_name
+                                from {5}.data_mru_record as a
+                                left join {0}.para_mru as b on a.rtu_id=b.rtu_id
+                                left join {0}.para_base_equipment as c on c.rtu_id = a.rtu_id
                                 where a.date_create>={1} and a.date_create<={2} {3} {4}'''.format(
-                            self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                            self._db_name, sdt, edt, str_tmls, self._fetch_limited, self._db_name_data)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
@@ -92,10 +94,11 @@ class QueryDataMruHandler(base.RequestHandler):
                             dv = msgws.QueryDataMru.DataMruView()
                             dv.dt_create = mx.switchStamp(int(d[1]))
                             dv.tml_id = int(d[0])
-                            dv.date_type_code = int(d[2])
+                            dv.dt_mark = int(d[2])
                             dv.data_mark = int(d[3])
                             dv.mru_value = float(d[4])
-                            dv.mru_elec = float(d[5])
+                            dv.mru_elec = float(d[5]) if d[5] is not None else 0
+                            dv.mru_name = d[6] if d[5] is not None else ''
                             msg.data_mru_view.extend([dv])
                     del cur, strsql
 
@@ -142,7 +145,7 @@ class MruDataGetHandler(base.RequestHandler):
                                                                              ]))
 
                     strsql = '''select a.rtu_id,a.rtu_fid,
-                    b.mru_addr_1,b.mru_addr_2,b.mru_addr_3,b.mru_addr_4,b.mru_addr_5,b.mru_addr_6 
+                    b.mru_addr_1,b.mru_addr_2,b.mru_addr_3,b.mru_addr_4,b.mru_addr_5,b.mru_addr_6
                     from {0}.para_base_equipment as a left join {0}.para_mru as b {1}'''.format(
                         self._db_name, str_tmls)
 
@@ -163,7 +166,7 @@ class MruDataGetHandler(base.RequestHandler):
                                                      cmd='wlst.mru.9100',
                                                      ip=self.request.remote_ip,
                                                      port=0,
-                                                     addr=self.get_phy_list(d[1])[0],
+                                                     addr=','.join([str(a) for a in self.get_phy_list([d[1]])]),
                                                      data=dict(addr1=int(d[2]),
                                                                addr2=int(d[3]),
                                                                addr3=int(d[4]),

@@ -261,7 +261,7 @@ class UserLoginHandler(base.RequestHandler):
 
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql, need_fetch=1, need_paging=0)
-        print(record_total, buffer_tag, paging_idx, paging_total, cur)
+
         if record_total is None or record_total == 0:
             contents = 'login from {0} failed'.format(self.request.remote_ip)
             msg.head.if_st = 40

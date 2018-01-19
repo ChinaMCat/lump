@@ -164,7 +164,8 @@ class RequestHandler(mxweb.MXRequestHandler):
             key_column = [key_column]
         # if self.debug:
         #     print(strsql)
-
+        if paging_num <= 0:
+            paging_num = 100
         cache_head = ''.join(
             ['{0:x}'.format(ord(a)) for a in self.url_pattern])
         rep = []

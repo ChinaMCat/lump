@@ -108,10 +108,14 @@ class QueryDataErrHandler(base.RequestHandler):
                             strsql += ' {0}'.format(str_tmls)
                         if len(str_errs) > 0:
                             strsql += ' {0}'.format(str_errs)
-
+                    if rqmsg.type in (0, 1):
+                        np = 1
+                    else:
+                        np = 0
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
+                        need_paging=np,
                         buffer_tag=rqmsg.head.paging_buffer_tag,
                         paging_idx=rqmsg.head.paging_idx,
                         paging_num=rqmsg.head.paging_num)

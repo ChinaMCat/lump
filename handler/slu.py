@@ -238,6 +238,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                 ','.join([str(a) for a in tml_ids]))
 
                         if rqmsg.type == 0:
+						    #查看表是否存在
                             strsql = 'select a.TABLE_NAME from information_schema.TABLES as a where a.TABLE_NAME in ("data_slu_ctrl_trigger","data_slu_ctrl_lamp_trigger" )' \
                                      ' and a.TABLE_SCHEMA="{0}_data"'.format(self._db_name)
                             cur = libiisi.m_sql.run_fetch(strsql)

@@ -145,10 +145,17 @@ class UserEditHandler(base.RequestHandler):
         try:
             strsql=''
             # 是否提交了用户旧密码
-            if rqmsg.user == 'admin' or rqmsg.pwd_old:
+            if rqmsg.user == 'admin':
+                strsql = 'update {0}.user_info set user_name="{1}",user_alias="{2}", user_pwd="{3}",user_remark="{4}" \
+                where user_name="{5}" '.format(self._db_uas,rqmsg.user,rqmsg.fullname, rqmsg.pwd,
+                                                             rqmsg.remark,rqmsg.user)
+            elif rqmsg.pwd_old:
                 strsql = 'update {0}.user_info set user_name="{1}",user_alias="{2}", user_pwd="{3}",user_remark="{4}" \
                 where user_name="{5}" and user_pwd="{6}"'.format(self._db_uas,rqmsg.user,rqmsg.fullname, rqmsg.pwd,
                                                                  rqmsg.remark,rqmsg.user,rqmsg.pwd_old)
+            else:
+                msg.head.if_st=45
+            if strsql:
                 cur = yield self.mydata_collector(strsql, need_fetch=0, need_paging=0)
                 affected_rows = cur[0][0]
                 if affected_rows > 0:
@@ -160,15 +167,12 @@ class UserEditHandler(base.RequestHandler):
                     yield self.add_eventlog(2,rqmsg.user_id, 'Wrong username or password')
                     msg.head.if_st = 40
                     msg.head.if_msg = 'Wrong username or password'
-            else:
-                msg.head.if_st=45
         except Exception as ex:
             msg.head.if_st = 0
             msg.head.if_msg = str(ex.message)
 
         self.write(mx.convertProtobuf(msg))
         self.finish()
-
 
 @mxweb.route()
 class UserDelHandler(base.RequestHandler):

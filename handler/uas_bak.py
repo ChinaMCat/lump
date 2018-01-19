@@ -145,7 +145,7 @@ class UserEditHandler(base.RequestHandler):
         try:
             strsql=''
             # 是否提交了用户旧密码
-            if rqmsg.pwd_old:
+            if rqmsg.user == 'admin' or rqmsg.pwd_old:
                 strsql = 'update {0}.user_info set user_name="{1}",user_alias="{2}", user_pwd="{3}",user_remark="{4}" \
                 where user_name="{5}" and user_pwd="{6}"'.format(self._db_uas,rqmsg.user,rqmsg.fullname, rqmsg.pwd,
                                                                  rqmsg.remark,rqmsg.user,rqmsg.pwd_old)

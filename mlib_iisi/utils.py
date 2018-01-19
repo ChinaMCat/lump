@@ -271,7 +271,6 @@ def zmq_proxy():
 
 def send_to_zmq_pub(sfilter, msg):
     global m_zmq_pub, m_zmq_pull, m_zmq_ctx
-    print(sfilter, msg)
     try:
         if m_zmq_pub is None:
             zmq_conf = m_config.getData('zmq_port')

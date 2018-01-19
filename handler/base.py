@@ -164,7 +164,8 @@ class RequestHandler(mxweb.MXRequestHandler):
             key_column = [key_column]
         # if self.debug:
         #     print(strsql)
-
+        if paging_num <= 0:
+            paging_num = 100
         cache_head = ''.join(
             ['{0:x}'.format(ord(a)) for a in self.url_pattern])
         rep = []
@@ -236,10 +237,8 @@ class RequestHandler(mxweb.MXRequestHandler):
                     if need_paging:
                         if p < y and p >= x:
                             rep.append(d)
-                            p += 1
                     else:
                         rep.append(d)
-                        p += 1
                     if i == 0:
                         i += 1
                         for a in multi_record:
@@ -251,12 +250,16 @@ class RequestHandler(mxweb.MXRequestHandler):
                             old_record[a] = d[a]
                     if got_change:
                         p += 1
+                    if p>=y:
+                        break
             else:
                 for d in cache_data.values():
                     if need_paging:
                         if p < y and p >= x:
                             rep.append(d)
-                            p += 1
+                        p += 1
+                        if p >= y:
+                            break
                     else:
                         rep.append(d)
                         p += 1

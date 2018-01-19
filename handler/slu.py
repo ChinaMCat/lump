@@ -238,17 +238,39 @@ class QueryDataSluHandler(base.RequestHandler):
                                 ','.join([str(a) for a in tml_ids]))
 
                         if rqmsg.type == 0:
-                            strsql = '''select x.*,a.lamp_id,a.state_working_on,
-                            a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
-                            a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
-                            from (select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
-                            d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
-                            d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}.data_slu_ctrl as d
-                            where d.date_create=(select max(date_create) from {0}.data_slu_ctrl {2}) {1}
-                            group by d.slu_id,d.ctrl_id) as x left join {0}.data_slu_ctrl_lamp as a
-                            on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id'''.format(
-                                self._db_name_data,
-                                str_tmls, str_tmls.replace("and d.", "where "))
+						    #查看表是否存在
+                            strsql = 'select a.TABLE_NAME from information_schema.TABLES as a where a.TABLE_NAME in ("data_slu_ctrl_trigger","data_slu_ctrl_lamp_trigger" )' \
+                                     ' and a.TABLE_SCHEMA="{0}_data"'.format(self._db_name)
+                            cur = libiisi.m_sql.run_fetch(strsql)
+                            has_view = False
+                            if cur is not None:
+                                if len(cur) > 0:
+                                    has_view = True
+                            del cur
+
+                            if has_view:
+                                strsql= '''select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
+                                d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
+                                d.is_working_args_set,d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
+                                a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                                a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
+                                 from {0}.data_slu_ctrl_trigger as d INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
+                                on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
+                                 where 1=1 {1} group by d.slu_id,d.ctrl_id'''.format(
+                                    self._db_name_data,str_tmls)
+
+                            else:
+                                strsql = '''select x.*,a.lamp_id,a.state_working_on,
+                                a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                                a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
+                                from (select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
+                                d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
+                                d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}.data_slu_ctrl as d
+                                where d.date_create=(select max(date_create) from {0}.data_slu_ctrl {2}) {1}
+                                group by d.slu_id,d.ctrl_id) as x left join {0}.data_slu_ctrl_lamp as a
+                                on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id'''.format(
+                                    self._db_name_data,
+                                    str_tmls, str_tmls.replace("and d.", "where "))
 
                             # strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
                             # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,

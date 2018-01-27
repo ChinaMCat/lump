@@ -256,9 +256,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                     if need_paging:
                         if p < y and p >= x:
                             rep.append(d)
-                        p += 1
-                        if p >= y:
-                            break
+                        p += 1           
                     else:
                         rep.append(d)
                         p += 1

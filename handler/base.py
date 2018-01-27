@@ -234,11 +234,6 @@ class RequestHandler(mxweb.MXRequestHandler):
             old_record = dict()
             if len(multi_record) > 0:  # 多列判断
                 for d in cache_data.values():
-                    if need_paging:
-                        if p < y and p >= x:
-                            rep.append(d)
-                    else:
-                        rep.append(d)
                     if i == 0:
                         i += 1
                         for a in multi_record:
@@ -249,9 +244,13 @@ class RequestHandler(mxweb.MXRequestHandler):
                             got_change = True
                             old_record[a] = d[a]
                     if got_change:
+                        i += 1
                         p += 1
-                    if p>=y:
-                        break
+                    if need_paging:
+                        if p < y and p >= x:
+                            rep.append(d)
+                    else:
+                        rep.append(d)
             else:
                 for d in cache_data.values():
                     if need_paging:

@@ -487,11 +487,11 @@ def test_rtudataquery():
     print('=== query rty data ===')
     url = baseurl + 'querydatartu'
     rqmsg = msgif.rqQueryDataRtu()
-    rqmsg.head.paging_num=1
+    rqmsg.head.paging_num=100
     # rqmsg.dt_start = 0  # mx.time2stamp('2015-10-20 00:00:00')
     # rqmsg.dt_end = mx.time2stamp('2016-12-20 00:00:00')
     rqmsg.type = 0
-    rqmsg.tml_id.extend([1000003])
+    rqmsg.tml_id.extend([1000002])
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
@@ -931,11 +931,11 @@ def test_statusrtu():
     global user_id
     print('=== status rtu data ===')
     url = baseurl + 'statusrtu'
-    rqmsg = msgif.rqStatusSlu()
+    rqmsg = msgif.rqStatusRtu()
     rqmsg.head.ver = 160328
     # rqmsg.dt_start = mx.time2stamp('2016-12-10 00:00:00')
     # rqmsg.dt_end = mx.time2stamp('2017-06-20 00:00:00')
-    rqmsg.tml_id.extend([100002])
+    rqmsg.tml_id.extend([])
     # rqmsg.data_mark=1
     data = {
         'uuid': user_id,
@@ -947,7 +947,7 @@ def test_statusrtu():
     # msg.ParseFromString(r.data)
     msg.ParseFromString(base64.b64decode(r.data))
     print(msg)
-    print(msg.head)
+    # print(msg.head)
     print('post finish')
     time.sleep(0)
 
@@ -1143,7 +1143,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    test_userlogin()
+    # test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()
@@ -1154,7 +1154,7 @@ if __name__ == '__main__':
     # test_querysms()
     # test_statusslu()
     # test_statusrtu()
-    test_querysludata()
+    # test_querysludata()
     # test_sysinfo()
     # test_cleansms()
     # test_errquery()
@@ -1166,7 +1166,7 @@ if __name__ == '__main__':
     # test_grpinfo()
     # test_sluitemadd()
     # test_ipcqueue()
-    # test_rtudataquery()
+    test_rtudataquery()
     # test_userrenew()
     # test_tmlinfo()
     # test_querydataals()

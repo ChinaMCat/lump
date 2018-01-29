@@ -237,33 +237,33 @@ def zmq_proxy():
     if zmq_conf.find(':') == -1:
         try:
             if m_zmq_pull is None:
-                try:
-                    m_zmq_pull = m_zmq_ctx.socket(zmq.PULL)
-                    m_zmq_pull.bind('tcp://*:{0}'.format(zmq_conf))
-                    m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
-                    m_zmq_pub.bind('tcp://*:{0}'.format(int(zmq_conf) + 1))
-                    # zmq.proxy(m_zmq_pull, m_zmq_pub)
-                    poller = zmq.Poller()
-                    poller.register(m_zmq_pull, zmq.POLLIN)
-
-                    last_cache_clean = time.time()
-                    while True:
-                        poll_list = dict(poller.poll(500))
-                        if poll_list.get(m_zmq_pull) == zmq.POLLIN:
-                            try:
-                                f, m = m_zmq_pull.recv_multipart()
-                                # print('{0} recv: {1} {2}'.format(mx.stamp2time(time.time()), f, m))
-                                m_zmq_pub.send_multipart([f, m])
-                            except Exception as ex:
-                                pass
-
-                        if time.time() - last_cache_clean > 86400:  # 清理缓存
-                            t = time.time()
-                            last_cache_clean = t
-                            cleaningwork(t)
-                    print('zmq end.')
-                except Exception as ex:
-                    print('zmq proxy err:{0}'.format(ex))
+                # try:
+                m_zmq_pull = m_zmq_ctx.socket(zmq.XSUB)
+                m_zmq_pull.bind('tcp://*:{0}'.format(zmq_conf))
+                m_zmq_pub = m_zmq_ctx.socket(zmq.XPUB)
+                m_zmq_pub.bind('tcp://*:{0}'.format(int(zmq_conf) + 1))
+                zmq.proxy(m_zmq_pull, m_zmq_pub)
+                # poller = zmq.Poller()
+                # poller.register(m_zmq_pull, zmq.POLLIN)
+                #
+                # last_cache_clean = time.time()
+                # while True:
+                #     poll_list = dict(poller.poll(500))
+                #     if poll_list.get(m_zmq_pull) == zmq.POLLIN:
+                #         try:
+                #             f, m = m_zmq_pull.recv_multipart()
+                #             print('{0} recv: {1} {2}'.format(mx.stamp2time(time.time()), f, m))
+                #             m_zmq_pub.send_multipart([f, m])
+                #         except Exception as ex:
+                #             pass
+                #
+                #     if time.time() - last_cache_clean > 86400:  # 清理缓存
+                #         t = time.time()
+                #         last_cache_clean = t
+                #         cleaningwork(t)
+            #     print('zmq end.')
+            # except Exception as ex:
+            #     print('zmq proxy err:{0}'.format(ex))
 
         except Exception as ex:
             print('zmq start err:{0}'.format(ex))
@@ -276,7 +276,7 @@ def send_to_zmq_pub(sfilter, msg):
             zmq_conf = m_config.getData('zmq_port')
             try:
                 if zmq_conf.find(':') > -1:
-                    m_zmq_pub = m_zmq_ctx.socket(zmq.PUSH)
+                    m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
                     m_zmq_pub.setsockopt(zmq.SNDTIMEO, 50)
                     m_zmq_pub.connect('tcp://{0}'.format(zmq_conf))
             except Exception as ex:

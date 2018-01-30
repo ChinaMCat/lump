@@ -568,7 +568,7 @@ def test_grpinfo():
     print('=== tree info ===')
     url = baseurl + 'treeinfo'
     rqmsg = msgif.rqTreeInfo()
-    rqmsg.data_mark = 2
+    rqmsg.data_mark = 1
 
     data = {
         'uuid': user_id,
@@ -1163,10 +1163,10 @@ if __name__ == '__main__':
     # test_eludataget()
     # test_eluctl()
     # test_areainfo()
-    # test_grpinfo()
+    test_grpinfo()
     # test_sluitemadd()
     # test_ipcqueue()
-    test_rtudataquery()
+    # test_rtudataquery()
     # test_userrenew()
     # test_tmlinfo()
     # test_querydataals()

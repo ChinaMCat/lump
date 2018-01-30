@@ -312,7 +312,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                         # where a.date_create>={1} and a.date_create<={2} {3}
                         # order by a.rtu_id,a.date_create desc,a.loop_id'''.format(self._db_name, sdt,
                         #                                                          edt, str_tmls)
-                        
+
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -470,7 +470,7 @@ class RtuCtlHandler(base.RequestHandler):
                                 x.tml_id)))])
                     if len(rtu_ids) > 0:
                         if x.opt == 1:  # 单回路操作
-                            i = 0
+                            i = 1
                             for k in list(x.loop_do):
                                 if k in (0, 1):
                                     tcsdata['k'] = i

@@ -256,9 +256,8 @@ class QueryDataSluHandler(base.RequestHandler):
                                 a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
                                  from {0}.data_slu_ctrl_trigger as d INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
                                 on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
-                                 where 1=1 {1} group by d.slu_id,d.ctrl_id'''.format(
+                                 where 1=1 {1}'''.format(
                                     self._db_name_data,str_tmls)
-
                             else:
                                 strsql = '''select x.*,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,

@@ -237,7 +237,7 @@ def test_sludataget():
     print('=== sludataget ===')
     url = baseurl + 'sludataget'
     rqmsg = init_head(msgif.rqSluDataGet())
-    rqmsg.tml_id.extend([1500020, 1500021])
+    rqmsg.tml_id.extend([1500001])
     rqmsg.data_mark = 7
     rqmsg.sluitem_idx = 1
     rqmsg.sluitem_num = 5
@@ -530,11 +530,11 @@ def test_querysludata():
     print('=== query slu data ===')
     url = baseurl + 'querydataslu'
     rqmsg = msgif.rqQueryDataSlu()
-    rqmsg.dt_start = mx.time2stamp('2015-10-10 00:00:00')
-    rqmsg.dt_end = mx.time2stamp('2017-12-20 00:00:00')
+    # rqmsg.dt_start = mx.time2stamp('2015-10-10 00:00:00')
+    # rqmsg.dt_end = mx.time2stamp('2017-12-20 00:00:00')
     rqmsg.type = 0
     rqmsg.data_mark = 7
-    rqmsg.tml_id.extend([1500008])
+    rqmsg.tml_id.extend([1500001])
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
@@ -1154,7 +1154,7 @@ if __name__ == '__main__':
     # test_querysms()
     # test_statusslu()
     # test_statusrtu()
-    # test_querysludata()
+    test_querysludata()
     # test_sysinfo()
     # test_cleansms()
     # test_errquery()
@@ -1163,7 +1163,7 @@ if __name__ == '__main__':
     # test_eludataget()
     # test_eluctl()
     # test_areainfo()
-    test_grpinfo()
+    # test_grpinfo()
     # test_sluitemadd()
     # test_ipcqueue()
     # test_rtudataquery()

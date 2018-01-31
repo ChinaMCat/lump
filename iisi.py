@@ -106,9 +106,8 @@ if __name__ == '__main__':
 
     # 开启后台线程
     zmq_conf = libiisi.m_config.getData('zmq_port')
-    if zmq_conf.find(':') > -1:
-        thread.start_new_thread(libiisi.do_cleaningwork, ())
-    else:
+    thread.start_new_thread(libiisi.do_cleaningwork, ())
+    if zmq_conf.find(':') == -1:
         thread.start_new_thread(libiisi.zmq_proxy, ())
 
     settings = dict(static_path=os.path.join(mx.SCRIPT_DIR, 'static'),
@@ -118,7 +117,7 @@ if __name__ == '__main__':
                     debug=results.debug,
                     record_all=bool(libiisi.m_config.getData('record_all')),
                     # xsrf_cookies=True,
-                    # login_url='/userloginjk', 
+                    # login_url='/userloginjk',
                     )
 
     from handler import handler_iisi, handler_err

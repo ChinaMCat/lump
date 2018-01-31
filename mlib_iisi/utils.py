@@ -277,7 +277,7 @@ def send_to_zmq_pub(sfilter, msg):
             try:
                 if zmq_conf.find(':') > -1:
                     m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
-                    m_zmq_pub.setsockopt(zmq.SNDTIMEO, 50)
+                    # m_zmq_pub.setsockopt(zmq.SNDTIMEO, 50)
                     m_zmq_pub.connect('tcp://{0}'.format(zmq_conf))
             except Exception as ex:
                 print('zmq pub err: {0}'.format(ex))

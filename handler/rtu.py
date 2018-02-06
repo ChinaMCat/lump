@@ -300,7 +300,8 @@ class QueryDataRtuHandler(base.RequestHandler):
                                 from {5}.data_rtu_view as a
                                 where a.date_create>={1} and a.date_create<={2} {3} {4}) as x
                                 left join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
-                                left join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id'''.format(
+                                left join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id
+                                ORDER BY x.rtu_id ,x.date_create'''.format(
                             self._db_name, sdt, edt, str_tmls, self._fetch_limited, self._db_name_data)
 
                         # strsql = '''select a.date_create, a.rtu_id,a.rtu_voltage_a,a.rtu_voltage_b,a.rtu_voltage_c,
@@ -344,8 +345,12 @@ class QueryDataRtuHandler(base.RequestHandler):
                                 drv.current_sum_a = float(d[5])
                                 drv.current_sum_b = float(d[6])
                                 drv.current_sum_c = float(d[7])
-                                drv.alarm_st.extend([int(a) for a in '{0:08b}'.format(int(d[
-                                    8]))[::-1]])
+                                # drv.alarm_st.extend([int(a) for a in '{0:08b}'.format(int(d[
+                                #     8]))[::-1]])
+                                s=[0, 0, 0, 0, 0, 0, 0, 0]
+                                for r in list(str(d[8])):
+                                    s[int(r)+1] = 1
+                                drv.alarm_st.extend(s)
                                 x = d[9][:len(d[9]) - 1].split(';')
                                 drv.switch_out_st.extend([1 if a == 'True' else 0 for a in x])
                                 drv.phy_id = int(d[21]) if d[21] is not None else -1

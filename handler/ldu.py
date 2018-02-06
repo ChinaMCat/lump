@@ -124,7 +124,7 @@ class QueryDataLduHandler(base.RequestHandler):
                             if alarm_s[7] == alarm_d[7] == '1':
                                 dv.loop_status = 1
                         # 暂不用
-                        # dv.power_factor=d[10]
+                        dv.power_factor=d[10]
                         # dv.lighting_rate=d[11]
                         # dv.signal_strength=d[12]
                         # dv.impedance=d[13]

@@ -551,7 +551,7 @@ message QueryDataSlu {
         string tml_name = 10;  // 设备名称
         int64 dt_receive = 3;  // 数据接收时间
         repeated int32 reset_times = 4 [packed=true];  // 连续4天复位次数,[今天,昨天,前天,大前天]
-        repeated int32 st_running = 5 [packed=true];  // 集中器状态,[运行状态(0-正常,1-停运),报警状态(0-允许主报,1-禁止主报),开机申请(0-非开机申请,1-开机申请),通信方式(0-485,1-gprs),主动巡测(0-巡测,1-停止巡测)]
+        repeated int32 st_running = 5 [packed=true];  // 集中器状态,[运行状态(0-正常,1-停运),报警状态(0-禁止主报,1-允许主报),开机申请(0-非开机申请,1-开机申请),通信方式(0-485,1-gprs),主动巡测(0-巡测,1-停止巡测)]
         repeated int32 st_argv = 6 [packed=true];  // 集中器参数状态,0-正常,1-出错,[集中器参数,控制器参数,开关灯参数]
         repeated int32 st_hw = 7 [packed=true];  // 硬件参数状态,0-正常,1-出错,[zigbee,电力载波,fram,蓝牙,硬件时钟]
         int32 unknow_sluitem_num = 8;  // 未知控制器数量

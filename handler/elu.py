@@ -61,7 +61,7 @@ class QueryDataEluHandler(base.RequestHandler):
                                 a.auto_break_auto_alarm,a.state_alarm,a.state_on_off,a.upper_alarm_break_for_leak_temperature,
                                 a.time_delay_break,a.alarm_value_leak_temperature,a.current_leak_temperature,a.leak_mode, c.rtu_name
                                 from (select leak_id,max(date_create) as date_create,leak_line_id
-                                from {2}.data_leak_line_record {1} group by leak_id,leak_line_id) as x
+                                from {2}.data_leak_line_record as a {1} group by leak_id,leak_line_id) as x
                                 left join {2}.data_leak_line_record as a
                                 on x.date_create=a.date_create and x.leak_id=a.leak_id and x.leak_line_id=a.leak_line_id
                                 left join {0}.para_leak_line as b on a.leak_id=b.leak_id and a.leak_line_id=b.leak_line_id

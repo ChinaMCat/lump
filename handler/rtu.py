@@ -349,7 +349,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                                 #     8]))[::-1]])
                                 s=[0, 0, 0, 0, 0, 0, 0, 0]
                                 for r in list(str(d[8])):
-                                    s[int(r)+1] = 1
+                                    s[int(r)-1] = 1
                                 drv.alarm_st.extend(s)
                                 x = d[9][:len(d[9]) - 1].split(';')
                                 drv.switch_out_st.extend([1 if a == 'True' else 0 for a in x])

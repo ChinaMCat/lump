@@ -313,7 +313,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                         # where a.date_create>={1} and a.date_create<={2} {3}
                         # order by a.rtu_id,a.date_create desc,a.loop_id'''.format(self._db_name, sdt,
                         #                                                          edt, str_tmls)
-                        
+
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -349,7 +349,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                                 #     8]))[::-1]])
                                 s=[0, 0, 0, 0, 0, 0, 0, 0]
                                 for r in list(str(d[8])):
-                                    s[int(r)+1] = 1
+                                    s[int(r)-1] = 1
                                 drv.alarm_st.extend(s)
                                 x = d[9][:len(d[9]) - 1].split(';')
                                 drv.switch_out_st.extend([1 if a == 'True' else 0 for a in x])

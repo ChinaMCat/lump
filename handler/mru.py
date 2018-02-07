@@ -146,7 +146,7 @@ class MruDataGetHandler(base.RequestHandler):
 
                     strsql = '''select a.rtu_id,a.rtu_fid,
                     b.mru_addr_1,b.mru_addr_2,b.mru_addr_3,b.mru_addr_4,b.mru_addr_5,b.mru_addr_6
-                    from {0}.para_base_equipment as a left join {0}.para_mru as b {1}'''.format(
+                    from {0}.para_base_equipment as a left join {0}.para_mru as b on a.rtu_id=b.rtu_id {1} '''.format(
                         self._db_name, str_tmls)
 
                     yield self.update_cache()

@@ -537,7 +537,7 @@ class RtuCtlHandler(base.RequestHandler):
                                            separators=(',', ':')).lower())
                 if not dosomething:
                     msg.head.if_st = 11
-                contents = 'u{0},build-in user from {1} ctrl rtu '.format(libiisi.event_info.get(event_id),self.request.remote_ip)
+                contents = u'{0},build-in user from {1} ctrl rtu '.format(libiisi.event_info.get(event_id),self.request.remote_ip)
             else:
                 msg.head.if_st = 11
 

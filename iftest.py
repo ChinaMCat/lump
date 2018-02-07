@@ -416,7 +416,7 @@ def test_errquery():
     url = baseurl + 'querydataerr'
     rqmsg = init_head(msgif.rqQueryDataErr())
     rqmsg.head.paging_num =10
-    rqmsg.head.paging_idx = 101
+    rqmsg.head.paging_idx = 1
     # rqmsg.head.paging_num = 100
     # rqmsg.head.paging_buffer_tag = 1500942882771374
     # rqmsg.dt_start = mx.time2stamp("2017-05-01 00:00:00")
@@ -1143,7 +1143,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    test_userlogin()
+    # test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()
@@ -1154,7 +1154,7 @@ if __name__ == '__main__':
     # test_querysms()
     # test_statusslu()
     # test_statusrtu()
-    # test_querysludata()
+    test_querysludata()
     # test_sysinfo()
     # test_cleansms()
     # test_errquery()
@@ -1185,4 +1185,4 @@ if __name__ == '__main__':
     # test_ipcuplink()
     # test_ipcsubmit()
     # test_userlogout()
-    test_mrudataget()
+    # test_mrudataget()

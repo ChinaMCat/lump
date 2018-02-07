@@ -379,7 +379,7 @@ class SluDataGetHandler(base.RequestHandler):
             msgws.rqSluDataGet(), None)
 
         if user_data is not None:
-            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
+            if user_data['user_auth'] in libiisi.can_read:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = list(rqmsg.tml_id)
@@ -439,7 +439,7 @@ class SluitemDataGetHandler(base.RequestHandler):
             msgws.rqSluitemDataGet(), None)
 
         if user_data is not None:
-            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
+            if user_data['user_auth'] in libiisi.can_read:
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     rtu_ids = list(rqmsg.tml_id)

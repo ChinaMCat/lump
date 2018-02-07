@@ -400,7 +400,7 @@ class RtuDataGetHandler(base.RequestHandler):
                 tver = int(self.get_argument('tver'))
             except:
                 tver = 1
-            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
+            if user_data['user_auth'] in libiisi.can_read:
                 # 验证用户可操作的设备id
                 yield self.update_cache('r', user_uuid)
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
@@ -568,7 +568,7 @@ class RtuVerGetHandler(base.RequestHandler):
                 tver = int(self.get_argument('tver'))
             except:
                 tver = 1
-            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
+            if user_data['user_auth'] in libiisi.can_read:
                 # 验证用户可操作的设备id
                 yield self.update_cache('r', user_uuid)
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
@@ -622,7 +622,7 @@ class RtuTimerCtlHandler(base.RequestHandler):
             except:
                 tver = 1
             if rqmsg.data_mark == 0:
-                user_auth = libiisi.can_exec & libiisi.can_read
+                user_auth = libiisi.can_read
             else:
                 user_auth = libiisi.can_exec & libiisi.can_write
             if user_data['user_auth'] in user_auth:

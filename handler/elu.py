@@ -132,7 +132,7 @@ class EluDataGetHandler(base.RequestHandler):
             msgws.rqEluDataGet(), None)
 
         if user_data is not None:
-            if user_data['user_auth'] in libiisi.can_read & libiisi.can_exec:
+            if user_data['user_auth'] in libiisi.can_read:
                 # 验证用户可操作的设备id
                 yield self.update_cache('r', user_uuid)
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:

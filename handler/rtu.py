@@ -300,7 +300,8 @@ class QueryDataRtuHandler(base.RequestHandler):
                                 from {5}.data_rtu_view as a
                                 where a.date_create>={1} and a.date_create<={2} {3} {4}) as x
                                 left join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
-                                left join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id'''.format(
+                                left join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id
+                                ORDER BY x.rtu_id ,x.date_create'''.format(
                             self._db_name, sdt, edt, str_tmls, self._fetch_limited, self._db_name_data)
 
                         # strsql = '''select a.date_create, a.rtu_id,a.rtu_voltage_a,a.rtu_voltage_b,a.rtu_voltage_c,
@@ -344,8 +345,12 @@ class QueryDataRtuHandler(base.RequestHandler):
                                 drv.current_sum_a = float(d[5])
                                 drv.current_sum_b = float(d[6])
                                 drv.current_sum_c = float(d[7])
-                                drv.alarm_st.extend([int(a) for a in '{0:08b}'.format(int(d[
-                                    8]))[::-1]])
+                                # drv.alarm_st.extend([int(a) for a in '{0:08b}'.format(int(d[
+                                #     8]))[::-1]])
+                                s=[0, 0, 0, 0, 0, 0, 0, 0]
+                                for r in list(str(d[8])):
+                                    s[int(r)+1] = 1
+                                drv.alarm_st.extend(s)
                                 x = d[9][:len(d[9]) - 1].split(';')
                                 drv.switch_out_st.extend([1 if a == 'True' else 0 for a in x])
                                 drv.phy_id = int(d[21]) if d[21] is not None else -1
@@ -445,6 +450,7 @@ class RtuCtlHandler(base.RequestHandler):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqRtuCtl(), None)
 
         env = False
+        event_id=0
         if user_data is not None:
             try:
                 tver = int(self.get_argument('tver'))
@@ -452,9 +458,10 @@ class RtuCtlHandler(base.RequestHandler):
                 tver = 1
             if user_data['user_auth'] in libiisi.can_exec:
                 env = True
-                contents = 'build-in user from {0} ctrl rtu'.format(self.request.remote_ip)
+                self.get_eventinfo()
                 dosomething = False
                 for x in list(rqmsg.rtu_do):
+                    event_id=0
                     if len(x.tml_id) == 0:
                         continue
                     dosomething = True
@@ -470,7 +477,8 @@ class RtuCtlHandler(base.RequestHandler):
                                 x.tml_id)))])
                     if len(rtu_ids) > 0:
                         if x.opt == 1:  # 单回路操作
-                            i = 1
+                            event_id=19
+                            i = 0
                             for k in list(x.loop_do):
                                 if k in (0, 1):
                                     tcsdata['k'] = i
@@ -485,6 +493,7 @@ class RtuCtlHandler(base.RequestHandler):
                                                    separators=(',', ':')).lower())
                                 i += 1
                         elif x.opt == 2:  # 多回路操作
+                            event_id=19
                             if tver == 1:
                                 i = 1
                                 for k in list(x.loop_do):
@@ -507,6 +516,7 @@ class RtuCtlHandler(base.RequestHandler):
                                     libiisi.cfg_tcs_port, tcsmsg.head.cmd),
                                                         tcsmsg.SerializeToString())
                         elif x.opt == 3:  # 停运
+                            event_id=17
                             tcsmsg = libiisi.initRtuJson(2, 7, 1, 1, 1, 'wlst.rtu.2800',
                                                          self.request.remote_ip, 0, rtu_ids,
                                                          tcsdata)
@@ -516,6 +526,7 @@ class RtuCtlHandler(base.RequestHandler):
                                 json.dumps(tcsmsg,
                                            separators=(',', ':')).lower())
                         elif x.opt == 4:  # 解除停运
+                            event_id=18
                             tcsmsg = libiisi.initRtuJson(2, 7, 1, 1, 1, 'wlst.rtu.2900',
                                                          self.request.remote_ip, 0, rtu_ids,
                                                          tcsdata)
@@ -526,13 +537,14 @@ class RtuCtlHandler(base.RequestHandler):
                                            separators=(',', ':')).lower())
                 if not dosomething:
                     msg.head.if_st = 11
+                contents = u'{0},build-in user from {1} ctrl rtu '.format(libiisi.event_info.get(event_id),self.request.remote_ip)
             else:
                 msg.head.if_st = 11
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            cur = yield self.write_event(65, contents, 2, user_name=user_data['user_name'])
+            cur = yield self.write_event(event_id, contents, 2, user_name=user_data['user_name'])
         del msg, rqmsg, user_data, user_uuid
 
 

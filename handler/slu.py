@@ -77,7 +77,7 @@ class QueryDataSluHandler(base.RequestHandler):
                             a.is_zigbee_error,a.is_carrier_error,a.is_fram_error,a.is_bluetooth_error,
                             a.is_timer_error,a.unknow_ctrl_count,a.communication_channel
                             from {0}.data_slu as a
-                            where a.date_create>={1} and a.date_create<={2} {3} order by a.date_create desc {4}'''.format(
+                            where a.date_create>={1} and a.date_create<={2} {3} order by a.rtu_id, a.date_create {4}'''.format(
                                 self._db_name_data, sdt, edt, str_tmls,
                                 self._fetch_limited)
 
@@ -248,8 +248,9 @@ class QueryDataSluHandler(base.RequestHandler):
                                 a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
                                  from {0}.data_slu_ctrl_trigger as d INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
                                 on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
-                                 where 1=1 {1}'''.format(self._db_name_data,
-                                                         str_tmls)
+                                 where 1=1 {1} group by d.slu_id,d.ctrl_id  ORDER BY d.ctrl_id,d.date_create'''.format(
+                                    self._db_name_data,str_tmls)
+
                             else:
                                 strsql = '''select x.*,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
@@ -259,9 +260,11 @@ class QueryDataSluHandler(base.RequestHandler):
                                 d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}.data_slu_ctrl as d
                                 where d.date_create=(select max(date_create) from {0}.data_slu_ctrl {2}) {1}
                                 group by d.slu_id,d.ctrl_id) as x left join {0}.data_slu_ctrl_lamp as a
-                                on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id'''.format(
-                                    self._db_name_data, str_tmls,
-                                    str_tmls.replace("and d.", "where "))
+                                on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id
+                                order by x.rtu_id,x.date_create'''.format(
+                                    self._db_name_data,
+                                    str_tmls, str_tmls.replace("and d.", "where "))
+
                             # strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
                             # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
                             # d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
@@ -283,7 +286,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                     d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}.data_slu_ctrl as d
                                     where d.date_create>={1} and d.date_create<={2} {3} {4}) as x
                                     left join {0}.data_slu_ctrl_lamp as a on
-                                    x.date_create=a.date_create and x.slu_id=a.slu_id and x.ctrl_id=a.ctrl_id'''.format(
+                                    x.date_create=a.date_create and x.slu_id=a.slu_id and x.ctrl_id=a.ctrl_id '''.format(
                                 self._db_name_data, sdt, edt, str_tmls,
                                 self._fetch_limited)
 

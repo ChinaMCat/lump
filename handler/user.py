@@ -695,7 +695,7 @@ class UserInfoHandler(base.RequestHandler):
         env = False
         contents = ''
 
-        if user_uuid in libiisi.cache_buildin_users:
+        if user_uuid in libiisi.cache_buildin_users and user_data['user_auth'] <15:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to view user info.'
         else:

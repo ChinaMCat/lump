@@ -633,3 +633,18 @@ class RequestHandler(mxweb.MXRequestHandler):
             mx.ip2int(self.request.remote_ip), remark)
         libiisi.m_sql.run_exec(strsql)
         del strsql
+
+
+    def get_eventinfo(self):
+        if len(libiisi.event_info) == 0:
+            strsql = 'select id,name from {0}.operator_id_assign order by id_class'.format(self._db_name_data)
+            cur = libiisi.m_sql.run_fetch(strsql)
+            s = libiisi.m_sql.get_last_error_message()
+            if len(s) > 0:
+                logging.error(
+                    self.format_log(self.request.remote_ip, s, self.request.path,
+                                    '_MYSQL'))
+            if cur is not None:
+                for d in cur:
+                    libiisi.event_info[int(d[0])] = (d[1])
+            del cur

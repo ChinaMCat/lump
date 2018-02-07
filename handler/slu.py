@@ -101,31 +101,24 @@ class QueryDataSluHandler(base.RequestHandler):
                                     dv.tml_id = int(d[0])
                                     dv.dt_receive = mx.switchStamp(int(d[1]))
                                     dv.reset_times.extend([
-                                        int(d[2]),
-                                        int(d[3]),
-                                        int(d[4]),
+                                        int(d[2]), int(d[3]), int(d[4]),
                                         int(d[5])
                                     ])
                                     dv.st_running.extend([
-                                        int(d[6]),
-                                        int(d[7]),
-                                        int(d[8]),
+                                        int(d[6]), int(d[7]), int(d[8]),
                                         int(d[9]), 0
                                     ])
                                     dv.st_argv.extend(
                                         [int(d[10]), int(d[11]), 0])
                                     dv.st_hw.extend([
-                                        int(d[12]),
-                                        int(d[13]),
-                                        int(d[14]),
-                                        int(d[15]),
-                                        int(d[16])
+                                        int(d[12]), int(d[13]), int(d[14]),
+                                        int(d[15]), int(d[16])
                                     ])
                                     dv.unknow_sluitem_num = int(d[17])
                                     dv.zigbee_channel.extend([
                                         int(a)
-                                        for a in '{0:016b}'.format(int(d[18]))
-                                        [::-1]
+                                        for a in '{0:016b}'.format(
+                                            int(d[18]))[::-1]
                                     ])
                                     msg.data_slu_view.extend([dv])
                                     del dv
@@ -186,10 +179,9 @@ class QueryDataSluHandler(base.RequestHandler):
                             msg.head.paging_idx = paging_idx
                             msg.head.paging_total = paging_total
                             for d in cur:
-                                if dv.tml_id != int(
-                                        d[0]
-                                ) or dv.dt_receive != mx.switchStamp(
-                                        int(d[1])):
+                                if dv.tml_id != int(d[
+                                        0]) or dv.dt_receive != mx.switchStamp(
+                                            int(d[1])):
                                     if dv.tml_id > 0:
                                         msg.data_sluitem_assist_view.extend(
                                             [dv])
@@ -200,7 +192,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                 dva = msgws.QueryDataSlu.DataSluitemAssistView.SluitemAssistData(
                                 )
                                 dva.sluitem_id = int(d[2])
-                                dva.dt_cache = int(d[3])
+                                dva.dt_cache = mx.switchStamp(int(d[3]))
                                 dva.leackage_current = float(d[4])
                                 x = d[5].split(';')[:-1]
                                 for a in x:
@@ -238,7 +230,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                 ','.join([str(a) for a in tml_ids]))
 
                         if rqmsg.type == 0:
-						    #查看表是否存在
+                            #查看表是否存在
                             strsql = 'select a.TABLE_NAME from information_schema.TABLES as a where a.TABLE_NAME in ("data_slu_ctrl_trigger","data_slu_ctrl_lamp_trigger" )' \
                                      ' and a.TABLE_SCHEMA="{0}_data"'.format(self._db_name)
                             cur = libiisi.m_sql.run_fetch(strsql)
@@ -249,15 +241,15 @@ class QueryDataSluHandler(base.RequestHandler):
                             del cur
 
                             if has_view:
-                                strsql= '''select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
+                                strsql = '''select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
                                 d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
                                 d.is_working_args_set,d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
                                 a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
                                  from {0}.data_slu_ctrl_trigger as d INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
                                 on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
-                                 where 1=1 {1}'''.format(
-                                    self._db_name_data,str_tmls)
+                                 where 1=1 {1}'''.format(self._db_name_data,
+                                                         str_tmls)
                             else:
                                 strsql = '''select x.*,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
@@ -268,9 +260,8 @@ class QueryDataSluHandler(base.RequestHandler):
                                 where d.date_create=(select max(date_create) from {0}.data_slu_ctrl {2}) {1}
                                 group by d.slu_id,d.ctrl_id) as x left join {0}.data_slu_ctrl_lamp as a
                                 on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id'''.format(
-                                    self._db_name_data,
-                                    str_tmls, str_tmls.replace("and d.", "where "))
-
+                                    self._db_name_data, str_tmls,
+                                    str_tmls.replace("and d.", "where "))
                             # strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
                             # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
                             # d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
@@ -325,10 +316,9 @@ class QueryDataSluHandler(base.RequestHandler):
                             msg.head.paging_total = paging_total
                             for d in cur:
 
-                                if dv.sluitem_id != int(
-                                        d[0]
-                                ) or dv.dt_receive != mx.switchStamp(
-                                        int(d[1])):
+                                if dv.sluitem_id != int(d[
+                                        0]) or dv.dt_receive != mx.switchStamp(
+                                            int(d[1])):
                                     if dv.sluitem_id > 0:
                                         msg.data_sluitem_view.extend([dv])
                                         dv = msgws.QueryDataSlu.DataSluitemView(
@@ -336,17 +326,10 @@ class QueryDataSluHandler(base.RequestHandler):
                                     dv.tml_id = int(d[2])
                                     dv.sluitem_id = int(d[0])
                                     dv.dt_receive = mx.switchStamp(int(d[1]))
-                                    try:
-                                        dv.dt_cache = mx.switchStamp(int(d[3]))
-                                    except Exception as ex:
-                                        dv.dt_cache = 0
+                                    dv.dt_cache = mx.switchStamp(int(d[3]))
                                     dv.st_sluitem.extend([
-                                        int(d[4]),
-                                        int(d[5]),
-                                        int(d[6]),
-                                        int(d[7]),
-                                        int(d[8]),
-                                        int(d[9]),
+                                        int(d[4]), int(d[5]), int(d[6]),
+                                        int(d[7]), int(d[8]), int(d[9]),
                                         int(d[10])
                                     ])
                                     dv.temperature = int(d[11])
@@ -355,9 +338,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                     dvs = msgws.QueryDataSlu.DataLampView()
                                     dvs.lamp_id = int(d[12])
                                     dvs.st_lamp.extend([
-                                        int(d[13]),
-                                        int(d[14]),
-                                        int(d[15]),
+                                        int(d[13]), int(d[14]), int(d[15]),
                                         int(d[16])
                                     ])
                                     dvs.lamp_voltage = float(d[17])
@@ -712,7 +693,8 @@ class SluitemAddHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(msgws.rqSluitemAdd(),None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSluitemAdd(), None)
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_write:
                 # 验证用户可操作的设备id
@@ -723,53 +705,81 @@ class SluitemAddHandler(base.RequestHandler):
                 if slu_ids == 0:
                     msg.head.if_st = 46
                 else:
-                    strsql='select sum_of_controls from {0}.para_slu where rtu_id={1}'.format(self._db_name,rqmsg.slu_id)
+                    strsql = 'select sum_of_controls from {0}.para_slu where rtu_id={1}'.format(
+                        self._db_name, rqmsg.slu_id)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                        strsql,need_fetch=1)
-                    if len(cur) == 0 or (cur[0][0]+len(rqmsg.sluitem_args))>256:
+                        strsql, need_fetch=1)
+                    if len(cur) == 0 or (cur[0][0] + len(rqmsg.sluitem_args)
+                                         ) > 256:
                         msg.head.if_st = 46
                     else:
-                        strsql=""
+                        strsql = ""
                         rtu_id = 0
-                        strsqlcheck='select max(rtu_id) from {0}.para_slu_ctrl where slu_id={1}'.format(
-                            self._db_name,rqmsg.slu_id)
+                        strsqlcheck = 'select max(rtu_id) from {0}.para_slu_ctrl where slu_id={1}'.format(
+                            self._db_name, rqmsg.slu_id)
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                            strsqlcheck,need_fetch=1)
+                            strsqlcheck, need_fetch=1)
                         if len(cur) > 0:
-                            rtu_id=cur[0][0]
+                            rtu_id = cur[0][0]
                             for i in rqmsg.sluitem_args:
                                 #判断条码是否有值
-                                if i.sluitem_barcode>0:
-                                    strsqlcheck='select COUNT(*) from {0}.para_slu_ctrl where slu_id={1} and bar_code_id={2};'.format(
-                                        self._db_name,rqmsg.slu_id,i.sluitem_barcode)
+                                if i.sluitem_barcode > 0:
+                                    strsqlcheck = 'select COUNT(*) from {0}.para_slu_ctrl where slu_id={1} and bar_code_id={2};'.format(
+                                        self._db_name, rqmsg.slu_id,
+                                        i.sluitem_barcode)
                                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                                        strsqlcheck,need_fetch=1)
+                                        strsqlcheck, need_fetch=1)
                                     #判断sluitem_barcode 不为重复
-                                    if cur is not None and cur[0][0]==0:
+                                    if cur is not None and cur[0][0] == 0:
                                         #判断参数
-                                        rtu_id+=1
-                                        order_id=i.sluitem_order if i.sluitem_order>0 else rtu_id
-                                        sluitem_name=i.sluitem_name if int(i.sluitem_order)>0 else '控制器'+str(rtu_id)
-                                        sluitem_phy_id=i.sluitem_phy_id if i.sluitem_phy_id >0 else rtu_id
-                                        sluitem_lamp_id=i.sluitem_lamp_id if len(i.sluitem_lamp_id)>0 else str(rtu_id)
-                                        sluitem_loop_num=i.sluitem_loop_num if i.sluitem_loop_num >0 else 2
-                                        sluitem_power_uplimit=i.sluitem_power_uplimit if i.sluitem_power_uplimit >0 else 120
-                                        sluitem_power_lowlimit=i.sluitem_power_lowlimit if i.sluitem_power_lowlimit >0 else 80
-                                        sluitem_gis_x=i.sluitem_gis_x if i.sluitem_gis_x >0 else 0
-                                        sluitem_gis_y=i.sluitem_gis_y if i.sluitem_gis_y >0 else 0
-                                        sluitem_route=i.sluitem_route if len(i.sluitem_route)>=4 else list(i.sluitem_route)+ list(int(4-len(i.sluitem_route)) * [1])
-                                        sluitem_st_poweron=i.sluitem_st_poweron if len(i.sluitem_st_poweron)>=4 else [a if a<2 else 1 for a in i.sluitem_st_poweron]+ list(int(4-len(i.sluitem_st_poweron)) *  [1])
+                                        rtu_id += 1
+                                        order_id = i.sluitem_order if i.sluitem_order > 0 else rtu_id
+                                        sluitem_name = i.sluitem_name if int(
+                                            i.sluitem_order
+                                        ) > 0 else '控制器' + str(rtu_id)
+                                        sluitem_phy_id = i.sluitem_phy_id if i.sluitem_phy_id > 0 else rtu_id
+                                        sluitem_lamp_id = i.sluitem_lamp_id if len(
+                                            i.sluitem_lamp_id) > 0 else str(
+                                                rtu_id)
+                                        sluitem_loop_num = i.sluitem_loop_num if i.sluitem_loop_num > 0 else 2
+                                        sluitem_power_uplimit = i.sluitem_power_uplimit if i.sluitem_power_uplimit > 0 else 120
+                                        sluitem_power_lowlimit = i.sluitem_power_lowlimit if i.sluitem_power_lowlimit > 0 else 80
+                                        sluitem_gis_x = i.sluitem_gis_x if i.sluitem_gis_x > 0 else 0
+                                        sluitem_gis_y = i.sluitem_gis_y if i.sluitem_gis_y > 0 else 0
+                                        sluitem_route = i.sluitem_route if len(
+                                            i.sluitem_route) >= 4 else list(
+                                                i.sluitem_route) + list(
+                                                    int(4 - len(
+                                                        i.sluitem_route)) *
+                                                    [1])
+                                        sluitem_st_poweron = i.sluitem_st_poweron if len(
+                                            i.sluitem_st_poweron) >= 4 else [
+                                                a if a < 2 else 1
+                                                for a in i.sluitem_st_poweron
+                                            ] + list(
+                                                int(4 - len(
+                                                    i.sluitem_st_poweron)) *
+                                                [1])
                                         sluitem_vector = []
-                                        x = [1,2,3,4]
-                                        if len(i.sluitem_vector)>0:
+                                        x = [1, 2, 3, 4]
+                                        if len(i.sluitem_vector) > 0:
                                             for j in range(4):
                                                 if i.sluitem_vector[j] in x:
-                                                    sluitem_vector.append(i.sluitem_vector[j])
-                                                    x.remove(i.sluitem_vector[j])
+                                                    sluitem_vector.append(
+                                                        i.sluitem_vector[j])
+                                                    x.remove(
+                                                        i.sluitem_vector[j])
                                         if len(x) > 0:
                                             sluitem_vector.extend(x)
                                         # sluitem_vector=i.sluitem_vector if len(i.sluitem_vector)>=4 else list(i.sluitem_vector )+ list(int(4-len(i.sluitem_vector)) *  [1])
-                                        sluitem_rated_power=i.sluitem_rated_power if len(i.sluitem_rated_power)>=4 else [a if a <=15 else 6 for a in i.sluitem_rated_power]+ list(int(4-len(i.sluitem_rated_power)) *  [6])
+                                        sluitem_rated_power = i.sluitem_rated_power if len(
+                                            i.sluitem_rated_power) >= 4 else [
+                                                a if a <= 15 else 6
+                                                for a in i.sluitem_rated_power
+                                            ] + list(
+                                                int(4 - len(
+                                                    i.sluitem_rated_power)) *
+                                                [6])
 
                                         strsql=strsql+'INSERT INTO {0}.para_slu_ctrl (rtu_id,slu_id,order_id,bar_code_id,rtu_name,is_used,is_alarm_auto,' \
                                                         'vector_loop_1,vector_loop_2,vector_loop_3,vector_loop_4,power_rate_1,power_rate_2,' \
@@ -790,21 +800,23 @@ class SluitemAddHandler(base.RequestHandler):
                                         #     cur = yield self.mydata_collector(strsql, need_fetch=0)
                                         # msg.head.if_st=1
                                     else:
-                                        msg.head.if_st=46
+                                        msg.head.if_st = 46
                                         break
                                 else:
-                                    msg.head.if_st=46
+                                    msg.head.if_st = 46
                                     break
                             if msg.head.if_st == 1:
-                                strsql = strsql + "update {0}.para_slu set sum_of_controls=(select count(1) from {0}.para_slu_ctrl where slu_id={1}) where rtu_id={1};".format(self._db_name,rqmsg.slu_id)
+                                strsql = strsql + "update {0}.para_slu set sum_of_controls=(select count(1) from {0}.para_slu_ctrl where slu_id={1}) where rtu_id={1};".format(
+                                    self._db_name, rqmsg.slu_id)
 
-                                cur = yield self.mydata_collector(strsql, need_fetch=0)
+                                cur = yield self.mydata_collector(
+                                    strsql, need_fetch=0)
                                 if cur is None:
                                     msg.head.if_st = 45
                         else:
                             msg.head.if_st = 46
             else:
-                msg.head.if_st=11
+                msg.head.if_st = 11
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()

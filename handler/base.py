@@ -212,15 +212,18 @@ class RequestHandler(mxweb.MXRequestHandler):
                     if need_paging:
                         # 利用后台线程写缓存
                         buffer_tag = int(time.time() * 1000000)
-                        t = threading.Thread(
-                            target=self.write_cache,
-                            args=(
-                                os.path.join(libiisi.m_cachedir,
-                                             '{0}{1}'.format(
-                                                 buffer_tag, cache_head)),
-                                cache_data,
-                            ))
-                        t.start()
+                        try:
+                            t = threading.Thread(
+                                target=self.write_cache,
+                                args=(
+                                    os.path.join(libiisi.m_cachedir,
+                                                 '{0}{1}'.format(
+                                                     buffer_tag, cache_head)),
+                                    cache_data,
+                                ))
+                            t.start()
+                        except:
+                            pass
             # 开始分页处理
             # 判断是否需要分页处理
             x = 0  # 所需页的起始记录序号
@@ -256,7 +259,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                     if need_paging:
                         if p < y and p >= x:
                             rep.append(d)
-                        p += 1           
+                        p += 1
                     else:
                         rep.append(d)
                         p += 1

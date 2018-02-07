@@ -53,7 +53,7 @@ def test_userlogin():
     rqmsg.dev = 1
     rqmsg.unique = 'asdfhaskdfkaf'
     rqmsg.user = u'admin'
-    rqmsg.pwd = u'st1234'
+    rqmsg.pwd = u'1234'
     # rqmsg.user = '管理员'
     # rqmsg.pwd = '123'
     data = {'pb2': base64.b64encode(rqmsg.SerializeToString())}
@@ -534,7 +534,7 @@ def test_querysludata():
     # rqmsg.dt_end = mx.time2stamp('2017-12-20 00:00:00')
     rqmsg.type = 0
     rqmsg.data_mark = 7
-    rqmsg.tml_id.extend([1500001])
+    rqmsg.tml_id.extend([1500001,1500002,1500003,1500004,1500005,1500006,1500007,1500008,1500009,1500010,1500011,1500012])
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
@@ -544,7 +544,7 @@ def test_querysludata():
     r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
     msg = msgif.QueryDataSlu()
     msg.ParseFromString(base64.b64decode(r.data))
-    print(msg)
+    print(msg.head)
     print('post finish')
     time.sleep(0)
 
@@ -1143,7 +1143,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    # test_userlogin()
+    test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()
@@ -1154,7 +1154,7 @@ if __name__ == '__main__':
     # test_querysms()
     # test_statusslu()
     # test_statusrtu()
-    test_querysludata()
+    # test_querysludata()
     # test_sysinfo()
     # test_cleansms()
     # test_errquery()
@@ -1185,4 +1185,4 @@ if __name__ == '__main__':
     # test_ipcuplink()
     # test_ipcsubmit()
     # test_userlogout()
-    # test_mrudataget()
+    test_mrudataget()

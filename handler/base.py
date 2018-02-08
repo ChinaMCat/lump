@@ -80,9 +80,10 @@ class RequestHandler(mxweb.MXRequestHandler):
         else:
             ip, port = zmq_addr.split(':')
         ctx = zmq.Context()
-        push = ctx.socket(zmq.PUSH)
+        push = ctx.socket(zmq.PUB)
         # push.setsockopt(zmq.SNDTIMEO, 2000)
         push.connect('tcp://{0}:{1}'.format(ip, int(port)))
+        time.sleep(0.5)
         push.send_multipart([req_filter, req_msg])
         try:
             push.close()
@@ -636,7 +637,7 @@ class RequestHandler(mxweb.MXRequestHandler):
 
 
     def get_eventinfo(self):
-        if len(libiisi.event_info) == 0:
+        if len(libiisi.events_def) == 0:
             strsql = 'select id,name from {0}.operator_id_assign order by id_class'.format(self._db_name_data)
             cur = libiisi.m_sql.run_fetch(strsql)
             s = libiisi.m_sql.get_last_error_message()
@@ -646,5 +647,5 @@ class RequestHandler(mxweb.MXRequestHandler):
                                     '_MYSQL'))
             if cur is not None:
                 for d in cur:
-                    libiisi.event_info[int(d[0])] = (d[1])
+                    libiisi.events_def[int(d[0])] = (d[1])
             del cur

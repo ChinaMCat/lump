@@ -284,7 +284,7 @@ def send_to_zmq_pub(sfilter, msg):
                 m_zmq_pub = None
             else:
                 time.sleep(0.5)
-                m_zmq_pub.send_multipart([b'ka', '3a533ba0'.decode('hex')])
+                # m_zmq_pub.send_multipart([b'ka', '3a533ba0'.decode('hex')])
         if m_zmq_pub is not None:
             try:
                 f = bytes(sfilter)

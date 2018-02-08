@@ -20,8 +20,8 @@ baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://60.173.254.184:10005/'
 # baseurl = 'http://192.168.50.83:10030/'
 baseurl = 'http://114.80.168.38:63507/'
-# baseurl = 'http://180.153.108.83:21135/'
-# baseurl = 'http://180.153.108.83:10005/'
+baseurl = 'http://121.231.223.163:10005/'
+# baseurl = 'http://192.168.122.21:63507/'
 # baseurl = 'http://192.168.50.55:5523/'
 # baseurl = 'http://192.168.122.185:10005/'
 # baseurl = 'http://180.141.89.112:10005/'
@@ -1154,7 +1154,7 @@ if __name__ == '__main__':
     # test_querysms()
     # test_statusslu()
     # test_statusrtu()
-    test_querysludata()
+    # test_querysludata()
     # test_sysinfo()
     # test_cleansms()
     # test_errquery()
@@ -1175,7 +1175,7 @@ if __name__ == '__main__':
     # test_errinfo()
     # test_querysmsalarm()
     # test_eventinfo()
-    # test_rtuctl()
+    test_rtuctl()
     # test_posttest()
     # test_userinfo()
     # test_rtudataget()

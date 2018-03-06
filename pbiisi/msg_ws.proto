@@ -1318,6 +1318,8 @@ message MsgSettingInfo {
         int32 msg_type = 2;  // 消息类别，1-实时操作，2-故障报警，99-其他
         string msg_filter = 3;  // 消息过滤器
         string msg_remark = 4;  // 备注
+        int32 msg_id = 5;      // 消息id
+        int32 msg_project_id = 6;  // 项目id
     }
     Head head = 1;  // 协议头信息
     repeated MsgView msg_view = 2;
@@ -1332,6 +1334,8 @@ message rqMsgSettingEdit {
         int32 msg_type = 2;  // 消息类别，1-实时操作，2-故障报警，99-其他
         string msg_filter = 3;  // 消息过滤器
         string msg_remark = 4;  // 消息备注
+        int32 msg_id = 5;      // 消息id
+        int32 msg_project_id = 6;  // 项目id
     }
     repeated MsgView msg_view = 2;
 }

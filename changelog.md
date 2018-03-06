@@ -1,3 +1,7 @@
+[2018-03-05]
+---
+- MsgSettingInfo和rqMsgSettingEdit消息体增加msg_id和msg_project_id字段
+
 [2018-02-08]
 ---
 - 修正`event_info`变量定义错误

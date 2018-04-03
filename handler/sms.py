@@ -208,6 +208,53 @@ class CleanSmsAlarmHandler(base.RequestHandler):
         del msg, rqmsg
 
 
+@mxweb.route()
+class UserListHandler(base.RequestHandler):
+    help_doc = u'''获取用户手机号码信息 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;scode - 动态运算安全码<br/>
+    &nbsp;&nbsp;pb2 - rqUserInfo()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;UserInfo()结构序列化并经过base64编码后的字符串'''
+
+    @gen.coroutine
+    def post(self):
+        legal, rqmsg, msg = yield self.check_arguments(
+            msgws.rqUserInfo(), msgws.UserInfo(), use_scode=1)
+        if legal:
+            strsql = '''select user_name,user_phonenumber from {0}.user_list'''.format(self._db_name)
+            if len(rqmsg.user_name) > 0:
+                strsql += " where user_name=`{0}`".format(rqmsg.user_name)
+            print(strsql)
+            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                strsql,
+                need_fetch=1,
+                need_paging=0,
+                buffer_tag=msg.head.paging_buffer_tag,
+                paging_idx=msg.head.paging_idx,
+                paging_num=msg.head.paging_num)
+            if record_total is None:
+                msg.head.if_st = 45
+            else:
+                msg.head.paging_record_total = record_total
+                msg.head.paging_buffer_tag = buffer_tag
+                msg.head.paging_idx = paging_idx
+                msg.head.paging_total = paging_total
+                for d in cur:
+                    userview = msgws.UserInfo.UserView()
+                    if d[1] is not None and len(d[1]) > 0:
+                        userview.user = d[0]
+                        userview.tel = d[1]
+                    msg.user_view.extend([userview])
+                    del userview
+
+            del cur, strsql
+
+        self.write(mx.code_pb2(msg, self._go_back_format))
+        self.finish()
+        del msg, rqmsg
+
+
 # sms数据提交
 @mxweb.route()
 class SubmitSmsHandler(base.RequestHandler):

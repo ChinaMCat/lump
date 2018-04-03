@@ -20,13 +20,13 @@ baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://60.173.254.184:10005/'
 # baseurl = 'http://192.168.50.83:10030/'
 baseurl = 'http://114.80.168.38:63507/'
-baseurl = 'http://121.231.223.163:10005/'
+# baseurl = 'http://121.231.223.163:10005/'
 # baseurl = 'http://192.168.122.21:63507/'
 # baseurl = 'http://192.168.50.55:5523/'
 # baseurl = 'http://192.168.122.185:10005/'
-# baseurl = 'http://180.141.89.112:10005/'
-# baseurl = 'http://180.168.198.218:12317/'
-# baseurl = 'http://218.202.66.19:20005/'
+# baseurl = 'http://112.24.98.189:10005/'  # 盐城
+# baseurl = 'http://180.141.89.112:10005/'  # 南宁
+# baseurl = 'http://127.0.0.1:63507/'
 # baseurl = 'http://192.168.50.80:33819/ws_BT/FlowService.asmx'
 pm = urllib3.PoolManager(num_pools=100)
 user_id = 'ef61022b553911e6832074d435009085'
@@ -48,7 +48,7 @@ def init_head(msg):
 def test_userlogin():
     global user_id
     print('=== login ===')
-    url = baseurl + 'userlogin'
+    url = baseurl + 'userloginjk'
     rqmsg = init_head(msgif.rqUserLogin())
     rqmsg.dev = 1
     rqmsg.unique = 'asdfhaskdfkaf'
@@ -141,12 +141,13 @@ def test_userdel():
 def test_userinfo():
     global user_id
     print('=== userinfo ===')
-    url = baseurl + 'userinfo'
+    url = baseurl + 'userlist'
     rqmsg = init_head(msgif.rqUserInfo())
     # rqmsg.user_name = 'wuning'
 
     data = {
-        'uuid': user_id,
+        'scode': mx.getMD5('{0}53f5c320'.format(
+            mx.stamp2time(time.time(), format_type='%Y%m%d%H'))),
         'pb2': base64.b64encode(rqmsg.SerializeToString())
     }
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
@@ -218,9 +219,9 @@ def test_rtudataget():
     print('=== rtudataget ===')
     url = baseurl + 'rtudataget'
     rqmsg = init_head(msgif.rqRtuDataGet())
-    for i in range(1000001, 1000002):
-        rqmsg.tml_id.append(i)
-    # rqmsg.tml_id.extend([1000042, 1000003, 1000001])
+    # for i in range(1000619):
+    #     rqmsg.tml_id.append(i)
+    rqmsg.tml_id.extend([1000619])
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
@@ -415,14 +416,15 @@ def test_errquery():
     print('=== query err data ===')
     url = baseurl + 'querydataerr'
     rqmsg = init_head(msgif.rqQueryDataErr())
-    rqmsg.head.paging_num =10
+    # rqmsg.head.paging_num =100
     rqmsg.head.paging_idx = 1
     # rqmsg.head.paging_num = 100
     # rqmsg.head.paging_buffer_tag = 1500942882771374
     # rqmsg.dt_start = mx.time2stamp("2017-05-01 00:00:00")
-    # rqmsg.dt_end = int(time.time())
-    rqmsg.type = 0
+    rqmsg.dt_end = int(time.time())
+    rqmsg.type = 1
     rqmsg.tml_id.extend([])
+    rqmsg.err_id.extend([25])
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
@@ -511,13 +513,14 @@ def test_tmlinfo():
     print('=== query rty info ===')
     url = baseurl + 'tmlinfo'
     rqmsg = msgif.rqTmlInfo()
-    rqmsg.data_mark.extend([3])
+    rqmsg.data_mark.extend([1,2,4,5,6])
     rqmsg.tml_id.extend([])
     data = {
         'uuid': user_id,
-        'pb2': base64.b64encode(rqmsg.SerializeToString())
+        # 'pb2': base64.b64encode(rqmsg.SerializeToString())
+        'pb2': 'CjIQyOQJKiQxOUEyNDY4QS1DMjRELTQwQkQtQjg5RC01NTc1QzVEMDY0MzWgBoDonL28HCoFAQIEBQY='
     }
-    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
     msg = msgif.TmlInfo()
     msg.ParseFromString(base64.b64decode(r.data))
     print(msg)
@@ -1157,7 +1160,7 @@ if __name__ == '__main__':
     # test_querysludata()
     # test_sysinfo()
     # test_cleansms()
-    # test_errquery()
+    test_errquery()
     # test_sludataget()
     # test_ldudataget()
     # test_eludataget()
@@ -1175,7 +1178,7 @@ if __name__ == '__main__':
     # test_errinfo()
     # test_querysmsalarm()
     # test_eventinfo()
-    test_rtuctl()
+    # test_rtuctl()
     # test_posttest()
     # test_userinfo()
     # test_rtudataget()

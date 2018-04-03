@@ -1,3 +1,15 @@
+[2018-04-03]
+---
+- 故障查询增加电压和电流字段数据读取
+
+[2018-03-14]
+---
+- 修正zmq-proxy子线程无法启动的bug
+
+[2018-03-05]
+---
+- sms模块增加UserList接口
+
 [2018-03-05]
 ---
 - MsgSettingInfo和rqMsgSettingEdit消息体增加msg_id和msg_project_id字段

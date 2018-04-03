@@ -66,7 +66,7 @@ class QueryDataErrHandler(base.RequestHandler):
 
                     if rqmsg.type == 0:  # 现存故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_create, \
-                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count \
+                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count,a.v,a.a \
                         from {2}.info_fault_exist as a left join {0}.fault_types as b \
                         on a.fault_id=b.fault_id right join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
                         where a.date_create>={1}'.format(
@@ -81,7 +81,7 @@ class QueryDataErrHandler(base.RequestHandler):
                             self._fetch_limited)
                     elif rqmsg.type == 1:  # 历史故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_remove, \
-                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id \
+                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id,a.v,a.a \
                         from {3}.info_fault_history as a left join {0}.fault_types as b \
                         on a.fault_id=b.fault_id right join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
                         where a.date_create <={1} and a.date_create >={2}'.format(
@@ -143,6 +143,8 @@ class QueryDataErrHandler(base.RequestHandler):
                                 errview.tml_sub_id2 = int(d[8])
                                 errview.remark = d[9]
                                 errview.err_count = int(d[10])
+                                errview.voltage = float(d[11])
+                                errview.voltage = float(d[12])
                                 msg.err_view.extend([errview])
                                 del errview
                         elif rqmsg.type in (2, 3):

@@ -80,7 +80,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         else:
             ip, port = zmq_addr.split(':')
         ctx = zmq.Context()
-        push = ctx.socket(zmq.PUB)
+        push = ctx.socket(zmq.PUSH)
         # push.setsockopt(zmq.SNDTIMEO, 2000)
         push.connect('tcp://{0}:{1}'.format(ip, int(port)))
         time.sleep(0.5)

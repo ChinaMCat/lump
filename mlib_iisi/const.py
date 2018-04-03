@@ -39,7 +39,7 @@ cfg_dz_url = ''  # 电桩接口地址
 cfg_fs_url = ''  # 市政工作流接口地址
 cfg_enable_cross_domain = 0
 
-can_read = set((4, 5, 7, 15))  # 可读权限值
+can_read = set((4, 5, 6, 7, 15))  # 可读权限值
 can_write = set((2, 3, 6, 7, 15))  # 可写权限值
 can_exec = set((1, 3, 5, 7, 15))  # 可操作权限值
 can_admin = set((15, ))  # 管理员权限值

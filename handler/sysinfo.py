@@ -1066,6 +1066,28 @@ class TmlInfoHandler(base.RequestHandler):
                             else:
                                 str_tmls = ' and a.rtu_id in ({0})'.format(
                                     ','.join([str(a) for a in list(tml_ids)]))
+                        elif mk == 12:  # 漏电设备
+                            if len(tml_ids) == 0:
+                                str_tmls = ''
+                            else:
+                                str_tmls = ' and a.rtu_id in ({0})'.format(
+                                    ','.join([str(a) for a in list(tml_ids)]))
+
+                            strsql = 'select a.rtu_id,a.rtu_phy_id,b.ldu_line_id,b.ldu_line_name, \
+                            b.is_used,b.mutual_inductor_radio,b.ldu_phase,b.ldu_end_lampport_sn, \
+                            b.ldu_lighton_single_limit,b.ldu_lightoff_single_limit, \
+                            b.ldu_lighton_impedance_limit,b.ldu_lightoff_impedance_limit, \
+                            b.ldu_bright_rate_alarm_limit,b.ldu_fault_param,b.remark, \
+                            b.ldu_loop_id,b.ldu_control_type_code,b.ldu_comm_type_code  \
+                            from {0}.para_ldu_line as b left join {0}.para_base_equipment as a  \
+                            on a.rtu_id=b.ldu_fid where a.rtu_id>=1100000 and a.rtu_id<=1199999 {1} order by a.rtu_id'.format(
+                                self._db_name, str_tmls)
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                                strsql, need_fetch=1, need_paging=0)
+                            if record_total is None:
+                                msg.head.if_st = 45
+                            else:
+                                pass
 
         self.write(mx.code_pb2(msg, self._go_back_format))
 

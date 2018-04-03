@@ -14,9 +14,12 @@ from const import *
 
 m_zmq_pub = None
 m_zmq_pull = None
+m_zmq_push = None
+m_zmq_enable_proxy = False
 m_zmq_ctx = zmq.Context().instance()
 
-sub_thread_started = False
+clean_thread_started = False
+zmq_thread_started = False
 
 
 def load_profile():
@@ -228,21 +231,24 @@ SENDWHOIS = '`{0}`'.format(sendServerMsg('', 'wlst.sys.whois'))
 
 
 def zmq_proxy():
-    global m_zmq_pub, m_zmq_pull, m_zmq_ctx, sub_thread_started
-    if sub_thread_started:
+    global m_zmq_pub, m_zmq_pull, m_zmq_ctx, zmq_thread_started, m_zmq_enable_proxy
+    if zmq_thread_started:
         return
-    sub_thread_started = True
+    zmq_thread_started = True
+
+    m_zmq_enable_proxy = True
 
     zmq_conf = m_config.getData('zmq_port')
     if zmq_conf.find(':') == -1:
         try:
             if m_zmq_pull is None:
                 # try:
-                m_zmq_pull = m_zmq_ctx.socket(zmq.XSUB)
+                m_zmq_pull = m_zmq_ctx.socket(zmq.PULL)
                 m_zmq_pull.bind('tcp://*:{0}'.format(zmq_conf))
-                m_zmq_pub = m_zmq_ctx.socket(zmq.XPUB)
+                m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
                 m_zmq_pub.bind('tcp://*:{0}'.format(int(zmq_conf) + 1))
                 zmq.proxy(m_zmq_pull, m_zmq_pub)
+                m_zmq_enable_proxy = False
                 # poller = zmq.Poller()
                 # poller.register(m_zmq_pull, zmq.POLLIN)
                 #
@@ -267,16 +273,17 @@ def zmq_proxy():
 
         except Exception as ex:
             print('zmq start err:{0}'.format(ex))
+            m_zmq_enable_proxy = False
 
 
 def send_to_zmq_pub(sfilter, msg):
-    global m_zmq_pub, m_zmq_pull, m_zmq_ctx
+    global m_zmq_pub, m_zmq_pull, m_zmq_ctx, m_zmq_enable_proxy
     try:
-        if m_zmq_pub is None:
+        if m_zmq_enable_proxy is False:
             zmq_conf = m_config.getData('zmq_port')
             try:
                 if zmq_conf.find(':') > -1:
-                    m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
+                    m_zmq_pub = m_zmq_ctx.socket(zmq.PUSH)
                     # m_zmq_pub.setsockopt(zmq.SNDTIMEO, 50)
                     m_zmq_pub.connect('tcp://{0}'.format(zmq_conf))
             except Exception as ex:
@@ -296,10 +303,10 @@ def send_to_zmq_pub(sfilter, msg):
 
 
 def do_cleaningwork():
-    global sub_thread_started
-    if sub_thread_started:
+    global clean_thread_started
+    if clean_thread_started:
         return
-    sub_thread_started = True
+    clean_thread_started = True
 
     while True:
         time.sleep(86400)

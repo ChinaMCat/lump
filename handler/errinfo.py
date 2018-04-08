@@ -66,9 +66,10 @@ class QueryDataErrHandler(base.RequestHandler):
 
                     if rqmsg.type == 0:  # 现存故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_create, \
-                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count,a.v,a.a \
+                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count,a.v,a.a,b.fault_name_define,d.loop_name \
                         from {2}.info_fault_exist as a left join {0}.fault_types as b \
                         on a.fault_id=b.fault_id right join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
+                        left join {0}.para_rtu_loop_info as d on a.rtu_id=d.rtu_id and a.loop_id=d.loop_id \
                         where a.date_create>={1}'.format(
                             self._db_name, sdt, self._db_name_data)
                         if edt > 0:
@@ -81,9 +82,10 @@ class QueryDataErrHandler(base.RequestHandler):
                             self._fetch_limited)
                     elif rqmsg.type == 1:  # 历史故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_remove, \
-                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id,a.v,a.a \
+                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id,a.v,a.a,b.fault_name_define,d.loop_name \
                         from {3}.info_fault_history as a left join {0}.fault_types as b \
                         on a.fault_id=b.fault_id right join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
+                        left join {0}.para_rtu_loop_info as d on a.rtu_id=d.rtu_id and a.loop_id=d.loop_id \
                         where a.date_create <={1} and a.date_create >={2}'.format(
                             self._db_name, edt, sdt, self._db_name_data)
                         if len(str_tmls) > 0:
@@ -131,7 +133,7 @@ class QueryDataErrHandler(base.RequestHandler):
                                 errview = msgws.QueryDataErr.ErrView()
                                 errview.err_id = int(d[0])
                                 errview.err_name = d[
-                                    1] if d[1] is not None else ''
+                                    13] if d[13] is not None else ''
                                 errview.tml_id = int(d[2])
                                 errview.dt_create = mx.switchStamp(int(d[3]))
                                 errview.dt_remove = mx.switchStamp(int(d[4]))
@@ -145,6 +147,8 @@ class QueryDataErrHandler(base.RequestHandler):
                                 errview.err_count = int(d[10])
                                 errview.voltage = float(d[11])
                                 errview.voltage = float(d[12])
+                                # errview.err_name_custome = d[13]
+                                errview.tml_loop_name = d[14] if d[14] is not None else ""
                                 msg.err_view.extend([errview])
                                 del errview
                         elif rqmsg.type in (2, 3):

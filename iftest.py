@@ -18,7 +18,7 @@ import gevent
 baseurl = 'http://192.168.122.185:10005/'
 baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://60.173.254.184:10005/'
-# baseurl = 'http://192.168.50.83:10030/'
+baseurl = 'http://192.168.50.83:10060/'
 baseurl = 'http://114.80.168.38:63507/'
 # baseurl = 'http://121.231.223.163:10005/'
 # baseurl = 'http://192.168.122.21:63507/'
@@ -48,7 +48,7 @@ def init_head(msg):
 def test_userlogin():
     global user_id
     print('=== login ===')
-    url = baseurl + 'userloginjk'
+    url = baseurl + 'userlogin'
     rqmsg = init_head(msgif.rqUserLogin())
     rqmsg.dev = 1
     rqmsg.unique = 'asdfhaskdfkaf'
@@ -1146,7 +1146,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    # test_userlogin()
+    test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()

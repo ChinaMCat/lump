@@ -113,7 +113,7 @@ class UserLoginJKHandler(base.RequestHandler):
                             _area_x = [0]
                         else:
                             user_auth = 0
-                            print(d[0],d[1],d[2])
+                            print(d[0], d[1], d[2])
                             if d[0] is not None:
                                 if len(d[0].split(';')[:-1]) > 0:
                                     user_auth += 4
@@ -379,6 +379,10 @@ class UserLoginHandler(base.RequestHandler):
             del x
         except Exception as ex:
             pass
+            
+        # 读取appconfig
+        libiisi.m_app_config.loadConfig(libiisi.cfg_app_config_file)
+        msg.app_config = libiisi.m_app_config.getJson()
 
         # 登录工作流
         if rqmsg.dev == 3:

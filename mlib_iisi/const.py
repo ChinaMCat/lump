@@ -3,7 +3,6 @@
 
 import mxpsu as mx
 
-
 m_conv = {1: int, 2: int, 3: int, 4: float, 5: float, 8: int, 9: int}
 
 m_confdir, m_logdir, m_cachedir = mx.get_dirs('oahu')
@@ -13,7 +12,8 @@ m_sql = None
 
 m_config = mx.ConfigFile()
 m_config.setData('uas_url', 'http://127.0.0.1:10009/uas', '统一验证服务地址')
-m_config.setData('log_level', 10, '日志记录等级, 10-debug, 20-info, 30-warring, 40-error')
+m_config.setData('log_level', 10,
+                 '日志记录等级, 10-debug, 20-info, 30-warring, 40-error')
 m_config.setData('tcs_port', '1024', '对应通讯服务程序端口')
 m_config.setData('db_host', '127.0.0.1:3306', '数据库服务地址, ip:port, 端口默认3306')
 m_config.setData('db_user', 'root', '数据库服务用户名')
@@ -24,10 +24,17 @@ m_config.setData('db_name_uas', 'uas', '统一验证数据库名称')
 m_config.setData('dz_url', 'http://id.dz.tt/index.php', '电桩接口地址')
 m_config.setData('fs_url', 'http://127.0.0.1:33819/ws_common', '工作流接口地址')
 m_config.setData('bind_port', 10005, '本地监听端口')
-m_config.setData('zmq_port', '10006',
-                 'ZMQ端口，采用ip:port格式时连接远程ZMQ-PULL服务,采用port格式时为发布本地PULL服务,PUB服务端口号+1')
+m_config.setData(
+    'zmq_port', '10006',
+    'ZMQ端口，采用ip:port格式时连接远程ZMQ-PULL服务,采用port格式时为发布本地PULL服务,PUB服务端口号+1')
 m_config.setData('cross_domain', 'true', '允许跨域访问')
 m_config.setData('max_db_conn', '20', '最大数据库连接池容量')
+m_config.setData('app_config', 'appconfig.conf', 'app用额外配置文件名')
+
+m_app_config = mx.ConfigFile()
+m_app_config.setData("map_first", 0, "首页显示地图")
+m_app_config.setData("onoff_button", 1, "显示设备开关功能")
+m_app_config.setData("use_zmq", 1, "优先监听zmq消息，设置为0表示监听极光推送")
 
 cfg_bind_port = 0  # 服务监听端口
 cfg_tcs_port = 0  # 监控通讯层端口号
@@ -38,6 +45,7 @@ cfg_dbname_uas = ''  # uas数据库名称
 cfg_dz_url = ''  # 电桩接口地址
 cfg_fs_url = ''  # 市政工作流接口地址
 cfg_enable_cross_domain = 0
+cfg_app_config_file = ''  # app额外配置信息
 
 can_read = set((4, 5, 6, 7, 15))  # 可读权限值
 can_write = set((2, 3, 6, 7, 15))  # 可写权限值
@@ -104,19 +112,20 @@ events_def = dict()  # 事件信息字典
 # events_def[65] = u'混合或调光操作',
 
 # 气象数据id定义
-qudata_sxhb = [503,  # no
-               504,  # no2
-               505,  # co
-               506,  # co2
-               510,  # pm2.5
-               101,  # temp
-               102,  # rehu
-               511,  # pm10
-               507,  # o3
-               512,  # tvoc
-               513,  # h2s
-               508  # so2
-               ]
+qudata_sxhb = [
+    503,  # no
+    504,  # no2
+    505,  # co
+    506,  # co2
+    510,  # pm2.5
+    101,  # temp
+    102,  # rehu
+    511,  # pm10
+    507,  # o3
+    512,  # tvoc
+    513,  # h2s
+    508  # so2
+]
 # {uuid:dict(user_id, user_name,user_auth,login_time, ative_time, area_id, user_db,source_dev)}
 
 cache_user = dict()  # 用户信息缓存

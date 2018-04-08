@@ -58,6 +58,7 @@ message UserLogin {
     int32 tcs = 18;  // 通讯层端口号
     int32 is_user_operator_code = 19;
     string code = 20;  // 安全码(移动用)
+    string app_config = 21; // app配置文件信息
 }
 
 // 用户注销
@@ -346,6 +347,8 @@ message QueryDataErr {
         int32 err_count = 13;  // 一定时间内的重复报警次数
         double voltage = 14; // 电压/火线电流
         double current = 15;  // 电流/零线电流
+        string err_name_custome = 16;  // 自定义故障名称
+        string tml_loop_name = 17;  // 回路名称，如果有的话
     }
     Head head = 1;
     int32 type = 2;  // 类型,0-最新,1-历史

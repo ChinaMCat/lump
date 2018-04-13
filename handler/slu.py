@@ -232,7 +232,7 @@ class QueryDataSluHandler(base.RequestHandler):
                         if rqmsg.type == 0:
                             #查看表是否存在
                             strsql = 'select a.TABLE_NAME from information_schema.TABLES as a where a.TABLE_NAME in ("data_slu_ctrl_trigger","data_slu_ctrl_lamp_trigger" )' \
-                                     ' and a.TABLE_SCHEMA="{0}_data"'.format(self._db_name)
+                                     ' and a.TABLE_SCHEMA="{0}"'.format(self._db_name_data)
                             cur = libiisi.m_sql.run_fetch(strsql)
                             has_view = False
                             if cur is not None:
@@ -250,7 +250,6 @@ class QueryDataSluHandler(base.RequestHandler):
                                 on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
                                  where 1=1 {1} group by d.slu_id,d.ctrl_id  ORDER BY d.ctrl_id,d.date_create'''.format(
                                     self._db_name_data,str_tmls)
-
                             else:
                                 strsql = '''select x.*,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
@@ -261,7 +260,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                 where d.date_create=(select max(date_create) from {0}.data_slu_ctrl {2}) {1}
                                 group by d.slu_id,d.ctrl_id) as x left join {0}.data_slu_ctrl_lamp as a
                                 on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id
-                                order by x.rtu_id,x.date_create'''.format(
+                                order by x.slu_id,x.date_create'''.format(
                                     self._db_name_data,
                                     str_tmls, str_tmls.replace("and d.", "where "))
 
@@ -289,7 +288,6 @@ class QueryDataSluHandler(base.RequestHandler):
                                     x.date_create=a.date_create and x.slu_id=a.slu_id and x.ctrl_id=a.ctrl_id '''.format(
                                 self._db_name_data, sdt, edt, str_tmls,
                                 self._fetch_limited)
-
                             # strsql = 'select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor, \
                             # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set, \
                             # d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on, \
@@ -300,7 +298,7 @@ class QueryDataSluHandler(base.RequestHandler):
                             # where a.date_create>={1} and a.date_create<={2} {3} \
                             # order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id {4}'.format(
                             #     self._db_name, sdt, edt, str_tmls, self._fetch_limited)
-
+                            
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
                             need_fetch=1,

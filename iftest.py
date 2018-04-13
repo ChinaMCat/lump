@@ -18,14 +18,15 @@ import gevent
 baseurl = 'http://192.168.122.185:10005/'
 baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://60.173.254.184:10005/'
-baseurl = 'http://192.168.50.83:10060/'
+# baseurl = 'http://192.168.50.83:10060/'
 baseurl = 'http://114.80.168.38:63507/'
 # baseurl = 'http://121.231.223.163:10005/'
 # baseurl = 'http://192.168.122.21:63507/'
 # baseurl = 'http://192.168.50.55:5523/'
-# baseurl = 'http://192.168.122.185:10005/'
+# baseurl = 'http://60.173.254.183:10005/'  # 合肥市区
 # baseurl = 'http://112.24.98.189:10005/'  # 盐城
 # baseurl = 'http://180.141.89.112:10005/'  # 南宁
+# baseurl = 'http://119.97.217.138:10005/'  # 武汉
 # baseurl = 'http://127.0.0.1:63507/'
 # baseurl = 'http://192.168.50.80:33819/ws_BT/FlowService.asmx'
 pm = urllib3.PoolManager(num_pools=100)
@@ -490,10 +491,11 @@ def test_rtudataquery():
     url = baseurl + 'querydatartu'
     rqmsg = msgif.rqQueryDataRtu()
     rqmsg.head.paging_num=100
-    # rqmsg.dt_start = 0  # mx.time2stamp('2015-10-20 00:00:00')
-    # rqmsg.dt_end = mx.time2stamp('2016-12-20 00:00:00')
-    rqmsg.type = 0
-    rqmsg.tml_id.extend([1000002])
+    rqmsg.head.paging_idx = 1
+    rqmsg.dt_start = mx.time2stamp('2017-12-11 00:00:00')
+    rqmsg.dt_end = mx.time2stamp('2017-12-12 00:00:00')
+    rqmsg.type = 1
+    rqmsg.tml_id.extend([1000301])
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
@@ -533,11 +535,12 @@ def test_querysludata():
     print('=== query slu data ===')
     url = baseurl + 'querydataslu'
     rqmsg = msgif.rqQueryDataSlu()
-    # rqmsg.dt_start = mx.time2stamp('2015-10-10 00:00:00')
-    # rqmsg.dt_end = mx.time2stamp('2017-12-20 00:00:00')
+    rqmsg.head.paging_idx=0
+    # rqmsg.dt_start = mx.time2stamp('2018-03-05 16:30:18')
+    # rqmsg.dt_end = mx.time2stamp('2018-03-05 18:30:18')
     rqmsg.type = 0
     rqmsg.data_mark = 7
-    rqmsg.tml_id.extend([1500001,1500002,1500003,1500004,1500005,1500006,1500007,1500008,1500009,1500010,1500011,1500012])
+    rqmsg.tml_id.extend([])
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
@@ -547,7 +550,7 @@ def test_querysludata():
     r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
     msg = msgif.QueryDataSlu()
     msg.ParseFromString(base64.b64decode(r.data))
-    print(msg.head)
+    print(msg)
     print('post finish')
     time.sleep(0)
 
@@ -862,9 +865,9 @@ def test_querydataelu():
     rqmsg = msgif.rqQueryDataElu()
     rqmsg.head.ver = 160328
     # rqmsg.dt_start = mx.time2stamp('2016-12-10 00:00:00')
-    rqmsg.dt_end = mx.time2stamp('2017-06-20 00:00:00')
-    # rqmsg.tml_id.extend([])
-    rqmsg.data_mark = 1
+    # rqmsg.dt_end = mx.time2stamp('2017-06-20 00:00:00')
+    rqmsg.tml_id.extend([1600001])
+    rqmsg.data_mark = 0
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
@@ -1146,7 +1149,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    test_userlogin()
+    # test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()
@@ -1157,10 +1160,10 @@ if __name__ == '__main__':
     # test_querysms()
     # test_statusslu()
     # test_statusrtu()
-    # test_querysludata()
+    test_querysludata()
     # test_sysinfo()
     # test_cleansms()
-    test_errquery()
+    # test_errquery()
     # test_sludataget()
     # test_ldudataget()
     # test_eludataget()

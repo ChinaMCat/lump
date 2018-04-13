@@ -197,7 +197,6 @@ class AreaInfoHandler(base.RequestHandler):
                         user_data['area_x'])
                     strsql += ' where area_id in ({0})'.format(
                         ','.join([str(a) for a in z]))
-                print(strsql)
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql, need_fetch=1, need_paging=0)
                 if record_total is None:

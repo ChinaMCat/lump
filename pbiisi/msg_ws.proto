@@ -515,8 +515,9 @@ message QueryDataRtu {
         int32 switch_in_st = 6;  // 开关量输入状态,0-断,1-通
         int32 voltage_over_range = 7;  // 电压越限,0-正常,1-越下线,2-越上限,3-越量程
         int32 current_over_range = 8;  // 电流越限,0-正常,1-越下线,2-越上限,3-越量程
-	string loop_name = 9;  // 回路名称
-	int32 loop_id = 10;  // 回路id
+    	string loop_name = 9;  // 回路名称
+    	int32 loop_id = 10;  // 回路id
+        int32 loop_switchout_id = 11;  // 回路对应开关量输出（1-16），0-表示无开关量输出
     }
     message DataRtuView {
         int32 tml_id = 1;

@@ -149,6 +149,10 @@ class QueryDataErrHandler(base.RequestHandler):
                                 errview.voltage = float(d[12])
                                 # errview.err_name_custome = d[13]
                                 errview.tml_loop_name = d[14] if d[14] is not None else ""
+                                # 武汉特殊，融断器开路，火零不平衡报警取消回路名称结尾的’火线’二字
+                                if errview.err_id in (25, 26):
+                                    if errview.tml_loop_name.endswith(u'火线'):
+                                        errview.tml_loop_name = errview.tml_loop_name.replace(u'火线',u'')
                                 msg.err_view.extend([errview])
                                 del errview
                         elif rqmsg.type in (2, 3):

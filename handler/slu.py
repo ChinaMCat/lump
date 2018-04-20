@@ -248,7 +248,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                 a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
                                  from {0}.data_slu_ctrl_trigger as d INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
                                 on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
-                                 where 1=1 {1} group by d.slu_id,d.ctrl_id  ORDER BY d.ctrl_id,d.date_create'''.format(
+                                 where 1=1 {1}  ORDER BY d.ctrl_id,d.date_create'''.format(
                                     self._db_name_data,str_tmls)
                             else:
                                 strsql = '''select x.*,a.lamp_id,a.state_working_on,
@@ -258,7 +258,7 @@ class QueryDataSluHandler(base.RequestHandler):
                                 d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
                                 d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}.data_slu_ctrl as d
                                 where d.date_create=(select max(date_create) from {0}.data_slu_ctrl {2}) {1}
-                                group by d.slu_id,d.ctrl_id) as x left join {0}.data_slu_ctrl_lamp as a
+                                ) as x left join {0}.data_slu_ctrl_lamp as a
                                 on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id
                                 order by x.slu_id,x.date_create'''.format(
                                     self._db_name_data,

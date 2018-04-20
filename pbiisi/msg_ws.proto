@@ -918,6 +918,9 @@ message MruInfoNN {
         int64 company_id = 5; // 公司id
         int64 setup_date = 6; // 安装⽇期，linux时间戳
         double setup_value = 7; // 安装初值
+        string company_name = 8; // ⽤电⽅名称
+        int32 transform = 9; // 电表变⽐
+        string sim = 10; // sim卡号
     }
     Head head = 1;
     repeated MruInfoNN mru_infonn = 3;

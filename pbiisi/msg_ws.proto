@@ -875,6 +875,7 @@ message rqQueryDataMru {
     repeated int32 tml_id = 2 [packed=true];  // 要查询的电表设备逻辑地址列表,留空表示查询所有设备
     int64 dt_start = 3;  // 查询起始日期
     int64 dt_end = 4;  // 查询结束日期, 若dt_start,dt_end 均为0,则表示查询最新一条数据
+    int64 company_id=5; //公司id
 }
 // 应答
 message QueryDataMru {
@@ -886,6 +887,7 @@ message QueryDataMru {
         double mru_value = 5;  // 抄表值
         double mru_elec = 6;  // 计算的电量
         string mru_name = 7;  // 电表名称
+        int64 company_id=8; //公司id
     }
     Head head = 1;
     repeated DataMruView data_mru_view = 3;
@@ -900,6 +902,28 @@ message rqMruDataGet {
     int32 dev_ver = 5;  // 电表协议,1-1997协议,2-2007协议
     int32 baud_rate = 6;  // 波特率
 }
+
+//南宁专用电表设备信息查询
+message rqMruInfoNN {
+    Head head = 1;
+    int64 company_id = 2; // 公司id，设置为-1时表⽰查询所有
+}
+// 应答
+message MruInfoNN {
+    message MruInfoNN {
+        string mru_name = 1; // 抄表设备名称
+        int64 mru_id = 2; // 抄表设备地址
+        int32 mru_baud_rate = 3; // 波特率
+        int32 mru_type = 4; // 协议版本,1-1997,2-2007
+        int64 company_id = 5; // 公司id
+        int64 setup_date = 6; // 安装⽇期，linux时间戳
+        double setup_value = 7; // 安装初值
+    }
+    Head head = 1;
+    repeated MruInfoNN mru_infonn = 3;
+}
+
+
 
 // 终端估算电量查询
 message rqQueryDataRtuElec {

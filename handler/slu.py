@@ -241,15 +241,16 @@ class QueryDataSluHandler(base.RequestHandler):
                             del cur
 
                             if has_view:
-                                strsql = '''select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
+                                strsql = '''select b.rtu_id,d.date_create,b.slu_id,d.date_time_ctrl,
                                 d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
                                 d.is_working_args_set,d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
                                 a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
-                                 from {0}.data_slu_ctrl_trigger as d INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
+                                from {2}.para_slu_ctrl as b left join  {0}.data_slu_ctrl_trigger as d on b.slu_id=d.slu_id and b.rtu_id=d.ctrl_id
+                                INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
                                 on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
                                  where 1=1 {1}  ORDER BY d.ctrl_id,d.date_create'''.format(
-                                    self._db_name_data,str_tmls)
+                                    self._db_name_data,str_tmls,self._db_name)
                             else:
                                 strsql = '''select x.*,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
@@ -298,7 +299,7 @@ class QueryDataSluHandler(base.RequestHandler):
                             # where a.date_create>={1} and a.date_create<={2} {3} \
                             # order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id {4}'.format(
                             #     self._db_name, sdt, edt, str_tmls, self._fetch_limited)
-                            
+                        print strsql
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
                             need_fetch=1,

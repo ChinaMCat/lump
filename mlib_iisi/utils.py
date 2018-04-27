@@ -50,19 +50,19 @@ def load_profile():
                     if 'area_r' in x.keys():
                         x['area_r'] = set(
                             [int(a) for a in x['area_r'].split(',')])
-                        x['is_buildin'] = 0
+                        # x['is_buildin'] = 0
                     else:
                         x['area_r'] = set([0])
                     if 'area_w' in x.keys():
                         x['area_w'] = set(
                             [int(a) for a in x['area_w'].split(',')])
-                        x['is_buildin'] = 0
+                        # x['is_buildin'] = 0
                     else:
                         x['area_w'] = set([0])
                     if 'area_x' in x.keys():
                         x['area_x'] = set(
                             [int(a) for a in x['area_x'].split(',')])
-                        x['is_buildin'] = 0
+                        # x['is_buildin'] = 0
                     else:
                         x['area_x'] = set([0])
                     cache_user[uuid] = x

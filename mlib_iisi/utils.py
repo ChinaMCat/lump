@@ -72,7 +72,7 @@ def load_profile():
 
 
 def load_config(conf):
-    global m_config, m_app_config, cfg_app_config_file, cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_jk_data, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain
+    global m_config, m_app_config, cfg_app_config_file, cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_jk_data, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain, cfg_page_num
     load_profile()
     m_config.loadConfig(conf)
     cfg_bind_port = m_config.getData('bind_port')
@@ -93,6 +93,8 @@ def load_config(conf):
         'cross_domain').lower() == 'true' else 0
     cfg_app_config_file = os.path.join(os.path.dirname(conf),
                                        m_config.getData('app_config'))
+
+    cfg_page_num = m_config.getData('page_num') if int(m_config.getData('page_num'))>=100 and int(m_config.getData('page_num'))<=1000 else 500
 
 
 class SendData():

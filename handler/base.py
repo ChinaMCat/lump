@@ -26,6 +26,7 @@ class RequestHandler(mxweb.MXRequestHandler):
     _db_name = libiisi.cfg_dbname_jk
     _db_uas = libiisi.cfg_dbname_uas
     _db_name_data = libiisi.cfg_dbname_jk_data
+    _page_num = int(libiisi.cfg_page_num)
     _go_back_format = 0  # 数据返回格式设置0-base64，1-json，2-pb2 serialString
     _fetch_limited = ' limit 1000'  # 数据查询数量限制
     _pb_format = 0  # 0-base64, 2-pb2 serialString
@@ -144,7 +145,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                          need_fetch=1,
                          buffer_tag=0,
                          paging_idx=1,
-                         paging_num=100,
+                         paging_num=500,
                          need_paging=1,
                          multi_record=[],
                          key_column=[]):
@@ -166,7 +167,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         # if self.debug:
         #     print(strsql)
         if paging_num <= 0:
-            paging_num = 100
+            paging_num = self._page_num
         cache_head = ''.join(
             ['{0:x}'.format(ord(a)) for a in self.url_pattern])
         rep = []
@@ -522,7 +523,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                     msg.head.idx = rqmsg.head.idx
                     msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
                     msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
-                    msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
+                    msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= self._page_num else self._page_num
                 except Exception as ex:
                     msg.head.if_st = 46
                     return (None, None, msg)
@@ -571,7 +572,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                 msg.head.idx = rqmsg.head.idx
                 msg.head.paging_idx = rqmsg.head.paging_idx if rqmsg.head.paging_idx > 0 else 1
                 msg.head.paging_buffer_tag = rqmsg.head.paging_buffer_tag
-                msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= 100 else 100
+                msg.head.paging_num = rqmsg.head.paging_num if rqmsg.head.paging_num > 0 and rqmsg.head.paging_num <= self._page_num else self._page_num
             except:
                 msg.head.if_st = 46
                 return (None, None, msg, '')

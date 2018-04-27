@@ -30,6 +30,7 @@ m_config.setData(
 m_config.setData('cross_domain', 'true', '允许跨域访问')
 m_config.setData('max_db_conn', '20', '最大数据库连接池容量')
 m_config.setData('app_config', 'appconfig.conf', 'app用额外配置文件名')
+m_config.setData('page_num', 500 ,'分页最大数据条数')
 
 m_app_config = mx.ConfigFile()
 m_app_config.setData("map_first", 0, "首页显示地图")

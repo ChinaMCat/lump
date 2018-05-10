@@ -242,11 +242,52 @@ message rqSluitemDataGet {
 }
 // CommAns应答
 
+// 以太网单灯控制器选测
+message rqSluitemDataGetNB {
+    Head head = 1;
+    repeated int64 barcode = 2 [packed=true];  // 要操作的控制器条码
+    Data_mark data_mark = 4;  // 选测标示
+    int32 cmd_idx = 5;  // 命令序号
+    message Data_mark {
+        int32 read_data = 1;  // 选测
+        int32 read_timer = 2;  // 读取时钟
+        int32 read_args = 3;  // 读取运行参数
+        int32 read_group = 4;  // 读取组地址
+        int32 read_ver = 5;  // 读取版本
+        int32 read_sunriseset = 6;  // 读取当天日出日落
+        int32 read_timetable = 7;  // 读取本地参数（新）
+        int32 read_ctrldata = 8;  // 读取控制器数据（新）
+    }
+}
+// CommAns应答
+
 // 单灯控制
 message rqSluCtl {
     Head head = 1;
     repeated int32 tml_id = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
     int32 subitem_id = 14;  // 对于485设备使用
+    int32 cmd_idx = 3;  // 序号
+    int32 operation_type = 4;  // 指令类型 0-清除，1-定时，2-经纬度，3-即时
+    int32 operation_order = 5;  // 操作顺序 0-广播，1-依次
+    int32 addr_type = 6;  //地址类型 0-全部，1-组，2-规则，3-单一，4-gprs
+    repeated int32 addrs = 7 [packed=true];  // 控制器地址
+    repeated int32 week_set = 8 [packed=true];  // 周设置
+    int32 timer_or_offset = 9;  // 定时 hh*60+mm->int32 或偏移量 依据 operation_type定
+    int32 cmd_type = 10;  // 操作类型 3-经纬度关灯，4-混合控制，5-pwm调节，6-485调节
+    repeated int32 cmd_mix = 11 [packed=true];  // 混合回路操作 0-不操作，1-开灯，2-1档节能，3-2档节能，4-关灯（经纬度关灯时，cmd_type<4视为不操作）
+    CmdPWM cmd_pwm = 12;  // pwm功率调节
+    message CmdPWM {
+        repeated int32 loop_can_do = 1 [packed=true];  // 回路(仅需要操作的回路序号)
+        int32 scale = 2;  // 比例 0-100 -> 0%-100%
+        int32 rate = 3;  // 频率 /100为发送值
+    }
+}
+// CommAns应答
+
+// 以太网控制器单灯控制
+message rqSluCtlNB {
+    Head head = 1;
+    repeated int64 barcode = 2 [packed=true];  // 要操作的设备逻辑地址列表,该列表中的终端均执行相同的操作
     int32 cmd_idx = 3;  // 序号
     int32 operation_type = 4;  // 指令类型 0-清除，1-定时，2-经纬度，3-即时
     int32 operation_order = 5;  // 操作顺序 0-广播，1-依次

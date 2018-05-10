@@ -8,7 +8,7 @@ __doc__ = 'slu handler'
 import mxpsu as mx
 import mxweb
 from tornado import gen
-from mxpbjson import pb2json
+# from mxpbjson import pb2json
 import base
 import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
@@ -299,7 +299,6 @@ class QueryDataSluHandler(base.RequestHandler):
                             # where a.date_create>={1} and a.date_create<={2} {3} \
                             # order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id {4}'.format(
                             #     self._db_name, sdt, edt, str_tmls, self._fetch_limited)
-                        print strsql
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
                             need_fetch=1,
@@ -823,3 +822,102 @@ class SluitemAddHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data
+
+
+@mxweb.route()
+class SluitemDataGetNBHandler(base.RequestHandler):
+
+    help_doc = u'''南宁单灯控制器选测操作(post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSluitemDataGetNB()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
+
+    @gen.coroutine
+    def post(self):
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSluitemDataGetNB(), None)
+
+        if user_data is not None:
+            if user_data['user_auth'] in libiisi.can_read:
+                tcsmsg = libiisi.initRtuProtobuf(
+                    cmd='wlst.vslu.7a00',
+                    addr=list(rqmsg.barcode),
+                    cid=1,
+                    tra=1,
+                    tver=1)
+                tcsmsg.wlst_tml.wlst_slu_7a00.cmd_idx = rqmsg.cmd_idx
+                tcsmsg.wlst_tml.wlst_slu_7a00.data_mark.read_data = rqmsg.data_mark.read_data
+                tcsmsg.wlst_tml.wlst_slu_7a00.data_mark.read_ctrldata = rqmsg.data_mark.read_ctrldata
+                # tcsmsg.wlst_tml.wlst_slu_7a00.data_mark.ParseFromString(
+                #     rqmsg.data_mark.SerializeToString())
+                # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                    tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                    tcsmsg.SerializeToString())
+            else:
+                msg.head.if_st = 11
+
+        self.write(mx.code_pb2(msg, self._go_back_format))
+        self.finish()
+        del msg, rqmsg, user_data, user_uuid
+
+
+@mxweb.route()
+class SluCtlNBHandler(base.RequestHandler):
+
+    help_doc = u'''单灯控制器开关灯/调光操作 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSluCtlNB()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
+    @gen.coroutine
+    def post(self):
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSluCtlNB(), None)
+        env = False
+        contents = ''
+        if user_data is not None:
+            if user_data['user_auth'] in libiisi.can_exec:
+                env = True
+                contents = 'user from {0} ctrl slu'.format(
+                    self.request.remote_ip)
+
+                tcsmsg = libiisi.initRtuProtobuf(
+                    cmd='wlst.vslu.7400',
+                    addr=list(rqmsg.barcode),
+                    port=int(libiisi.cfg_tcs_port),
+                    cid=1,
+                    tra=1)
+                tcsmsg.wlst_tml.wlst_slu_7400.cmd_idx = rqmsg.cmd_idx
+                tcsmsg.wlst_tml.wlst_slu_7400.operation_type = rqmsg.operation_type
+                tcsmsg.wlst_tml.wlst_slu_7400.operation_order = rqmsg.operation_order
+                tcsmsg.wlst_tml.wlst_slu_7400.addr_type = rqmsg.addr_type
+                tcsmsg.wlst_tml.wlst_slu_7400.addrs.extend(
+                    list(rqmsg.addrs))
+                tcsmsg.wlst_tml.wlst_slu_7400.week_set.extend(
+                    list(rqmsg.week_set))
+                tcsmsg.wlst_tml.wlst_slu_7400.timer_or_offset = rqmsg.timer_or_offset
+                tcsmsg.wlst_tml.wlst_slu_7400.cmd_type = rqmsg.cmd_type
+                if rqmsg.cmd_type == 4:  # 混合控制
+                    tcsmsg.wlst_tml.wlst_slu_7400.cmd_mix.extend(
+                        list(rqmsg.cmd_mix))
+                elif rqmsg.cmd_type == 5:  # pwm调节
+                    tcsmsg.wlst_tml.wlst_slu_7400.cmd_pwm.ParseFromString(
+                        rqmsg.cmd_pwm.SerializeToString())
+                # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
+                libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
+                    tcsmsg.head.cmd, libiisi.cfg_tcs_port),
+                    tcsmsg.SerializeToString())
+            else:
+                msg.head.if_st = 11
+
+        self.write(mx.code_pb2(msg, self._go_back_format))
+        self.finish()
+        if env:
+            self.write_event(65, contents, 2, user_name=user_data['user_name'])
+        del msg, rqmsg, user_data, user_uuid

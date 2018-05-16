@@ -922,7 +922,7 @@ message rqQueryDataMru {
 message QueryDataMru {
     message DataMruView {
         int64 dt_create = 1;  // 数据接收日期
-        int32 tml_id = 2;  // 设备逻辑地址
+        int64 tml_id = 2;  // 设备逻辑地址
         int32 data_mark = 3;  // 抄表类型,1-A相，2-B相，3-C相，4-总电量
         int32 dt_mark = 4;  // 抄表时间段,0-当前，1-上月，2-上上月
         double mru_value = 5;  // 抄表值

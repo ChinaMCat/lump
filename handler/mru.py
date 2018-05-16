@@ -234,13 +234,16 @@ class QueryDataMruNnHandler(base.RequestHandler):
                     else:
                         str_tmls = ' and a.meter_address in ({0}) '.format(','.join([str(a) for a in
                                                                               tml_ids]))
+                    if rqmsg.company_id == -1:
+                        str_companyid = ''
+                    else:
+                        str_companyid = ' a.company_id = {0} '.format(rqmsg.company_id)
 
                     strsql = '''select a.date_create,a.meter_address,a.data_value,b.rtu_name
                             from {0}.meter_day as a
                             left join {0}.para_meter as b on a.meter_address=b.meter_address
-                            where 1=1 {1} {2} {3}'''.format(
-                        self._db_name_data, strdt, str_tmls, self._fetch_limited)
-
+                            where 1=1 {1} {2} {3} {4}'''.format(
+                        self._db_name_data, strdt, str_tmls,str_companyid, self._fetch_limited)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,

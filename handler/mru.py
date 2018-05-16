@@ -237,9 +237,9 @@ class QueryDataMruNnHandler(base.RequestHandler):
                     if rqmsg.company_id == -1:
                         str_companyid = ''
                     else:
-                        str_companyid = ' a.company_id = {0} '.format(rqmsg.company_id)
+                        str_companyid = ' and a.company_id = {0} '.format(rqmsg.company_id)
 
-                    strsql = '''select a.date_create,a.meter_address,a.data_value,b.rtu_name
+                    strsql = '''select a.date_create,a.meter_address,a.data_value,b.rtu_name,a.company_id
                             from {0}.meter_day as a
                             left join {0}.para_meter as b on a.meter_address=b.meter_address
                             where 1=1 {1} {2} {3} {4}'''.format(
@@ -265,6 +265,7 @@ class QueryDataMruNnHandler(base.RequestHandler):
                             dv.data_mark = 4
                             dv.mru_value = float(d[2]) if d[2] is not 0 else 0.0
                             dv.mru_name = d[3] if d[3] is not None else ''
+                            dv.company_id = d[4]
                             msg.data_mru_view.extend([dv])
                     del cur, strsql
 

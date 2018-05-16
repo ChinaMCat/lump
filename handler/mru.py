@@ -293,7 +293,7 @@ class MruInfoNnHandler(base.RequestHandler):
                     else:
                         str_companyid = ' a.company_id = {0} '.format(rqmsg.company_id)
 
-                    strsql = '''select a.rtu_name,a.meter_address,a.mru_baudrate,a.mru_type,a.company_id,a.date_create,a.init_value,
+                    strsql = ''' select a.rtu_name,a.meter_address,a.mru_baudrate,a.mru_type,a.company_id,a.date_create,a.init_value,
                             a.company_name,a.meter_scale ,a.sim_number from {0}.para_meter as a
                             where {1} {2}'''.format(self._db_name_data,str_companyid, self._fetch_limited)
 

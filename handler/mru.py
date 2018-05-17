@@ -293,7 +293,7 @@ class MruInfoNnHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read:
                 if msg.head.if_st == 1:
                     if rqmsg.company_id == -1:
-                        str_companyid = ''
+                        str_companyid = '1=1'
                     else:
                         str_companyid = ' a.company_id = {0} '.format(rqmsg.company_id)
 

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protocol_head.proto',
   package='wlst.pb2',
   syntax='proto3',
-  serialized_pb=_b('\n\x13protocol_head.proto\x12\x08wlst.pb2\"\xb7\x01\n\x04Head\x12\x0b\n\x03mod\x18\x01 \x01(\x05\x12\x0b\n\x03src\x18\x02 \x01(\x05\x12\x0b\n\x03ver\x18\x03 \x01(\x05\x12\x0c\n\x04tver\x18\x04 \x01(\x05\x12\x0b\n\x03tra\x18\x05 \x01(\x05\x12\x0b\n\x03ret\x18\x06 \x01(\x05\x12\x0b\n\x03\x63md\x18\x07 \x01(\t\x12\x0c\n\x04\x63ode\x18\x08 \x01(\x01\x12\x0b\n\x03\x64st\x18\t \x01(\x05\x12\x11\n\tbase_addr\x18\n \x01(\x05\x12\x0b\n\x03gid\x18\x0b \x01(\x05\x12\x0b\n\x03rcv\x18\x0c \x01(\x05\x12\x0b\n\x03idx\x18\r \x01(\x03\"\x85\x01\n\x04\x41rgs\x12\x0e\n\x02ip\x18\x01 \x03(\x03\x42\x02\x10\x01\x12\x0c\n\x04port\x18\x02 \x01(\x05\x12\x10\n\x04\x61\x64\x64r\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x0b\n\x03sim\x18\x04 \x01(\t\x12\x0b\n\x03\x63id\x18\x05 \x01(\x05\x12\x10\n\x04sims\x18\x06 \x03(\x03\x42\x02\x10\x01\x12\r\n\x05saddr\x18\x07 \x03(\t\x12\x12\n\x06status\x18\x08 \x03(\x03\x42\x02\x10\x01\"\xae\x01\n\x0bSysCommands\x12\x0c\n\x04port\x18\x01 \x01(\x05\x12\x17\n\x0bonline_rtus\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x15\n\tonline_id\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x15\n\tonline_ip\x18\x04 \x03(\x03\x42\x02\x10\x01\x12\x12\n\nlogger_msg\x18\x05 \x01(\t\x12\x10\n\x08\x63lientid\x18\x06 \x01(\x05\x12\x11\n\x05rtuid\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x11\n\x05rtuip\x18\x08 \x03(\x03\x42\x02\x10\x01\x42\x02H\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x13protocol_head.proto\x12\x08wlst.pb2\"\xb7\x01\n\x04Head\x12\x0b\n\x03mod\x18\x01 \x01(\x05\x12\x0b\n\x03src\x18\x02 \x01(\x05\x12\x0b\n\x03ver\x18\x03 \x01(\x05\x12\x0c\n\x04tver\x18\x04 \x01(\x05\x12\x0b\n\x03tra\x18\x05 \x01(\x05\x12\x0b\n\x03ret\x18\x06 \x01(\x05\x12\x0b\n\x03\x63md\x18\x07 \x01(\t\x12\x0c\n\x04\x63ode\x18\x08 \x01(\x01\x12\x0b\n\x03\x64st\x18\t \x01(\x05\x12\x11\n\tbase_addr\x18\n \x01(\x05\x12\x0b\n\x03gid\x18\x0b \x01(\x05\x12\x0b\n\x03rcv\x18\x0c \x01(\x05\x12\x0b\n\x03idx\x18\r \x01(\x03\"\x9d\x01\n\x04\x41rgs\x12\x0e\n\x02ip\x18\x01 \x03(\x03\x42\x02\x10\x01\x12\x0c\n\x04port\x18\x02 \x01(\x05\x12\x10\n\x04\x61\x64\x64r\x18\x03 \x03(\x03\x42\x02\x10\x01\x12\x0b\n\x03sim\x18\x04 \x01(\t\x12\x0b\n\x03\x63id\x18\x05 \x01(\x05\x12\x10\n\x04sims\x18\x06 \x03(\x03\x42\x02\x10\x01\x12\r\n\x05saddr\x18\x07 \x03(\t\x12\x12\n\x06status\x18\x08 \x03(\x03\x42\x02\x10\x01\x12\n\n\x02rc\x18\t \x01(\x05\x12\n\n\x02\x62r\x18\n \x01(\x05\"\xd8\x01\n\x0bSysCommands\x12\x0c\n\x04port\x18\x01 \x01(\x05\x12\x17\n\x0bonline_rtus\x18\x02 \x03(\x03\x42\x02\x10\x01\x12\x15\n\tonline_id\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x15\n\tonline_ip\x18\x04 \x03(\x03\x42\x02\x10\x01\x12\x12\n\nlogger_msg\x18\x05 \x01(\t\x12\x35\n\x0bonline_info\x18\x06 \x03(\x0b\x32 .wlst.pb2.SysCommands.OnlineInfo\x1a)\n\nOnlineInfo\x12\n\n\x02ip\x18\x01 \x01(\x03\x12\x0f\n\x07members\x18\x02 \x03(\t\"W\n\x0bPassthrough\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\x12\x14\n\x08pkg_data\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x0e\n\x06status\x18\x04 \x01(\x05\x42\x02H\x01\x62\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -85,7 +85,7 @@ _HEAD = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='code', full_name='wlst.pb2.Head.code', index=7,
       number=8, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=0,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -164,7 +164,7 @@ _ARGS = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='addr', full_name='wlst.pb2.Args.addr', index=2,
-      number=3, type=5, cpp_type=1, label=3,
+      number=3, type=3, cpp_type=2, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -204,6 +204,20 @@ _ARGS = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='rc', full_name='wlst.pb2.Args.rc', index=8,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='br', full_name='wlst.pb2.Args.br', index=9,
+      number=10, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -217,9 +231,46 @@ _ARGS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=220,
-  serialized_end=353,
+  serialized_end=377,
 )
 
+
+_SYSCOMMANDS_ONLINEINFO = _descriptor.Descriptor(
+  name='OnlineInfo',
+  full_name='wlst.pb2.SysCommands.OnlineInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ip', full_name='wlst.pb2.SysCommands.OnlineInfo.ip', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='members', full_name='wlst.pb2.SysCommands.OnlineInfo.members', index=1,
+      number=2, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=555,
+  serialized_end=596,
+)
 
 _SYSCOMMANDS = _descriptor.Descriptor(
   name='SysCommands',
@@ -237,7 +288,7 @@ _SYSCOMMANDS = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='online_rtus', full_name='wlst.pb2.SysCommands.online_rtus', index=1,
-      number=2, type=5, cpp_type=1, label=3,
+      number=2, type=3, cpp_type=2, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -264,26 +315,64 @@ _SYSCOMMANDS = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='clientid', full_name='wlst.pb2.SysCommands.clientid', index=5,
-      number=6, type=5, cpp_type=1, label=1,
+      name='online_info', full_name='wlst.pb2.SysCommands.online_info', index=5,
+      number=6, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_SYSCOMMANDS_ONLINEINFO, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=380,
+  serialized_end=596,
+)
+
+
+_PASSTHROUGH = _descriptor.Descriptor(
+  name='Passthrough',
+  full_name='wlst.pb2.Passthrough',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Passthrough.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rtuid', full_name='wlst.pb2.SysCommands.rtuid', index=6,
-      number=7, type=5, cpp_type=1, label=3,
+      name='data_mark', full_name='wlst.pb2.Passthrough.data_mark', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pkg_data', full_name='wlst.pb2.Passthrough.pkg_data', index=2,
+      number=3, type=5, cpp_type=1, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
     _descriptor.FieldDescriptor(
-      name='rtuip', full_name='wlst.pb2.SysCommands.rtuip', index=7,
-      number=8, type=3, cpp_type=2, label=3,
-      has_default_value=False, default_value=[],
+      name='status', full_name='wlst.pb2.Passthrough.status', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+      options=None),
   ],
   extensions=[
   ],
@@ -296,13 +385,16 @@ _SYSCOMMANDS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=356,
-  serialized_end=530,
+  serialized_start=598,
+  serialized_end=685,
 )
 
+_SYSCOMMANDS_ONLINEINFO.containing_type = _SYSCOMMANDS
+_SYSCOMMANDS.fields_by_name['online_info'].message_type = _SYSCOMMANDS_ONLINEINFO
 DESCRIPTOR.message_types_by_name['Head'] = _HEAD
 DESCRIPTOR.message_types_by_name['Args'] = _ARGS
 DESCRIPTOR.message_types_by_name['SysCommands'] = _SYSCOMMANDS
+DESCRIPTOR.message_types_by_name['Passthrough'] = _PASSTHROUGH
 
 Head = _reflection.GeneratedProtocolMessageType('Head', (_message.Message,), dict(
   DESCRIPTOR = _HEAD,
@@ -319,11 +411,26 @@ Args = _reflection.GeneratedProtocolMessageType('Args', (_message.Message,), dic
 _sym_db.RegisterMessage(Args)
 
 SysCommands = _reflection.GeneratedProtocolMessageType('SysCommands', (_message.Message,), dict(
+
+  OnlineInfo = _reflection.GeneratedProtocolMessageType('OnlineInfo', (_message.Message,), dict(
+    DESCRIPTOR = _SYSCOMMANDS_ONLINEINFO,
+    __module__ = 'protocol_head_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.SysCommands.OnlineInfo)
+    ))
+  ,
   DESCRIPTOR = _SYSCOMMANDS,
   __module__ = 'protocol_head_pb2'
   # @@protoc_insertion_point(class_scope:wlst.pb2.SysCommands)
   ))
 _sym_db.RegisterMessage(SysCommands)
+_sym_db.RegisterMessage(SysCommands.OnlineInfo)
+
+Passthrough = _reflection.GeneratedProtocolMessageType('Passthrough', (_message.Message,), dict(
+  DESCRIPTOR = _PASSTHROUGH,
+  __module__ = 'protocol_head_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Passthrough)
+  ))
+_sym_db.RegisterMessage(Passthrough)
 
 
 DESCRIPTOR.has_options = True
@@ -342,8 +449,6 @@ _SYSCOMMANDS.fields_by_name['online_id'].has_options = True
 _SYSCOMMANDS.fields_by_name['online_id']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _SYSCOMMANDS.fields_by_name['online_ip'].has_options = True
 _SYSCOMMANDS.fields_by_name['online_ip']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
-_SYSCOMMANDS.fields_by_name['rtuid'].has_options = True
-_SYSCOMMANDS.fields_by_name['rtuid']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
-_SYSCOMMANDS.fields_by_name['rtuip'].has_options = True
-_SYSCOMMANDS.fields_by_name['rtuip']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_PASSTHROUGH.fields_by_name['pkg_data'].has_options = True
+_PASSTHROUGH.fields_by_name['pkg_data']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 # @@protoc_insertion_point(module_scope)

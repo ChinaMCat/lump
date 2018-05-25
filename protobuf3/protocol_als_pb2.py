@@ -467,7 +467,7 @@ _WLST_ALS_A700 = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='lux', full_name='wlst.pb2.Wlst_als_a700.lux', index=5,
       number=6, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=0,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -505,14 +505,14 @@ _WLST_GPS_0000 = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='longitude', full_name='wlst.pb2.Wlst_gps_0000.longitude', index=0,
       number=1, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=0,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='latitude', full_name='wlst.pb2.Wlst_gps_0000.latitude', index=1,
       number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=0,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -685,14 +685,14 @@ _WLST_GPS_5904 = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='longitude', full_name='wlst.pb2.Wlst_gps_5904.longitude', index=0,
       number=1, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=0,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='latitude', full_name='wlst.pb2.Wlst_gps_5904.latitude', index=1,
       number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=0,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -772,7 +772,7 @@ _WLST_MRU_9100 = _descriptor.Descriptor(
     _descriptor.FieldDescriptor(
       name='meter_value', full_name='wlst.pb2.Wlst_mru_9100.meter_value', index=4,
       number=5, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=0,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),

@@ -23,7 +23,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='msg_with_ctrl.proto',
   package='wlst.pb2',
   syntax='proto3',
-  serialized_pb=_b('\n\x13msg_with_ctrl.proto\x12\x08wlst.pb2\x1a\x13protocol_head.proto\x1a\x12protocol_tml.proto\x1a\x11protocol_tp.proto\x1a\x11protocol_3c.proto\"\xb6\x05\n\x0bMsgWithCtrl\x12\x1c\n\x04head\x18\x01 \x01(\x0b\x32\x0e.wlst.pb2.Head\x12\x1c\n\x04\x61rgs\x18\x02 \x01(\x0b\x32\x0e.wlst.pb2.Args\x12&\n\x07syscmds\x18\x03 \x01(\x0b\x32\x15.wlst.pb2.SysCommands\x12(\n\x08wlst_tml\x18\x64 \x01(\x0b\x32\x16.wlst.pb2.WlstTerminal\x12/\n\rwlst_com_0000\x18\xe8\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_0000\x12/\n\rwlst_com_3e01\x18\xe9\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_3e01\x12/\n\rwlst_com_3e02\x18\xea\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_3e02\x12/\n\rwlst_com_3e82\x18\xeb\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_3e82\x12/\n\rwlst_com_3e81\x18\xec\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_3e02\x12/\n\rwxjy_esu_5500\x18\xd0\x0f \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_5500\x12/\n\rwxjy_esu_d500\x18\xd1\x0f \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_5500\x12/\n\rwxjy_esu_d700\x18\xd2\x0f \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_d700\x12/\n\rwxjy_esu_d800\x18\xd3\x0f \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_d800\x12/\n\rahhf_rtu_6804\x18\xb5\x10 \x01(\x0b\x32\x17.wlst.pb2.Ahhf_rtu_6804\x12/\n\rahhf_rtu_680a\x18\xb6\x10 \x01(\x0b\x32\x17.wlst.pb2.Ahhf_rtu_6804\"\xf0\x01\n\x0bSubmitAlarm\x12\x33\n\nalarm_view\x18\x02 \x03(\x0b\x32\x1f.wlst.pb2.SubmitAlarm.AlarmView\x1a\xab\x01\n\tAlarmView\x12\x11\n\tdt_create\x18\x01 \x01(\x03\x12\x0e\n\x06\x65rr_id\x18\x02 \x01(\x05\x12\x0e\n\x06tml_id\x18\x03 \x01(\x05\x12\x0f\n\x07loop_id\x18\x04 \x01(\x05\x12\x0f\n\x07lamp_id\x18\x05 \x01(\x05\x12\x11\n\terr_count\x18\x06 \x01(\x05\x12\x11\n\tdt_remove\x18\x08 \x01(\x03\x12\x10\n\x08is_alarm\x18\t \x01(\x05\x12\x11\n\talarm_src\x18\n \x01(\x05\"?\n\x13SubmitSettingChange\x12\x14\n\x0csetting_type\x18\x01 \x01(\x05\x12\x12\n\x06tml_id\x18\x02 \x03(\x03\x42\x02\x10\x01\x42\x02H\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x13msg_with_ctrl.proto\x12\x08wlst.pb2\x1a\x13protocol_head.proto\x1a\x12protocol_tml.proto\x1a\x11protocol_tp.proto\x1a\x11protocol_3c.proto\"\xe2\x05\n\x0bMsgWithCtrl\x12\x1c\n\x04head\x18\x01 \x01(\x0b\x32\x0e.wlst.pb2.Head\x12\x1c\n\x04\x61rgs\x18\x02 \x01(\x0b\x32\x0e.wlst.pb2.Args\x12&\n\x07syscmds\x18\x03 \x01(\x0b\x32\x15.wlst.pb2.SysCommands\x12*\n\x0bpassthrough\x18\x63 \x01(\x0b\x32\x15.wlst.pb2.Passthrough\x12(\n\x08wlst_tml\x18\x64 \x01(\x0b\x32\x16.wlst.pb2.WlstTerminal\x12/\n\rwlst_com_0000\x18\xe8\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_0000\x12/\n\rwlst_com_3e01\x18\xe9\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_3e01\x12/\n\rwlst_com_3e02\x18\xea\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_3e02\x12/\n\rwlst_com_3e82\x18\xeb\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_3e82\x12/\n\rwlst_com_3e81\x18\xec\x07 \x01(\x0b\x32\x17.wlst.pb2.Wlst_com_3e02\x12/\n\rwxjy_esu_5500\x18\xd0\x0f \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_5500\x12/\n\rwxjy_esu_d500\x18\xd1\x0f \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_5500\x12/\n\rwxjy_esu_d700\x18\xd2\x0f \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_d700\x12/\n\rwxjy_esu_d800\x18\xd3\x0f \x01(\x0b\x32\x17.wlst.pb2.Wxjy_esu_d800\x12/\n\rahhf_rtu_6804\x18\xb5\x10 \x01(\x0b\x32\x17.wlst.pb2.Ahhf_rtu_6804\x12/\n\rahhf_rtu_680a\x18\xb6\x10 \x01(\x0b\x32\x17.wlst.pb2.Ahhf_rtu_6804\"\xa9\x02\n\x0bSubmitAlarm\x12\x33\n\nalarm_view\x18\x02 \x03(\x0b\x32\x1f.wlst.pb2.SubmitAlarm.AlarmView\x1a\xe4\x01\n\tAlarmView\x12\x11\n\tdt_create\x18\x01 \x01(\x03\x12\x0e\n\x06\x65rr_id\x18\x02 \x01(\x05\x12\x0e\n\x06tml_id\x18\x03 \x01(\x05\x12\x0f\n\x07loop_id\x18\x04 \x01(\x05\x12\x0f\n\x07lamp_id\x18\x05 \x01(\x05\x12\x11\n\terr_count\x18\x06 \x01(\x05\x12\x11\n\tdt_remove\x18\x08 \x01(\x03\x12\x10\n\x08is_alarm\x18\t \x01(\x05\x12\x11\n\talarm_src\x18\n \x01(\x05\x12\x12\n\nalarm_name\x18\x0b \x01(\t\x12\x10\n\x08tml_name\x18\x0c \x01(\t\x12\x11\n\tloop_name\x18\r \x01(\t\"?\n\x13SubmitSettingChange\x12\x14\n\x0csetting_type\x18\x01 \x01(\x05\x12\x12\n\x06tml_id\x18\x02 \x03(\x03\x42\x02\x10\x01\x42\x02H\x01\x62\x06proto3')
   ,
   dependencies=[protocol__head__pb2.DESCRIPTOR,protocol__tml__pb2.DESCRIPTOR,protocol__tp__pb2.DESCRIPTOR,protocol__3c__pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -60,84 +60,91 @@ _MSGWITHCTRL = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wlst_tml', full_name='wlst.pb2.MsgWithCtrl.wlst_tml', index=3,
+      name='passthrough', full_name='wlst.pb2.MsgWithCtrl.passthrough', index=3,
+      number=99, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='wlst_tml', full_name='wlst.pb2.MsgWithCtrl.wlst_tml', index=4,
       number=100, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wlst_com_0000', full_name='wlst.pb2.MsgWithCtrl.wlst_com_0000', index=4,
+      name='wlst_com_0000', full_name='wlst.pb2.MsgWithCtrl.wlst_com_0000', index=5,
       number=1000, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wlst_com_3e01', full_name='wlst.pb2.MsgWithCtrl.wlst_com_3e01', index=5,
+      name='wlst_com_3e01', full_name='wlst.pb2.MsgWithCtrl.wlst_com_3e01', index=6,
       number=1001, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wlst_com_3e02', full_name='wlst.pb2.MsgWithCtrl.wlst_com_3e02', index=6,
+      name='wlst_com_3e02', full_name='wlst.pb2.MsgWithCtrl.wlst_com_3e02', index=7,
       number=1002, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wlst_com_3e82', full_name='wlst.pb2.MsgWithCtrl.wlst_com_3e82', index=7,
+      name='wlst_com_3e82', full_name='wlst.pb2.MsgWithCtrl.wlst_com_3e82', index=8,
       number=1003, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wlst_com_3e81', full_name='wlst.pb2.MsgWithCtrl.wlst_com_3e81', index=8,
+      name='wlst_com_3e81', full_name='wlst.pb2.MsgWithCtrl.wlst_com_3e81', index=9,
       number=1004, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wxjy_esu_5500', full_name='wlst.pb2.MsgWithCtrl.wxjy_esu_5500', index=9,
+      name='wxjy_esu_5500', full_name='wlst.pb2.MsgWithCtrl.wxjy_esu_5500', index=10,
       number=2000, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wxjy_esu_d500', full_name='wlst.pb2.MsgWithCtrl.wxjy_esu_d500', index=10,
+      name='wxjy_esu_d500', full_name='wlst.pb2.MsgWithCtrl.wxjy_esu_d500', index=11,
       number=2001, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wxjy_esu_d700', full_name='wlst.pb2.MsgWithCtrl.wxjy_esu_d700', index=11,
+      name='wxjy_esu_d700', full_name='wlst.pb2.MsgWithCtrl.wxjy_esu_d700', index=12,
       number=2002, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='wxjy_esu_d800', full_name='wlst.pb2.MsgWithCtrl.wxjy_esu_d800', index=12,
+      name='wxjy_esu_d800', full_name='wlst.pb2.MsgWithCtrl.wxjy_esu_d800', index=13,
       number=2003, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='ahhf_rtu_6804', full_name='wlst.pb2.MsgWithCtrl.ahhf_rtu_6804', index=13,
+      name='ahhf_rtu_6804', full_name='wlst.pb2.MsgWithCtrl.ahhf_rtu_6804', index=14,
       number=2101, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='ahhf_rtu_680a', full_name='wlst.pb2.MsgWithCtrl.ahhf_rtu_680a', index=14,
+      name='ahhf_rtu_680a', full_name='wlst.pb2.MsgWithCtrl.ahhf_rtu_680a', index=15,
       number=2102, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -156,7 +163,7 @@ _MSGWITHCTRL = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=113,
-  serialized_end=807,
+  serialized_end=851,
 )
 
 
@@ -230,6 +237,27 @@ _SUBMITALARM_ALARMVIEW = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='alarm_name', full_name='wlst.pb2.SubmitAlarm.AlarmView.alarm_name', index=9,
+      number=11, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tml_name', full_name='wlst.pb2.SubmitAlarm.AlarmView.tml_name', index=10,
+      number=12, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='loop_name', full_name='wlst.pb2.SubmitAlarm.AlarmView.loop_name', index=11,
+      number=13, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -242,8 +270,8 @@ _SUBMITALARM_ALARMVIEW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=879,
-  serialized_end=1050,
+  serialized_start=923,
+  serialized_end=1151,
 )
 
 _SUBMITALARM = _descriptor.Descriptor(
@@ -272,8 +300,8 @@ _SUBMITALARM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=810,
-  serialized_end=1050,
+  serialized_start=854,
+  serialized_end=1151,
 )
 
 
@@ -310,13 +338,14 @@ _SUBMITSETTINGCHANGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1052,
-  serialized_end=1115,
+  serialized_start=1153,
+  serialized_end=1216,
 )
 
 _MSGWITHCTRL.fields_by_name['head'].message_type = protocol__head__pb2._HEAD
 _MSGWITHCTRL.fields_by_name['args'].message_type = protocol__head__pb2._ARGS
 _MSGWITHCTRL.fields_by_name['syscmds'].message_type = protocol__head__pb2._SYSCOMMANDS
+_MSGWITHCTRL.fields_by_name['passthrough'].message_type = protocol__head__pb2._PASSTHROUGH
 _MSGWITHCTRL.fields_by_name['wlst_tml'].message_type = protocol__tml__pb2._WLSTTERMINAL
 _MSGWITHCTRL.fields_by_name['wlst_com_0000'].message_type = protocol__3c__pb2._WLST_COM_0000
 _MSGWITHCTRL.fields_by_name['wlst_com_3e01'].message_type = protocol__3c__pb2._WLST_COM_3E01

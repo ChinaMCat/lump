@@ -35,6 +35,8 @@ class QuerySmsRecordHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(
                     rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                yield self.update_cache("r", user_uuid)
+
                 if len(rqmsg.tels) > 0:
                     str_tels = ' and send_number in ({0})'.format(
                         ','.join([str(t) for t in rqmsg.tels]))

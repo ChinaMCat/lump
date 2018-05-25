@@ -37,6 +37,7 @@ class QueryDataErrHandler(base.RequestHandler):
                     rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.type = rqmsg.type
 
+                yield self.update_cache("r", user_uuid)
                 if len(rqmsg.err_id) == 0:
                     str_errs = ''
                 else:

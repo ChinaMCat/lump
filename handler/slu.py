@@ -34,6 +34,7 @@ class QueryDataSluHandler(base.RequestHandler):
                 sdt, edt = self.process_input_date(
                     rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.data_mark = rqmsg.data_mark
+                yield self.update_cache("r", user_uuid)
 
                 if rqmsg.data_mark == 0:  # 集中器数据
                     # 验证用户可操作的设备id

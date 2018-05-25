@@ -11,15 +11,14 @@ import mxpsu as mx
 import zlib
 # import tornado.httpclient as thc
 # from tornado.httputil import url_concat
-import gevent
 
 # tc = thc.AsyncHTTPClient()
 
-baseurl = 'http://192.168.122.185:10005/'
-baseurl = 'http://192.168.50.83:10020/'
+baseurl = 'http://10.30.37.142:10005/'
+# baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://60.173.254.184:10005/'
 # baseurl = 'http://192.168.50.83:10060/'
-baseurl = 'http://114.80.168.38:63507/'
+# baseurl = 'http://114.80.168.38:63507/'
 # baseurl = 'http://121.231.223.163:10005/'
 # baseurl = 'http://192.168.122.21:63507/'
 # baseurl = 'http://192.168.50.55:5523/'
@@ -30,7 +29,8 @@ baseurl = 'http://114.80.168.38:63507/'
 # baseurl = 'http://127.0.0.1:63507/'
 # baseurl = 'http://192.168.50.80:33819/ws_BT/FlowService.asmx'
 pm = urllib3.PoolManager(num_pools=100)
-user_id = 'ef61022b553911e6832074d435009085'
+# user_id = 'ef61022b553911e6832074d435009085'
+user_id ='9b388e7e5fb711e8b15cfcaa14e489ec'
 
 # user_id = 'ab6443e6781911e78ad6fcaa14e489ec'  #hefeigaoxin
 # user_id = 'e9251f34735a11e7a88ffcaa14e489ec'
@@ -38,10 +38,13 @@ user_id = 'ef61022b553911e6832074d435009085'
 
 
 def init_head(msg):
-    # msg.head.idx = 1
+    msg.head.idx = 1
     msg.head.unique = 'asdfhaskdfkaf'
     msg.head.ver = 160328
     msg.head.if_dt = int(time.time())
+    msg.head.paging_num=0
+    # msg.head.paging_buffer_tag=0
+    msg.head.paging_idx=1
 
     return msg
 
@@ -53,8 +56,8 @@ def test_userlogin():
     rqmsg = init_head(msgif.rqUserLogin())
     rqmsg.dev = 1
     rqmsg.unique = 'asdfhaskdfkaf'
-    rqmsg.user = u'admin'
-    rqmsg.pwd = u'1234'
+    rqmsg.user = u'gxq'
+    rqmsg.pwd = u'gxq'
     # rqmsg.user = '管理员'
     # rqmsg.pwd = '123'
     data = {'pb2': base64.b64encode(rqmsg.SerializeToString())}
@@ -421,7 +424,7 @@ def test_errquery():
     rqmsg.head.paging_idx = 1
     # rqmsg.head.paging_num = 100
     # rqmsg.head.paging_buffer_tag = 1500942882771374
-    # rqmsg.dt_start = mx.time2stamp("2017-05-01 00:00:00")
+    rqmsg.dt_start = mx.time2stamp("2017-05-01 00:00:00")
     rqmsg.dt_end = int(time.time())
     rqmsg.type = 1
     rqmsg.tml_id.extend([])
@@ -476,7 +479,7 @@ def test_evequery():
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
     }
-    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
     # print(r.data)
     msg = msgif.QueryDataEvents()
     msg.ParseFromString(base64.b64decode(r.data))
@@ -484,6 +487,32 @@ def test_evequery():
     print('post finish')
     time.sleep(0)
 
+
+def test_evequeryeventstime():
+    global user_id
+    print('=== query event data ===')
+    url = baseurl + 'queryeventstimetabledo'
+    rqmsg = init_head(msgif.rqQueryEventsTimetableDo())
+    rqmsg.head.paging_num = 100
+    # rqmsg.head.paging_buffer_tag = 1500942882771374
+    rqmsg.head.paging_idx = 1
+    rqmsg.data_mark = 0
+    rqmsg.data_type = 0
+    rqmsg.dt_start = 0
+    rqmsg.dt_end = int(time.time())
+    rqmsg.tml_id.extend([])
+    print(rqmsg, base64.b64encode(rqmsg.SerializeToString()))
+    data = {
+        'uuid': user_id,
+        'pb2': base64.b64encode(rqmsg.SerializeToString())
+    }
+    r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
+    # print(r.data)
+    msg = msgif.QueryEventsTimetableDo()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    print('post finish')
+    time.sleep(0)
 
 def test_rtudataquery():
     global user_id
@@ -515,17 +544,17 @@ def test_tmlinfo():
     print('=== query rty info ===')
     url = baseurl + 'tmlinfo'
     rqmsg = msgif.rqTmlInfo()
-    rqmsg.data_mark.extend([1,2,4,5,6])
+    rqmsg.data_mark.extend([6])
     rqmsg.tml_id.extend([])
     data = {
         'uuid': user_id,
-        # 'pb2': base64.b64encode(rqmsg.SerializeToString())
-        'pb2': 'CjIQyOQJKiQxOUEyNDY4QS1DMjRELTQwQkQtQjg5RC01NTc1QzVEMDY0MzWgBoDonL28HCoFAQIEBQY='
+        'pb2': base64.b64encode(rqmsg.SerializeToString())
+        # 'pb2': 'CjIQyOQJKiQxOUEyNDY4QS1DMjRELTQwQkQtQjg5RC01NTc1QzVEMDY0MzWgBoDonL28HCoFAQIEBQY='
     }
     r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
     msg = msgif.TmlInfo()
     msg.ParseFromString(base64.b64decode(r.data))
-    print(msg)
+    print(msg.head)
     print('post finish')
     time.sleep(0)
 
@@ -535,12 +564,13 @@ def test_querysludata():
     print('=== query slu data ===')
     url = baseurl + 'querydataslu'
     rqmsg = msgif.rqQueryDataSlu()
-    rqmsg.head.paging_idx=0
-    # rqmsg.dt_start = mx.time2stamp('2018-03-05 16:30:18')
-    # rqmsg.dt_end = mx.time2stamp('2018-03-05 18:30:18')
+    # rqmsg.head.paging_idx=0
+    rqmsg.dt_start =mx.time2stamp('2018-04-16 00:00:00')
+    rqmsg.dt_end = mx.time2stamp('2018-05-24 12:00:00')
     rqmsg.type = 0
     rqmsg.data_mark = 7
     rqmsg.tml_id.extend([])
+    print user_id
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
@@ -750,6 +780,28 @@ def test_querydatamru():
     rqmsg.head.ver = 160328
     # rqmsg.dt_start = mx.time2stamp('2016-12-10 00:00:00')
     rqmsg.dt_end = mx.time2stamp('2017-09-20 00:00:00')
+    rqmsg.tml_id.extend([])
+    data = {
+        'uuid': user_id,
+        'pb2': base64.b64encode(rqmsg.SerializeToString())
+    }
+    # data = {'uuid': user_id, 'pb2': 'GAAgAA=='}
+    r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
+    msg = msgif.QueryDataMru()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    print('post finish')
+    time.sleep(0)
+
+
+def test_querydatamrunn():
+    global user_id
+    print('=== query mru data ===')
+    url = baseurl + 'querydatamrunn'
+    rqmsg = msgif.rqQueryDataMru()
+    rqmsg.head.ver = 160328
+    # rqmsg.dt_start = mx.time2stamp('2016-12-10 00:00:00')
+    # rqmsg.dt_end = mx.time2stamp('2017-09-20 00:00:00')
     rqmsg.tml_id.extend([])
     data = {
         'uuid': user_id,
@@ -1156,11 +1208,13 @@ if __name__ == '__main__':
     # test_slutimerget()
     # test_querydatartuelec()
     # test_evequery()
+    # test_evequeryeventstime()
     # test_querydatamru()
-    # test_querysms()
+    # test_querydatamrunn()
+    test_querysms()
     # test_statusslu()
     # test_statusrtu()
-    test_querysludata()
+    # test_querysludata()
     # test_sysinfo()
     # test_cleansms()
     # test_errquery()

@@ -33,7 +33,7 @@ class QueryDataAlsHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
-
+                yield self.update_cache("r", user_uuid)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     if len(rqmsg.tml_id) > 0:

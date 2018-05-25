@@ -32,6 +32,7 @@ class QueryDataMruHandler(base.RequestHandler):
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
+                yield self.update_cache("r", user_uuid)
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 if sdt + edt > 0:
                     strdt = ' and a.date_create>={0} and a.date_create<={1}'.format(sdt, edt)
@@ -209,6 +210,7 @@ class QueryDataMruNnHandler(base.RequestHandler):
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
+                yield self.update_cache("r", user_uuid)
                 sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 if sdt + edt > 0:
                     strdt = ' and a.date_create>={0} and a.date_create<={1}'.format(sdt, edt)
@@ -293,7 +295,7 @@ class MruInfoNnHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read:
                 if msg.head.if_st == 1:
                     if rqmsg.company_id == -1:
-                        str_companyid = ''
+                        str_companyid = '1=1'
                     else:
                         str_companyid = ' a.company_id = {0} '.format(rqmsg.company_id)
 

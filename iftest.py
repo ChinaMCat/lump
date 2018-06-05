@@ -30,10 +30,10 @@ baseurl = 'http://10.30.37.142:10005/'
 # baseurl = 'http://192.168.50.80:33819/ws_BT/FlowService.asmx'
 pm = urllib3.PoolManager(num_pools=100)
 # user_id = 'ef61022b553911e6832074d435009085'
-user_id ='9b388e7e5fb711e8b15cfcaa14e489ec'
+# user_id ='9b388e7e5fb711e8b15cfcaa14e489ec'
 
 # user_id = 'ab6443e6781911e78ad6fcaa14e489ec'  #hefeigaoxin
-# user_id = 'e9251f34735a11e7a88ffcaa14e489ec'
+user_id = 'e9251f34735a11e7a88ffcaa14e489ec'
 # user_id = '1e47909ef67711e7a9a6000af77f0b3c'  # 重庆长寿
 
 
@@ -544,7 +544,7 @@ def test_tmlinfo():
     print('=== query rty info ===')
     url = baseurl + 'tmlinfo'
     rqmsg = msgif.rqTmlInfo()
-    rqmsg.data_mark.extend([6])
+    rqmsg.data_mark.extend([15])
     rqmsg.tml_id.extend([])
     data = {
         'uuid': user_id,
@@ -554,7 +554,7 @@ def test_tmlinfo():
     r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
     msg = msgif.TmlInfo()
     msg.ParseFromString(base64.b64decode(r.data))
-    print(msg.head)
+    print(msg)
     print('post finish')
     time.sleep(0)
 
@@ -1211,7 +1211,7 @@ if __name__ == '__main__':
     # test_evequeryeventstime()
     # test_querydatamru()
     # test_querydatamrunn()
-    test_querysms()
+    # test_querysms()
     # test_statusslu()
     # test_statusrtu()
     # test_querysludata()
@@ -1222,7 +1222,7 @@ if __name__ == '__main__':
     # test_ldudataget()
     # test_eludataget()
     # test_eluctl()
-    # test_areainfo()
+    test_areainfo()
     # test_grpinfo()
     # test_sluitemadd()
     # test_ipcqueue()

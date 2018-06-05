@@ -202,6 +202,16 @@ class AreaInfoHandler(base.RequestHandler):
                 if record_total is None:
                     msg.head.if_st = 45
                 else:
+                    #查看表是否存在
+                    strsql = 'select a.TABLE_NAME from information_schema.TABLES as a where a.TABLE_NAME in ("para_slu_sgl","para_slu_sgl_ctrl","para_slu_sgl_item" )' \
+                             ' and a.TABLE_SCHEMA="{0}"'.format(self._db_name)
+                    res = libiisi.m_sql.run_fetch(strsql)
+                    has_view = False
+                    if res is not None:
+                        if len(res) > 0:
+                            has_view = True
+                    del res
+
                     msg.head.paging_record_total = record_total
                     msg.head.paging_buffer_tag = buffer_tag
                     msg.head.paging_idx = paging_idx
@@ -215,6 +225,15 @@ class AreaInfoHandler(base.RequestHandler):
                                 x = d[2].split(';')[:-1]
                                 y = [int(b) for b in x]
                                 av.tml_id.extend(y)
+                            if has_view:
+                                strsql = '''
+                                    select a.bar_code_id from {0}.para_slu_sgl_ctrl as a
+                                    LEFT JOIN {0}.para_slu_sgl_item as b on a.ctrl_id = b.ctrl_id
+                                    LEFT JOIN {0}.para_slu_sgl as c on c.field_id = b.field_id
+                                    WHERE c.area_id = {1}'''.format(self._db_name,int(d[0]))
+                                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                                    strsql,need_fetch=1,need_paging=0)
+                                av.tml_id.extend([int(cur[0][0])])
                             msg.area_view.extend([av])
                             if d[2] is not None and int(
                                     d[0]
@@ -1087,7 +1106,7 @@ class TmlInfoHandler(base.RequestHandler):
                                 msg.head.if_st = 45
                             else:
                                 pass
-                        elif mk == 15:
+                        elif mk == 15:  # 物联网单灯分组信息
                             if 5 not in [int(a) for a in rqmsg.data_mark]:
                                 if len(tml_ids) == 0:
                                     str_tmls = ''
@@ -1135,7 +1154,7 @@ class TmlInfoHandler(base.RequestHandler):
                                         msg.sluitem_grpinfo.extend([info])
 
                                 del cur, strsql
-                        elif mk == 16:
+                        elif mk == 16:   # 物联网单灯基础信息
                             if 6 not in [int(a) for a in rqmsg.data_mark]:
                                 if len(tml_ids) == 0:
                                     str_tmls = ''

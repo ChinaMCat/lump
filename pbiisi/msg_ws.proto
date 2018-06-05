@@ -160,7 +160,7 @@ message AreaInfo {
     message AreaView {
         int32 area_id = 1;  // 区域id
         string area_name = 2;  // 区域名称
-        repeated int32 tml_id = 3 [packed=true];  // 下属设备id
+        repeated int64 tml_id = 3 [packed=true];  // 下属设备id
         int32 parent_id = 4;  // 上级区域id
         string area_remark = 5;  // 备注
     }
@@ -951,7 +951,7 @@ message rqMruInfoNN {
 }
 // 应答
 message MruInfoNN {
-    message MruInfoNN {
+    message MruInfoNNView {
         string mru_name = 1; // 抄表设备名称
         int64 mru_id = 2; // 抄表设备地址
         int32 mru_baud_rate = 3; // 波特率
@@ -964,7 +964,7 @@ message MruInfoNN {
         string sim = 10; // sim卡号
     }
     Head head = 1;
-    repeated MruInfoNN mru_infonn = 3;
+    repeated MruInfoNNView mru_infonn = 3;
 }
 
 

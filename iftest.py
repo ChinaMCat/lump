@@ -29,11 +29,11 @@ baseurl = 'http://10.30.37.142:10005/'
 # baseurl = 'http://127.0.0.1:63507/'
 # baseurl = 'http://192.168.50.80:33819/ws_BT/FlowService.asmx'
 pm = urllib3.PoolManager(num_pools=100)
-# user_id = 'ef61022b553911e6832074d435009085'
+user_id = 'ef61022b553911e6832074d435009085'
 # user_id ='9b388e7e5fb711e8b15cfcaa14e489ec'
 
 # user_id = 'ab6443e6781911e78ad6fcaa14e489ec'  #hefeigaoxin
-user_id = 'e9251f34735a11e7a88ffcaa14e489ec'
+# user_id = 'e9251f34735a11e7a88ffcaa14e489ec'
 # user_id = '1e47909ef67711e7a9a6000af77f0b3c'  # 重庆长寿
 
 
@@ -56,8 +56,8 @@ def test_userlogin():
     rqmsg = init_head(msgif.rqUserLogin())
     rqmsg.dev = 1
     rqmsg.unique = 'asdfhaskdfkaf'
-    rqmsg.user = u'gxq'
-    rqmsg.pwd = u'gxq'
+    rqmsg.user = u'admin'
+    rqmsg.pwd = u'1234'
     # rqmsg.user = '管理员'
     # rqmsg.pwd = '123'
     data = {'pb2': base64.b64encode(rqmsg.SerializeToString())}
@@ -273,6 +273,32 @@ def test_sluctl():
         # 'pb2': base64.b64encode(rqmsg.SerializeToString())
         'pb2':
         'ChwQyOQJKg84NjIyNTgwMzE0NDg5NjOgBv+pjdIFEgP7xlsgA1AFWgQBAQEBYgoKBAECAwQQBRhk'
+    }
+    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    msg = msgif.CommAns()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    time.sleep(0)
+
+
+def test_sluctlnb():
+    global user_id
+    print('=== sluctl ===')
+    url = baseurl + 'sluctlnb'
+    rqmsg = init_head(msgif.rqSluCtlNB())
+    rqmsg.barcode.extend([1])
+    rqmsg.cmd_idx=1
+    rqmsg.operation_type=3
+    rqmsg.operation_order=0
+    rqmsg.addr_type=4
+    rqmsg.cmd_type=4
+    rqmsg.addrs.extend([1])
+    rqmsg.cmd_mix.extend([1, 0, 0, 0])
+    data = {
+        'uuid':
+            user_id,
+        'pb2': base64.b64encode(rqmsg.SerializeToString())
+
     }
     r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
     msg = msgif.CommAns()
@@ -1223,6 +1249,7 @@ if __name__ == '__main__':
     # test_eludataget()
     # test_eluctl()
     test_areainfo()
+    # test_sluctlnb()
     # test_grpinfo()
     # test_sluitemadd()
     # test_ipcqueue()

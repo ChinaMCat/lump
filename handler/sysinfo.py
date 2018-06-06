@@ -227,13 +227,12 @@ class AreaInfoHandler(base.RequestHandler):
                                 av.tml_id.extend(y)
                             if has_view:
                                 strsql = '''
-                                    select a.bar_code_id from {0}.para_slu_sgl_ctrl as a
-                                    LEFT JOIN {0}.para_slu_sgl_item as b on a.ctrl_id = b.ctrl_id
-                                    LEFT JOIN {0}.para_slu_sgl as c on c.field_id = b.field_id
-                                    WHERE c.area_id = {1}'''.format(self._db_name,int(d[0]))
+                                    SELECT a.field_id from {0}.para_slu_sgl as a
+                                    WHERE a.area_id = {1}'''.format(self._db_name,int(d[0]))
                                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                     strsql,need_fetch=1,need_paging=0)
-                                av.tml_id.extend([int(cur[0][0])])
+                                z = [int(b[0]) for b in cur]
+                                av.tml_id.extend(z)
                             msg.area_view.extend([av])
                             if d[2] is not None and int(
                                     d[0]

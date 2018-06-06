@@ -290,11 +290,11 @@ class UserLoginHandler(base.RequestHandler):
             msg.is_user_operator_code = d[4] if d[4] is not None else 0
             msg.code = d[3] if d[3] is not None else ""
             zmq_addr = libiisi.m_config.getData('zmq_port')
-            if zmq_addr.find(':') > -1:
+            if zmq_addr.find(':') == -1:
                 msg.zmq = '{0},{1}'.format(
                     zmq_addr.split(':')[1], int(zmq_addr.split(':')[1]) + 1)
             else:
-                msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr) + 1)
+                msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr.split(':')[1]) + 1)
 
             user_auth = 0
             _area_r = []

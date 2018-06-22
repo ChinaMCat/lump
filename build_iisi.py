@@ -101,32 +101,39 @@ VSVersionInfo(
 )
 '''
 
+basever = "5.0.1"
+t = time.localtime()
+dver = time.strftime("%y%m%d", time.localtime())
+tver = t[3] * 60 * 60 + t[4] * 60 + t[5]
+
 
 def save_verfile(mainver, secver):
-    t = time.localtime()
-    dver = '{0}{1:02d}'.format(t[1], t[2])
-    tver = t[3] * 60 * 60 + t[4] * 60 + t[5]
     y = t[0] - 2000
     m = t[1]
     d = t[2]
+    a, b, c = basever.split('.')
     with codecs.open('file_ver.txt', 'w', 'utf8') as f:
-        f.write(file_version_info.format(y, m, d, tver, '.'.join([str(y), str(
-            m), str(d), str(tver)])))
+        f.write(
+            file_version_info.format(a, b, c, "{0}{1}".format(
+                dver, tver), '.'.join(
+                    [str(a), str(b),
+                     str(c), str(dver),
+                     str(tver)])))
         # f.write(file_version_info.format(mainver, secver, dver, tver, '.'.join([str(mainver), str(
         #     secver), str(dver), str(tver)])))
         f.close()
 
 
 def save_verfile_zp(mainver, secver):
-    t = time.localtime()
-    dver = '{0}{1:02d}'.format(t[1], t[2])
-    tver = t[3] * 60 * 60 + t[4] * 60 + t[5]
     y = t[0] - 2000
     m = t[1]
     d = t[2]
+    a, b, c = basever.split('.')
     with codecs.open('file_ver_zp.txt', 'w', 'utf8') as f:
-        f.write(file_version_info_zp.format(y, m, d, tver, '.'.join([str(y), str(
-            m), str(d), str(tver)])))
+        f.write(
+            file_version_info_zp.format(a, b, c, tver, '.'.join(
+                [str(a), str(b), str(c),
+                 str(dver), str(tver)])))
         # f.write(file_version_info.format(mainver, secver, dver, tver, '.'.join([str(mainver), str(
         #     secver), str(dver), str(tver)])))
         f.close()
@@ -137,18 +144,33 @@ if __name__ == '__main__':
     save_verfile(mainver, secver)
     save_verfile_zp(mainver, secver)
     if os.name == 'nt':
+        os.system('move /Y iisi.py iisi.py.bak')
+        # os.rename("pytcs.py", "pytcs.py.bak")
+        with open("iisi.py.bak", "r") as fr, open("iisi.py", "w") as fw:
+            for line in fr:
+                if line.startswith("__ver__"):
+                    line = line.replace("0.0.0.0.0", "{0}.{1}.{2}".format(
+                        basever, dver, tver))
+                fw.write(line)
+        fr.close()
+        fw.close()
         os.system('pyinstaller -y iisi-win.spec')
+        os.system('move /Y iisi.py.bak iisi.py')
         # os.rename('.\\dist\\iisi-win\\zmq\\libzmq.pyd', '.\\dist\\iisi-win\\libzmq.pyd')
         os.system('xcopy static dist\\iisi-win\\static\\ /E /C /Y')
         os.system('xcopy templates dist\\iisi-win\\templates\\ /E /C /Y')
         os.system('xcopy static ..\\mwsc\\dist\\bin\\static\\ /E /C /Y')
         os.system('xcopy templates ..\\mwsc\\dist\\bin\\templates\\ /E /C /Y')
         os.system('copy dist\\iisi-win\\iisi.exe ..\\mwsc\\dist\\bin\\ /Y')
-        os.system('copy dist\\iisi-win\\_multiprocessing.pyd ..\\mwsc\\dist\\bin\\ /Y')
+        os.system(
+            'copy dist\\iisi-win\\_multiprocessing.pyd ..\\mwsc\\dist\\bin\\ /Y'
+        )
         os.system('copy dist\\iisi-win\\_mysql.pyd ..\\mwsc\\dist\\bin\\ /Y')
         os.system('copy dist\\iisi-win\\mxweb.pyd ..\\mwsc\\dist\\bin\\ /Y')
         os.system('copy dist\\iisi-win\\mxsql.pyd ..\\mwsc\\dist\\bin\\ /Y')
-        os.system('copy dist\\iisi-win\\tornado.speedups.pyd ..\\mwsc\\dist\\bin\\ /Y')
+        os.system(
+            'copy dist\\iisi-win\\tornado.speedups.pyd ..\\mwsc\\dist\\bin\\ /Y'
+        )
         os.system('copy lic.dll ..\\mwsc\\dist\\bin\\ /Y')
         os.system('rmdir /Q /S dist\\iisi-win\\certifi\\')
         # os.system('rmdir /Q /S dist\\iisi-win\\zmq\\')
@@ -160,10 +182,15 @@ if __name__ == '__main__':
         # os.system('pyinstaller -y zmqproxy-win.spec')
         # os.system('copy dist\\zmqproxy-win\\zmqproxy.exe dist\\iisi-win\\ /Y')
     else:
+        os.system('cp -f iisi.py iisi.py.bak')
+        os.system("sed -i 's/0.0.0.0.0/{0}.{1}.{2}/g' iisi.py".format(
+            basever, dver, tver))
         os.system('pyinstaller -y iisi.spec')
+        os.system('mv iisi.py.bak iisi.py')
         os.system('cp -f -r static dist/iisi/')
         os.system('cp -f -r templates dist/iisi/')
-        os.system('\\rm -rf dist/iisi/certifi/ dist/iisi/include/ dist/iisi/lib64')
+        os.system(
+            '\\rm -rf dist/iisi/certifi/ dist/iisi/include/ dist/iisi/lib64')
         # os.system('pyinstaller -y zmqproxy.spec')
         # os.system('cp -f -r dist/zmqproxy/zmqproxy dist/iisi/')
         # os.system('cp -f -r dist/zmqproxy/mxlog.so dist/iisi/')

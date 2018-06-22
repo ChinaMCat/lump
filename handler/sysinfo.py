@@ -1158,13 +1158,13 @@ class TmlInfoHandler(base.RequestHandler):
                                 if len(tml_ids) == 0:
                                     str_tmls = ''
                                 else:
-                                    str_tmls = ' and a.rtu_id in ({0})'.format(
+                                    str_tmls = ' and a.field_id in ({0})'.format(
                                         ','.join([str(a) for a in list(tml_ids)]))
 
                                 strsql = 'select a.field_id,c.ctrl_id,c.bar_code_id,c.ctrl_name,c.phy_id,c.lamp_code, \
                                 c.ctrl_gis_x,c.ctrl_gis_y,c.upper_power,c.lower_power, \
                                 c.route_pass_1,c.route_pass_2,c.route_pass_3,c.route_pass_4, \
-                                c.order_id,c.is_auto_open_light_when_elec1,c.is_auto_open_light_when_elec2, \
+                                c.phy_id,c.is_auto_open_light_when_elec1,c.is_auto_open_light_when_elec2, \
                                 c.is_auto_open_light_when_elec3,c.is_auto_open_light_when_elec4, \
                                 c.is_used,c.is_alarm_auto,c.vector_loop_1,c.vector_loop_2, \
                                 c.vector_loop_3,c.vector_loop_4,c.light_count,c.power_rate_1, \

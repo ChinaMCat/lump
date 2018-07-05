@@ -14,6 +14,7 @@ import rtu
 import slu
 import sms
 import sysinfo
+import dbsvr
 import elu
 import ldu
 import event
@@ -53,6 +54,9 @@ for x in hs:
 handler_iisi.append(('/flow/.*', flow.FlowWorkHandler, {'help_doc': u'''工作流接口封装 (get/post方式访问)<br/>
 <b>参数:</b></br>
 &nbsp;&nbsp;参考工作流相关文档'''}))
+handler_iisi.append(('/dbsvr/.*', dbsvr.DBSvrHandler, {'help_doc': u'''中间层接口封装 (get/post方式访问)<br/>
+<b>参数:</b></br>
+&nbsp;&nbsp;参考中间层访问相关文档'''}))
 
 handler_err = [('/.*', Err404Handler)]
 

@@ -102,23 +102,29 @@ class QueryDataSluHandler(base.RequestHandler):
                                     dv.tml_id = int(d[0])
                                     dv.dt_receive = mx.switchStamp(int(d[1]))
                                     dv.reset_times.extend([
-                                        int(d[2]), int(d[3]), int(d[4]),
+                                        int(d[2]),
+                                        int(d[3]),
+                                        int(d[4]),
                                         int(d[5])
                                     ])
                                     dv.st_running.extend([
-                                        int(d[6]), int(d[7]), int(d[8]),
+                                        int(d[6]),
+                                        int(d[7]),
+                                        int(d[8]),
                                         int(d[9]), 0
                                     ])
                                     dv.st_argv.extend(
                                         [int(d[10]), int(d[11]), 0])
                                     dv.st_hw.extend([
-                                        int(d[12]), int(d[13]), int(d[14]),
-                                        int(d[15]), int(d[16])
+                                        int(d[12]),
+                                        int(d[13]),
+                                        int(d[14]),
+                                        int(d[15]),
+                                        int(d[16])
                                     ])
                                     dv.unknow_sluitem_num = int(d[17])
                                     dv.zigbee_channel.extend([
-                                        int(a)
-                                        for a in '{0:016b}'.format(
+                                        int(a) for a in '{0:016b}'.format(
                                             int(d[18]))[::-1]
                                     ])
                                     msg.data_slu_view.extend([dv])
@@ -180,9 +186,10 @@ class QueryDataSluHandler(base.RequestHandler):
                             msg.head.paging_idx = paging_idx
                             msg.head.paging_total = paging_total
                             for d in cur:
-                                if dv.tml_id != int(d[
-                                        0]) or dv.dt_receive != mx.switchStamp(
-                                            int(d[1])):
+                                if dv.tml_id != int(
+                                        d[0]
+                                ) or dv.dt_receive != mx.switchStamp(
+                                        int(d[1])):
                                     if dv.tml_id > 0:
                                         msg.data_sluitem_assist_view.extend(
                                             [dv])
@@ -251,7 +258,8 @@ class QueryDataSluHandler(base.RequestHandler):
                                 INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
                                 on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
                                  where 1=1 {1}  ORDER BY d.ctrl_id,d.date_create'''.format(
-                                    self._db_name_data,str_tmls,self._db_name)
+                                    self._db_name_data, str_tmls,
+                                    self._db_name)
                             else:
                                 strsql = '''select x.*,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
@@ -263,8 +271,8 @@ class QueryDataSluHandler(base.RequestHandler):
                                 ) as x left join {0}.data_slu_ctrl_lamp as a
                                 on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id
                                 order by x.slu_id,x.date_create'''.format(
-                                    self._db_name_data,
-                                    str_tmls, str_tmls.replace("and d.", "where "))
+                                    self._db_name_data, str_tmls,
+                                    str_tmls.replace("and d.", "where "))
 
                             # strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
                             # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
@@ -318,9 +326,10 @@ class QueryDataSluHandler(base.RequestHandler):
                             msg.head.paging_total = paging_total
                             for d in cur:
 
-                                if dv.sluitem_id != int(d[
-                                        0]) or dv.dt_receive != mx.switchStamp(
-                                            int(d[1])):
+                                if dv.sluitem_id != int(
+                                        d[0]
+                                ) or dv.dt_receive != mx.switchStamp(
+                                        int(d[1])):
                                     if dv.sluitem_id > 0:
                                         msg.data_sluitem_view.extend([dv])
                                         dv = msgws.QueryDataSlu.DataSluitemView(
@@ -330,8 +339,12 @@ class QueryDataSluHandler(base.RequestHandler):
                                     dv.dt_receive = mx.switchStamp(int(d[1]))
                                     dv.dt_cache = mx.switchStamp(int(d[3]))
                                     dv.st_sluitem.extend([
-                                        int(d[4]), int(d[5]), int(d[6]),
-                                        int(d[7]), int(d[8]), int(d[9]),
+                                        int(d[4]),
+                                        int(d[5]),
+                                        int(d[6]),
+                                        int(d[7]),
+                                        int(d[8]),
+                                        int(d[9]),
                                         int(d[10])
                                     ])
                                     dv.temperature = int(d[11])
@@ -340,7 +353,166 @@ class QueryDataSluHandler(base.RequestHandler):
                                     dvs = msgws.QueryDataSlu.DataLampView()
                                     dvs.lamp_id = int(d[12])
                                     dvs.st_lamp.extend([
-                                        int(d[13]), int(d[14]), int(d[15]),
+                                        int(d[13]),
+                                        int(d[14]),
+                                        int(d[15]),
+                                        int(d[16])
+                                    ])
+                                    dvs.lamp_voltage = float(d[17])
+                                    dvs.lamp_current = float(d[18])
+                                    dvs.lamp_power = float(d[19])
+                                    dvs.lamp_electricity = float(d[20])
+                                    dvs.lamp_electricity_count = float(d[21])
+                                    dvs.lamp_runtime = float(d[22])
+                                    dvs.lamp_runtime_count = float(d[23])
+                                    dvs.lamp_saving = float(d[24])
+                                    dv.data_lamp_view.extend([dvs])
+                                    del dvs
+                            if dv.sluitem_id > 0:
+                                msg.data_sluitem_view.extend([dv])
+                        del cur, strsql
+                elif rqmsg.data_mark == 8:  # 以太网/nb控制器数据
+                    # 验证用户可操作的设备id(数据库结构关系取消验证)
+                    # if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
+                    #     if len(rqmsg.tml_id) > 0:
+                    #         tml_ids = list(rqmsg.tml_id)
+                    #     else:
+                    #         tml_ids = []
+                    # else:
+                    #     if len(rqmsg.tml_id) > 0:
+                    #         tml_ids = self.check_tml_r(user_uuid,
+                    #                                    list(rqmsg.tml_id))
+                    #     else:
+                    #         tml_ids = libiisi.cache_tml_r[user_uuid]
+                    #     if len(tml_ids) == 0:
+                    #         msg.head.if_st = 11
+                    tml_ids = list(rqmsg.tml_id)
+                    if msg.head.if_st == 1:
+                        if len(tml_ids) == 0:
+                            str_tmls = ''
+                        else:
+                            str_tmls = ' and d.slu_id in ({0}) '.format(
+                                ','.join([str(a) for a in tml_ids]))
+
+                        if rqmsg.type == 0:
+                            #查看表是否存在
+                            strsql = 'select a.TABLE_NAME from information_schema.TABLES as a where a.TABLE_NAME in ("data_slu_ctrl_trigger","data_slu_ctrl_lamp_trigger" )' \
+                                     ' and a.TABLE_SCHEMA="{0}"'.format(self._db_name_data)
+                            cur = libiisi.m_sql.run_fetch(strsql)
+                            has_view = False
+                            if cur is not None:
+                                if len(cur) > 0:
+                                    has_view = True
+                            del cur
+
+                            if has_view:
+                                strsql = '''select b.ctrl_id,d.date_create,b.slu_id,d.date_time_ctrl,
+                                d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
+                                d.is_working_args_set,d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
+                                a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                                a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
+                                from (select a.field_id as slu_id,b.ctrl_id from {2}.para_slu_sgl_item as a left join {2}.para_slu_sgl_ctrl as b on a.ctrl_id = b.ctrl_id ) as b left join  {0}.data_slu_ctrl_trigger as d on b.slu_id=d.slu_id and b.ctrl_id=d.ctrl_id
+                                INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
+                                on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
+                                 where 1=1 {1}  ORDER BY d.ctrl_id,d.date_create'''.format(
+                                    self._db_name_data, str_tmls,
+                                    self._db_name)
+                            else:
+                                strsql = '''select x.*,a.lamp_id,a.state_working_on,
+                                a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                                a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
+                                from (select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
+                                d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
+                                d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}.data_slu_ctrl as d
+                                where d.date_create=(select max(date_create) from {0}.data_slu_ctrl {2}) {1}
+                                ) as x left join {0}.data_slu_ctrl_lamp as a
+                                on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id
+                                order by x.slu_id,x.date_create'''.format(
+                                    self._db_name_data, str_tmls,
+                                    str_tmls.replace("and d.", "where "))
+
+                            # strsql = '''select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor,
+                            # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set,
+                            # d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
+                            # a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                            # a.electricity,a.electricity_total,a.active_time,a.active_time_total,
+                            # a.power_level from {0}_data.data_slu_ctrl_lamp as a
+                            # left join {0}_data.data_slu_ctrl as d on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
+                            # where EXISTS
+                            # (select slu_id,date_create from
+                            # (select slu_id,max(date_create) as date_create from {0}_data.data_slu_ctrl_lamp group by slu_id) as t
+                            # where a.slu_id=t.slu_id and a.date_create=t.date_create) {1} order by a.slu_id,a.ctrl_id,a.lamp_id, a.date_create desc'''.format(
+                            #     self._db_name, str_tmls)
+                        elif rqmsg.type == 1:
+                            strsql = '''select x.*,
+                                    a.lamp_id,a.state_working_on,a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
+                                    a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
+                                    from (select d.ctrl_id,d.date_create,d.slu_id,d.date_time_ctrl,
+                                    d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
+                                    d.is_working_args_set,d.is_adjust,d.status,d.temperature from {0}.data_slu_ctrl as d
+                                    where d.date_create>={1} and d.date_create<={2} {3} {4}) as x
+                                    left join {0}.data_slu_ctrl_lamp as a on
+                                    x.date_create=a.date_create and x.slu_id=a.slu_id and x.ctrl_id=a.ctrl_id '''.format(
+                                self._db_name_data, sdt, edt, str_tmls,
+                                self._fetch_limited)
+                            # strsql = 'select a.ctrl_id,a.date_create,a.slu_id,a.date_ctrl_create,d.is_temperature_sensor, \
+                            # d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,d.is_working_args_set, \
+                            # d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on, \
+                            # a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power, \
+                            # a.electricity,a.electricity_total,a.active_time,a.active_time_total, \
+                            # a.power_level from {0}_data.data_slu_ctrl_lamp as a \
+                            # left join {0}_data.data_slu_ctrl as d on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id \
+                            # where a.date_create>={1} and a.date_create<={2} {3} \
+                            # order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id {4}'.format(
+                            #     self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                            strsql,
+                            need_fetch=1,
+                            buffer_tag=msg.head.paging_buffer_tag,
+                            paging_idx=msg.head.paging_idx,
+                            paging_num=msg.head.paging_num,
+                            multi_record=[0, 1])
+                        if record_total is None:
+                            msg.head.if_st = 45
+                        else:
+                            dv = msgws.QueryDataSlu.DataSluitemView()
+
+                            msg.head.paging_record_total = record_total
+                            msg.head.paging_buffer_tag = buffer_tag
+                            msg.head.paging_idx = paging_idx
+                            msg.head.paging_total = paging_total
+                            for d in cur:
+
+                                if dv.sluitem_id != int(
+                                        d[0]
+                                ) or dv.dt_receive != mx.switchStamp(
+                                        int(d[1])):
+                                    if dv.sluitem_id > 0:
+                                        msg.data_sluitem_view.extend([dv])
+                                        dv = msgws.QueryDataSlu.DataSluitemView(
+                                        )
+                                    dv.tml_id = int(d[2])
+                                    dv.sluitem_id = int(d[0])
+                                    dv.dt_receive = mx.switchStamp(int(d[1]))
+                                    dv.dt_cache = mx.switchStamp(int(d[3]))
+                                    dv.st_sluitem.extend([
+                                        int(d[4]),
+                                        int(d[5]),
+                                        int(d[6]),
+                                        int(d[7]),
+                                        int(d[8]),
+                                        int(d[9]),
+                                        int(d[10])
+                                    ])
+                                    dv.temperature = int(d[11])
+
+                                if d[12] is not None:
+                                    dvs = msgws.QueryDataSlu.DataLampView()
+                                    dvs.lamp_id = int(d[12])
+                                    dvs.st_lamp.extend([
+                                        int(d[13]),
+                                        int(d[14]),
+                                        int(d[15]),
                                         int(d[16])
                                     ])
                                     dvs.lamp_voltage = float(d[17])
@@ -711,8 +883,8 @@ class SluitemAddHandler(base.RequestHandler):
                         self._db_name, rqmsg.slu_id)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql, need_fetch=1)
-                    if len(cur) == 0 or (cur[0][0] + len(rqmsg.sluitem_args)
-                                         ) > 256:
+                    if len(cur) == 0 or (
+                            cur[0][0] + len(rqmsg.sluitem_args)) > 256:
                         msg.head.if_st = 46
                     else:
                         strsql = ""
@@ -749,19 +921,19 @@ class SluitemAddHandler(base.RequestHandler):
                                         sluitem_gis_x = i.sluitem_gis_x if i.sluitem_gis_x > 0 else 0
                                         sluitem_gis_y = i.sluitem_gis_y if i.sluitem_gis_y > 0 else 0
                                         sluitem_route = i.sluitem_route if len(
-                                            i.sluitem_route) >= 4 else list(
-                                                i.sluitem_route) + list(
-                                                    int(4 - len(
-                                                        i.sluitem_route)) *
-                                                    [1])
-                                        sluitem_st_poweron = i.sluitem_st_poweron if len(
-                                            i.sluitem_st_poweron) >= 4 else [
-                                                a if a < 2 else 1
-                                                for a in i.sluitem_st_poweron
-                                            ] + list(
-                                                int(4 - len(
-                                                    i.sluitem_st_poweron)) *
+                                            i.sluitem_route
+                                        ) >= 4 else list(
+                                            i.sluitem_route) + list(
+                                                int(4 - len(i.sluitem_route)) *
                                                 [1])
+                                        sluitem_st_poweron = i.sluitem_st_poweron if len(
+                                            i.sluitem_st_poweron
+                                        ) >= 4 else [
+                                            a if a < 2 else 1
+                                            for a in i.sluitem_st_poweron
+                                        ] + list(
+                                            int(4 - len(i.sluitem_st_poweron))
+                                            * [1])
                                         sluitem_vector = []
                                         x = [1, 2, 3, 4]
                                         if len(i.sluitem_vector) > 0:
@@ -775,13 +947,13 @@ class SluitemAddHandler(base.RequestHandler):
                                             sluitem_vector.extend(x)
                                         # sluitem_vector=i.sluitem_vector if len(i.sluitem_vector)>=4 else list(i.sluitem_vector )+ list(int(4-len(i.sluitem_vector)) *  [1])
                                         sluitem_rated_power = i.sluitem_rated_power if len(
-                                            i.sluitem_rated_power) >= 4 else [
-                                                a if a <= 15 else 6
-                                                for a in i.sluitem_rated_power
-                                            ] + list(
-                                                int(4 - len(
-                                                    i.sluitem_rated_power)) *
-                                                [6])
+                                            i.sluitem_rated_power
+                                        ) >= 4 else [
+                                            a if a <= 15 else 6
+                                            for a in i.sluitem_rated_power
+                                        ] + list(
+                                            int(4 - len(i.sluitem_rated_power))
+                                            * [6])
 
                                         strsql=strsql+'INSERT INTO {0}.para_slu_ctrl (rtu_id,slu_id,order_id,bar_code_id,rtu_name,is_used,is_alarm_auto,' \
                                                         'vector_loop_1,vector_loop_2,vector_loop_3,vector_loop_4,power_rate_1,power_rate_2,' \
@@ -835,7 +1007,6 @@ class SluitemDataGetNBHandler(base.RequestHandler):
     <b>返回:</b><br/>
     &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
 
-
     @gen.coroutine
     def post(self):
         user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
@@ -857,7 +1028,7 @@ class SluitemDataGetNBHandler(base.RequestHandler):
                 # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                 libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                     tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                    tcsmsg.SerializeToString())
+                                        tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -898,8 +1069,7 @@ class SluCtlNBHandler(base.RequestHandler):
                 tcsmsg.wlst_tml.wlst_slu_7400.operation_type = rqmsg.operation_type
                 tcsmsg.wlst_tml.wlst_slu_7400.operation_order = rqmsg.operation_order
                 tcsmsg.wlst_tml.wlst_slu_7400.addr_type = rqmsg.addr_type
-                tcsmsg.wlst_tml.wlst_slu_7400.addrs.extend(
-                    list(rqmsg.addrs))
+                tcsmsg.wlst_tml.wlst_slu_7400.addrs.extend(list(rqmsg.addrs))
                 tcsmsg.wlst_tml.wlst_slu_7400.week_set.extend(
                     list(rqmsg.week_set))
                 tcsmsg.wlst_tml.wlst_slu_7400.timer_or_offset = rqmsg.timer_or_offset
@@ -913,7 +1083,7 @@ class SluCtlNBHandler(base.RequestHandler):
                 # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                 libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                     tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                    tcsmsg.SerializeToString())
+                                        tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 

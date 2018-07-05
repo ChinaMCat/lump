@@ -72,7 +72,7 @@ def load_profile():
 
 
 def load_config(conf):
-    global m_config, m_app_config, cfg_app_config_file, cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_jk_data, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain, cfg_page_num
+    global m_config, m_app_config, cfg_app_config_file, cfg_dbsvr_url, cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_jk_data, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain, cfg_page_num
     load_profile()
     m_config.loadConfig(conf)
     cfg_bind_port = m_config.getData('bind_port')
@@ -89,6 +89,7 @@ def load_config(conf):
     cfg_dz_url = m_config.getData('dz_url')  # 电桩接口地址
     cfg_fs_url = '{0}/FlowService.asmx'.format(
         m_config.getData('fs_url'))  # 市政工作流接口地址
+    cfg_dbsvr_url = m_config.getData('dbsvr_url')
     cfg_enable_cross_domain = 1 if m_config.getData(
         'cross_domain').lower() == 'true' else 0
     cfg_app_config_file = os.path.join(os.path.dirname(conf),

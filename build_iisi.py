@@ -101,7 +101,7 @@ VSVersionInfo(
 )
 '''
 
-basever = "5.0.1"
+basever = "5.0.2"
 t = time.localtime()
 dver = time.strftime("%y%m%d", time.localtime())
 tver = t[3] * 60 * 60 + t[4] * 60 + t[5]

@@ -60,8 +60,8 @@ class RequestHandler(mxweb.MXRequestHandler):
         # if isinstance(cur, types.GeneratorType):
         if cur is not None:
             for d in cur:
-                libiisi.cache_sunriseset[int('{0}{1:02d}'.format(d[0], d[1])
-                                             )] = (d[2], d[3])
+                libiisi.cache_sunriseset[int('{0}{1:02d}'.format(
+                    d[0], d[1]))] = (d[2], d[3])
         del cur
 
     def get_sunriseset(self, mmdd):
@@ -219,9 +219,10 @@ class RequestHandler(mxweb.MXRequestHandler):
                                 target=self.write_cache,
                                 args=(
                                     os.path.join(libiisi.m_cachedir,
-                                                 '{0}{1}'.format(buffer_tag,
-                                                                 cache_head)),
-                                    cache_data, ))
+                                                 '{0}{1}'.format(
+                                                     buffer_tag, cache_head)),
+                                    cache_data,
+                                ))
                             t.start()
                         except:
                             pass
@@ -423,8 +424,8 @@ class RequestHandler(mxweb.MXRequestHandler):
     def write_event(self, event_id, contents, is_client_snd, **kwords):
         '''写事件记录'''
         user_name = kwords['user_name'] if 'user_name' in kwords.keys() else ''
-        device_ids = kwords['device_ids'] if 'device_ids' in kwords.keys(
-        ) else '0'
+        device_ids = kwords[
+            'device_ids'] if 'device_ids' in kwords.keys() else '0'
         remark = kwords['remark'] if 'remark' in kwords.keys() else ''
 
         # strsql = "insert into record_operator (date_create, user_name, operator_id, is_client_snd, device_ids, contents, remark) values ({0},'{1}',{2},{3},'{4}','{5}','{6}')".format(
@@ -434,9 +435,8 @@ class RequestHandler(mxweb.MXRequestHandler):
         for rtu_id in device_ids.split(','):
             strsql += 'insert into {0}.record_operator (date_create,user_name, operator_id, is_client_snd, rtu_id, contents, remark) \
                         values ({1},"{2}",{3},{4},{5},"{6}","{7}");'.format(
-                self._db_name_data,
-                mx.switchStamp(time.time()), user_name, event_id,
-                is_client_snd, int(rtu_id), contents, remark)
+                self._db_name_data, mx.switchStamp(time.time()), user_name,
+                event_id, is_client_snd, int(rtu_id), contents, remark)
 
         cur = self.mydata_collector(strsql, need_fetch=0)
         del cur, strsql
@@ -541,7 +541,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         # args = self.request.arguments
         if 'uuid' not in args.keys():
             msg = self.init_msgws(msgws.CommAns())
-            msg.head.if_st = 0
+            msg.head.if_st = 46
             msg.head.if_msg = 'Missing argument uuid'
             return (None, None, msg, '')
 
@@ -557,7 +557,7 @@ class RequestHandler(mxweb.MXRequestHandler):
             rqmsg = pb2rq
             if 'pb2' not in args.keys():
                 msg = self.init_msgws(msgws.CommAns())
-                msg.head.if_st = 0
+                msg.head.if_st = 46
                 msg.head.if_msg = 'Missing argument pb2'
                 return (None, None, msg, '')
             pb2 = args.get('pb2')[0]
@@ -594,9 +594,9 @@ class RequestHandler(mxweb.MXRequestHandler):
                 libiisi.cache_user[user_uuid] = user_data
                 if user_data['is_buildin'] == 1:
                     a = self.url_pattern
-                    if a[a.rfind('/') + 1:] not in user_data[
-                            'enable_if'] and 'enable_all' not in user_data[
-                                'enable_if']:
+                    if a[a.rfind(
+                            '/'
+                    ) + 1:] not in user_data['enable_if'] and 'enable_all' not in user_data['enable_if']:
                         msg.head.if_st = 11
                         msg.head.if_msg = 'You do not have access to this interface'
                         user_data = None
@@ -633,8 +633,7 @@ class RequestHandler(mxweb.MXRequestHandler):
     def add_eventlog(self, event_id, user_id, remark):
         strsql = 'insert into uas.events_log (event_id, event_time, user_id,event_ip,event_remark) \
                     values ("{0}","{1}","{2}","{3}","{4}")'.format(
-            event_id,
-            int(time.time()), user_id,
+            event_id, int(time.time()), user_id,
             mx.ip2int(self.request.remote_ip), remark)
         libiisi.m_sql.run_exec(strsql)
         del strsql

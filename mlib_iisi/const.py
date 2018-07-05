@@ -31,6 +31,7 @@ m_config.setData('cross_domain', 'true', '允许跨域访问')
 m_config.setData('max_db_conn', '20', '最大数据库连接池容量')
 m_config.setData('app_config', 'appconfig.conf', 'app用额外配置文件名')
 m_config.setData('page_num', 500 ,'分页最大数据条数')
+m_config.setData('dbsvr_url', "http://127.0.0.1:10008", 'dbsvr http接口访问地址')
 
 m_app_config = mx.ConfigFile()
 m_app_config.setData("map_first", 0, "首页显示地图")
@@ -45,6 +46,7 @@ cfg_dbname_dg = ''  # 灯杆数据库名称
 cfg_dbname_uas = ''  # uas数据库名称
 cfg_dz_url = ''  # 电桩接口地址
 cfg_fs_url = ''  # 市政工作流接口地址
+cfg_dbsvr_url = '' # 中间层接口地址
 cfg_enable_cross_domain = 0
 cfg_app_config_file = ''  # app额外配置信息
 

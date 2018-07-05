@@ -53,8 +53,8 @@ class UserLoginJKHandler(base.RequestHandler):
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code,is_user_user_operator_code from {0}.user_list \
         where user_name="{1}" and user_password="{2}"'.format(
-            self._db_name,
-            rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"', ''))
+            self._db_name, rqmsg.user.replace('"', ''),
+            rqmsg.pwd.replace('"', ''))
 
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql, need_fetch=1, need_paging=0)
@@ -72,8 +72,7 @@ class UserLoginJKHandler(base.RequestHandler):
                     ud = libiisi.cache_user.get(k)
                     if ud is not None:
                         # 注销已登录用户
-                        if ud['user_name'] == rqmsg.user and ud[
-                                'source_dev'] == rqmsg.dev:
+                        if ud['user_name'] == rqmsg.user and ud['source_dev'] == rqmsg.dev:
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
@@ -90,7 +89,8 @@ class UserLoginJKHandler(base.RequestHandler):
             zmq_addr = libiisi.m_config.getData('zmq_port')
             if zmq_addr.find(':') > -1:
                 msg.zmq = '{0},{1}'.format(
-                    zmq_addr.split(':')[1], int(zmq_addr.split(':')[1]) + 1)
+                    zmq_addr.split(':')[0],
+                    int(zmq_addr.split(':')[0]) + 1)
             else:
                 msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr) + 1)
 
@@ -255,8 +255,8 @@ class UserLoginHandler(base.RequestHandler):
         # 检查用户名密码是否合法
         strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code,is_user_user_operator_code from {0}.user_list \
         where user_name="{1}" and user_password="{2}"'.format(
-            self._db_name,
-            rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"', ''))
+            self._db_name, rqmsg.user.replace('"', ''),
+            rqmsg.pwd.replace('"', ''))
 
         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
             strsql, need_fetch=1, need_paging=0)
@@ -274,8 +274,7 @@ class UserLoginHandler(base.RequestHandler):
                     ud = libiisi.cache_user.get(k)
                     if ud is not None:
                         # 注销已登录用户
-                        if ud['user_name'] == rqmsg.user and ud[
-                                'source_dev'] == rqmsg.dev:
+                        if ud['user_name'] == rqmsg.user and ud['source_dev'] == rqmsg.dev:
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
@@ -292,9 +291,11 @@ class UserLoginHandler(base.RequestHandler):
             zmq_addr = libiisi.m_config.getData('zmq_port')
             if zmq_addr.find(':') == -1:
                 msg.zmq = '{0},{1}'.format(
-                    zmq_addr.split(':')[1], int(zmq_addr.split(':')[1]) + 1)
+                    zmq_addr.split(':')[0],
+                    int(zmq_addr.split(':')[0]) + 1)
             else:
-                msg.zmq = '{0},{1}'.format(zmq_addr, int(zmq_addr.split(':')[1]) + 1)
+                msg.zmq = '{0},{1}'.format(zmq_addr,
+                                           int(zmq_addr.split(':')[1]) + 1)
 
             user_auth = 0
             _area_r = []
@@ -379,7 +380,7 @@ class UserLoginHandler(base.RequestHandler):
             del x
         except Exception as ex:
             pass
-            
+
         # 读取appconfig
         libiisi.m_app_config.loadConfig(libiisi.cfg_app_config_file)
         msg.app_config = libiisi.m_app_config.getJson()
@@ -439,8 +440,8 @@ class UserLogoutHandler(base.RequestHandler):
         contents = ''
         env = False
 
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(None,
-                                                                      None)
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            None, None)
         user_uuid = self.get_argument('uuid')
         if user_uuid in libiisi.cache_buildin_users:
             msg.head.if_st = 0
@@ -516,9 +517,8 @@ class UserAddHandler(base.RequestHandler):
                 else:
                     # 判断用户是否存在
                     strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                        self._db_name,
-                        rqmsg.user.replace('"', ''), rqmsg.pwd.replace('"',
-                                                                       ''))
+                        self._db_name, rqmsg.user.replace('"', ''),
+                        rqmsg.pwd.replace('"', ''))
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql, need_fetch=1)
                     if record_total > 0:
@@ -625,13 +625,11 @@ class UserEditHandler(base.RequestHandler):
         else:
             if user_data is not None:
                 strsql = 'select * from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
-                    self._db_name,
-                    rqmsg.user.replace('"', ''), rqmsg.pwd_old.replace('"',
-                                                                       ''))
+                    self._db_name, rqmsg.user.replace('"', ''),
+                    rqmsg.pwd_old.replace('"', ''))
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql, need_fetch=1)
-                if record_total > 0 or user_data[
-                        'user_auth'] in libiisi.can_admin:
+                if record_total > 0 or user_data['user_auth'] in libiisi.can_admin:
                     if user_data['user_name'] == rqmsg.user:
                         if user_data['user_auth'] in libiisi.can_write:
                             strsql = 'update {0}.user_list set user_real_name="{1}", \
@@ -707,8 +705,7 @@ class UserInfoHandler(base.RequestHandler):
         env = False
         contents = ''
 
-        if user_uuid in libiisi.cache_buildin_users and user_data[
-                'user_auth'] < 15:
+        if user_uuid in libiisi.cache_buildin_users and user_data['user_auth'] < 15:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to view user info.'
         else:
@@ -740,7 +737,8 @@ class UserInfoHandler(base.RequestHandler):
                         for d in cur:
                             userview = msgws.UserInfo.UserView()
                             userview.user = d[0]
-                            userview.fullname = d[1] if d[1] is not None else ''
+                            userview.fullname = d[
+                                1] if d[1] is not None else ''
                             # userview.pwd = d[2]
                             # userview.auth = d[3]
                             userview.mobile = d[3] if d[3] is not None else ''

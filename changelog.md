@@ -1,3 +1,17 @@
+[2018-07-05]
+---
+- 修正`querydataerr`中火零字段赋值错误的bug
+
+[2018-07-03]
+---
+- 修正userlogin接口中，zmq_addr处理错误导致无法登陆的问题
+
+[2018-06-26]
+---
+- 配置文件增加`dbsvr_url`参数，设置中间层接口地址
+- 增加`dbsvr`透传接口，访问方式为`http://<ip:port>/dbsvr/<interface_name>`
+- 增加`querydataerrgz`和`querydatartugz`两个查询接口，广州平台专用
+
 [2018-06-22]
 ---
 - 使用新版本规范更新编译脚本

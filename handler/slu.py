@@ -371,7 +371,7 @@ class QueryDataSluHandler(base.RequestHandler):
                             if dv.sluitem_id > 0:
                                 msg.data_sluitem_view.extend([dv])
                         del cur, strsql
-                elif rqmsg.data_mark == 8:  # 以太网/nb控制器数据
+                elif rqmsg.data_mark == 8: # 以太网/nb控制器数据
                     # 验证用户可操作的设备id(数据库结构关系取消验证)
                     # if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     #     if len(rqmsg.tml_id) > 0:

@@ -43,8 +43,8 @@ class QueryDataEluHandler(base.RequestHandler):
                         tml_ids = []
                 else:
                     if len(rqmsg.tml_id) > 0:
-                        tml_ids = self.check_tml_r(user_uuid,
-                                                   list(rqmsg.tml_id))
+                        tml_ids = self.check_tml_r(user_uuid, list(
+                            rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
@@ -66,7 +66,8 @@ class QueryDataEluHandler(base.RequestHandler):
                                 on x.date_create=a.date_create and x.leak_id=a.leak_id and x.leak_line_id=a.leak_line_id
                                 left join {0}.para_leak_line as b on a.leak_id=b.leak_id and a.leak_line_id=b.leak_line_id
                                 left join {0}.para_base_equipment as c on a.leak_id=c.rtu_id'''.format(
-                        self._db_name, str_tmls.replace('and', 'where'), self._db_name_data)
+                        self._db_name, str_tmls.replace('and', 'where'),
+                        self._db_name_data)
                 elif rqmsg.data_mark == 1:  #历史数据
                     strsql = '''select b.leak_line_name,a.leak_id,a.date_create,a.leak_line_id,
                 				a.auto_break_auto_alarm,a.state_alarm,a.state_on_off,a.upper_alarm_break_for_leak_temperature,
@@ -75,7 +76,8 @@ class QueryDataEluHandler(base.RequestHandler):
                 				left join {0}.para_leak_line as b on a.leak_id=b.leak_id and a.leak_line_id=b.leak_line_id
                                 left join {0}.para_base_equipment as c on a.leak_id=c.rtu_id
                 				where a.date_create>={1} and a.date_create<={2} {3} {4}'''.format(
-                        self._db_name, sdt, edt, str_tmls, self._fetch_limited, self._db_name_data)
+                        self._db_name, sdt, edt, str_tmls, self._fetch_limited,
+                        self._db_name_data)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql,

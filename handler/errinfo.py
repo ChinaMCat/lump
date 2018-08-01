@@ -314,7 +314,7 @@ class QueryDataErrHandler(base.RequestHandler):
                                 errview.remark = d[9]
                                 errview.err_count = int(d[10])
                                 errview.voltage = float(d[11])
-                                errview.voltage = float(d[12])
+                                errview.current = float(d[12])
                                 # errview.err_name_custome = d[13]
                                 errview.tml_loop_name = d[
                                     14] if d[14] is not None else ""

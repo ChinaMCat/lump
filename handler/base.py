@@ -248,6 +248,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                         if d[a] != old_record[a]:
                             got_change = True
                             old_record[a] = d[a]
+                            break
                     if got_change:
                         i += 1
                         p += 1
@@ -256,6 +257,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                             rep.append(d)
                     else:
                         rep.append(d)
+                p -= 1
             else:
                 for d in cache_data.values():
                     if need_paging:

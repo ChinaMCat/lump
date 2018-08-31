@@ -6,6 +6,7 @@ __ver__ = '0.1'
 __doc__ = 'rtu handler'
 
 import time
+import logging
 from mxpbjson import pb2json
 import mxpsu as mx
 import mxweb

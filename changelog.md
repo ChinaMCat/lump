@@ -1,3 +1,11 @@
+[2018-08-21]
+---
+- querydataslu,当type==0,data_makr==77时返回数据中增加sluitem_barcode
+
+[2018-08-02]
+---
+- querydataslu增加sluitem_barcode查询字段，用于查询单个控制器的最新数据
+
 [2018-07-13]
 ---
 - 终端历史数据查询限定单个设备查询，否则返回45

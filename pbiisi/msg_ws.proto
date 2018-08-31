@@ -589,6 +589,7 @@ message rqQueryDataSlu {
     int32 type = 7;  // 类型,0-最新,1-历史, 当查询最新数据时,tml_id只支持单选,读取第一个值
     repeated int32 tml_id = 9 [packed=true];  // 设备id,留空表示全部,可多选
     int32 data_mark = 10;  // 数据类型标示,0-集中器状态数据,7-控制器基本数据,6-控制器辅助数据(暂无),4-控制器物理信息(暂无)
+    int64 sluitem_barcode = 11; // 控制器条码，用于查询单个控制器数据，仅当data_mark==7 && type==0 && len(tml_id)>0时有效
 }
 // 应答
 message QueryDataSlu {
@@ -614,7 +615,9 @@ message QueryDataSlu {
         int64 dt_cache = 5;  // 集中器缓存该条数据的时间
         repeated int32 st_sluitem = 6 [packed=true];  // 控制器状态,[继电器校准参数出错(0-正常,1-出错),EEPROM出错(0-正常,1-出错),停运(0-正常,1-停运),禁止主动报警(0-主动报警,1-禁止),设置工作参数(0-未设置,1-已设置),校准(0-未校准,1-已校准),状态(0-正常,1-电压越上限,2-电压越下限,3-通信故障)]
         int32 temperature = 7;  // 温度,255或0表示无测温模块
+        int32 is_online = 4;  // 是否在线0-掉线，1-在线(该值为通过st_sluitem[6]以及dt_cache综合计算得出)
         repeated DataLampView data_lamp_view = 9;  // 灯头状态,数据
+        int64 sluitem_barcode = 13; // 控制器条码
     }
     message DataLampView {
         int32 lamp_id = 8;  // 灯头id

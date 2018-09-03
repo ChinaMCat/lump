@@ -1,0 +1,67 @@
+syntax = "proto3";
+package wlst.ws;
+
+option optimize_for = SPEED;
+
+message Head {
+    int64 idx = 1;  // 序号(必填)
+    int32 ver = 2;  // 协议版本(必填,默认为协议发布日期6位整型)。当前版本为 160328
+    string if_name = 3;  // 接口名称(可选)
+    string unique = 5;  // 移动设备唯一标示(移动设备填充,可以由服务器配置文件设置是否校验)
+    int64 if_dt = 100;  // 请求或返回时间(必填)
+    int32 if_st = 101;  // 接口操作状态(必填)
+                            // 1-操作成功, 0-操作失败, 原因参考msg, 10-用户未登录或超时(1h),请求被拒绝, 11-用户权限不足
+                            // 41-数据库连接失败,42-指令提交失败(socket pool),43-第三方接口调用失败,45-数据库提交失败,46-参数错误
+    string if_msg = 102;  // 失败时填充详细原因(可选)
+    repeated string msg_filter = 103;  // 调用接口后可能产生的消息过滤器，仅对设备操作类型接口有效，如终端开关灯、选测，客户端可以动态设置这些过滤器用来获得精准推送
+    int32 paging_num = 200;  // 此次请求/应答是否使用分页(仅对非参数数据查询类接口有效,'query'开头的接口),0-不使用,大于0时使用,但是,若客户端请求的赋值>100或数据总量大于100,服务端按照100进行强制分页
+    int32 paging_idx = 201;  // 分页序号,从1开始,当序号大于分页总数时默认返回最后页
+    int32 paging_total = 202;  // 服务端返回该次请求产生的分页总数(客户端请求数据时不填充)
+    int64 paging_buffer_tag = 203;  // 分页缓存标签,0-要求服务器重建缓存,xx-根据服务器返回的tag从对应缓存读取数据
+    int32 paging_record_total = 204;  // 查询记录总数
+}
+
+// 共用应答
+message CommAns {
+    Head head = 1;  // 协议头信息
+}
+
+message rqQuerySmsAlarm {
+    Head head = 1;
+    int32 data_mark = 2;  // 查询类型0-报警，1-消警，2-市政提交
+}
+message QuerySmsAlarm {
+    message SmsAlarm {
+        int32 data_mark = 1;  // 查询类型
+        int64 record_id = 2;  //记录编号
+        int64 tml_id = 3;  // 设备地址
+        string tml_name = 4;  // 设备名称
+        int32 loop_id = 5;  // 回路编号
+        string loop_name = 6;  // 回路名称
+        string fault_name = 7;  // 报警内容
+        int64 user_tel = 8;  // 发送号码
+        int64 dt_create = 9;  // 短信生成时间
+    }
+    Head head = 1;
+    repeated SmsAlarm sms_alarm = 3;
+}
+message UpdateSmsAlarm {
+    Head head = 1;
+    repeated int32 record_id =2 [packed=true];
+    int64 user_tel = 3;
+    string fault_msg = 4;
+}
+
+message rqUserInfo {
+Head head = 1;
+string user_name = 2; // 要请求的⽤户名(留空-请求全部)
+}
+
+message UserInfo {
+message UserView {
+string user = 1; // ⽤户登录名
+string tel = 5; // ⽤户⼿机号
+}
+Head head = 1;
+repeated UserView user_view = 2;
+}

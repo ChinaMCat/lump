@@ -1,0 +1,4 @@
+z:\csharp\vstools\ProtoBuf\bin\CodeGenerator\Release\CodeGenerator.exe protocol_3c.proto protocol_wxjy.proto protocol_head.proto protocol_rtu.proto protocol_als.proto protocol_ldu.proto protocol_esu.proto protocol_slu.proto protocol_tml.proto protocol_tp.proto msg_with_rf.proto --output z:\csharp\protobuf-net\msgwithrf.cs --fix-nameclash
+z:\csharp\vstools\ProtoBuf\bin\CodeGenerator\Release\CodeGenerator.exe protocol_3c.proto protocol_wxjy.proto protocol_head.proto protocol_rtu.proto protocol_als.proto protocol_ldu.proto protocol_esu.proto protocol_slu.proto protocol_tml.proto protocol_tp.proto protocol_wdcs.proto msg_with_ctrl.proto --output z:\csharp\protobuf-net\msgwithctrl.cs --fix-nameclash
+
+pause

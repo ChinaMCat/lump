@@ -1,0 +1,144 @@
+syntax = "proto3";
+package wlst.pb2;
+
+option optimize_for = SPEED;
+
+// 漏电协议
+// 设置地址
+message Wlst_elu_6255 {
+    int32 new_addr = 1;  // 设置的地址
+    int32 status = 2;  // 设置应答,0-失败(0xaa),1-成功(0xff)
+}
+//设置运行参数
+message Wlst_elu_6256 {
+    message WorkArgv {
+        int32 loop_mark = 1;  // 回路标示 0-不启用,1-启用
+        int32 work_mode = 2;  // 工作模式,0-报警不动作,1-报警并动作
+        int32 alarm_value_set = 3;  // 设置的漏电报警(毫安)/温度报警值(摄氏度)
+        int32 opt_delay = 4;  // 动作延时,下发/10ms
+    }
+    repeated WorkArgv work_argv = 1;
+    int32 status = 2;  // 设置应答,0-失败(0xaa),1-成功(0xff)
+}
+// 手动操作
+message Wlst_elu_6257 {
+    repeated int32 opt_do = 1 [packed=true];   // 1-8回路操作标示,0-关,1-开,2-不操作
+    int32 status = 2;  // 设置应答,0-失败(0xaa),1-成功(0xff)
+}
+// 主动报警,选测
+message Wlst_elu_62d8 {
+    message AlarmData {
+        repeated int32 switch_status = 1 [packed=true];  // 状态,传输8个标志,目前只解析前3个 [主动报警(0-报警不动作,1-报警并动作),分合闸状态(0-分闸,1-合闸),报警状态(1-漏电/温度报警,0-漏电/温度消警)]
+        int32 alarm_value_set = 2;  // 设置的漏电报警(毫安)/温度报警值(摄氏度)
+        int32 opt_delay = 3;  // 动作延迟
+        int32 now_value = 4;  // 当前漏电值/当前温度值
+        int32 el_value = 5;  // 漏电流大小/温度
+    }
+    repeated AlarmData alarm_data = 1;  // 各回路数据
+}
+// 事件查询
+message Wlst_elu_625a {
+    int32 events_count = 1;  // 查询条数,1,2,3
+    repeated int32 loop_no = 2;  // 回路标示,1~8
+    int32 alarm_value_set = 3;  // 设置的报警值
+    int32 now_value = 4;  // 报警值
+    int64 dt_alarm = 5;  // 报警时间,标准格式
+}
+// 设置检测门限
+message Wlst_elu_625b {
+    int32 watch_value_el = 1;  // 漏电检测门限
+    int32 watch_value_tp = 2;  // 温度检测门限
+    int32 status = 3;  // 设置应答,0-失败(0xaa),1-成功(0xff)
+}
+// 设置时钟
+message Wlst_elu_625c {
+    int64 dt_timer = 1;  // 设备时钟,标准格式
+    int32 status = 2;  // 设置应答,0-失败(0xaa),1-成功(0xff)
+}
+// 召测运行参数, 同 Wlst_elu_6256
+// 召测时钟, 同 Wlst_elu_625c
+// 复位, 同 Wlst_elu_6255
+
+//光照度协议
+message Wlst_als_a700 {
+	//光照度地址
+	int32 addr = 1;
+	//1-设置成功，0-设置失败，b700_a500_b800
+	int32 status = 2;
+	//0-每5s主动上报，1-选测上报,b600_3600_c600,2-按自定义间隔主动上报（多光控），3-按自定义间隔主动上报（485）,3700_b700_c700
+	int32 mode = 3;
+	//时间间隔（s），3800_c800
+	int32 time = 4;
+	//版本号，ca00
+	string ver = 5;
+	//光照度值，a600_a700_a800
+	double lux = 6;
+	//光照度状态
+	int32 error = 7;
+}
+
+//gps较时
+message Wlst_gps_0000 {
+	//经度
+	double longitude = 1;
+	//纬度
+	double latitude = 2;
+	//gps时间
+	string gpsdate = 3;
+}
+
+//新版gps模式设置
+message Wlst_gps_5901 {
+	//经度
+	int32 work_mode = 1;
+	//纬度
+	int32 time_interval = 2;
+	//gps时间
+	int32 alarm_distance = 3;
+	//设置结果
+	int32 status = 4;
+	//index
+	int32 nindex = 5;
+}
+//新版gps选测
+message Wlst_gps_5902 {
+	//经度
+	int32 new_addr = 1;
+	//index
+	int32 nindex = 2;
+}
+//新版gps选测
+message Wlst_gps_5903 {
+	//经度
+	string ver = 1;
+	//index
+	int32 nindex = 2;
+}
+//新版gps选测
+message Wlst_gps_5904 {
+	//经度
+	double longitude = 1;
+	//纬度
+	double latitude = 2;
+	//gps时间
+	int64 gpsdate = 3;
+	//index
+	int32 nindex = 4;
+	//报警半径(m)
+	int32 radius = 5;
+}
+
+message Wlst_mru_9100 {
+	//2007协议电表地址1
+	repeated int32 addr = 1;
+	//抄表类型(1A相，2B相，3C相，4组合有功总电能)
+	int32 meter_reading_type = 2;
+	//抄表时间段（0当前，1上月，2上上月。。。）
+	int32 meter_reading_date = 3;
+	//电表波特率
+	int32 baud_rate = 4;
+	//数据
+	double meter_value = 5;
+	//协议版本，1-1997协议，2-2007协议
+	int32 ver = 6;
+}

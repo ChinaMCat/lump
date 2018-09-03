@@ -1,0 +1,76 @@
+syntax = "proto3";
+package wlst.pb2;
+
+option optimize_for = SPEED;
+
+//Wlst_ldu_5b00_c900_4a01_ca01_4d01_4d02_cd02_4d03_cd03
+message Wlst_ldu_2600 {
+	//回路标识，二进制转十进制
+	int32 loop_mark = 1;
+}
+
+message Wlst_ldu_a600 {
+    message LduLoopData {
+    	//回路x电压
+    	double x_voltage = 2;
+    	//回路x电流
+    	double x_current = 3;
+    	//回路x有功功率
+    	double x_active_power = 4;
+    	//回路x无功功率
+    	double x_reactive_power = 5;
+    	//回路x功率因数
+    	double x_power_factor = 6;
+    	//回路x亮灯率
+    	double x_lighting_rate = 7;
+    	//回路x信号强度
+    	int32 x_signal_strength = 8;
+    	//回路x阻抗
+    	int32 x_impedance = 9;
+    	//回路x 12s有用信号数量
+    	int32 x_useful_signal = 10;
+    	//回路x 12s信号数量
+    	int32 x_all_signal = 11;
+    	//回路x检测标识
+    	int32 x_detection_flag = 12;
+    	//回路x报警标识
+    	int32 x_alarm_flag = 13;
+    }
+	//回路标识，二进制转十进制
+	int32 loop_mark = 1;
+    repeated LduLoopData ldu_loop_data = 2;
+}
+
+//Wlst_ldu_db00
+message Wlst_ldu_4900 {
+    message LduLoopArgv {
+    	//回路x检测标识
+    	int32 x_detection_flag = 2;
+    	//回路x互感器比值
+    	int32 x_transformer = 3;
+    	//回路x相位
+    	int32 x_phase = 4;
+    	//回路x开灯信号强度门限
+    	int32 x_on_signal_strength = 5;
+    	//回路x开灯阻抗报警门限
+    	int32 x_on_impedance_alarm = 6;
+    	//回路x亮灯率信号门限
+    	int32 x_lighting_rate = 7;
+    	//回路x关灯信号强度门限
+    	int32 x_off_signal_strength = 8;
+    	//回路x关灯阻抗报警门限
+    	int32 x_off_impedance_alarm = 9;
+    	//回路x末端灯杆
+    	int32 x_pole_no = 10;
+    }
+	//回路标识，二进制转十进制
+	int32 loop_mark = 1;
+    repeated LduLoopArgv ldu_loop_argv = 2;
+}
+
+message Wlst_ldu_cd01 {
+	//回路标识，二进制转十进制
+	int32 loop_mark = 1;
+	//回路x阻抗基准
+	repeated int32 x_impedance = 2 [packed=true];
+}

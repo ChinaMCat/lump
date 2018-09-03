@@ -1,0 +1,244 @@
+syntax = "proto3";
+package wlst.pb2;
+
+option optimize_for = SPEED;
+
+//Wlst_esu_9100_9900_9d00_a500
+message Wlst_esu_9000 {
+	//1-成功，0-失败
+	int32 status = 1;
+}
+
+message Wlst_esu_9400 {
+	//二进制转int
+	int32 status = 1;
+}
+
+//Wlst_esu_1100
+message Wlst_esu_9200 {
+	//预热时间，2-30,默认10
+	int32 warmup_time = 1;
+	//开机时间，hh*60+mm
+	int32 on_time = 2;
+	//开机时间，hh*60+mm
+	int32 off_time = 3;
+	//风机启动温度
+	int32 fan_start_temperature = 4;
+	//退出节能温度
+	int32 stop_saver = 5;
+	//强制保护温度
+	int32 protection_temperature = 6;
+	//输入过压门限值
+	int32 input_overvoltage = 7;
+	//输入欠压门限值
+	int32 input_undervoltage = 8;
+	//输出过载门限值
+	int32 output_overload = 9;
+	//供电相数
+	int32 phase_count = 10;
+}
+
+//Wlst_esu_9300
+message Wlst_esu_9f00 {
+	//时间,yyyy-mm-dd hh:mm:ss
+	string date_time = 1;
+	//温度  （1字节）
+	int32 temperature = 2;
+	//A相输入电压
+	double a_phase_input_voltage = 3;
+	//B相输入电压
+	double b_phase_input_voltage = 4;
+	//C相输入电压
+	double c_phase_input_voltage = 5;
+	//A相输出电压
+	double a_phase_output_voltage = 6;
+	//B相输出电压
+	double b_phase_output_voltage = 7;
+	//C相输出电压
+	double c_phase_output_voltage = 8;
+	//A相输出电流
+	double a_phase_output_current = 9;
+	//B相输出电流
+	double b_phase_output_current = 10;
+	//C相输出电流
+	double c_phase_output_current = 11;
+	//A相输出功率
+	double a_phase_output_power = 12;
+	//B相输出功率
+	double b_phase_output_power = 13;
+	//C相输出功率
+	double c_phase_output_power = 14;
+	//风机状态（1字节）
+	int32 fan_status = 15;
+	//节电器工作状态（1字节）
+	int32 saver_status = 16;
+	//开机运行时间，hh*60+mm
+	int32 run_time = 17;
+	//节能运行时间，hh*60+mm
+	int32 saver_time = 18;
+	//当前目标调压值
+	double adjust_value = 19;
+	//现存故障
+	int32 existing_fault = 20;
+	//今天复位次数(1字节)
+	int32 reset_day0 = 21;
+	//昨天复位次数(1字节)
+	int32 reset_day1 = 22;
+	//前天复位次数(1字节)
+	int32 reset_day2 = 23;
+	//大前天复位次数(1字节)
+	int32 reset_day3 = 24;
+	//参数状态(4字节=>%d)
+	int64 args_status = 25;
+	//节能模式（1字节）接触器=1，IGBT=0
+	int32 saver_mode = 26;
+	//当前调压档位值（1字节）
+	int32 adjust_stalls = 27;
+	//调压等待时间（1字节）
+	int32 adjust_time = 28;
+	//a相电压调节位置（1字节）
+	int32 adjust_a = 29;
+	//b相电压调节位置（1字节）
+	int32 adjust_b = 30;
+	//C相电压调节位置（1字节）
+	int32 adjust_c = 31;
+	//IGBT状态（1字节）
+	int32 igbt_status = 32;
+	//IGBT温度（1字节）
+	int32 igbt_temperature = 33;
+	//事件记录序号（1字节）
+	int32 event_no = 34;
+	//开关量输出状态（1字节）
+	int32 switch_out_status = 35;
+	//开关量输入状态（1字节）
+	int32 switch_in_status = 36;
+	//投运/停运状态(1字节)
+	int32 run_status = 37;
+}
+
+message Wlst_esu_1600 {
+	//时间 yyyy-mm-dd hh:mm:ss
+	string date_time = 1;
+}
+
+//Wlst_esu_1400
+message Wlst_esu_9500 {
+	//调压时间x，hh*60+mm
+	repeated int32 x_adjust_time = 1 [packed=true];
+	//调压值x
+	repeated int32 x_adjust_value = 2 [packed=true];
+}
+
+//Wlst_esu_1700_1a00
+message Wlst_esu_9700 {
+	//记录序号
+	int32 no = 1;
+	//时间（yyyy-mm-dd hh:mm:ss）
+	string date_time = 2;
+	//目标调压值（2字节）
+	double adjust_value = 3;
+	//A相输入电压
+	double a_phase_input_voltage = 4;
+	//B相输入电压
+	double b_phase_input_voltage = 5;
+	//C相输入电压
+	double c_phase_input_voltage = 6;
+	//A相输出电压
+	double a_phase_output_voltage = 7;
+	//B相输出电压
+	double b_phase_output_voltage = 8;
+	//C相输出电压
+	double c_phase_output_voltage = 9;
+	//A相输出电流
+	double a_phase_output_current = 10;
+	//B相输出电流
+	double b_phase_output_current = 11;
+	//C相输出电流
+	double c_phase_output_current = 12;
+	//节能运行时间，hh*60+mm
+	int32 saver_time = 13;
+	//节电器工作状态（1字节）
+	int32 saver_status = 14;
+	//温度  （1字节）
+	int32 temperature = 15;
+	//事件类型（1字节）
+	int32 event_type = 16;
+	//信息码（1字节）
+	int32 info_number = 17;
+	//开机运行时间，hh*60+mm
+	int32 run_time = 18;
+}
+
+message Wlst_esu_1800 {
+	//目标调压值（2字节）
+	int32 adjust_value = 1;
+}
+
+//Wlst_esu_2500
+message Wlst_esu_1900 {
+	//1900->手动开关机，0-关机，1-开机.2500->0-停运，1-投运
+	int32 manual_control = 1;
+}
+
+message Wlst_esu_9a00 {
+	//记录序号
+	int32 no = 1;
+	//时间（yyyy-mm-dd）
+	string date_time = 2;
+	//开机运行时间，hh*60+mm
+	int32 run_time = 3;
+	//节能运行时间，hh*60+mm
+	int32 saver_time = 4;
+}
+
+//Wlst_esu_1d00
+message Wlst_esu_9e00 {
+	//预热时间，2-30,默认10
+	int32 warmup_time = 1;
+	//开机时间，hh*60+mm
+	int32 on_time = 2;
+	//关机时间，hh*60+mm
+	int32 off_time = 3;
+	//A相变比
+	int32 transformer_a = 4;
+	//B相变比
+	int32 transformer_b = 5;
+	//C相变比
+	int32 transformer_c = 6;
+	//时间模式
+	int32 time_mode = 7;
+	//运行模式
+	int32 run_mode = 8;
+	//风机启动温度
+	int32 fan_start_temperature = 9;
+	//风机关闭温度
+	int32 fan_stop_temperature = 10;
+	//节能停止温度
+	int32 saver_stop_temperature = 11;
+	//节能恢复温度
+	int32 saver_recover_temperature = 12;
+	//强制保护温度
+	int32 protection_temperature = 13;
+	//输入过压门限值
+	int32 input_overvoltage = 14;
+	//输入欠压门限值
+	int32 input_undervoltage = 15;
+	//输出过载门限值
+	int32 output_overload = 16;
+	//输出欠压门限值
+	int32 output_undervoltage = 17;
+	//调压速度
+	int32 adjust_speed = 18;
+	//供电相数
+	int32 phase_count = 19;
+	//通信模式 1=通过照明终端实现与主站通信， 0=带地址
+	int32 communicate_mode = 20;
+	//工作模式（1字节）通用模式=1 ，特殊模式=0
+	int32 work_mode = 21;
+	//主动报警（1字节）主动报警=1，禁止主动报警=0
+	int32 alarm_on = 22;
+	//报警延时
+	int32 alarm_delay = 23;
+	//节能模式（1字节）接触器=1，IGBT=0
+	int32 saver_mode = 24;
+}

@@ -1,0 +1,78 @@
+syntax = "proto3";
+package wlst.pb2;
+
+option optimize_for = SPEED;
+
+message Head {
+	//mod：1-系统指令，2-数传指令，3-SQL指令，4-错误数据
+    int32 mod = 1;
+    //src：1-通讯服务，2-数据服务，3-客户端，4-串口采集（光照度，GPS），5-控制台，6-远程升级, 7-webservice接口
+    int32 src = 2;
+    //ver：1-内部协议版本v1.0
+    int32 ver = 3;
+    //tver：1-公司终端协议版本,2-合肥版本协议
+    int32 tver = 4;
+    //tra：1-数据通过模块直接传输，2-数据通过485传输
+    int32 tra = 5;
+    //ret: 发送等级，0-normal，1-high
+    int32 ret = 6;
+    //cmd：单位.设备.指令
+    string cmd = 7;
+    double code = 8;
+    //目的地:1-终端，2-数据服务
+    int32 dst = 9;
+    //多路通信的绑定基础地址
+    int32 base_addr = 10;
+    int32 gid = 11;
+    int32 rcv = 12;
+    // 命令序号，long型递增循环
+    int64 idx  = 13;
+}
+
+message Args {
+    //ip：目的ip
+    repeated int64 ip = 1 [packed=true];
+    //port：目的端口
+    int32 port = 2;
+    //addr：终端地址，列表格式
+    repeated int64 addr = 3 [packed=true];
+    //sim：手机卡号，字符串格式
+    string sim = 4;
+    //cid：集中器地址
+    int32 cid = 5;
+    // 手机卡号，和ip对应
+    repeated int64 sims = 6 [packed=true];
+    //字符串压缩格式地址（xx-xx）
+    repeated string saddr = 7;
+    repeated int64 status = 8 [packed=true];  // 1-ip目标掉线或无法连接，0-正常（下行不填充，用于通讯层通知数据层指令对象状态，暂未启用）
+    // 485校验, 0-无校验，1-偶校验,防盗默认1,其他默认0
+    int32 rc = 9;
+    // 485波特率，0-300,1-600,2-1200,3-2400,4-4800,5-9600，防盗默认2,其他默认5
+    int32 br = 10;
+}
+
+message SysCommands {
+    int32 port = 1;
+    //在线
+    repeated int64 online_rtus = 2 [packed=true];
+    repeated int32 online_id = 3 [packed=true];
+    repeated int64 online_ip = 4 [packed=true];
+    //日志信息
+    string logger_msg = 5;
+    message OnlineInfo {
+		int64 ip = 1;
+		repeated string members = 2;
+	}
+	repeated OnlineInfo online_info = 6;
+}
+
+message Passthrough {
+	// 序号
+	int32 cmd_idx = 1;
+	// 标识
+	int32 data_mark = 2;
+	// 数据
+	repeated int32 pkg_data = 3 [packed=true];
+	// 状态
+    int32 status = 4;
+}

@@ -1,0 +1,76 @@
+syntax = "proto3";
+package wlst.pb2;
+
+import "protocol_head.proto";
+import "protocol_tml.proto";
+import "protocol_tp.proto";
+import "protocol_3c.proto";
+
+option optimize_for = SPEED;
+
+//数据服务和通讯服务传输格式
+message MsgWithCtrl {
+    //协议头信息
+    wlst.pb2.Head head = 1;
+    //协议参数
+    wlst.pb2.Args args = 2;
+    //系统级别协议集
+    wlst.pb2.SysCommands syscmds = 3;
+    // 设备升级公共协议
+    wlst.pb2.Passthrough passthrough = 99;
+    //终端协议集
+    wlst.pb2.WlstTerminal wlst_tml = 100;
+    //模块协议集
+    wlst.pb2.Wlst_com_0000 wlst_com_0000 = 1000;
+    wlst.pb2.Wlst_com_3e01 wlst_com_3e01 = 1001;
+    wlst.pb2.Wlst_com_3e02 wlst_com_3e02 = 1002;
+    wlst.pb2.Wlst_com_3e82 wlst_com_3e82 = 1003;
+    wlst.pb2.Wlst_com_3e02 wlst_com_3e81 = 1004;
+
+    //第三方设备
+    //江阴节能
+    wlst.pb2.Wxjy_esu_5500 wxjy_esu_5500 = 2000;
+    wlst.pb2.Wxjy_esu_5500 wxjy_esu_d500 = 2001;
+    wlst.pb2.Wxjy_esu_d700 wxjy_esu_d700 = 2002;
+    wlst.pb2.Wxjy_esu_d800 wxjy_esu_d800 = 2003;
+    // 安徽合肥,head.tver=2，若无特殊说明，cmd和公司终端相同，公司标示改为ahhf
+    // 对时，采用终端Wlst_rtu_9300结构下发，应答采用Wlst_rtu_9200
+    // 下发年时间，采用终端wlst_rtu_7060, 应答采用wlst_rtu_70e0
+    // 开关量输出/输入/上下限设置/应答采用下面结构，cmd=ahhf.rtu.6804
+    wlst.pb2.Ahhf_rtu_6804 ahhf_rtu_6804 = 2101;
+    // 开关灯，采用终端的wlst_rtu_4b00结构下发，应答采用wlst_rtu_cb00
+    // 读取版本，采用ahhf.rtu.5c00命令，应答采用wlst_rtu_dc00
+    // 读取开关量输出/输入/上下限参数,应答使用以下结构,cmd=ahhf.rtu.680a
+    wlst.pb2.Ahhf_rtu_6804 ahhf_rtu_680a = 2102;
+    // 读取时钟，cmd=ahhf.rtu.1300，应答采用wlst_rtu_9300
+    // 读取年设置，采用wlst_rtu_7061，应答采用wlst_rtu_70e1
+    // 选测, cmd=ahhf.rtu.2000,应答采用wlst_rtu_70d0
+}
+
+// 中间层报警信息提交
+message SubmitAlarm {
+    message AlarmView {
+        int64 dt_create = 1;  // 故障产生时间
+        int32 err_id = 2;  // 故障id
+        int32 tml_id = 3;  // 设备id
+        int32 loop_id = 4;  // 回路id,从1开始,非回路故障填0
+        int32 lamp_id = 5;  // 灯头id,从1开始,非灯头故障填0
+        int32 err_count = 6;  // 在一定时间内重复产生的故障数量
+        int64 dt_remove = 8;  // 故障消除时间
+        int32 is_alarm = 9;  // 1-报警,0-消警
+        int32 alarm_src = 10;  // 报警来源
+        string alarm_name = 11;  // 报警名称
+        string tml_name = 12;   // 设备名称
+        string loop_name = 13;  // 回路名称
+    }
+    // Head head = 1;
+    repeated AlarmView alarm_view = 2;
+}
+
+// 中间层参数修改提交
+message SubmitSettingChange {
+    // 参数类型，1-参数变化（含增删改），2-时间表变化（含单灯，终端，增删改），3-定时任务变化（增删改）
+    int32 setting_type = 1;
+    // 设备逻辑地址，setting_type==3时可不填充
+    repeated int64 tml_id = 2 [packed=true];
+}

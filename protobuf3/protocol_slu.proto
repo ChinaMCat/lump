@@ -1,0 +1,985 @@
+syntax = "proto3";
+package wlst.pb2;
+
+option optimize_for = SPEED;
+
+// 无数据cmd：wlst.slu.1a00,wlst.slu.3200,wlst.slu.4d00,wlst.slu.5000
+
+// Wlst_slu_fd00_a800_a400_b000_9c00_b000_f600_fc00_eb00
+message Wlst_slu_f400 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 操作结果
+    int32 status = 2;
+    // 等待队列 status == 0x62时有效
+    int32 remark = 3;
+    // 操作地址
+    int32 sluitem_addr = 4;
+}
+
+// 单灯事件查询
+message Wlst_slu_7800 {
+    int32 cmd_idx = 1;
+    // 事件类型, 0-上电复位记录，1-开关灯操作记录，2-液晶操作记录，3-控制器告警记录，4-集中器告警记录，5-主站操作记录
+    int32 event_type = 2;
+    // 分类标记，默认0xff
+    int32 class_type = 3;
+    // 记录条数
+    int32 record_count = 4;
+    // 开始时间
+    int64 dt_start = 5;
+    // 结束时间
+    int64 dt_end = 6;
+}
+// 单灯事件查询应答
+message Wlst_slu_f800 {
+    message View0x20 {
+        // 发生时间
+        int64 dt_happen = 1;
+        // 0x20->[复位类型]，0-上电复位，1-外部复位，2-看门狗复位，3-欠压复位
+        // 0x22,0x25->[命令字节]
+        // 0x24->[集中器地址出错，
+        // 控制器参数出错，
+        // 集中器其他参数出错，
+        // 集中器运行参数出错，
+        // 集中器告警参数出错，
+        // 时钟出错，
+        // 时钟硬件出错，
+        // fram出错，
+        // 电力载波模块出错，
+        // zigbee模块出错，
+        // 蓝牙模块出错]
+        repeated int32 status = 2 [packed=true];
+    }
+    message View0x21 {
+        // 发生时间
+        int64 dt_happen = 1;
+        // 指令类型 0-清除，1-定时，2-经纬度，3-即时
+        int32 operation_type = 2;
+        // 操作顺序 0-广播，1-依次
+        int32 operation_order = 3;
+        // 地址类型 0-全部，1-组，2-规则，3-单一，4-gprs
+        int32 addr_type = 4;
+        // 地址
+        int32 addr = 5;
+        // 操作源,0~7-远程控制，8～15-短程控制，16～23-本地键盘操作，24～31-节假日控制
+        int32 operation_source = 6;
+    }
+    message View0x23 {
+        // 发生时间
+        int64 dt_happen = 1;
+        int32 addr = 2;
+        // 告警类型，1-告警，0-消警，[意外灭灯，漏电告警，意外亮灯，光源故障，自熄灯故障，系统告警，通信故障，补偿电容故障，电压越限，电流越限，通信成功率过低，欠载，过载]
+        repeated int32 alarm_type = 3 [packed=true];
+        // 控制器状态0-false，1-true[继电器校准参数错误，eeprom故障，停运，禁止主动报警，工作参数设置，已校准，电压越上限，电压越下限，通信故障]
+        repeated int32 sluitem_status = 4 [packed=true];
+        // 控制器电压
+        double sluitem_voltage = 5;
+        // 控制器电流,1-4路
+        repeated double sluitem_current = 6 [packed=true];
+        // 控制器有功，1-4路
+        repeated double sluitem_active_power = 7 [packed=true];
+        // 控制器无功，1-4路
+        repeated double sluitem_reactive_power = 8 [packed=true];
+        // 控制器最大电压
+        double sluitem_max_voltage = 9;
+        // 控制器最大电流1-4路
+        repeated double sluitem_max_current = 10 [packed=true];
+        // 控制器累计电量，1-4路
+        repeated double sluitem_electricity = 11 [packed=true];
+        // 控制器物理信息
+        // [信号强度(0-15)，
+        // 路由级数(电力载波0-6，zigbee0-10)，
+        // 所在相位(0-无法确定，1-a，2-b，3-c)，
+        // 控制器回路数(0～3->1～4路)，
+        // 节能方式(0-无控制，1-只有开关灯，2-一档节能，3-二档节能，4-rs485节能，5-pwm节能)，
+        // 漏电流(0-无，1-有),
+        // 温度采集(0-无，1-有),
+        // 时钟(0-无，1-有),
+        // 型号(0-无法确定，1-wj2090j，2-wj2090k，3-wj2080c,4-wj2080d,5-wj2090l,6-wj2090m, 7-wj4090),
+        // 通信成功次数范围(0-16)，
+        // 通信总次数范围(0-16)]
+        repeated int32 sluitem_phyinfo = 12 [packed=true];
+    }
+    int32 cmd_idx = 1;
+    // 事件类型, 0-上电复位记录，1-开关灯操作记录，2-液晶操作记录，3-控制器告警记录，4-集中器告警记录，5-主站操作记录
+    int32 event_type = 2;
+    // 分类标记，默认0xff
+    int32 class_type = 3;
+    // 总包数
+    int32 data_total = 4;
+    // 当前包号
+    int32 data_idx = 5;
+    // 该包记录数
+    int32 record_count = 6;
+    repeated View0x20 view_0x20 = 7;
+    repeated View0x21 view_0x21 = 8;
+    repeated View0x20 view_0x22 = 9;
+    repeated View0x23 view_0x23 = 10;
+    repeated View0x20 view_0x24 = 11;
+    repeated View0x20 view_0x25 = 12;
+}
+
+message Wlst_slu_ec00 {
+    // 命令序号
+    int32 cmd_idx = 1;
+    // 读取参数开始序号
+    int32 start_idx = 2;
+    // 读取条数
+    int32 read_count = 3;
+    repeated Wlst_slu_6b00 wlst_slu_6b00 = 4;
+}
+
+message Wlst_slu_6b00 {
+    // 命令序号
+    int32 cmd_idx = 1;
+    // 设置参数序号,0-20,0-删除设备保存的所有节假日设置
+    int32 set_idx = 2;
+    // 开始时间, linux时间戳格式，精确到秒，服务取月，日，时
+    int64 dt_start = 3;
+    // 结束时间, linux时间戳格式，精确到秒，服务取月，日，时
+    int64 dt_end = 4;
+    // 指令类型 1-定时，2-经纬度
+    int32 operation_type = 5;
+    // 操作顺序 0-广播，1-依次
+    int32 operation_order = 6;
+    // 定时 hh:mm->int32 或偏移量 依据 operation_type定
+    int32 timer_or_offset = 7;
+    // 地址类型 0-全部，1-组，2-规则，4-gprs
+    int32 addr_type = 8;
+    // gprs/组/规则操作地址,addr_type=2时，仅第一个值有效
+    repeated int32 addrs = 9 [packed=true];
+    // 操作类型 3-经纬度关灯，4-混合控制，5-pwm调节
+    int32 cmd_type = 10;
+    // 混合回路操作 0-不操作，1-开灯，2-1档节能，3-2档节能，4-关灯（经纬度关灯时，cmd_type<4视为不操作）
+    repeated int32 cmd_mix = 11 [packed=true];
+    // pwm功率调节
+    Cmd_pwm cmd_pwm = 12;
+
+    message Cmd_pwm {
+        // 回路(仅需要操作的回路序号)
+        repeated int32 loop_can_do = 1 [packed=true];
+        // 比例 0-10 -> 0%-100%
+        int32 scale = 2;
+        // 频率 /100为发送值
+        int32 rate = 3;
+    }
+}
+
+message Wlst_slu_6c00 {
+    int32 cmd_idx = 1;
+    // 读取参数开始序号
+    int32 start_idx = 2;
+    // 读取条数
+    int32 read_count = 3;
+}
+
+message Wlst_slu_d000 {
+    // 集中器版本
+    string ver = 1;
+}
+
+message Wlst_slu_2800 {
+    // 2-投运，1-停运
+    int32 status = 1;
+    // 2-告警，1-不告警
+    int32 alarm = 2;
+}
+
+// Wlst_slu_9900_1900
+message Wlst_slu_2400 {
+    // 操作标识（19-99：1-复位整个网络，2-以路由形式加入当前网络，3-创建网络，4-以路由形式加入新网络）（24-a4：0-停止，1-启动，2-延时启动）
+    int32 do_flag = 1;
+    // 操作结果 0x3a-失败，0x5a-成功
+    int32 status = 2;
+}
+
+
+// Wlst_slu_ee00
+message Wlst_slu_6e00 {
+    // 操作标识（0-清除设置，1-设置，2-读取设置）
+    int32 do_flag = 1;
+    // 巡测开始时间 hhmm->int32(hh*60+mm)
+    int32 patrol_start = 2;
+    // 巡测间隔时间 mm(0<=mm<=255)
+    int32 patrol_interval = 3;
+    // 巡测序号
+    int32 patrol_order = 4;
+    // 巡测数量
+    int32 patrol_count = 5;
+    // 序号
+    int32 cmd_idx =  6;
+}
+
+// Wlst_slu_b200
+message Wlst_slu_3000 {
+    // 控制器数量
+    int32 ctrls = 1;
+    // 域名
+    int32 domain_name = 2;
+    // 电压上限
+    int32 upper_voltage_limit = 3;
+    // 电压下限
+    int32 lower_voltage_limit = 4;
+    // 64位地址
+    int64 mac_addr = 5;
+}
+
+message Wlst_slu_9a00 {
+    // 域名已设置标志
+    repeated int32 domain_name_status = 1 [packed = true];
+}
+
+// Wlst_slu_7600
+message Wlst_slu_cd00 {
+    // 序号
+    int32 cmd_idx =  13;
+    // 通讯失败次数
+    int32 communication_failures = 1;
+    // 功率因数
+    int32 power_factor = 2;
+    // 通信信道(仅包含启用的通道)
+    int32 communication_channel = 3;
+    // 电流最大量程
+    double current_range = 4;
+    // 有功最大量程
+    int32 power_range = 5;
+    // 集中器自动控制功能 1-自动补发，0-不补发
+    int32 auto_mode = 6;
+    // 经度
+    double longitude = 7;
+    // 纬度
+    double latitude = 8;
+    // 载波路由模式 1-标准，2-扩展，3-III代，4-IV代，5-自适应
+    int32 carrier_routing_mode = 9;
+    // 蓝牙模块pin码，默认62547600
+    int32 bluetooth_pin = 10;
+    // 蓝牙安全模式 0-无，1-安全模式1,2-安全模式2
+    int32 bluetooth_mode = 11;
+    // 集中器通讯类型,concentrator communication type 0-gprs，1-485
+    int32 cct = 12;
+    // 控制器24小时带电，0-不带电（集中器不转发时间），1-带电（集中器转发时间）
+    int32 always_online = 14;
+}
+
+message Wlst_slu_1c00 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 控制器条码
+    int64 sluitem_idx = 2;
+    // 域名
+    int32 domain_name = 3;
+}
+
+// Wlst_slu_7a00
+message Wlst_slu_1d00 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 控制器条码（4字节）
+    int64 sluitem_idx = 2;
+    // 控制器地址（2字节）
+    // int64 sluitem_idx = 3;
+    // 选测数据标识
+    Data_mark data_mark = 4;
+
+    message Data_mark {
+        // 选测
+        int32 read_data = 1;
+        // 读取时钟
+        int32 read_timer = 2;
+        // 读取运行参数
+        int32 read_args = 3;
+        // 读取组地址
+        int32 read_group = 4;
+        // 读取版本
+        int32 read_ver = 5;
+        // 读取当天日出日落
+        int32 read_sunriseset = 6;
+        // 读取本地参数（新）
+        int32 read_timetable = 7;
+        // 读取控制器数据（新）
+        int32 read_ctrldata = 8;
+    }
+}
+
+// Wlst_slu_fa00
+message Wlst_slu_9d00 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 控制器条码（4字节）
+    int64 sluitem_idx = 2;
+    // 控制器地址（2字节）
+    // int32 sluitem_idx = 3;
+    // 选测数据标识
+    Wlst_slu_1d00.Data_mark data_mark = 4;
+    // 控制器回路数量
+    int32 loop_count = 5;
+    // 控制器选测数据(read_data)
+    Sluitem_data sluitem_data = 6;
+    // 控制器时钟(read_timer)
+    int64 sluitem_time = 7;
+    // 控制器运行参数(read_args)
+    Sluitem_para sluitem_para = 8;
+    // 控制器组地址(read_group)
+    repeated int32 sluitem_group = 9 [packed=true];
+    // 控制器版本(read_ver)
+    Sluitem_ver sluitem_ver = 10;
+    // 控制器当日日出日落(read_sunriseset)
+    Sluitem_sunriseset sluitem_sunriseset = 11;
+    // 控制器本地参数(read_timetable)
+    repeated Sluitem_runtime sluitem_runtime = 12;
+    // 控制器数据（新）(read_ctrldata)
+    Sluitem_data_new sluitem_data_new = 13;
+    // 读取状态0-失败，1-成功
+    int32 status = 14;
+    Set_mark set_mark = 15;
+
+    message Set_mark {
+        int32 set_timer = 1;
+        int32 set_args = 2;
+        int32 set_group = 3;
+        int32 set_reset = 4;
+        int32 set_control = 5;
+    }
+    message Sluitem_data {
+        // 电压 /100
+        double voltage = 1;
+        // 电流 /100
+        repeated double current = 2 [packed=true];
+        // 有功功率 /10
+        repeated double active_power = 3 [packed=true];
+        // 无功功率 /10
+        repeated double reactive_power = 4 [packed=true];
+        // 最大电压 /100
+        double max_voltage = 5;
+        // 最大电流 /100
+        repeated double max_current = 6 [packed=true];
+        // 累计电量
+        repeated double total_electricity = 7 [packed=true];
+        // 温度 0xff无效
+        int32 temperature = 8;
+        // 漏电流 /100
+        double leakage_current = 9;
+        // 时钟故障
+        int32 timer_error = 10;
+        // 控制器状态
+        Wlst_slu_7300.Base_sluitem_data.Sluitem_status sluitem_status = 11;
+        // 灯状态
+        repeated Wlst_slu_7300.Base_sluitem_data.Light_status light_status = 12;
+        // 自复位次数
+        int32 reset_count = 13;
+    }
+    message Sluitem_data_new {
+        // 电压 /100
+        repeated double voltage = 1 [packed=true];
+        // 电流 /100
+        repeated double current = 2 [packed=true];
+        // 有功功率 /10
+        repeated double active_power = 3 [packed=true];
+        // 运行时间
+        repeated int32 run_time = 4 [packed=true];
+        // 相位，0-无法确认,1-a,2-b,3-c
+        int32 phase = 5;
+        // 累计电量
+        repeated double total_electricity = 7 [packed=true];
+        // 漏电流 /100
+        double leakage_current = 9;
+        // 时钟故障
+        int32 timer_error = 10;
+        // 控制器状态
+        Wlst_slu_7300.Base_sluitem_data.Sluitem_status sluitem_status = 11;
+        // 灯状态
+        repeated Wlst_slu_7300.Base_sluitem_data.Light_status light_status = 12;
+        // 自复位次数
+        int32 reset_count = 13;
+        // 节能档位
+        repeated int32 energy_saving = 14;
+    }
+    message Sluitem_para {
+        // 域名
+        int32 domain_name = 1;
+        // 控制器状态 false-停运，true-投运
+        int32 sluitem_status = 2;
+        // 控制器主报 false-禁止主报，true-允许主报
+        int32 sluitem_enable_alarm = 3;
+        // 控制器上电开灯 true-开灯，false-关灯
+        repeated int32 sluitem_power_turnon = 4 [packed=true];
+        // 控制器1-4回路矢量
+        repeated int32 sluitem_vector = 5 [packed=true];
+        // 经度
+        double longitude = 6;
+        // 纬度
+        double latitude = 7;
+        // 1-4回路额定功率
+        repeated int32 rated_power = 8 [packed=true];
+    }
+    message Sluitem_ver {
+        // 控制器回路
+        int32 sluitem_loop = 1;
+        // 节能方式
+        int32 energy_saving = 2;
+        // 有漏电模块
+        int32 electric_leakage_module = 3;
+        // 有温度检测模块
+        int32 temperature_module = 4;
+        // 有时钟
+        int32 timer_module = 5;
+        // 型号 0-unknow,1-wj2090j
+        string sluitem_type = 6;
+        // 软件版本
+        string ver = 7;
+    }
+    message Sluitem_sunriseset {
+        // 当日日出日落时间 hhmm->int32
+        int32 sunrise = 1;
+        int32 sunset = 2;
+    }
+    message Sluitem_runtime {
+        // 本地控制数据类型0-基本类型（6字节），1-扩展类型（6+20字节）
+        int32 data_type = 1;
+        // 输出类型0-继电器，1-pwm输出，2-485
+        int32 output_type = 2;
+        // 操作类型1-定时操作，2-经纬度操作，3-即时操作
+        int32 operate_type = 3;
+        // 有效日期，0-6～周日-周6
+        repeated int32 date_enable = 4 [packed=true];
+        // 开关灯操作时间 hhmm->int32
+        int32 operate_time = 5;
+        // 操作偏移 -720~+720
+        int32 operate_offset = 6;
+        // 继电器操作回路1-4 0-不操作，3-开灯，5-一档节能，a-二档节能，c-关灯
+        repeated int32 relay_operate = 7 [packed=true];
+        // PWM操作回路
+        repeated int32 pwm_loop = 8 [packed=true];
+        // PWM操作占空比
+        int32 pwm_power = 9;
+        // PWM频率 (1~255) * 100
+        int32 pwm_baudrate = 10;
+        // 485波特率 0-300,1-600,2-1200,3-2400,4-4800,5-9600,6-19200
+        int32 rs485_baudrate = 11;
+        // 485校验位 0-无校验，1-奇校验，2-偶校验
+        int32 rs485_check = 12;
+    }
+}
+
+// Wlst_slu_7000
+message Wlst_slu_f000 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 复位标识
+    Reset_mark reset_mark = 2;
+
+    message Reset_mark {
+        // 清除任务
+        int32 clear_task = 1;
+        // 复位集中器
+        int32 reset_concentrator = 2;
+        // 硬件复位zigbee
+        int32 hard_reset_zigbee = 3;
+        // 软件复位zigbee
+        int32 soft_reset_zigbee = 4;
+        // 复位电力载波
+        int32 reset_carrier = 5;
+        // 初始化所有
+        int32 init_all = 6;
+        // 清除数据
+        int32 clear_data = 7;
+        // 清除参数
+        int32 clear_args = 8;
+    }
+}
+
+// Wlst_slu_7100
+message Wlst_slu_f100 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 操作标识0-设置时钟，1-读取时钟
+    int32 opt_mark = 2;
+    // 时间（c#需加1970-1-1）
+    int64 date_time = 3;
+    // 强制对时
+    int32 force_timer = 4;
+    // 错误标识
+    Timer_status timer_status = 5;
+
+    message Timer_status {
+        // 时间数据错误
+        int32 dtformat_error = 1;
+        // 时钟超差
+        int32 timer_error = 2;
+        // 对时失败
+        int32 time_fault = 3;
+    }
+}
+
+// Wlst_slu_7200
+message Wlst_slu_f200 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 起始控制器地址
+    int32 sluitem_idx = 2;
+    // 控制器数量
+    int32 sluitem_count = 3;
+    // 数据类型
+    Data_mark data_mark = 4;
+    // 控制器数据
+    repeated Controller_data sluitem_data = 5;
+    // 操作结果0-失败，1-成功
+    int32 status = 6;
+
+    message Data_mark {
+        // 指令类型 0-读取数据，1-设置数据
+        int32 set_data = 20;
+        // 控制器所属组（5个）
+        int32 group = 1;
+        // 控制器条码
+        int32 barcode = 2;
+        // 控制器路由（前4级通信控制器编号1,2,3...)
+        int32 route = 3;
+        // 开灯序号
+        int32 order = 4;
+        // 功率上限/下限
+        int32 limit = 5;
+        // 上电控制状态
+        int32 power_on_status = 6;
+        // 2-投运，1-停运
+        int32 run_status = 7;
+        // 控制器物理矢量
+        int32 vector = 8;
+        // 额定功率
+        int32 rated_power = 9;
+        // 回路数量
+        int32 loop_count = 10;
+    }
+
+    message Controller_data {
+        // 控制器所属组（5个）
+        repeated int32 sluitem_group = 1 [packed=true];
+        // 控制器条码
+        int64 sluitem_idx = 2;
+        // 控制器路由（前4级通信控制器编号1,2,3...)
+        repeated int32 sluitem_route = 3 [packed=true];
+        // 开灯序号
+        int32 sluitem_order = 4;
+        // 功率上限
+        int32 upper_power_limit = 5;
+        // 功率下限
+        int32 lower_power_limit = 6;
+        // 控制器上电开灯 true-开灯，false-关灯
+        repeated int32 sluitem_power_turnon = 7 [packed=true];
+        // 控制器状态 false-停运，true-投运
+        int32 sluitem_status = 8;
+        // 控制器主报 false-禁止主报，true-允许主报
+        int32 sluitem_enable_alarm = 9;
+        // 控制器物理矢量
+        repeated int32 sluitem_vector = 10 [packed=true];
+        // 额定功率
+        repeated int32 rated_power = 11 [packed=true];
+        // 回路数量
+        int32 loop_count = 12;
+        // 经度
+        double longitude = 13;
+        // 纬度
+        double latitude = 14;
+    }
+}
+
+// Wlst_slu_f300
+message Wlst_slu_7300 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 起始控制器地址(带标识)
+    int32 sluitem_start = 2;
+    // 控制器数量
+    int32 sluitem_count = 3;
+    // 选测数据类型 0-选测集中器，1-选测控制器基本数据（不用），2-选测未知控制器，3-选测控制器辅助参数（不用），4-选测控制器物理信息，5-选测控制器带时标数据，6-选测控制器带时标辅助数据, 7-控制器双字节电压电流数据，带电量
+    int32 data_mark = 4;
+    // 选测集中器
+    Concentrator_data concentrator_data = 5;
+    // 选测控制器基本参数
+    repeated Base_sluitem_data base_sluitem_data = 6;
+    // 选测未知控制器
+    repeated Unknow_sluitem unknow_sluitem = 7;
+    // 选测控制器辅助参数
+    repeated Assist_sluitem_data assist_sluitem_data = 8;
+    // 选测控制器物理信息
+    repeated Sluitem_phyinfo sluitem_phyinfo = 9;
+    // 控制器序号(地址)
+    repeated int32 sluitem_addrs = 10 [packed=true];
+
+    message Concentrator_data {
+        // 复位次数
+        repeated int32 reset_count = 1 [packed=true];
+        // 集中器状态
+        Run_status run_status = 2;
+        // 参数状态
+        Args_status args_status = 3;
+        // 硬件状态
+        Hardware_status hardware_status = 4;
+        // 未知控制器
+        int32 unknow_sluitem_count = 5;
+        // 通信信道 -10为当前值
+        int32 communication_channel = 6;
+
+        message Run_status {
+            // 停运 0-正常，1-停运
+            int32 offline = 1;
+            // 允许主报 0-禁止主报，1-允许主报
+            int32 enable_alarm = 2;
+            // 开机申请 0-非开机，1-开机
+            int32 poweron_mark = 3;
+            // gprs通讯 0-485,1-gprs
+            int32 enable_gprs = 4;
+            // 允许巡测 0-不允许,1-允许
+            int32 enable_autochk = 5;
+        }
+
+        message Args_status {
+            // 集中器参数错误
+            int32 concentrator_args_error = 1;
+            // 控制器参数错误
+            int32 sluitem_args_error = 2;
+            // 开关灯控制参数错误
+            int32 turn_onoff_error = 3;
+        }
+
+        message Hardware_status {
+            // zigbee模块出错
+            int32 zigbee_error = 1;
+            // 电力载波模块出错
+            int32 carrier_error = 2;
+            // fram出错
+            int32 fram_error = 3;
+            // 蓝牙模块出错
+            int32 bluetooth_error = 4;
+            // 硬件时钟出错
+            int32 timer_error = 5;
+        }
+    }
+
+    message Base_sluitem_data {
+        // 控制器数据
+        // 日 时:分 c#需加1970-1-1
+        int64 date_time = 1;
+        // 控制器状态
+        Sluitem_status sluitem_status = 2;
+        // 温度
+        int32 temperature = 3;
+        // 灯状态
+        repeated Light_status light_status = 4;
+        // 灯数据
+        repeated Light_data light_data = 5;
+        // 字节数 =控制器数量 / 4 每2位一个控制器 0-3（1路，2路，3路，4路）
+        int32 sluitem_loop = 6;
+
+        message Sluitem_status {
+            // 状态 0-正常，1-电压越上限，2-电压越下限，3-通讯故障
+            int32 status = 1;
+            // 已校准 0-未校准，1-已校准
+            int32 adjust = 2;
+            // 工作参数设置 0-未设置，1-已设置
+            int32 working_args = 3;
+            // 禁止主动报警 0-允许，1-禁止
+            int32 no_alarm = 4;
+            // 停运 0-正常，1-停运
+            int32 off_line = 5;
+            // EEPROM故障 0-正常，1-故障
+            int32 eeprom_error = 6;
+            // 温度传感器故障 0-正常，1-故障
+            int32 temperature_sensor = 7;
+        }
+
+        message Light_status {
+            // 功率状态 0-正常，1-功率越上限，2-功率越下限
+            int32 power_status = 1;
+            // 灯具漏电 0-正常，1-漏电
+            int32 leakage = 2;
+            // 故障 0-正常，1-光源故障，2-补偿电容故障，3-意外灭灯，4-意外亮灯，5-自熄灯，6-控制器断电告警（苏州）,7-继电器故障
+            int32 fault = 3;
+            // 工作状态 0-正常亮灯，1-一档节能，2-二档节能，3-关灯
+            int32 working_on = 4;
+        }
+
+        message Light_data {
+            // 电压
+            double voltage = 1;
+            // 电流
+            double current = 2;
+            // 有功功率
+            double active_power = 3;
+            // 电量
+            double electricity = 4;
+            // 运行时间
+            double active_time = 5;
+            // 节能档位
+            int32 power_level = 6;
+        }
+    }
+
+    message Unknow_sluitem {
+        // 条码
+        int64 sluitem_idx = 1;
+        // 型号信息
+        Model_info model_info = 2;
+    }
+
+    message Assist_sluitem_data {
+        // 日 时:分 c#需加1970-1-1
+        int64 date_time = 1;
+        // 漏电流 / 100 0xff为满量程，此时=2.55A
+        double leakage_current = 2;
+        // 灯数据
+        repeated Light_data light_data = 3;
+        // 字节数 =控制器数量 / 4 每2位一个控制器 0-3（1路，2路，3路，4路）
+        int32 sluitem_loop = 4;
+
+        message Light_data {
+            // 最大电压
+            double max_voltage = 1;
+            // 最大电流
+            double max_current = 2;
+            // 电量 满量程250kw/h，超出清零
+            double electricity = 3;
+        }
+    }
+
+    message Sluitem_phyinfo {
+        // 信号强度
+        int32 signal_strength = 1;
+        // 路由级数 电力载波 0-6,zigbee 0-10
+        int32 routing = 2;
+        // 所在相位 0-无法确定，1-A，2-B，3-C
+        int32 phase = 3;
+        // 通信成功次数 1-16
+        int32 useful_communicate = 4;
+        // 通信总次数 1-16
+        int32 all_communicate = 5;
+        // 型号信息
+        Model_info model_info = 6;
+    }
+
+    message Model_info {
+        // 控制器回路
+        int32 sluitem_loop = 1;
+        // 节能方式 0-无控制，1-只有开关灯，2-一档节能，3-二档节能，4-RS485，5-PWM
+        int32 power_saving = 2;
+        // 漏电流测量 0-无，1-有
+        int32 has_leakage = 3;
+        // 温度采集 0-无，1-有
+        int32 has_temperature = 4;
+        // 时钟 0-无，1-有
+        int32 has_timer = 5;
+        // 型号 0-unknow,1-wj2090j
+        int32 model = 6;
+        // 字符串型号
+        string sluitem_type = 7;
+    }
+}
+
+
+message Wlst_slu_f900 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 告警类型 0-集中器告警，1-控制器通讯故障，2-控制器状态告警，3-主动上报巡测结束，4-蓝牙模块连接申请，5-设置新域名成功, 6-控制器基本数据(双字节)
+    int32 alarm_type = 2;
+    // 集中器数据
+    Wlst_slu_7300.Concentrator_data concentrator_data = 3;
+    // 通讯故障控制器编号
+    repeated int32 error_ctrls = 4 [packed=true];
+    // 控制器状态
+    repeated Sluitem_status_alarm sluitem_status_alarm = 5;
+    // 蓝牙连接申请
+    Bluetooth_apply bluetooth_apply = 6;
+    // 新域名设置状态
+    Set_domain_result set_domain_result = 7;
+
+
+    message Sluitem_status_alarm {
+        // 控制器地址
+        int32 sluitem_idx = 1;
+        // 控制器回路数量
+        int32 sluitem_loop = 2;
+        // 控制器状态
+        Wlst_slu_7300.Base_sluitem_data.Sluitem_status sluitem_status = 3;
+        // 灯状态
+        repeated Wlst_slu_7300.Base_sluitem_data.Light_status light_status = 4;
+    }
+
+    message Bluetooth_apply {
+        // 设备标识码
+        int64 sim_number = 1;
+        // 动态码
+        string check_code = 2;
+    }
+
+    message Set_domain_result {
+        // 域名
+        int32 domain_name = 1;
+        // 状态 设置成功
+        repeated int32 set_success = 2 [packed=true];
+    }
+}
+
+// Wlst_slu_fb00
+message Wlst_slu_7b00 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 起始地址
+    int32 sluitem_idx = 2;
+    // 记录数量
+    int32 data_count = 3;
+    // 控制参数
+    repeated Read_concentrator_operation_data operation_data = 4;
+
+    message Read_concentrator_operation_data {
+        // （集中器：操作顺序 0-广播，1-依次）（控制器：数据类型 0-base，1-adv）
+        int32 operation_order = 1;
+        // 指令类型 0-清除(发送到控制器时无此值)，1-定时，2-经纬度，3-即时
+        int32 operation_type = 2;
+        // 周设置
+        repeated int32 week_set = 3 [packed=true];
+        // 定时 hh:mm->int32 或偏移量 依据 operation_type定
+        int32 timer_or_offset = 4;
+        // 地址类型 0-全部，1-组，2-规则，3-单一，4-gprs
+        int32 addr_type = 5;
+        // 地址
+        repeated int32 addr = 6 [packed=true];
+        // 操作类型，1-传统，4-混合，5-pwm
+        int32 cmd_type = 7;
+        // 操作内容
+        repeated Cmd_operation cmd_mix = 8;
+
+        message Cmd_operation {
+            // 回路1-4操作，-1-不操作，0-开灯，1-一档节能，2-二档节能，3-关灯，100～200-pwm0%～100%
+            int32 handle = 1;
+            // pwm频率 /100为发送值
+            int32 rate = 2;
+        }
+    }
+}
+
+message Wlst_slu_fe00 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 操作命令
+    int32 operation_cmd = 2;
+    // 不成功数量
+    int32 fault_count = 3;
+    // 控制器地址
+    repeated int32 sluitem_idx = 4 [packed=true];
+}
+
+// Wlst_slu_7d00
+message Wlst_slu_7400 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 指令类型 0-清除，1-定时，2-经纬度，3-即时
+    int32 operation_type = 2;
+    // 操作顺序 0-广播，1-依次
+    int32 operation_order = 3;
+    // 地址类型 0-全部，1-组，2-规则，3-单一，4-gprs
+    int32 addr_type = 4;
+    // 地址(需要操作的序号)
+    // int32 addr = 5;
+    // gprs操作地址
+    repeated int32 addrs = 6 [packed=true];
+    // 周设置
+    repeated int32 week_set = 7 [packed=true];
+    // 定时 hh:mm->int32 或偏移量 依据 operation_type定
+    int32 timer_or_offset = 8;
+    // 操作类型 3-经纬度关灯，4-混合控制，5-pwm调节，6-485调节
+    int32 cmd_type = 9;
+    // 混合回路操作 0-不操作，1-开灯，2-1档节能，3-2档节能，4-关灯（经纬度关灯时，cmd_type<4视为不操作）
+    repeated int32 cmd_mix = 10 [packed=true];
+    // pwm功率调节
+    Cmd_pwm cmd_pwm = 11;
+
+    message Cmd_pwm {
+        // 回路(仅需要操作的回路序号)
+        repeated int32 loop_can_do = 1 [packed=true];
+        // 比例 0-10 -> 0%-100%
+        int32 scale = 2;
+        // 频率 /100为发送值
+        int32 rate = 3;
+    }
+}
+
+message Wlst_slu_7c00 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 地址类型 0-全部，1-组，2-规则，3-单一，4-gprs
+    int32 addr_type = 2;
+    // 地址
+    int32 addr = 3;
+    // 数据条数（==-1时表示发送给集中器）
+    int32 cmd_count = 4;
+    // 更新或清除 0-add,1-clean&add（仅发送给控制器时有效）
+    int32 add_or_update = 5;
+    // 控制参数
+    repeated Concentrator_operation_data operation_data = 6;
+
+    message Concentrator_operation_data {
+        // 指令类型 1-定时，2-经纬度，3-即时
+        int32 operation_type = 1;
+        // 操作类型 4-混合控制，5-pwm调节，6-485调节
+        int32 cmd_type = 2;
+        // 周设置
+        repeated int32 week_set = 3 [packed=true];
+        // 定时 hh:mm->int32 或偏移量 依据 operation_type定
+        int32 timer_or_offset = 4;
+        // 混合回路操作 0-不操作，1-开灯，2-1档节能，3-2档节能，4-关灯
+        repeated int32 cmd_mix = 5 [packed=true];
+        // pwm功率调节
+        Cmd_pwm cmd_pwm = 6;
+        // 485调节
+        Cmd_485 cmd_485 = 7;
+
+        message Cmd_pwm {
+            // 回路
+            repeated int32 loop_can_do = 1 [packed=true];
+            // 比例 0-100～0%-100%
+            int32 scale = 2;
+            // 频率 /100为发送值
+            int32 rate = 3;
+        }
+
+        message Cmd_485 {
+            // 波特率 1-600,2-1200,3-2400,4-4800,5-9600,6-19200
+            int32 baudrate = 1;
+            // 校验位 0-无，1-奇校验，2-偶校验
+            int32 check = 2;
+            // 数据长度 0-20
+            int32 data_length = 3;
+            // 数据
+            string data_485 = 4;
+        }
+    }
+}
+
+message Wlst_slu_6f00 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 地址类型 0-全部，1-组，2-规则，3-单一，4-gprs
+    int32 addr_type = 2;
+    // 地址
+    int32 addr = 3;
+    // 操作标识
+    Reset_mark reset_mark = 4;
+    // 操作结果 0x3a-失败，0x5a-成功, 0x60-数据错误，0x61-正在操作，0x62-等待操作，0x63-队列已满
+    int32 status = 5;
+
+    message Reset_mark {
+        // mcu复位
+        int32 reset_mcu = 1;
+        // 通讯模块复位
+        int32 reset_comm = 2;
+        // 初始化mcu硬件配置
+        int32 init_mcu_hardware = 3;
+        // 初始化ram
+        int32 init_ram = 4;
+        // eerom 清零
+        int32 zero_eerom = 5;
+        // 电量计数清零
+        int32 zero_count = 6;
+    }
+}

@@ -1,0 +1,372 @@
+syntax = "proto3";
+package wlst.pb2;
+
+import "protocol_rtu.proto";
+import "protocol_ldu.proto";
+import "protocol_als.proto";
+import "protocol_esu.proto";
+import "protocol_slu.proto";
+
+option optimize_for = SPEED;
+
+//数据服务和通讯服务传输格式
+message WlstTerminal {
+    //终端
+    //设置终端物理地址
+    wlst.pb2.Wlst_rtu_1900 wlst_rtu_1900 = 10;
+    //设置工作参数
+    wlst.pb2.Wlst_rtu_4000 wlst_rtu_4000 = 11;
+    //设置显示参数
+    wlst.pb2.Wlst_rtu_4101 wlst_rtu_4101 = 12;
+    //设置显示参数
+    wlst.pb2.Wlst_rtu_4104 wlst_rtu_4104 = 13;
+    //设置显示参数
+    wlst.pb2.Wlst_rtu_4110 wlst_rtu_4110 = 14;
+    //设置口失参数
+    wlst.pb2.Wlst_rtu_4200 wlst_rtu_4201 = 15;
+    //设置口失参数
+    wlst.pb2.Wlst_rtu_4200 wlst_rtu_4204 = 16;
+    //设置口失参数
+    wlst.pb2.Wlst_rtu_4200 wlst_rtu_4210 = 17;
+    //设置上下限
+    wlst.pb2.Wlst_rtu_4401 wlst_rtu_4401 = 18;
+    //召测终端参数
+    wlst.pb2.Wlst_rtu_da00 wlst_rtu_da00 = 19;
+    //设置电压
+    wlst.pb2.Wlst_rtu_6100 wlst_rtu_6100 = 20;
+    //选测数据
+    wlst.pb2.Wlst_rtu_a000 wlst_rtu_a000 = 21;
+    //所有回路开关灯
+    wlst.pb2.Wlst_rtu_4b00 wlst_rtu_4b00 = 22;
+    //读取终端时间
+    wlst.pb2.Wlst_rtu_9300 wlst_rtu_9300 = 23;
+    //对时
+    wlst.pb2.Wlst_rtu_9300 wlst_rtu_1200 = 24;
+    //读周回路控制表1-3
+    wlst.pb2.Wlst_rtu_b200 wlst_rtu_b200 = 25;
+    //写周回路控制表1-3
+    wlst.pb2.Wlst_rtu_b200 wlst_rtu_3100 = 26;
+    //写周回路控制表4-6
+    wlst.pb2.Wlst_rtu_b200 wlst_rtu_5800 = 27;
+    //读周回路控制表4-6
+    wlst.pb2.Wlst_rtu_b200 wlst_rtu_d900 = 28;
+    //读周回路控制表7-8
+    wlst.pb2.Wlst_rtu_b200 wlst_rtu_e900 = 29;
+    //写周回路控制表7-8
+    wlst.pb2.Wlst_rtu_b200 wlst_rtu_6800 = 30;
+    //召测节假日后4时段
+    wlst.pb2.Wlst_rtu_e600 wlst_rtu_e600 = 31;
+    //设置节假日前4时段
+    wlst.pb2.Wlst_rtu_e600 wlst_rtu_4600 = 32;
+    //召测节假日前4时段
+    wlst.pb2.Wlst_rtu_e600 wlst_rtu_c700 = 33;
+    //设置节假日后4时段
+    wlst.pb2.Wlst_rtu_e600 wlst_rtu_6500 = 34;
+    //执行端开机申请
+    wlst.pb2.Wlst_rtu_9800 wlst_rtu_9800 = 35;
+    //设置节能状态
+    wlst.pb2.Wlst_rtu_9800 wlst_rtu_cc00 = 36;
+    //设置节能状态
+    wlst.pb2.Wlst_rtu_9800 wlst_rtu_4c00 = 37;
+    //召测终端软件版本
+    wlst.pb2.Wlst_rtu_dc00 wlst_rtu_dc00 = 38;
+    //从终端主机板中读取全球唯一序列号
+    wlst.pb2.Wlst_rtu_dc00 wlst_rtu_ab00 = 39;
+    //终端心跳包
+    wlst.pb2.Wlst_rtu_7b00 wlst_rtu_7b00 = 40;
+    //终端单回路开关灯
+    wlst.pb2.Wlst_rtu_a200 wlst_rtu_2210 = 41;
+    //单回路开关灯应答
+    wlst.pb2.Wlst_rtu_a200 wlst_rtu_a200 = 42;
+    //设置年开关灯
+    wlst.pb2.Wlst_rtu_7060 wlst_rtu_7060 = 43;
+    //设置年开关灯应答
+    wlst.pb2.Wlst_rtu_70e0 wlst_rtu_70e0 = 44;
+    //招测年开关灯
+    wlst.pb2.Wlst_rtu_7061 wlst_rtu_7061 = 45;
+    //招测年开关灯应答
+    wlst.pb2.Wlst_rtu_7060 wlst_rtu_70e1 = 46;
+    //远程升级准备
+    wlst.pb2.Wlst_rtu_7006 wlst_rtu_7006 = 47;
+    //查询包发送状态
+    wlst.pb2.Wlst_rtu_7007 wlst_rtu_7007 = 48;
+    //发送包
+    wlst.pb2.Wlst_rtu_7008 wlst_rtu_7008 = 49;
+    //发送缓存文件
+    wlst.pb2.Wlst_rtu_7008 wlst_rtu_cupd = 50;
+    //ftp升级数据
+    wlst.pb2.Wlst_rtu_7003 wlst_rtu_7003 = 51;
+    //升级数据包状态应答
+    wlst.pb2.Wlst_rtu_7087 wlst_rtu_7087 = 52;
+    //FTP升级应答
+    wlst.pb2.Wlst_rtu_7087 wlst_rtu_7083 = 53;
+    //修改主板通讯参数
+    wlst.pb2.Wlst_rtu_700a wlst_rtu_700a = 54;
+    // 3006终端复位
+    wlst.pb2.Wlst_rtu_7010 wlst_rtu_7010 = 55;
+    // 3006终端复位应答
+    wlst.pb2.Wlst_rtu_7010 wlst_rtu_7090 = 56;
+    // 召测k7,k8参数
+    wlst.pb2.Wlst_rtu_df00 wlst_rtu_df00 = 57;
+    // 新版选测
+    wlst.pb2.Wlst_rtu_70d0 wlst_rtu_70d0 = 58;
+    // 新版召测参数
+    wlst.pb2.Wlst_rtu_70da wlst_rtu_70da = 59;
+    // 多路开关灯应答
+    wlst.pb2.Wlst_rtu_ans wlst_rtu_cb00 = 60;
+    // 对时应答
+    wlst.pb2.Wlst_rtu_ans wlst_rtu_9200 = 61;
+    // 设置上下限应答
+    wlst.pb2.Wlst_rtu_ans wlst_rtu_c400 = 62;
+    // 招测事件
+    wlst.pb2.Wlst_rtu_7800 wlst_rtu_7800 = 63;
+    // 招测事件应答
+    wlst.pb2.Wlst_rtu_7800 wlst_rtu_f800 = 64;
+    // 读取sd卡数据
+    wlst.pb2.Wlst_rtu_7053 wlst_rtu_7053 = 65;
+    // 读取sd卡数据应答
+    wlst.pb2.Wlst_rtu_70d3 wlst_rtu_70d3 = 66;
+    // 远程升级完成主动上报
+    wlst.pb2.Wlst_rtu_7081 wlst_rtu_7081 = 67;
+    // 升级准备查询应答
+    wlst.pb2.Wlst_rtu_7081 wlst_rtu_7086 = 68;
+    // 升级版本查询
+    wlst.pb2.Wlst_rtu_7081 wlst_rtu_7085 = 69;
+
+    //线路检测
+    //召测终端软件版本
+    wlst.pb2.Wlst_rtu_dc00 wlst_ldu_dc00 = 200;
+    //选测回路状态
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_2600 = 201;
+    //读终端检测参数
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_5b00 = 202;
+    //设置终端检测参数
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_c900 = 203;
+    //自适应门限设置
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_4a01 = 204;
+    //自适应门限设置
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_ca01 = 205;
+    //选测开灯阻抗基准
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_4d01 = 206;
+    //选测开灯阻抗最大值
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_4d02 = 207;
+    //复位开灯阻抗最大值
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_4d03 = 208;
+    //选测开灯阻抗最大值
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_cd02 = 209;
+    //复位开灯阻抗最大值
+    wlst.pb2.Wlst_ldu_2600 wlst_ldu_cd03 = 210;
+    //选测回路状态
+    wlst.pb2.Wlst_ldu_a600 wlst_ldu_a600 = 211;
+    //设置检测终端参数
+    wlst.pb2.Wlst_ldu_4900 wlst_ldu_4900 = 212;
+    //召测终端检测参数
+    wlst.pb2.Wlst_ldu_4900 wlst_ldu_db00 = 213;
+    //选测开灯阻抗基准
+    wlst.pb2.Wlst_ldu_cd01 wlst_ldu_cd01 = 214;
+
+    //节能
+    wlst.pb2.Wlst_rtu_dc00 wlst_esu_9b00 = 800;//
+    wlst.pb2.Wlst_esu_9200 wlst_esu_9200 = 801;//
+    wlst.pb2.Wlst_esu_9200 wlst_esu_1100 = 802;//
+    wlst.pb2.Wlst_esu_9e00 wlst_esu_9e00 = 803;//
+    wlst.pb2.Wlst_esu_9e00 wlst_esu_1d00 = 804;//
+    wlst.pb2.Wlst_esu_9a00 wlst_esu_9a00 = 805;//
+    wlst.pb2.Wlst_esu_1900 wlst_esu_1900 = 806;//
+    wlst.pb2.Wlst_esu_1900 wlst_esu_2500 = 807;//
+    wlst.pb2.Wlst_esu_1800 wlst_esu_1800 = 808;//
+    wlst.pb2.Wlst_esu_9700 wlst_esu_9700 = 809;//
+    wlst.pb2.Wlst_esu_9700 wlst_esu_1700 = 810;//
+    wlst.pb2.Wlst_esu_9700 wlst_esu_1a00 = 811;//
+    wlst.pb2.Wlst_esu_9500 wlst_esu_9500 = 812;//
+    wlst.pb2.Wlst_esu_9500 wlst_esu_1400 = 813;//
+    wlst.pb2.Wlst_esu_9f00 wlst_esu_9f00 = 814;//
+    wlst.pb2.Wlst_esu_9f00 wlst_esu_9300 = 815;//
+    wlst.pb2.Wlst_esu_9400 wlst_esu_9400 = 816;//
+    wlst.pb2.Wlst_esu_9000 wlst_esu_9000 = 817;//
+    wlst.pb2.Wlst_esu_9000 wlst_esu_9100 = 818;//
+    wlst.pb2.Wlst_esu_9000 wlst_esu_9900 = 819;//
+    wlst.pb2.Wlst_esu_9000 wlst_esu_9d00 = 820;//
+    wlst.pb2.Wlst_esu_9000 wlst_esu_a500 = 821;//
+    wlst.pb2.Wlst_esu_1600 wlst_esu_1600 = 822;//
+    wlst.pb2.Wlst_esu_9000 wlst_esu_9600 = 823;
+    wlst.pb2.Wlst_esu_9000 wlst_esu_9800 = 825;
+    wlst.pb2.Wlst_esu_9000 wlst_esu_a200 = 826;
+    wlst.pb2.Wlst_esu_9000 wlst_esu_a300 = 827;
+
+    //光照度,GPS,抄表
+    //gps数据
+    wlst.pb2.Wlst_gps_0000 wlst_gps_0000 = 400;
+    //wx2002gps 读版本
+    wlst.pb2.Wlst_gps_5903 wlst_gps_5903 = 434;
+    wlst.pb2.Wlst_gps_5903 wlst_gps_5983 = 435;
+    //wx2002gps 选测
+    wlst.pb2.Wlst_gps_5904 wlst_gps_5904 = 436;
+    wlst.pb2.Wlst_gps_5904 wlst_gps_5984 = 437;
+    //选测2（多光控）
+    wlst.pb2.Wlst_als_a700 wlst_als_a700 = 401;
+    wlst.pb2.Wlst_als_a700 wlst_als_2700 = 402;
+    //设置模式（多光控）
+    wlst.pb2.Wlst_als_a700 wlst_als_b700 = 403;
+    //设置地址（多光控）
+    wlst.pb2.Wlst_als_a700 wlst_als_a500 = 404;
+    wlst.pb2.Wlst_als_a700 wlst_als_2500 = 405;
+    //设置上报数据间隔时间
+    wlst.pb2.Wlst_als_a700 wlst_als_b800 = 406;
+    //设置模式
+    wlst.pb2.Wlst_als_a700 wlst_als_b600 = 407;
+    //设置模式
+    wlst.pb2.Wlst_als_a700 wlst_als_3600 = 408;
+    //召测模式
+    wlst.pb2.Wlst_als_a700 wlst_als_c600 = 409;
+    //设置模式（多光控）
+    wlst.pb2.Wlst_als_a700 wlst_als_3700 = 410;
+    //对终端主报数据（RS485）（多光控）
+    wlst.pb2.Wlst_als_a700 wlst_als_a800 = 411;
+    //召测模式（多光控）
+    wlst.pb2.Wlst_als_a700 wlst_als_c700 = 412;
+    wlst.pb2.Wlst_als_a700 wlst_als_4700 = 413;
+    //设置上报数据间隔时间
+    wlst.pb2.Wlst_als_a700 wlst_als_3800 = 414;
+    //召测上报数据间隔时间
+    wlst.pb2.Wlst_als_a700 wlst_als_c800 = 415;
+    wlst.pb2.Wlst_als_a700 wlst_als_4800 = 416;
+    //召测软件版本
+    wlst.pb2.Wlst_als_a700 wlst_als_ca00 = 417;
+    wlst.pb2.Wlst_als_a700 wlst_als_4a00 = 418;
+    //选测1
+    wlst.pb2.Wlst_als_a700 wlst_als_a600 = 419;
+    //2007读电表数据
+    wlst.pb2.Wlst_mru_9100 wlst_mru_9100 = 430;
+    //2007读电表数据
+    wlst.pb2.Wlst_mru_9100 wlst_mru_1100 = 431;
+    //2007读电表地址
+    wlst.pb2.Wlst_mru_9100 wlst_mru_9300 = 432;
+    //2007读电表地址
+    wlst.pb2.Wlst_mru_9100 wlst_mru_1300 = 433;
+    // 漏电
+    // 手动操作
+    wlst.pb2.Wlst_elu_6257 wlst_elu_6257 = 438;
+    wlst.pb2.Wlst_elu_6257 wlst_elu_62d7 = 439;
+    // 主动报警/选测应答,漏电/温度
+    wlst.pb2.Wlst_elu_62d8 wlst_elu_62d8 = 440;
+    // 查询事件
+    wlst.pb2.Wlst_elu_625a wlst_elu_625a = 444;
+    wlst.pb2.Wlst_elu_625a wlst_elu_62da = 445;
+    // 设置检测门限
+    wlst.pb2.Wlst_elu_625b wlst_elu_625b = 446;
+    wlst.pb2.Wlst_elu_625b wlst_elu_62db = 447;
+    // 设置时钟
+    wlst.pb2.Wlst_elu_625c wlst_elu_625c = 448;
+    wlst.pb2.Wlst_elu_625c wlst_elu_62dc = 449;
+    // 召测参数
+    wlst.pb2.Wlst_elu_6256 wlst_elu_62dd = 450;
+    // 召测时钟
+    wlst.pb2.Wlst_elu_625c wlst_elu_62de = 451;
+    // 复位应答
+    wlst.pb2.Wlst_elu_6255 wlst_elu_62df = 452;
+    // 设置地址
+    wlst.pb2.Wlst_elu_6255 wlst_elu_6255 = 453;
+    wlst.pb2.Wlst_elu_6255 wlst_elu_62d5 = 454;
+    // 设置运行参数
+    wlst.pb2.Wlst_elu_6256 wlst_elu_6256 = 455;
+    wlst.pb2.Wlst_elu_6256 wlst_elu_62d6 = 456;
+
+    //单灯
+    //复位网络
+    wlst.pb2.Wlst_slu_2400 wlst_slu_1900 = 601;
+    //复位网络应答
+    wlst.pb2.Wlst_slu_2400 wlst_slu_9900 = 602;
+    //招测集中器版本
+    wlst.pb2.Wlst_slu_d000 wlst_slu_d000 = 603;
+    //启动停止集中器巡测
+    wlst.pb2.Wlst_slu_2400 wlst_slu_2400 = 604;
+    //启动停止集中器巡测 应答
+    wlst.pb2.Wlst_slu_f400 wlst_slu_a400 = 605;
+    //设置集中器停运主报
+    wlst.pb2.Wlst_slu_2800 wlst_slu_2800 = 606;
+    //设置集中器停运主报 应答
+    wlst.pb2.Wlst_slu_f400 wlst_slu_a800 = 607;
+    //设置集中器参数
+    wlst.pb2.Wlst_slu_3000 wlst_slu_3000 = 608;
+    //设置集中器参数 应答
+    wlst.pb2.Wlst_slu_f400 wlst_slu_b000 = 609;
+    //选测集中器参数 应答
+    wlst.pb2.Wlst_slu_3000 wlst_slu_b200 = 610;
+    //招测控制器域名更改信息 应答
+    wlst.pb2.Wlst_slu_9a00 wlst_slu_9a00 = 611;
+    //选测集中器报警参数 应答
+    wlst.pb2.Wlst_slu_cd00 wlst_slu_cd00 = 612;
+    //设置控制器域名
+    wlst.pb2.Wlst_slu_1c00 wlst_slu_1c00 = 613;
+    //设置控制器域名 应答
+    wlst.pb2.Wlst_slu_f400 wlst_slu_9c00 = 614;
+    //选测未知控制器
+    wlst.pb2.Wlst_slu_1d00 wlst_slu_1d00 = 615;
+    //选测未知控制器 应答
+    wlst.pb2.Wlst_slu_9d00 wlst_slu_9d00 = 616;
+    //复位以及参数初始化
+    wlst.pb2.Wlst_slu_f000 wlst_slu_7000 = 617;
+    //复位以及参数初始化 应答
+    wlst.pb2.Wlst_slu_f000 wlst_slu_f000 = 618;
+    //时钟设置
+    wlst.pb2.Wlst_slu_f100 wlst_slu_7100 = 619;
+    //时钟设置 应答
+    wlst.pb2.Wlst_slu_f100 wlst_slu_f100 = 620;
+    //控制器参数设置读取
+    wlst.pb2.Wlst_slu_f200 wlst_slu_7200 = 621;
+    //控制器参数设置读取 应答
+    wlst.pb2.Wlst_slu_f200 wlst_slu_f200 = 622;
+    //选测 （集中器缓存）
+    wlst.pb2.Wlst_slu_7300 wlst_slu_7300 = 623;
+    //选测 应答
+    wlst.pb2.Wlst_slu_7300 wlst_slu_f300 = 624;
+    //设置时间（485用，到集中器）
+    wlst.pb2.Wlst_slu_7400 wlst_slu_7400 = 625;
+    //设置时间（485用，到集中器） 应答
+    wlst.pb2.Wlst_slu_f400 wlst_slu_f400 = 626;
+    //设置时间（gprs用，到集中器）
+    //wlst.pb2.Wlst_slu_7400 wlst_slu_7d00 = 627;
+    //设置时间（gprs用，到集中器） 应答
+    //wlst.pb2.Wlst_slu_f400 wlst_slu_fd00 = 628;
+    //设置集中器报警参数
+    wlst.pb2.Wlst_slu_cd00 wlst_slu_7600 = 629;
+    //设置集中器报警参数 应答
+    wlst.pb2.Wlst_slu_f400 wlst_slu_f600 = 630;
+    //集中器主动上报
+    wlst.pb2.Wlst_slu_f900 wlst_slu_f900 = 631;
+    //选测控制器参数
+    wlst.pb2.Wlst_slu_1d00 wlst_slu_7a00 = 632;
+    //选测控制器参数 应答
+    wlst.pb2.Wlst_slu_9d00 wlst_slu_fa00 = 633;
+    //读取短程控制参数
+    wlst.pb2.Wlst_slu_7b00 wlst_slu_7b00 = 634;
+    //读取短程控制参数 应答
+    wlst.pb2.Wlst_slu_7b00 wlst_slu_fb00 = 635;
+    //集中器返回操作失败的控制器
+    wlst.pb2.Wlst_slu_fe00 wlst_slu_fe00 = 636;
+    //设置本地控制参数（到控制器）
+    wlst.pb2.Wlst_slu_7c00 wlst_slu_7c00 = 637;
+    //设置本地控制参数 应答
+    wlst.pb2.Wlst_slu_f400 wlst_slu_fc00 = 638;
+    //控制器复位以及参数初始化
+    wlst.pb2.Wlst_slu_6f00 wlst_slu_6f00 = 639;
+    //控制器复位以及参数初始化 应答
+    wlst.pb2.Wlst_slu_6f00 wlst_slu_ef00 = 640;
+    //设置延迟巡测间隔
+    wlst.pb2.Wlst_slu_6e00 wlst_slu_6e00 = 641;
+    //延迟巡测间隔招测/应答
+    wlst.pb2.Wlst_slu_6e00 wlst_slu_ee00 = 642;
+    // 设置单灯节假日
+    wlst.pb2.Wlst_slu_6b00 wlst_slu_6b00 = 643;
+    // 设置单灯节假日应答
+    wlst.pb2.Wlst_slu_f400 wlst_slu_eb00 = 644;
+    // 召测单灯节假日设置
+    wlst.pb2.Wlst_slu_6c00 wlst_slu_6c00 = 645;
+    // 召测单灯节假日设置应答
+    wlst.pb2.Wlst_slu_ec00 wlst_slu_ec00 = 646;
+    // 召测事件记录
+    wlst.pb2.Wlst_slu_7800 wlst_slu_7800 = 647;
+    // 召测事件记录应答
+    wlst.pb2.Wlst_slu_f800 wlst_slu_f800 = 648;
+}

@@ -1,0 +1,565 @@
+syntax = "proto3";
+package wlst.pb2;
+
+option optimize_for = SPEED;
+
+message Wlst_rtu_ans {
+    // 序号
+    int32 cmd_idx = 1;
+    // 数据标记
+    repeated int32 data_mark = 2 [packed=true];
+    // 信息点，暂不用
+    repeated int32 data_point = 3 [packed=true];
+    // 应答,0-失败，1-成功，填充顺序和data_mark相同
+    repeated int32 status = 4 [packed=true];
+}
+// sd卡数据招测
+message Wlst_rtu_7053 {
+    // 序号
+    int32 cmd_idx = 1;
+    // 记录类型 1-每天一条的最大电压电流数据,2-2s一条的普通选测数据
+    int32 record_type = 2;
+    // 查询开始时间
+    int64 dt_start = 3;
+    // 查询数据条数
+    int32 record_count = 4;
+    // 查询时间间隔(单位秒)
+    int64 record_distance = 5;
+}
+// sd卡数据招测应答
+message Wlst_rtu_70d3 {
+    // 序号
+    int32 cmd_idx = 1;
+    // 总包数
+    int32 record_total = 2;
+    // 当前序号
+    int32 record_idx = 3;
+    // 当前数据包错误标志，0：正常,1-6：sd功能错误,7：无sd卡,8:记录时间错误,9：查询开始时间错误,10：查询截止时间错误,11：时间间隔错误,12：记录类型错误,13：记录数据错误
+    int32 record_status = 4;
+    // 记录类型 1-2s一条的普通选测数据,2-每天一条的最大电压电流数据
+    int32 record_type = 5;
+    // 查询开始时间
+    int64 dt_start = 6;
+    // 查询数据条数
+    int32 record_count = 7;
+    // 查询时间间隔(单位秒)
+    int64 record_distance = 8;
+    // 数据类型1
+    repeated Wlst_rtu_70d0 data_70d0 = 9;
+    // 数据类型2
+    repeated Wlst_rtu_70d0_max data_70d0_max = 10;
+}
+message Wlst_rtu_70d0_max {
+    // 记录时间
+    int64 dt_record = 1;
+    // 记录类型
+    int32 record_type = 2;
+    // 回路数量
+    int32 loop_count = 3;
+    repeated Max_data max_data = 4;
+    message Max_data {
+        // 依次回路最大电流
+        double current_max = 1;
+        // 回路电流发生时间
+        int64 dt_record = 2;
+    }
+}
+//事件招测
+message Wlst_rtu_7800 {
+    // 事件类型(上下行)
+    int32 event_type = 1;
+    // 分类标识(上下行)
+    int32 event_class = 2;
+    // 记录条数(上下行)
+    int32 data_num = 3;
+    // 开始时间(下行)
+    int64 dt_start = 4;
+    // 结束时间(下行)
+    int64 dt_end = 5;
+    // 总包数(上行)
+    int32 all_num = 6;
+    // 当前包(上行)
+    int32 cur_num = 7;
+    // 原始数据(上行)
+    string raw_data = 8;
+}
+//新版选测
+message Wlst_rtu_7050 {
+    int32 cmd_idx = 1;
+    int32 data_mark = 2;
+}
+message Wlst_rtu_70d0 {
+    message Data_mark {
+        // 即时选测
+        int32 get_run_data = 1;
+        // 开关量输出变化原因
+        int32 get_switchout_reason = 2;
+    }
+    // 采样板电压
+    message Sampling_voltage {
+        double vol_a = 1;
+        double vol_b = 2;
+        double vol_c = 3;
+    }
+    message Analog_data {
+        double voltage = 1;
+        double current = 2;
+        double power = 3;
+        // 电压越限0-正常，3-满量程，当idx=-1时有效
+        int32 voltage_status = 4;
+        // 电压越限0-正常，3-满量程，当idx=-1时有效
+        int32 current_status = 5;
+    }
+    // 序号 (老版选测也将升级为该结构,若idx==-1表示为老版数据,idx>=0表示新版，idx==-2表示sd卡数据)
+    int32 cmd_idx = 1;
+    // 数据标示
+    Data_mark data_mark = 2;
+    // 开关量输入状态,0-断,1-通
+    repeated int32 switch_in_st_packed = 3 [packed=true];
+    // 开关量输出状态 0-断,1-通
+    repeated int32 switch_out_st_packed = 4 [packed=true];
+    // 终端运行状态 [供电位0-有电,1-无电;开机申请位,0-无,1-开机;停运位,0-正常,1-停运;报警位,0-无警,1-告警;电压超限,0-正常,1-超限;电流超限,0-正常,1-超限;无电流报警,0-正常,1-报警;参数错误,0-正常,1-错误]
+    repeated int32 tml_st_packed = 5 [packed=true];
+    // 温度
+    int32 temperature = 6;
+    // gprs掉线次数
+    int32 gprs_reset = 7;
+    // gprs信号强度
+    int32 gprs_signal = 8;
+    // 终端复位次数[当前,昨天,前天,大前天]
+    repeated int32 tml_reset = 9 [packed=true];
+    // 终端参数状态,0-正常,1-错误[状态和地址;工作参数;模拟量显示参数;开关量输入路数和跳变报警;开关量输出路数;开关量输入矢量;开关量输出矢量;模拟量上下限;
+    //                            时空光控选择标志;1-3继电器开关灯时间;4-6继电器开关灯时间;7-8继电器开关灯时间;组地址;经纬度计算时间;经纬度和偏移;收费时间;
+    //                            1-4端节假日;5-8端节假日;最后时限开关灯时间;模拟量相位;模拟量输入矢量;模拟量校准/线路检测参数;线路状态;终端参数错误]
+    repeated int32 tml_args_status = 10 [packed=true];
+    // 供电电压
+    double power_supply = 11;
+    // 采样板电压(数组长度即表示有多少采样板)
+    repeated Sampling_voltage sampling_voltage = 12;
+    // 回路数据(数组长度即表示有多少回路)
+    repeated Analog_data analog_data = 13;
+    // int型赋值
+    int64 switch_in_st = 14;
+    int32 switch_out_st = 15;
+    int32 tml_st = 16;
+    // 满量程
+    int32 full_range = 17;
+    // 记录时间
+    int64 dt_record = 18;
+    // 最后一次开关量输出状态变化原因，8个回路8个元素，0-时控，1-光控，2-主台，3-面板，4-最后时限，5-年设置
+    repeated int32 switch_out_reason = 19 [packed=true];
+}
+
+// 召测终端参数(旧版召测协议也将升级为该结构)
+message Wlst_rtu_705a {
+    int32 cmd_idx = 1;
+}
+message Wlst_rtu_70da {
+    int32 cmd_idx = 1;
+    //心跳周期
+    int32 keep_alive = 2;
+    //主报周期
+    int32 alarm_cycle = 3;
+    //报警延时
+    int32 alarm_delay = 4;
+    //开关量输出路数
+    int32 switch_out_sum = 5;
+    //开关量输入路数
+    int32 switch_in_sum = 6;
+    //模拟量输入路数
+    int32 analog_sum = 7;
+    //开关量输出开关时间 hhmm-hhmm
+    repeated string x_switching_time = 8;
+    //市付费启用时分，hhmm
+    string city_pay_time = 9;
+    //自付费启用时分，hhmm
+    string self_pay_time = 10;
+    //各个开关量输出路数
+    repeated int32 x_switch_out_count = 11 [packed=true];
+    //开关量输入1-16跳变
+    repeated int32 switch_in_hopping = 12 [packed=true];
+    //电压量程
+    int32 voltage_range = 13;
+    //模拟量回路x电流量程
+    repeated int32 x_current_range = 14 [packed=true];
+    //开关量输出x矢量
+    repeated int32 x_switch_out_vector = 15 [packed=true];
+    //开关量输入x矢量
+    repeated int32 x_switch_in_vector = 16 [packed=true];
+    //模拟量x失量
+    repeated int32 x_analog_vector = 17 [packed=true];
+    //电压上限
+    int32 upper_voltage_limit = 18;
+    //电压下限
+    int32 lower_voltage_limit = 19;
+    //模拟量回路x电流上限
+    repeated int32 x_upper_current_limit = 20 [packed=true];
+    //模拟量回路x电流下限
+    repeated int32 x_lower_current_limit = 21 [packed=true];
+    //优先组地址
+    int32 group_id = 22;
+}
+
+//远程修改主板通讯参数
+message Wlst_rtu_700a {
+    repeated int32 com_argv = 1;
+}
+
+// 终端升级上报
+message Wlst_rtu_7081 {
+    // 序号
+    int32 cmd_idx = 1;
+    // 状态
+    int32 status = 2;
+    // 旧版本
+    string old_ver = 3;
+    // 新版本
+    string new_ver = 4;
+    // 位置关系
+    int32 data_location  = 5;
+}
+
+//模块ftp升级
+message Wlst_rtu_7010 {
+    // 复位类型，1-复位终端，2-恢复出厂参数，3-复位通信模块
+    int32 data_mark = 1;
+    //序号
+    int32 cmd_idx = 2;
+    // 应答
+    int32 status = 3;
+}
+
+//模块ftp升级
+message Wlst_rtu_7003 {
+    //序号
+    int32 cmd_idx = 1;
+    //ftp升级命令数据
+    repeated int32 ftp_data = 2;
+}
+
+//3006终端升级准备
+message Wlst_rtu_7006 {
+    //序号
+    int32 cmd_idx = 1;
+    //总数
+    int32 all_count = 2;
+    //cache文件名
+    string cache_name = 3;
+}
+
+//3006终端升级数据包发送状态查询
+message Wlst_rtu_7007 {
+    //序号
+    int32 cmd_idx = 1;
+}
+
+//3006终端数据包状态查询应答
+//Wlst_rtu_7083
+message Wlst_rtu_7087 {
+    //序号
+    int32 cmd_idx = 1;
+    //状态 0-数据包正常，>0数据包异常
+    int32 status = 2;
+    //失败的数据包编号
+    repeated int32 failed_packages = 3;
+    //设备传回的失败标识字节数
+    int32 bytes_count = 4;
+}
+
+//3006终端升级发送数据包
+message Wlst_rtu_7008 {
+    //序号
+    int32 cmd_idx = 1;
+    //数据
+    repeated string upd_data = 2;
+    //cache文件名
+    string cache_name = 3;
+    //0-写缓存，1-清缓存
+    int32 clean = 4;
+    repeated int32 int_upd_data = 5 [packed=true];
+}
+
+//wlst_rtu_70e1
+message Wlst_rtu_7060 {
+    message YearCtrl {
+        // 回路编号
+        int32 loop_no = 1;
+        // 回路时段数
+        int32 time_count = 2;
+        // 每段开关灯时间，[第一段开,第一段关,第二段开,第二段关...], 格式:hh*60+mm
+        repeated int32 opt_time = 3 [packed=true];
+    }
+    //序号
+    int32 cmd_idx = 1;
+    // 起始时间,提取月,日
+    int64 dt_start = 2;
+    // 天数
+    int32 days = 3;
+
+    repeated YearCtrl year_ctrl = 4;
+}
+
+message Wlst_rtu_7061 {
+    //序号
+    int32 cmd_idx = 1;
+    // 起始时间,提取月,日
+    int64 dt_start = 2;
+    // 天数
+    int32 days = 3;
+    // 回路标示
+    repeated int32 loop_no = 4 [packed=true];
+}
+
+message Wlst_rtu_70e0 {
+    //序号
+    int32 cmd_idx = 1;
+    //状态
+    int32 status = 2;
+}
+
+message Wlst_rtu_7b00 {
+    //sim卡号码
+    string sim = 1;
+    //信号强度
+    int32 signal = 2;
+}
+
+message Wlst_rtu_1900 {
+    //终端地址
+    int32 addr = 1;
+    //终端ip
+    int64 tml_ip = 2;
+}
+
+message Wlst_rtu_4000 {
+    //工作标识
+    int32 work_mark = 1;
+    //心跳周期
+    int32 keep_alive = 2;
+    //主报周期
+    int32 alarm_cycle = 3;
+    //报警延时
+    int32 alarm_delay = 4;
+    //回路x数量
+    repeated int32 x_loop_count = 5 [packed=true];
+}
+
+message Wlst_rtu_4101 {
+    //模拟量输入路数总数
+    int32 analog_sum = 1;
+    //电压量程
+    int32 voltage_range = 2;
+    //回路x电流量程
+    repeated int32 x_current_range = 3 [packed=true];
+}
+
+message Wlst_rtu_4104 {
+    //开关量输入路数总数
+    int32 switchin_sum = 1;
+    //开关量输入x矢量
+    repeated int32 x_switch_vector = 2 [packed=true];
+    //开关量输入x跳变
+    repeated int32 x_switch_hopping = 3 [packed=true];
+}
+
+message Wlst_rtu_4110 {
+    //开关量输入路数总数
+    int32 switch_in_sum = 1;
+}
+
+message Wlst_rtu_4200 {
+    //模拟量x失量
+    repeated int32 x_analog_vector = 1 [packed=true];
+    //开关量输入x矢量
+    repeated int32 x_switch_in_vector = 2 [packed=true];
+    //开关量输出x矢量
+    repeated int32 x_switch_out_vector = 3 [packed=true];
+    //模拟量输入路数总数
+    int32 analog_sum = 4;
+    //开关量输入路数总数
+    int32 switch_in_sum = 5;
+    //开关量输出数量
+    int32 switch_out_sum = 6;
+}
+
+
+message Wlst_rtu_4401 {
+    //模拟量输入路数总数
+    int32 analog_sum = 1;
+    //电压上限
+    int32 upper_voltage_limit = 2;
+    //电压下限
+    int32 lower_voltage_limit = 3;
+    //模拟量回路x电流上限
+    repeated int32 x_upper_current_limit = 4 [packed=true];
+    //模拟量回路x电流下限
+    repeated int32 x_lower_current_limit = 5 [packed=true];
+    //电压量程
+    int32 voltage_range = 6;
+    //模拟量回路x电流量程
+    repeated int32 x_current_range = 7 [packed=true];
+}
+
+message Wlst_rtu_da00 {
+    //心跳周期
+    int32 keep_alive = 1;
+    //主报周期
+    int32 alarm_cycle = 2;
+    //报警延时
+    int32 alarm_delay = 3;
+    //终端地址
+    int32 addr = 4;
+    //开关量输出路数
+    int32 switch_out_sum = 5;
+    //开关量输入路数
+    int32 switch_in_sum = 6;
+    //模拟量输入路数
+    int32 analog_sum = 7;
+    //开关量输出开关时间 hhmm-hhmm
+    repeated string x_switching_time = 8;
+    //市付费启用时分，hhmm
+    string city_pay_time = 9;
+    //自付费启用时分，hhmm
+    string self_pay_time = 10;
+    //各个开关量输出路数
+    repeated int32 x_switch_out_count = 11 [packed=true];
+    //开关量输入1-16跳变
+    int32 switch_in_hopping = 12;
+    //电压量程
+    int32 voltage_range = 13;
+    //模拟量回路x电流量程
+    repeated int32 x_current_range = 14 [packed=true];
+    //开关量输出x矢量
+    repeated int32 x_switch_out_vector = 15 [packed=true];
+    //开关量输入x矢量
+    repeated int32 x_switch_in_vector = 16 [packed=true];
+    //模拟量x失量
+    repeated int32 x_analog_vector = 17 [packed=true];
+    //电压上限
+    int32 upper_voltage_limit = 18;
+    //电压下限
+    int32 lower_voltage_limit = 19;
+    //模拟量回路x电流上限
+    repeated int32 x_upper_current_limit = 20 [packed=true];
+    //模拟量回路x电流下限
+    repeated int32 x_lower_current_limit = 21 [packed=true];
+    //优先组地址
+    int32 group_id = 22;
+}
+
+message Wlst_rtu_df00 {
+    //开关量输出开关时间 hhmm-hhmm
+    repeated string x_switching_time = 8;
+    //各个开关量输出路数
+    repeated int32 x_switch_out_count = 11 [packed=true];
+    //开关量输出x矢量
+    repeated int32 x_switch_out_vector = 15 [packed=true];
+}
+
+message Wlst_rtu_6100 {
+    //模拟量x电压矢量
+    repeated int32 x_voltage_phase = 1 [packed=true];
+}
+
+//Wlst_rtu_af00
+message Wlst_rtu_a000 {
+    //模拟量回路x电压  需要*电压量程
+    repeated double x_analog_voltage = 1 [packed=true];
+    //模拟量回路x电流  需要*电流量程
+    repeated double x_analog_current = 2 [packed=true];
+    //模拟量回路x功率  需要 *电压量程*电流量程
+    repeated double x_analog_power = 3 [packed=true];
+    //开关量输入x状态
+    int64 switch_in_st = 4;
+    //开关量输出状态
+    int32 switch_out_st = 5;
+    //终端状态
+    int32 tml_st = 6;
+    //模拟量回路x电流越限状态
+    repeated int32 x_current_status = 7 [packed=true];
+    //模拟量回路x电压越限状态
+    repeated int32 x_voltage_status = 8 [packed=true];
+    int32 full_range = 9;  // 数据满量程
+    int32 temperature = 10;  // 温度值
+}
+
+//Wlst_rtu_2210
+message Wlst_rtu_a200 {
+    //开关量输出
+    int32 k_no = 1;
+    //操作
+    int32 operation = 2;
+}
+
+message Wlst_rtu_4b00 {
+    //kx操作，0-关，1-开，2-不变
+    repeated int32 operation = 1 [packed=true];
+}
+
+//Wlst_rtu_1200
+message Wlst_rtu_9300 {
+   //yyyy-mm-dd hh:mm:ss w 格式
+    string tml_date = 1;
+}
+
+//Wlst_rtu_3100_5800_6800_d900_e900
+message Wlst_rtu_b200 {
+   //周日~周六k1开关时间 hhmm-hhmm
+    repeated string x_k1_opt_time = 1;
+   //周日~周六k3开关时间 hhmm-hhmm
+    repeated string x_k2_opt_time = 2;
+   //周日~周六k3开关时间 hhmm-hhmm
+    repeated string x_k3_opt_time = 3;
+   //周日~周六市付费启用时分，hhmm
+    repeated string x_city_pay_time = 4;
+   //周日~周六自付费启用时分，hhmm
+    repeated string x_self_pay_time = 5;
+   //周日~周六k4开关时间 hhmm-hhmm
+    repeated string x_k4_opt_time = 6;
+   //周日~周六k5开关时间 hhmm-hhmm
+    repeated string x_k5_opt_time = 7;
+   //周日~周六k6开关时间 hhmm-hhmm
+    repeated string x_k6_opt_time = 8;
+   //周日~周六k7开关时间 hhmm-hhmm
+    repeated string x_k7_opt_time = 9;
+   //周日~周六k8开关时间 hhmm-hhmm
+    repeated string x_k8_opt_time = 10;
+}
+
+//Wlst_rtu_4600_6500_c700
+message Wlst_rtu_e600 {
+   //时间段1-4(或5-8)起始日期 mmdd-mmdd
+    repeated string x_holidays = 1;
+   //K1时间段1-4(或5-8)开关时间 hhmm-hhmm
+    repeated string x_k1_time = 2;
+   //K2时间段1-4(或5-8)开关时间 hhmm-hhmm
+    repeated string x_k2_time = 3;
+   //K3时间段1-4(或5-8)开关时间 hhmm-hhmm
+    repeated string x_k3_time = 4;
+   //K4时间段1-4(或5-8)开关时间 hhmm-hhmm
+    repeated string x_k4_time = 5;
+   //K5时间段1-4(或5-8)开关时间 hhmm-hhmm
+    repeated string x_k5_time = 6;
+   //K6时间段1-4(或5-8)开关时间 hhmm-hhmm
+    repeated string x_k6_time = 7;
+   //K7时间段1-4(或5-8)开关时间 hhmm-hhmm
+    repeated string x_k7_time = 10;
+   //K8时间段1-4(或5-8)开关时间 hhmm-hhmm
+    repeated string x_k8_time = 11;
+   //时间段1-4(或5-8)市付
+    repeated string x_city_pay_time = 8;
+   //时间段1-4(或5-8)自付
+    repeated string x_self_pay_time = 9;
+}
+
+//Wlst_rtu_4c00_cc00
+message Wlst_rtu_9800 {
+   //4c00和cc00时表示：设置档位，1-1档，2-2档，3-3档，4-旁路，5-返回状态。9800时表示：终端开机申请状态1-参数正常，0-参数错误，2-时钟错误
+    int32 status = 1;
+}
+
+//Wlst_rtu_ab00
+message Wlst_rtu_dc00 {
+   //ab00-》序列号,dc00-》版本字符串
+    string ver = 1;
+}

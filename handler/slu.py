@@ -7,6 +7,7 @@ __doc__ = 'slu handler'
 
 import mxpsu as mx
 import mxweb
+import time
 from tornado import gen
 # from mxpbjson import pb2json
 import base
@@ -247,19 +248,24 @@ class QueryDataSluHandler(base.RequestHandler):
                                 if len(cur) > 0:
                                     has_view = True
                             del cur
+                            if len(tml_ids) > 0 and rqmsg.sluitem_barcode > 0:
+                                str_sluitem = " and b.bar_code_id={0}".format(
+                                    rqmsg.sluitem_barcode)
+                            else:
+                                str_sluitem = ""
 
                             if has_view:
                                 strsql = '''select b.rtu_id,d.date_create,b.slu_id,d.date_time_ctrl,
                                 d.is_temperature_sensor,d.is_eeprom_error,d.is_ctrl_stop,d.is_no_alarm,
                                 d.is_working_args_set,d.is_adjust,d.status,d.temperature,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
-                                a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level
+                                a.electricity,a.electricity_total,a.active_time,a.active_time_total,a.power_level,b.bar_code_id
                                 from {2}.para_slu_ctrl as b left join  {0}.data_slu_ctrl_trigger as d on b.slu_id=d.slu_id and b.rtu_id=d.ctrl_id
                                 INNER JOIN {0}.data_slu_ctrl_lamp_trigger as a
                                 on a.date_create=d.date_create and a.slu_id=d.slu_id and a.ctrl_id=d.ctrl_id
-                                 where 1=1 {1}  ORDER BY d.ctrl_id,d.date_create'''.format(
+                                 where 1=1 {1} {3}  ORDER BY d.ctrl_id,d.date_create'''.format(
                                     self._db_name_data, str_tmls,
-                                    self._db_name)
+                                    self._db_name, str_sluitem)
                             else:
                                 strsql = '''select x.*,a.lamp_id,a.state_working_on,
                                 a.fault,a.is_leakage,a.power_status,a.voltage,a.current,a.active_power,
@@ -325,7 +331,6 @@ class QueryDataSluHandler(base.RequestHandler):
                             msg.head.paging_idx = paging_idx
                             msg.head.paging_total = paging_total
                             for d in cur:
-
                                 if dv.sluitem_id != int(
                                         d[0]
                                 ) or dv.dt_receive != mx.switchStamp(
@@ -348,7 +353,15 @@ class QueryDataSluHandler(base.RequestHandler):
                                         int(d[10])
                                     ])
                                     dv.temperature = int(d[11])
-
+                                    if d[10] == 3 or time.time(
+                                    ) - dv.dt_cache > 3600:
+                                        dv.is_online = 0
+                                    else:
+                                        dv.is_online = 1
+                                    try:
+                                        dv.sluitem_barcode = int(d[25])
+                                    except:
+                                        pass
                                 if d[12] is not None:
                                     dvs = msgws.QueryDataSlu.DataLampView()
                                     dvs.lamp_id = int(d[12])

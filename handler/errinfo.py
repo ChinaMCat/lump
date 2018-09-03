@@ -236,7 +236,7 @@ class QueryDataErrHandler(base.RequestHandler):
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_create, \
                         c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count,a.v,a.a,b.fault_name_define,d.loop_name \
                         from {2}.info_fault_exist as a left join {0}.fault_types as b \
-                        on a.fault_id=b.fault_id right join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
+                        on a.fault_id=b.fault_id left join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
                         left join {0}.para_rtu_loop_info as d on a.rtu_id=d.rtu_id and a.loop_id=d.loop_id \
                         where a.date_create>={1}'.format(
                             self._db_name, sdt, self._db_name_data)

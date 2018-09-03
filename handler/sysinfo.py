@@ -390,7 +390,7 @@ class SysEditHandler(base.RequestHandler):
         self.finish()
         if env:
             self.write_event(
-                165, contents, 2, user_name=user_data['user_name'])
+                165, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data
 
 

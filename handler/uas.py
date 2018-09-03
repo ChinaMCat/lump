@@ -92,7 +92,7 @@ class UserLoginHandler(base.RequestHandler):
             yield self.write_event(121,
                                    'login from {0} failed'.format(self.request.remote_ip),
                                    2,
-                                   user_name=rqmsg.user)
+                                   user_name=rqmsg.user,app_unique=rqmsg.head.unique)
         else:
             for d in cur:
                 msg.user_id = d[0]
@@ -104,7 +104,7 @@ class UserLoginHandler(base.RequestHandler):
             yield self.write_event(121,
                                    'login from {0} success'.format(self.request.remote_ip),
                                    2,
-                                   user_name=rqmsg.user)
+                                   user_name=rqmsg.user,app_unique=rqmsg.head.unique)
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
@@ -154,7 +154,7 @@ class UserAddHandler(base.RequestHandler):
                 contents = 'add user {0} from {1} success'.format(rqmsg.user,
                                                                   self.request.remote_ip)
                 yield self.write_event(154, 'add user {0} from {1} success'.format(
-                    rqmsg.user, self.request.remote_ip))
+                    rqmsg.user, self.request.remote_ip,app_unique=rqmsg.head.unique))
             else:
                 contents = 'add user {0} from {1} failed'.format(rqmsg.user, self.request.remote_ip)
                 msg.head.if_st = 0
@@ -165,7 +165,7 @@ class UserAddHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        yield self.write_event(154, contents, 2, user_name=rqmsg.user)
+        yield self.write_event(154, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
         del msg, rqmsg
 
 
@@ -224,7 +224,7 @@ class UserEditHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        yield self.write_event(155, contents, 2, user_name=rqmsg.user)
+        yield self.write_event(155, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
         del msg, rqmsg
 
 
@@ -288,7 +288,7 @@ class UserDelHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        yield self.write_event(156, contents, 2, user_name=rqmsg.user)
+        yield self.write_event(156, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
         del msg, rqmsg
 
 

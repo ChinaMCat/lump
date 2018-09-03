@@ -428,7 +428,8 @@ class RequestHandler(mxweb.MXRequestHandler):
         user_name = kwords['user_name'] if 'user_name' in kwords.keys() else ''
         device_ids = kwords[
             'device_ids'] if 'device_ids' in kwords.keys() else '0'
-        remark = kwords['remark'] if 'remark' in kwords.keys() else ''
+        app_unique = kwords['app_unique'] if 'app_unique' in kwords.keys() else ''
+        remark = kwords['remark'] if 'remark' in kwords.keys() else ''+"  "+app_unique
 
         # strsql = "insert into record_operator (date_create, user_name, operator_id, is_client_snd, device_ids, contents, remark) values ({0},'{1}',{2},{3},'{4}','{5}','{6}')".format(
         #     int(time.time()), user_name, event_id, is_client_snd, device_ids, contents, remark)
@@ -611,7 +612,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                         msg.head.if_st = 12
                         msg.head.if_msg = contents
                         self.write_event(
-                            123, contents, 1, user_name=user_data['user_name'])
+                            123, contents, 1, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
                         user_data = None
                 elif time.time() - user_data['active_time'] > 60 * 30:
                     del libiisi.cache_user[user_uuid]
@@ -619,7 +620,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                     msg.head.if_st = 10
                     msg.head.if_msg = contents
                     self.write_event(
-                        122, contents, 1, user_name=user_data['user_name'])
+                        122, contents, 1, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
                     user_data = None
                 else:
                     user_data['active_time'] = time.time()

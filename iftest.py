@@ -14,7 +14,7 @@ import zlib
 
 # tc = thc.AsyncHTTPClient()
 
-baseurl = 'http://10.30.37.142:10005/'
+baseurl = 'http://10.30.37.120:10005/'
 # baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://60.173.254.184:10005/'
 # baseurl = 'http://192.168.50.83:10060/'
@@ -452,7 +452,7 @@ def test_errquery():
     # rqmsg.head.paging_buffer_tag = 1500942882771374
     rqmsg.dt_start = mx.time2stamp("2017-05-01 00:00:00")
     rqmsg.dt_end = int(time.time())
-    rqmsg.type = 1
+    rqmsg.type = 0
     rqmsg.tml_id.extend([])
     rqmsg.err_id.extend([25])
     data = {
@@ -480,7 +480,7 @@ def test_errquery():
     # Q6ySQ62SQ66SQ6+SQ7CSQ7GSQ7KSQ7OSQ7SSQ7WSQ7aSQ7eSQ7iSQ7mSQ7qSQ7uSQ7ySQ72SQ76S
     # Q7+SQ8CSQ8GSQ8KSQ8G5VeLGW+PGW+TGW+XGW+bGW+fGW+jGW+nGW+rGW+vGW+zGW+3GW+7GW+/G
     # W/DGW/HGW/LGW/PGW/TGW/XGW/bGW/fGWw=='''}
-    r = pm.request('POST', url, fields=data, timeout=10.0, retries=False)
+    r = pm.request('POST', url, fields=data, timeout=50.0, retries=False)
     msg = msgif.QueryDataErr()
     msg.ParseFromString(base64.b64decode(r.data))
     print(msg)
@@ -1227,7 +1227,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    # test_userlogin()
+    test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()
@@ -1248,7 +1248,7 @@ if __name__ == '__main__':
     # test_ldudataget()
     # test_eludataget()
     # test_eluctl()
-    test_areainfo()
+    # test_areainfo()
     # test_sluctlnb()
     # test_grpinfo()
     # test_sluitemadd()

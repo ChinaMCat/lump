@@ -1,3 +1,7 @@
+[2018-09-03]
+---
+- write_event,增加参数app_unique=rqmsg.head.unique,所有self.write_event里面增加参数app_unique=rqmsg.head.unique
+
 [2018-08-21]
 ---
 - querydataslu,当type==0,data_makr==77时返回数据中增加sluitem_barcode

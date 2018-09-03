@@ -77,7 +77,7 @@ class UserLoginJKHandler(base.RequestHandler):
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
                             self.write_event(
-                                122, contents, 2, user_name=user_name)
+                                122, contents, 2, user_name=user_name,app_unique=rqmsg.head.unique)
                             del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
@@ -217,7 +217,7 @@ class UserLoginJKHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        self.write_event(121, contents, 2, user_name=rqmsg.user)
+        self.write_event(121, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
         del rqmsg, msg
 
 
@@ -279,7 +279,7 @@ class UserLoginHandler(base.RequestHandler):
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
                             self.write_event(
-                                122, contents, 2, user_name=user_name)
+                                122, contents, 2, user_name=user_name,app_unique=rqmsg.head.unique)
                             del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
@@ -422,7 +422,7 @@ class UserLoginHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        self.write_event(121, contents, 2, user_name=rqmsg.user)
+        self.write_event(121, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
         del rqmsg, msg
 
 
@@ -465,7 +465,7 @@ class UserLogoutHandler(base.RequestHandler):
         self.finish()
         if env:
             self.write_event(
-                122, contents, 2, user_name=user_data['user_name'])
+                122, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data
 
 
@@ -542,7 +542,7 @@ class UserAddHandler(base.RequestHandler):
         self.finish()
         if env:
             self.write_event(
-                154, contents, 2, user_name=user_data['user_name'])
+                154, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data
 
 
@@ -597,7 +597,7 @@ class UserDelHandler(base.RequestHandler):
         self.finish()
         if env:
             self.write_event(
-                156, contents, 2, user_name=user_data['user_name'])
+                156, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data, user_uuid
 
 

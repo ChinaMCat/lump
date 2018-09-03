@@ -731,7 +731,7 @@ class SluTimerCtlHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env and rqmsg.data_mark == 1:
-            self.write_event(57, contents, 2, user_name=user_data['user_name'])
+            self.write_event(57, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -808,7 +808,7 @@ class SluCtlHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(65, contents, 2, user_name=user_data['user_name'])
+            self.write_event(65, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -1103,5 +1103,5 @@ class SluCtlNBHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(65, contents, 2, user_name=user_data['user_name'])
+            self.write_event(65, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data, user_uuid

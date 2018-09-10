@@ -686,6 +686,7 @@ message TmlInfo {
         int32 tml_type = 3;  // 设备型号,1-终端,2-防盗,3-节能,4-抄表,5-光控,6-单灯,7-漏电
         int32 tml_st = 4;  // 设备状态,0-不用,1-停运,2-启用
         string tml_name = 5;  // 设备名称
+        string tml_name_py = 15; // 设备名称的拼音
         string tml_com_sn = 6;  // 设备模块序列号(可以为sim卡号,需要出厂设置)
         int32 tml_com_ip = 7;  // 模块ip地址(绑定ip时可设置,否则无意义)
         int32 tml_model = 8;  // 设备型号,3005,3006,2090,3090等

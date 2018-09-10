@@ -586,6 +586,7 @@ class TmlInfoHandler(base.RequestHandler):
                                 msg.head.paging_buffer_tag = buffer_tag
                                 msg.head.paging_idx = paging_idx
                                 msg.head.paging_total = paging_total
+                                pyhz = mx.PinYin()
                                 for d in cur:
                                     baseinfo = msgws.TmlInfo.BaseInfo()
                                     # 加入/更新地址对照缓存
@@ -620,6 +621,7 @@ class TmlInfoHandler(base.RequestHandler):
                                             baseinfo.tml_type = 7
                                         baseinfo.tml_st = int(d[2])
                                         baseinfo.tml_name = d[3]
+                                        baseinfo.tml_name_py = pyhz.hanzi2pinyin(u"{0}".format(d[3]))
                                         baseinfo.tml_com_sn = d[
                                             4] if d[4] is not None else ''
                                         baseinfo.tml_com_ip = int(
@@ -633,7 +635,7 @@ class TmlInfoHandler(base.RequestHandler):
                                         baseinfo.tml_street = d[
                                             11] if d[11] is not None else ''
                                     # baseinfo.tml_guid = d[12]
-                                    msg.base_info.extend([baseinfo])
+                                    # msg.base_info.extend([baseinfo])
                                     del baseinfo
 
                             del cur, strsql

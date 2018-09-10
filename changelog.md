@@ -1,3 +1,7 @@
+[2018-09-10]
+---
+- tmlinfo.baseinfo增加tml_name_py字段，填充设备名称拼音
+
 [2018-09-03]
 ---
 - write_event,增加参数app_unique=rqmsg.head.unique,所有self.write_event里面增加参数app_unique=rqmsg.head.unique

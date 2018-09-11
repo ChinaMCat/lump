@@ -228,9 +228,10 @@ class AreaInfoHandler(base.RequestHandler):
                             if has_view:
                                 strsql = '''
                                     SELECT a.field_id from {0}.para_slu_sgl as a
-                                    WHERE a.area_id = {1}'''.format(self._db_name,int(d[0]))
+                                    WHERE a.area_id = {1}'''.format(
+                                    self._db_name, int(d[0]))
                                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
-                                    strsql,need_fetch=1,need_paging=0)
+                                    strsql, need_fetch=1, need_paging=0)
                                 z = [int(b[0]) for b in cur]
                                 av.tml_id.extend(z)
                             msg.area_view.extend([av])
@@ -390,7 +391,11 @@ class SysEditHandler(base.RequestHandler):
         self.finish()
         if env:
             self.write_event(
-                165, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+                165,
+                contents,
+                2,
+                user_name=user_data['user_name'],
+                app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data
 
 
@@ -497,8 +502,7 @@ class SysInfoHandler(base.RequestHandler):
                     tcsmsg.head.src = 2
                     m = yield self.check_zmq_status(
                         b'tcs.req.{0}.wlst.sys.status'.format(
-                            libiisi.cfg_tcs_port),
-                        tcsmsg.SerializeToString(),
+                            libiisi.cfg_tcs_port), tcsmsg.SerializeToString(),
                         b'tcs.rep.{0}.wlst.sys.status'.format(
                             libiisi.cfg_tcs_port))
                     if len(m) > 0:
@@ -555,8 +559,8 @@ class TmlInfoHandler(base.RequestHandler):
                         tml_ids = []
                 else:
                     if len(rqmsg.tml_id) > 0:
-                        tml_ids = self.check_tml_r(user_uuid,
-                                                   list(rqmsg.tml_id))
+                        tml_ids = self.check_tml_r(user_uuid, list(
+                            rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
@@ -590,8 +594,9 @@ class TmlInfoHandler(base.RequestHandler):
                                 for d in cur:
                                     baseinfo = msgws.TmlInfo.BaseInfo()
                                     # 加入/更新地址对照缓存
-                                    libiisi.tml_phy[int(d[0])] = (int(
-                                        d[1]), int(d[7]), d[3])
+                                    libiisi.tml_phy[int(d[0])] = (int(d[1]),
+                                                                  int(d[7]),
+                                                                  d[3])
 
                                     baseinfo.tml_id = int(d[0])
                                     baseinfo.tml_dt_update = mx.switchStamp(
@@ -621,7 +626,8 @@ class TmlInfoHandler(base.RequestHandler):
                                             baseinfo.tml_type = 7
                                         baseinfo.tml_st = int(d[2])
                                         baseinfo.tml_name = d[3]
-                                        baseinfo.tml_name_py = pyhz.hanzi2pinyin(u"{0}".format(d[3]))
+                                        baseinfo.tml_name_py = pyhz.hanzi2pinyin(
+                                            u"{0}".format(d[3]))
                                         baseinfo.tml_com_sn = d[
                                             4] if d[4] is not None else ''
                                         baseinfo.tml_com_ip = int(
@@ -635,7 +641,7 @@ class TmlInfoHandler(base.RequestHandler):
                                         baseinfo.tml_street = d[
                                             11] if d[11] is not None else ''
                                     # baseinfo.tml_guid = d[12]
-                                    # msg.base_info.extend([baseinfo])
+                                    msg.base_info.extend([baseinfo])
                                     del baseinfo
 
                             del cur, strsql
@@ -720,8 +726,7 @@ class TmlInfoHandler(base.RequestHandler):
                                         rtuinfo.active_report = int(d[2])
                                         rtuinfo.alarm_delay = int(d[3])
                                         rtuinfo.work_mark.extend([
-                                            int(a)
-                                            for a in '{0:08b}'.format(
+                                            int(a) for a in '{0:08b}'.format(
                                                 int(d[4]))[::-1]
                                         ])
                                         rtuinfo.voltage_range = int(d[5])
@@ -992,9 +997,8 @@ class TmlInfoHandler(base.RequestHandler):
                                     iteminfo.loop_lightoff_ia = int(d[11])
                                     iteminfo.loop_lighting_rate = int(d[12])
                                     iteminfo.loop_alarm_set.extend([
-                                        int(a)
-                                        for a in '{0:08b}'.format(int(d[13]))
-                                        [::-1]
+                                        int(a) for a in '{0:08b}'.format(
+                                            int(d[13]))[::-1]
                                     ])
                                     iteminfo.loop_desc = d[14]
                                     iteminfo.tml_loop_id = int(d[15])
@@ -1113,12 +1117,14 @@ class TmlInfoHandler(base.RequestHandler):
                                     str_tmls = ''
                                 else:
                                     str_tmls = ' and a.field_id in ({0})'.format(
-                                        ','.join([str(a) for a in list(tml_ids)]))
+                                        ','.join(
+                                            [str(a) for a in list(tml_ids)]))
 
                                 strsql = 'select a.field_id,a.grp_id,a.grp_name,a.dt_update,b.ctrl_id from {0}.slu_sgl_ctrl_grp as a \
                                 left join {0}.slu_sgl_ctrl_grp_item as b on a.field_id=b.field_id and a.grp_id=b.grp_id  \
                                 where a.field_id>=1700000 and a.field_id<=1799999 {1} \
-                                order by a.field_id,a.grp_id'.format(self._db_name, str_tmls)
+                                order by a.field_id,a.grp_id'.format(
+                                    self._db_name, str_tmls)
 
                                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                     strsql, need_fetch=1, need_paging=0)
@@ -1136,32 +1142,36 @@ class TmlInfoHandler(base.RequestHandler):
                                     for d in cur:
                                         if info.slu_id != int(d[0]):
                                             if info.slu_id > 0:
-                                                msg.sluitem_grpinfo.extend([info])
+                                                msg.sluitem_grpinfo.extend(
+                                                    [info])
                                                 info = msgws.TmlInfo.SluitemGrpInfo(
                                                 )
                                             info.slu_id = int(d[0])
                                         if iteminfo.grp_id != int(d[1]):
                                             if iteminfo.grp_id > 0:
-                                                info.sluitem_grp_view.extend([iteminfo])
+                                                info.sluitem_grp_view.extend(
+                                                    [iteminfo])
                                                 iteminfo = msgws.TmlInfo.SluitemGrpInfo.SluitemGrpView(
                                                 )
                                         iteminfo.grp_id = int(d[1])
                                         iteminfo.grp_name = d[2]
                                         iteminfo.dt_update = int(d[3])
                                         if d[4] is not None:
-                                            iteminfo.sluitem_id.extend([int(d[4])])
+                                            iteminfo.sluitem_id.extend(
+                                                [int(d[4])])
 
                                     if info.slu_id > 0:
                                         msg.sluitem_grpinfo.extend([info])
 
                                 del cur, strsql
-                        elif mk == 16:   # 物联网单灯基础信息
+                        elif mk == 16:  # 物联网单灯基础信息
                             if 6 not in [int(a) for a in rqmsg.data_mark]:
                                 if len(tml_ids) == 0:
                                     str_tmls = ''
                                 else:
                                     str_tmls = ' and a.field_id in ({0})'.format(
-                                        ','.join([str(a) for a in list(tml_ids)]))
+                                        ','.join(
+                                            [str(a) for a in list(tml_ids)]))
 
                                 strsql = 'select a.field_id,c.ctrl_id,c.bar_code_id,c.ctrl_name,c.phy_id,c.lamp_code, \
                                 c.ctrl_gis_x,c.ctrl_gis_y,c.upper_power,c.lower_power, \
@@ -1203,7 +1213,8 @@ class TmlInfoHandler(base.RequestHandler):
                                         # iteminfo.sluitem_loop_num = int(d[40])
                                         iteminfo.sluitem_name = d[3]
                                         iteminfo.sluitem_phy_id = int(d[4])
-                                        iteminfo.sluitem_lamp_id = d[5] if d[5] is not None else ''
+                                        iteminfo.sluitem_lamp_id = d[
+                                            5] if d[5] is not None else ''
                                         iteminfo.sluitem_gis_x = float(d[6])
                                         iteminfo.sluitem_gis_y = float(d[7])
                                         iteminfo.sluitem_power_uplimit = int(
@@ -1216,7 +1227,8 @@ class TmlInfoHandler(base.RequestHandler):
                                             int(d[12]),
                                             int(d[13])
                                         ])
-                                        iteminfo.sluitem_order = int(d[14]) if d[14] is not None else 0
+                                        iteminfo.sluitem_order = int(
+                                            d[14]) if d[14] is not None else 0
                                         iteminfo.sluitem_st_poweron.extend([
                                             int(d[15]),
                                             int(d[16]),
@@ -1243,9 +1255,6 @@ class TmlInfoHandler(base.RequestHandler):
                                         msg.slu_info.extend([info])
 
                                 del cur, strsql
-
-
-
 
         self.write(mx.code_pb2(msg, self._go_back_format))
 
@@ -1281,8 +1290,8 @@ class StatusRtuHandler(base.RequestHandler):
                         tml_ids = []
                 else:
                     if len(rqmsg.tml_id) > 0:
-                        tml_ids = self.check_tml_r(user_uuid,
-                                                   list(rqmsg.tml_id))
+                        tml_ids = self.check_tml_r(user_uuid, list(
+                            rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
@@ -1384,8 +1393,8 @@ class StatusSluHandler(base.RequestHandler):
                         tml_ids = []
                 else:
                     if len(rqmsg.tml_id) > 0:
-                        tml_ids = self.check_tml_r(user_uuid,
-                                                   list(rqmsg.tml_id))
+                        tml_ids = self.check_tml_r(user_uuid, list(
+                            rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:

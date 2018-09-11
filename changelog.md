@@ -1,3 +1,7 @@
+[2018-09-11]
+---
+- fix tmlinfo.BaseInfo
+
 [2018-09-10]
 ---
 - tmlinfo.baseinfo增加tml_name_py字段，填充设备名称拼音

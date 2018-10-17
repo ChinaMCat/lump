@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = 'minamoto'
-__ver__ = '0.0.0.0.0'
+__ver__ = '5.0.2.181009.55013'
 __doc__ = u'''交互式综合服务接口（Interactive Integrated Services Interface）'''
 
 import argparse

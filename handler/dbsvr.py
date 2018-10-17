@@ -29,87 +29,95 @@ class DBSvrHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
-        print("get in",self.request.full_url())
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
-            None, None)
-        if user_data['user_auth'] in libiisi.can_write:
-            if user_data is not None:
-                args = {}
-                args["scode"] = mx.time2stamp(
-                    "{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:00".format(
-                        time.localtime()[0],
-                        time.localtime()[1],
-                        time.localtime()[2],
-                        time.localtime()[3],
-                        time.localtime()[4]))
-                args["username"] = user_data["user_name"]
-                args["pb2"] = self.get_argument("pb2")
+        args = {}
+        args["scode"] = mx.time2stamp(
+            "{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:00".format(
+                time.localtime()[0],
+                time.localtime()[1],
+                time.localtime()[2],
+                time.localtime()[3],
+                time.localtime()[4]))
+        try:
+            args["pb2"] = self.get_argument("pb2")
+        except:
+            args["pb2"] = ""
 
-                url = '{0}/{1}?{2}'.format(libiisi.cfg_dbsvr_url,
-                                           self.request.path.replace(
-                                               self.root_path, ''),
-                                           urlencode(args))
-                print("get out",url)
-                # url = "http://192.168.50.83:10020/status?"
-                # args = {}
-                # args["do"] = "testconfig"
-                # x = urlencode(args)
-                # url = url+x
-                try:
-                    rep = yield self.thc.fetch(
-                        url,
-                        method="GET",
-                        raise_error=True,
-                        request_timeout=10)
-                    self.write(rep.body)
-                except Exception as ex:
-                    self.write(str(ex))
-                del url, args
-            else:
-                self.write(mx.code_pb2(msg, self._go_back_format))
+        goodtogo = True
+        # try:
+        #     user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+        #         None, None)
+        #     if user_data['user_auth'] in libiisi.can_write:
+        #         args["username"] = user_data["user_name"]
+        #     else:
+        #         goodtogo = False
+        # except:
+        try:
+            args["username"] = self.get_argument("username")
+        except:
+            args["username"] = ""
+
+        url = '{0}/{1}?{2}'.format(libiisi.cfg_dbsvr_url,
+                                   self.request.path.replace(
+                                       self.root_path, ''), urlencode(args))
+
+        if goodtogo:
+            try:
+                rep = yield self.thc.fetch(
+                    url, method="GET", raise_error=True, request_timeout=10)
+                self.write(rep.body)
+            except Exception as ex:
+                self.write(str(ex))
         else:
-            msg.head.if_st = 11
-            self.write(mx.code_pb2(msg, self._go_back_format))
+            self.write("uuid error.")
+
+        del url, args
         self.finish()
-        del user_data, rqmsg, msg
 
     @gen.coroutine
     def post(self):
-        print("post in", self.request.full_url(), self.request.arguments)
-        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
-            None, None)
-        if user_data['user_auth'] in libiisi.can_write:
-            if user_data is not None:
-                args = {}
-                args["scode"] = mx.time2stamp(
-                    "{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:00".format(
-                        time.localtime()[0],
-                        time.localtime()[1],
-                        time.localtime()[2],
-                        time.localtime()[3],
-                        time.localtime()[4]))
-                args["username"] = user_data["user_name"]
-                args["pb2"] = self.get_argument("pb2")
+        args = {}
+        args["scode"] = mx.time2stamp(
+            "{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:00".format(
+                time.localtime()[0],
+                time.localtime()[1],
+                time.localtime()[2],
+                time.localtime()[3],
+                time.localtime()[4]))
+        try:
+            args["pb2"] = self.get_argument("pb2")
+        except:
+            args["pb2"] = ""
 
-                url = '{0}/{1}'.format(libiisi.cfg_dbsvr_url,
-                                       self.request.path.replace(
-                                           self.root_path, ''))
-                print("post out", url, json.dumps(args))
-                try:
-                    rep = yield self.thc.fetch(
-                        url,
-                        method="POST",
-                        body=json.dumps(args),
-                        raise_error=True,
-                        request_timeout=10)
-                    self.write(rep.body)
-                except Exception as ex:
-                    self.write(str(ex))
-                del url, args
-            else:
-                self.write(mx.code_pb2(msg, self._go_back_format))
+        goodtogo = True
+        # try:
+        #     user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+        #         None, None)
+        #     if user_data is not None and user_data['user_auth'] in libiisi.can_write:
+        #         args["username"] = user_data["user_name"]
+        #     else:
+        #         goodtogo = False
+        # except:
+        try:
+            args["username"] = self.get_argument("username")
+        except:
+            args["username"] = ""
+
+
+        url = '{0}/{1}'.format(libiisi.cfg_dbsvr_url,
+                               self.request.path.replace(self.root_path, ''))
+        if goodtogo:
+            try:
+                rep = yield self.thc.fetch(
+                    url,
+                    method="POST",
+                    body=json.dumps(args),
+                    raise_error=True,
+                    request_timeout=10)
+                self.write(rep.body)
+            except Exception as ex:
+                self.write(str(ex))
         else:
-            msg.head.if_st = 11
-            self.write(mx.code_pb2(msg, self._go_back_format))
+            self.write("uuid error.")
+
+        del url, args
         self.finish()
-        del user_data, rqmsg, msg

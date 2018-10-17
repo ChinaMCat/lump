@@ -92,10 +92,12 @@ def load_config(conf):
     cfg_dbsvr_url = m_config.getData('dbsvr_url')
     cfg_enable_cross_domain = 1 if m_config.getData(
         'cross_domain').lower() == 'true' else 0
-    cfg_app_config_file = os.path.join(os.path.dirname(conf),
-                                       m_config.getData('app_config'))
+    cfg_app_config_file = os.path.join(
+        os.path.dirname(conf), m_config.getData('app_config'))
 
-    cfg_page_num = m_config.getData('page_num') if int(m_config.getData('page_num'))>=100 and int(m_config.getData('page_num'))<=1000 else 500
+    cfg_page_num = m_config.getData('page_num') if int(
+        m_config.getData('page_num')) >= 100 and int(
+            m_config.getData('page_num')) <= 1000 else 500
 
 
 class SendData():
@@ -241,7 +243,7 @@ def zmq_proxy():
         return
     zmq_thread_started = True
 
-    m_zmq_enable_proxy = True
+    m_zmq_enable_proxy = False
 
     zmq_conf = m_config.getData('zmq_port')
     if zmq_conf.find(':') == -1:
@@ -253,7 +255,7 @@ def zmq_proxy():
                 m_zmq_pub = m_zmq_ctx.socket(zmq.PUB)
                 m_zmq_pub.bind('tcp://*:{0}'.format(int(zmq_conf) + 1))
                 zmq.proxy(m_zmq_pull, m_zmq_pub)
-                m_zmq_enable_proxy = False
+                m_zmq_enable_proxy = True
                 # poller = zmq.Poller()
                 # poller.register(m_zmq_pull, zmq.POLLIN)
                 #
@@ -286,11 +288,14 @@ def send_to_zmq_pub(sfilter, msg):
     try:
         if m_zmq_enable_proxy is False:
             zmq_conf = m_config.getData('zmq_port')
+            zmq_ip = "127.0.0.1"
+            if zmq_conf.find(':') > -1:
+                zmq_ip = zmq_conf.split(":")[0]
+            zmq_port = zmq_conf.split(":")[1].split(",")[0]
             try:
-                if zmq_conf.find(':') > -1:
-                    m_zmq_pub = m_zmq_ctx.socket(zmq.PUSH)
-                    # m_zmq_pub.setsockopt(zmq.SNDTIMEO, 50)
-                    m_zmq_pub.connect('tcp://{0}'.format(zmq_conf))
+                m_zmq_pub = m_zmq_ctx.socket(zmq.PUSH)
+                m_zmq_pub.setsockopt(zmq.SNDTIMEO, 50)
+                m_zmq_pub.connect('tcp://{0}:{1}'.format(zmq_ip, zmq_port))
             except Exception as ex:
                 print('zmq pub err: {0}'.format(ex))
                 m_zmq_pub = None

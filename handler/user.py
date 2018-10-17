@@ -77,7 +77,11 @@ class UserLoginJKHandler(base.RequestHandler):
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
                             self.write_event(
-                                122, contents, 2, user_name=user_name,app_unique=rqmsg.head.unique)
+                                122,
+                                contents,
+                                2,
+                                user_name=user_name,
+                                app_unique=rqmsg.head.unique)
                             del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
@@ -217,7 +221,12 @@ class UserLoginJKHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        self.write_event(121, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
+        self.write_event(
+            121,
+            contents,
+            2,
+            user_name=rqmsg.user,
+            app_unique=rqmsg.head.unique)
         del rqmsg, msg
 
 
@@ -279,7 +288,11 @@ class UserLoginHandler(base.RequestHandler):
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
                             self.write_event(
-                                122, contents, 2, user_name=user_name,app_unique=rqmsg.head.unique)
+                                122,
+                                contents,
+                                2,
+                                user_name=user_name,
+                                app_unique=rqmsg.head.unique)
                             del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
@@ -422,7 +435,12 @@ class UserLoginHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        self.write_event(121, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
+        self.write_event(
+            121,
+            contents,
+            2,
+            user_name=rqmsg.user,
+            app_unique=rqmsg.head.unique)
         del rqmsg, msg
 
 
@@ -465,7 +483,11 @@ class UserLogoutHandler(base.RequestHandler):
         self.finish()
         if env:
             self.write_event(
-                122, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+                122,
+                contents,
+                2,
+                user_name=user_data['user_name'],
+                app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data
 
 
@@ -542,7 +564,11 @@ class UserAddHandler(base.RequestHandler):
         self.finish()
         if env:
             self.write_event(
-                154, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+                154,
+                contents,
+                2,
+                user_name=user_data['user_name'],
+                app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data
 
 
@@ -597,7 +623,11 @@ class UserDelHandler(base.RequestHandler):
         self.finish()
         if env:
             self.write_event(
-                156, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+                156,
+                contents,
+                2,
+                user_name=user_data['user_name'],
+                app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -610,6 +640,8 @@ class UserEditHandler(base.RequestHandler):
     &nbsp;&nbsp;pb2 - rqUserEdit()结构序列化并经过base64编码后的字符串<br/>
     <b>返回:</b><br/>
     &nbsp;&nbsp;UserEdit()结构序列化并经过base64编码后的字符串'''
+
+    thc = AsyncHTTPClient()
 
     @gen.coroutine
     def post(self):
@@ -662,7 +694,7 @@ class UserEditHandler(base.RequestHandler):
                     msg.head.if_msg = 'User old password error'
                 del cur, strsql
 
-        if msg.head.if_st == 1 and rqmsg.user_sz_id > 0:
+        if rqmsg.user_sz_id > 0:
             thc = AsyncHTTPClient()
             url = '{0}/{1}'.format(libiisi.cfg_fs_url, 'UpdatePassword')
             data = {
@@ -671,16 +703,21 @@ class UserEditHandler(base.RequestHandler):
                 'new_pwd': rqmsg.pwd
             }
             rep = yield self.thc.fetch(
-                url, raise_error=False, request_timeout=20)
-            if 'false' in rep.body:
-                msg.head.if_st = 43
-                msg.head.if_msg = 'sz UpdatePassword error.'
+                "{0}?{1}".format(url, urlencode(data)),
+                raise_error=False,
+                request_timeout=20)
+            if 'true' in rep.body:
+                msg.head.if_st = 1
+                msg.head.if_msg = "sz UpdatePassword success"
                 # strsql = 'update {0}.user_list set \
                 #             user_password="{1}", \
                 #             where user_name="{2}"'.format(self._db_name, rqmsg.old_pwd,
                 #                                           rqmsg.user_id)
                 # self.mydata_collector(strsql, 0)
                 # del strsql
+            else:
+                msg.head.if_st = 43
+                msg.head.if_msg = 'sz UpdatePassword error.'
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()

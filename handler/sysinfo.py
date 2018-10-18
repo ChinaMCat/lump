@@ -1494,3 +1494,54 @@ class StatusSluHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg, user_data
+
+
+@mxweb.route()
+class SysStatusHandler(base.RequestHandler):
+
+    help_doc = u'''系统设备状态信息查询 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqStatusSlu()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;StatusSlu()结构序列化并经过base64编码后的字符串'''
+
+    @gen.coroutine
+    def post(self):
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSysStatus(), msgws.SysStatus())
+
+        if user_data is not None:
+            if user_data['user_auth'] in libiisi.can_read:
+                strsql = '''select count(*) from mydb1024.para_base_equipment where rtu_id <1100000 union all
+                	select count(distinct(rtu_id)) from mydb1024_data.data_rtu_state_new where is_online=1 union all
+                	select count(*) from mydb1024_data.info_fault_exist where rtu_id<1100000 union all
+                	select count(*) from mydb1024.para_base_equipment where rtu_id>=1500000 and rtu_id < 1600000 union all
+                	select count(distinct(slu_id)) from mydb1024_data.data_slu_state_new where is_online=1 union all
+                	select count(*) from mydb1024_data.info_fault_exist where rtu_id <1600000 and rtu_id>=1500000 and fault_id=50 union all
+                	select count(*) from mydb1024.para_slu_ctrl union all
+                	select count(*) from mydb1024_data.data_slu_state_new where is_online=1 union all
+                	select count(*) from mydb1024_data.info_fault_exist where rtu_id <1600000 and rtu_id>=1500000 and fault_id>=51 and fault_id <=64'''
+
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                    strsql, need_fetch=1, need_paging=0)
+                if record_total is None:
+                    msg.head.if_st = 45
+                else:
+                    msg.head.paging_record_total = record_total
+                    msg.head.paging_buffer_tag = buffer_tag
+                    msg.head.paging_idx = paging_idx
+                    msg.head.paging_total = paging_total
+                    msg.type = rqmsg.type
+                    i = 0
+                    for d in cur:
+                        if i < 3:
+                            msg.rtu_status.append(d[0])
+                        elif i < 6 and i >= 3:
+                            msg.slu_status.append(d[0])
+                        elif i < 9 and i >= 6:
+                            msg.sluitem_status.append(d[0])
+                        i += 1
+        self.write(mx.code_pb2(msg, self._go_back_format))
+        self.finish()
+        del msg, rqmsg, user_data

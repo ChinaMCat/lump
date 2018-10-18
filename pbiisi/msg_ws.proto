@@ -1452,3 +1452,16 @@ message rqSluitemAdd {
         double sluitem_gis_y = 18;  // y坐标
     }
 }
+
+// 系统概览
+message rqSysStatus {
+    Head head = 1;
+    int32 type = 2; // 查询类型，0-全部，1-终端，2-单灯（含控制器）3-仅单灯控制器
+}
+message SysStatus {
+    Head head = 1;
+    int32 type = 2; // 查询类型，同提交
+    repeated int32 rtu_status = 3 [packed=true]; // 终端状态，依次[总数，在线数量，故障数量]
+    repeated int32 slu_status = 4 [packed=true]; // 单灯集中器状态，依次[总数，在线数量，故障数量]
+    repeated int32 sluitem_status = 5 [packed=true]; // 单灯控制器状态，依次[总数，在线数量，故障数量]
+}

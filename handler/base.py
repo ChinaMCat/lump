@@ -9,6 +9,7 @@ import threading
 import time
 import types
 import zmq
+import urllib3
 import mxpsu as mx
 import mxweb
 from tornado import gen
@@ -31,6 +32,7 @@ class RequestHandler(mxweb.MXRequestHandler):
     _fetch_limited = ' limit 1000'  # 数据查询数量限制
     _pb_format = 0  # 0-base64, 2-pb2 serialString
     _ctx = zmq.Context().instance()
+    _pm = urllib3.PoolManager(num_pools=100)
 
     def flush(self, include_footers=False, callback=None):
         if libiisi.cfg_enable_cross_domain:
@@ -428,8 +430,10 @@ class RequestHandler(mxweb.MXRequestHandler):
         user_name = kwords['user_name'] if 'user_name' in kwords.keys() else ''
         device_ids = kwords[
             'device_ids'] if 'device_ids' in kwords.keys() else '0'
-        app_unique = kwords['app_unique'] if 'app_unique' in kwords.keys() else ''
-        remark = kwords['remark'] if 'remark' in kwords.keys() else ''+"  "+app_unique
+        app_unique = kwords[
+            'app_unique'] if 'app_unique' in kwords.keys() else ''
+        remark = kwords[
+            'remark'] if 'remark' in kwords.keys() else '' + "  " + app_unique
 
         # strsql = "insert into record_operator (date_create, user_name, operator_id, is_client_snd, device_ids, contents, remark) values ({0},'{1}',{2},{3},'{4}','{5}','{6}')".format(
         #     int(time.time()), user_name, event_id, is_client_snd, device_ids, contents, remark)
@@ -612,7 +616,11 @@ class RequestHandler(mxweb.MXRequestHandler):
                         msg.head.if_st = 12
                         msg.head.if_msg = contents
                         self.write_event(
-                            123, contents, 1, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+                            123,
+                            contents,
+                            1,
+                            user_name=user_data['user_name'],
+                            app_unique=rqmsg.head.unique)
                         user_data = None
                 elif time.time() - user_data['active_time'] > 60 * 30:
                     del libiisi.cache_user[user_uuid]
@@ -620,7 +628,11 @@ class RequestHandler(mxweb.MXRequestHandler):
                     msg.head.if_st = 10
                     msg.head.if_msg = contents
                     self.write_event(
-                        122, contents, 1, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+                        122,
+                        contents,
+                        1,
+                        user_name=user_data['user_name'],
+                        app_unique=rqmsg.head.unique)
                     user_data = None
                 else:
                     user_data['active_time'] = time.time()

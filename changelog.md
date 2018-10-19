@@ -1,3 +1,7 @@
+[2018-10-19]
+---
+- 透传接口改用urllib3替代AsyncHttpClient
+
 [2018-10-18]
 ---
 - 增加sysstatus接口，返回概览数据

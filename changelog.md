@@ -1,3 +1,7 @@
+[2018-10-25]
+---
+- sms.UserListHandler 去除电话号码前后空格
+
 [2018-10-19]
 ---
 - 透传接口改用urllib3替代AsyncHttpClient

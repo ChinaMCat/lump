@@ -160,14 +160,15 @@ class UpdateSmsAlarmHandler(base.RequestHandler):
             #     strsql = '''delete from {0}_data.record_msg_new where record_id={1}'''.format(
             #         self._db_name, a)
             strsql = '''delete from {0}.record_msg_new where record_id in ({1})'''.format(
-                self._db_name_data, ','.join([str(a) for a in rqmsg.record_id]))
+                self._db_name_data,
+                ','.join([str(a) for a in rqmsg.record_id]))
             cur = yield self.mydata_collector(strsql, need_fetch=0)
             if cur is None:
                 msg.head.if_st = 45
             # 写入发送记录
             strsql = '''INSERT INTO {0}.record_msg_log(`send_date`, `send_number`,`send_msg`) VALUES ({1},{2},"{3}")'''.format(
-                self._db_name_data,
-                mx.switchStamp(time.time()), rqmsg.user_tel, rqmsg.fault_msg)
+                self._db_name_data, mx.switchStamp(time.time()),
+                rqmsg.user_tel, rqmsg.fault_msg)
             cur = yield self.mydata_collector(strsql, need_fetch=0)
             if cur is None:
                 msg.head.if_st = 45
@@ -200,7 +201,8 @@ class CleanSmsAlarmHandler(base.RequestHandler):
             if cur is not None:
                 if cur[0][0] > 1000:
                     strsql = '''delete from {0}.record_msg_log where send_date<{1}'''.format(
-                        self._db_name_data, mx.switchStamp(int(time.time() - 31622400)))
+                        self._db_name_data,
+                        mx.switchStamp(int(time.time() - 31622400)))
                     cur = yield self.mydata_collector(strsql, need_fetch=0)
                     if cur is None:
                         msg.head.if_st = 45
@@ -224,10 +226,10 @@ class UserListHandler(base.RequestHandler):
         legal, rqmsg, msg = yield self.check_arguments(
             msgws.rqUserInfo(), msgws.UserInfo(), use_scode=1)
         if legal:
-            strsql = '''select user_name,user_phonenumber from {0}.user_list'''.format(self._db_name)
+            strsql = '''select user_name,user_phonenumber from {0}.user_list'''.format(
+                self._db_name)
             if len(rqmsg.user_name) > 0:
                 strsql += " where user_name=`{0}`".format(rqmsg.user_name)
-            print(strsql)
             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                 strsql,
                 need_fetch=1,
@@ -246,12 +248,11 @@ class UserListHandler(base.RequestHandler):
                     userview = msgws.UserInfo.UserView()
                     if d[1] is not None and len(d[1]) > 0:
                         userview.user = d[0]
-                        userview.tel = d[1]
+                        userview.tel = str(d[1]).strip()
                     msg.user_view.extend([userview])
                     del userview
 
             del cur, strsql
-
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         del msg, rqmsg
@@ -278,8 +279,8 @@ class SubmitSmsHandler(base.RequestHandler):
             for tel in rqmsg.tels:
                 if isinstance(tel, types.LongType):
                     strsql += 'insert into {0}.record_msg_new (date_create,rtu_name,user_phone_number,is_alarm) values ({1},"{2}",{3},2);'.format(
-                        self._db_name_data, t,
-                        u'{0}'.format(str(rqmsg.msg).strip()), tel)
+                        self._db_name_data, t, u'{0}'.format(
+                            str(rqmsg.msg).strip()), tel)
             yield self.mydata_collector(strsql, need_fetch=0)
         # else:
         #     msg.head.if_st = 0

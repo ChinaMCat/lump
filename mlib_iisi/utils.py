@@ -291,7 +291,9 @@ def send_to_zmq_pub(sfilter, msg):
             zmq_ip = "127.0.0.1"
             if zmq_conf.find(':') > -1:
                 zmq_ip = zmq_conf.split(":")[0]
-            zmq_port = zmq_conf.split(":")[1].split(",")[0]
+                zmq_port = zmq_conf.split(":")[1].split(",")[0]
+            else:
+                zmq_port = zmq_conf.split(",")[0]
             try:
                 m_zmq_pub = m_zmq_ctx.socket(zmq.PUSH)
                 m_zmq_pub.setsockopt(zmq.SNDTIMEO, 50)

@@ -472,7 +472,8 @@ class RequestHandler(mxweb.MXRequestHandler):
         else:
             self._go_back_format = 0
         if 'iampb' in args.keys():
-            self._pb_format = 2  #if int(args.get('formatmydata')[0]) > 0 else 0
+            # if int(args.get('formatmydata')[0]) > 0 else 0
+            self._pb_format = 2
         else:
             self._pb_format = 0
         if 'tcsport' in args.keys():  # 项目设备通信端口号用于匹配数据库名称

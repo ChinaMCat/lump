@@ -202,7 +202,7 @@ class AreaInfoHandler(base.RequestHandler):
                 if record_total is None:
                     msg.head.if_st = 45
                 else:
-                    #查看表是否存在
+                    # 查看表是否存在
                     strsql = 'select a.TABLE_NAME from information_schema.TABLES as a where a.TABLE_NAME in ("para_slu_sgl","para_slu_sgl_ctrl","para_slu_sgl_item" )' \
                              ' and a.TABLE_SCHEMA="{0}"'.format(self._db_name)
                     res = libiisi.m_sql.run_fetch(strsql)
@@ -737,7 +737,7 @@ class TmlInfoHandler(base.RequestHandler):
                                     if d[9] is not None:
                                         loopinfo = msgws.TmlInfo.RtuLoopItem()
                                         loopinfo.loop_id = int(d[9])
-                                        loopinfo.loop_name = d[10]
+                                        loopinfo.loop_name = d[10] if d[10] is not None else ""
                                         loopinfo.loop_phase = int(d[11])
                                         loopinfo.loop_current_range = int(
                                             d[12])

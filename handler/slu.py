@@ -314,6 +314,7 @@ class QueryDataSluHandler(base.RequestHandler):
                             # where a.date_create>={1} and a.date_create<={2} {3} \
                             # order by a.date_create desc,a.slu_id,a.ctrl_id,a.lamp_id {4}'.format(
                             #     self._db_name, sdt, edt, str_tmls, self._fetch_limited)
+                            
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,
                             need_fetch=1,

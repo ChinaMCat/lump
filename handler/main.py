@@ -9,8 +9,10 @@ import gc
 import os
 import time
 import zmq
+import json
 import mxweb
 import mxpsu as mx
+import codecs
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
 import base
@@ -41,7 +43,7 @@ class StatusHandler(base.RequestHandler):
 
                 if do == 'reloadprofile':
                     libiisi.load_profile()
-                    self.write(str(len(libiisi.cache_user.keys())))
+                    self.write(libiisi.cache_user.keys())
                     self.write('<br/>')
 
                 if do == 'timer' or do == 'all':
@@ -164,4 +166,53 @@ class MainHandler(base.RequestHandler):
     @gen.coroutine
     def post(self):
         self.write('post test ok.')
+        self.finish()
+
+
+@mxweb.route()
+class CheckUpgradeHandler(base.RequestHandler):
+    help_doc = u'''获取指定程序的升级信息<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;exe - 要检查程序的可执行文件名，不需要带扩展名
+    &nbsp;&nbsp;changellog - 是否同时返回changelog内容，参数存在即返回，不存在不返回'''
+
+    @gen.coroutine
+    def get(self):
+        cl = False
+        exe = ""
+        resu = {}
+        args = self.request.arguments
+        if "changelog" in args.keys():
+            cl = True
+        if "exe" not in args.keys():
+            resu["exe"] = ""
+        else:
+            exe = args["exe"][0]
+            resu["exe"] = exe
+
+        if len(exe) > 0:
+            # 读取版本
+            f = os.path.join(libiisi.m_confdir, "ver", "{0}.ver".format(exe))
+            print(f)
+            if os.path.exists(f):
+                with open(f) as fr:
+                    resu["ver"] = fr.readline()
+                    fr.close()
+
+            # 读取changelog
+            f = os.path.join(libiisi.m_confdir, "ver",
+                             "{0}.changelog".format(exe))
+            if os.path.exists(f):
+                with open(f, "r") as fr:
+                    resu["changelog"] = "{0}".format(fr.read())
+                    fr.close()
+
+            # 读取download url
+            f = os.path.join(libiisi.m_confdir, "ver",
+                             "{0}.download".format(exe))
+            if os.path.exists(f):
+                with open(f) as fr:
+                    resu["durl"] = "{0}".format(fr.readline())
+                    fr.close()
+        self.write(json.dumps(resu))
         self.finish()

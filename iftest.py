@@ -14,7 +14,7 @@ import zlib
 
 # tc = thc.AsyncHTTPClient()
 
-baseurl = 'http://10.30.37.120:10005/'
+baseurl = 'http://127.0.0.1:10005/'
 # baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://60.173.254.184:10005/'
 # baseurl = 'http://192.168.50.83:10060/'
@@ -1213,7 +1213,33 @@ def test_sluitemadd():
     time.sleep(0)
 
 
+def test_sluelecdataget():
+    global user_id
+    print('=== query sluelecdataget ===')
+    url = baseurl + 'sluelecdataget'
+    rqmsg = msgif.rqSluElecDataGet()
+    # rqmsg.head.paging_idx=0
+    rqmsg.dt_start =mx.time2stamp('2016-11-4 00:00:00')
+    rqmsg.dt_end = mx.time2stamp('2016-11-10 00:00:00')
+    rqmsg.sluitem_id = 51
+    rqmsg.data_mark = 1
+    rqmsg.tml_id.extend([1500002])
+    print user_id
+    data = {
+        'uuid': user_id,
+        'pb2': base64.b64encode(rqmsg.SerializeToString())
+    }
+
+    # data = {'uuid': user_id, 'pb2': 'OABKA LGW1AH'}
+    r = pm.request('POST', url, fields=data, timeout=300.0, retries=False)
+    msg = msgif.SluElecDataGet()
+    msg.ParseFromString(base64.b64decode(r.data))
+    print(msg)
+    print('post finish')
+    time.sleep(0)
+
 if __name__ == '__main__':
+    print time.localtime(mx.switchStamp(int(636142596164153726)))
     # test_ws()
     # url = baseurl + '/UpdatePassword'
     # data = {'user_now':78, 'old_pwd':'123', 'new_pwd':'123'}
@@ -1227,7 +1253,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    test_userlogin()
+    # test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()
@@ -1273,3 +1299,5 @@ if __name__ == '__main__':
     # test_ipcsubmit()
     # test_userlogout()
     # test_mrudataget()
+    test_sluelecdataget()
+

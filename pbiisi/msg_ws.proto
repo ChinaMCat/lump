@@ -1465,3 +1465,29 @@ message SysStatus {
     repeated int32 slu_status = 4 [packed=true]; // 单灯集中器状态，依次[总数，在线数量，故障数量]
     repeated int32 sluitem_status = 5 [packed=true]; // 单灯控制器状态，依次[总数，在线数量，故障数量]
 }
+
+
+//单灯耗电量数据查询
+message rqSluElecDataGet {
+    Head head = 1;
+    repeated int64 tml_id = 2 [packed=true]; //设备id
+    int32 sluitem_id = 3; //控制器地址
+    int64 dt_start = 4; //起始年月日时间,转换为long传输(1970-1-1开始的秒数)
+    int64 dt_end = 5; //起始年月日时间
+    int32 data_mark = 6; //数据类型,0-集中器下所有控制器耗电数据累加,1-控制器的耗电数据
+}
+
+message SluElecDataGet {
+  	message DataElecView {
+          message SluitemElecData {
+  			int64 sluitem_id = 1;  //控制器地址
+  			int32 lamp_id = 2;    //灯头id
+  			double electricity = 3;   //控制器耗电量
+          }
+          int64 tml_id = 1;  //设备逻辑地址
+          double electricity_total = 2;   //总耗电量
+          repeated SluitemElecData slu_elec_data = 3;   //控制器耗电数据
+  	}
+  Head head = 1;
+  repeated DataElecView data_elec_view = 2 ;  //集中器耗电数据
+}

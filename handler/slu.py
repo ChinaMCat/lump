@@ -1106,3 +1106,163 @@ class SluCtlNBHandler(base.RequestHandler):
         if env:
             self.write_event(65, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data, user_uuid
+
+
+
+@mxweb.route()
+class SluElecDataGetHandler(base.RequestHandler):
+
+    help_doc = u'''单灯耗电量数据查询 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqSluElecDataGet()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;CommAns()结构序列化并经过base64编码后的字符串'''
+
+    @gen.coroutine
+    def post(self):
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqSluElecDataGet(),  msgws.SluElecDataGet())
+        if user_data is not None:
+            if user_data['user_auth'] in libiisi.can_read:
+                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                yield self.update_cache("r", user_uuid)
+
+                if rqmsg.data_mark == 0:  # 集中器数据
+                    # 验证用户可操作的设备id
+                    if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
+                        if len(rqmsg.tml_id) > 0:
+                            tml_ids = list(rqmsg.tml_id)
+                        else:
+                            tml_ids = []
+                    else:
+                        if len(rqmsg.tml_id) > 0:
+                            tml_ids = self.check_tml_r(user_uuid,
+                                                       list(rqmsg.tml_id))
+                        else:
+                            tml_ids = libiisi.cache_tml_r[user_uuid]
+                        if len(tml_ids) == 0:
+                            msg.head.if_st = 11
+
+                    if msg.head.if_st == 1:
+                        if len(tml_ids) == 0:
+                            str_tmls = ''
+                        else:
+                            str_tmls = ' in ({0}) '.format(
+                                ','.join([str(a) for a in tml_ids]))
+
+                        strsql = '''select  a.slu_id,sum(a.elec-b.elec) from
+                                (select c.slu_id ,c.ctrl_id ,c.lamp_id,max(c.electricity_total)
+                                as elec from {0}.data_slu_ctrl_lamp as c where c.date_create > {1} and
+                                c.date_create <= {2} and c.electricity_total > 0  and c.slu_id {3}
+                                group by c.slu_id ,c.ctrl_id ,c.lamp_id) a,
+                                (select d.slu_id ,d.ctrl_id ,d.lamp_id,min(d.electricity_total)
+                                as elec from {0}.data_slu_ctrl_lamp as d where d.date_create > {1} and
+                                d.date_create <= {2} and d.electricity_total > 0  and d.slu_id {3}
+                                group by d.slu_id ,d.ctrl_id ,d.lamp_id) b
+                                where a.slu_id=b.slu_id and a.ctrl_id = b.ctrl_id and a.lamp_id = b.lamp_id
+                                GROUP BY a.slu_id'''.format(self._db_name_data, sdt, edt, str_tmls)
+
+                        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                            strsql,
+                            need_fetch=1,
+                            buffer_tag=msg.head.paging_buffer_tag,
+                            paging_idx=msg.head.paging_idx,
+                            paging_num=msg.head.paging_num)
+
+                        if record_total is None:
+                            msg.head.if_st = 45
+                        else:
+                            msg.head.paging_record_total = record_total
+                            msg.head.paging_buffer_tag = buffer_tag
+                            msg.head.paging_idx = paging_idx
+                            msg.head.paging_total = paging_total
+
+                            for d in cur:
+                                dv = msgws.SluElecDataGet.DataElecView()
+                                if d[0] is not None:
+                                    dv.tml_id = int(d[0])
+                                    dv.electricity_total = float(int(d[1]))
+                                    msg.data_elec_view.extend([dv])
+                                    del dv
+                        del cur, strsql
+                elif rqmsg.data_mark == 1:  # 控制器数据
+                    # 验证用户可操作的设备id
+                    if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
+                        if len(rqmsg.tml_id) > 0:
+                            tml_ids = list(rqmsg.tml_id)
+                        else:
+                            tml_ids = []
+
+                        if rqmsg.sluitem_id > 0:
+                            sluitem_ids = rqmsg.sluitem_id
+                        else:
+                            sluitem_ids = 0
+
+                    else:
+                        if len(rqmsg.tml_id) > 0:
+                            tml_ids = self.check_tml_r(user_uuid,
+                                                       list(rqmsg.tml_id))
+                        else:
+                            tml_ids = libiisi.cache_tml_r[user_uuid]
+                        if len(tml_ids) == 0:
+                            msg.head.if_st = 11
+
+                    if msg.head.if_st == 1:
+                        if len(tml_ids) == 0:
+                            str_tmls = ''
+                        else:
+                            str_tmls = ' in ({0}) '.format(
+                                ','.join([str(a) for a in tml_ids]))
+
+                        if sluitem_ids == 0:
+                            str_sluitems = ' '
+                        else:
+                            str_sluitems = ' = {0} '.format(sluitem_ids)
+
+                        strsql = '''select  a.slu_id,a.ctrl_id ,a.lamp_id ,sum(a.elec-b.elec) from
+                                (select c.slu_id ,c.ctrl_id ,c.lamp_id,max(c.electricity_total)
+                                as elec from {0}.data_slu_ctrl_lamp as c where c.date_create > {1} and
+                                c.date_create <= {2} and c.electricity_total > 0  and c.slu_id {3} and c.ctrl_id {4}
+                                group by c.slu_id ,c.ctrl_id ,c.lamp_id) a,
+                                (select d.slu_id ,d.ctrl_id ,d.lamp_id,min(d.electricity_total)
+                                as elec from {0}.data_slu_ctrl_lamp as d where d.date_create > {1} and
+                                d.date_create <= {2} and d.electricity_total > 0  and d.slu_id {3} and d.ctrl_id {4}
+                                group by d.slu_id ,d.ctrl_id ,d.lamp_id) b
+                                where a.slu_id=b.slu_id and a.ctrl_id = b.ctrl_id and a.lamp_id = b.lamp_id
+                                GROUP BY a.slu_id,a.ctrl_id ,a.lamp_id'''.format(self._db_name_data, sdt, edt, str_tmls,str_sluitems)
+
+                        record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                            strsql,
+                            need_fetch=1,
+                            buffer_tag=msg.head.paging_buffer_tag,
+                            paging_idx=msg.head.paging_idx,
+                            paging_num=msg.head.paging_num)
+
+                        if record_total is None:
+                            msg.head.if_st = 45
+                        else:
+                            msg.head.paging_record_total = record_total
+                            msg.head.paging_buffer_tag = buffer_tag
+                            msg.head.paging_idx = paging_idx
+                            msg.head.paging_total = paging_total
+
+                            dv = msgws.SluElecDataGet.DataElecView()
+                            dvs = msgws.SluElecDataGet.DataElecView.SluitemElecData()
+                            for d in cur:
+                                if int(d[0]) != dv.tml_id and dv.tml_id > 0:
+                                    msg.data_elec_view.extend([dv])
+                                    dv = msgws.SluElecDataGet.DataElecView()
+                                    dvs = msgws.SluElecDataGet.DataElecView.SluitemElecData()
+                                dv.tml_id = int(d[0])
+                                dvs.sluitem_id = int(d[1])
+                                dvs.lamp_id = int(d[2])
+                                dvs.electricity = float(d[3])
+                                dv.slu_elec_data.extend([dvs])
+                            if dv.tml_id > 0:
+                                msg.data_elec_view.extend([dv])
+                        del cur, strsql
+
+        self.write(mx.code_pb2(msg, self._go_back_format))
+        self.finish()
+        del msg, rqmsg, user_data

@@ -14,7 +14,7 @@ import zlib
 
 # tc = thc.AsyncHTTPClient()
 
-baseurl = 'http://127.0.0.1:10005/'
+baseurl = 'http://127.0.0.1:10908/'
 # baseurl = 'http://192.168.50.83:10020/'
 # baseurl = 'http://60.173.254.184:10005/'
 # baseurl = 'http://192.168.50.83:10060/'
@@ -42,9 +42,9 @@ def init_head(msg):
     msg.head.unique = 'asdfhaskdfkaf'
     msg.head.ver = 160328
     msg.head.if_dt = int(time.time())
-    msg.head.paging_num=0
+    msg.head.paging_num = 0
     # msg.head.paging_buffer_tag=0
-    msg.head.paging_idx=1
+    msg.head.paging_idx = 1
 
     return msg
 
@@ -56,7 +56,7 @@ def test_userlogin():
     rqmsg = init_head(msgif.rqUserLogin())
     rqmsg.dev = 1
     rqmsg.unique = 'asdfhaskdfkaf'
-    rqmsg.user = u'admin'
+    rqmsg.user = u'dgc'
     rqmsg.pwd = u'1234'
     # rqmsg.user = '管理员'
     # rqmsg.pwd = '123'
@@ -287,11 +287,11 @@ def test_sluctlnb():
     url = baseurl + 'sluctlnb'
     rqmsg = init_head(msgif.rqSluCtlNB())
     rqmsg.barcode.extend([1])
-    rqmsg.cmd_idx=1
-    rqmsg.operation_type=3
-    rqmsg.operation_order=0
-    rqmsg.addr_type=4
-    rqmsg.cmd_type=4
+    rqmsg.cmd_idx = 1
+    rqmsg.operation_type = 3
+    rqmsg.operation_order = 0
+    rqmsg.addr_type = 4
+    rqmsg.cmd_type = 4
     rqmsg.addrs.extend([1])
     rqmsg.cmd_mix.extend([1, 0, 0, 0])
     data = {
@@ -540,12 +540,13 @@ def test_evequeryeventstime():
     print('post finish')
     time.sleep(0)
 
+
 def test_rtudataquery():
     global user_id
     print('=== query rty data ===')
     url = baseurl + 'querydatartu'
     rqmsg = msgif.rqQueryDataRtu()
-    rqmsg.head.paging_num=100
+    rqmsg.head.paging_num = 100
     rqmsg.head.paging_idx = 1
     rqmsg.dt_start = mx.time2stamp('2017-12-11 00:00:00')
     rqmsg.dt_end = mx.time2stamp('2017-12-12 00:00:00')
@@ -554,7 +555,7 @@ def test_rtudataquery():
     data = {
         'uuid': user_id,
         'pb2': base64.b64encode(rqmsg.SerializeToString())
-    }  #base64.b64encode(rqmsg.SerializeToString())}
+    }  # base64.b64encode(rqmsg.SerializeToString())}
     r = pm.request('POST', url, fields=data, timeout=100.0, retries=False)
     msg = msgif.QueryDataRtu()
     msg.ParseFromString(base64.b64decode(r.data))
@@ -591,7 +592,7 @@ def test_querysludata():
     url = baseurl + 'querydataslu'
     rqmsg = msgif.rqQueryDataSlu()
     # rqmsg.head.paging_idx=0
-    rqmsg.dt_start =mx.time2stamp('2018-04-16 00:00:00')
+    rqmsg.dt_start = mx.time2stamp('2018-04-16 00:00:00')
     rqmsg.dt_end = mx.time2stamp('2018-05-24 12:00:00')
     rqmsg.type = 0
     rqmsg.data_mark = 7
@@ -1219,7 +1220,7 @@ def test_sluelecdataget():
     url = baseurl + 'sluelecdataget'
     rqmsg = msgif.rqSluElecDataGet()
     # rqmsg.head.paging_idx=0
-    rqmsg.dt_start =mx.time2stamp('2016-11-4 00:00:00')
+    rqmsg.dt_start = mx.time2stamp('2016-11-4 00:00:00')
     rqmsg.dt_end = mx.time2stamp('2016-11-10 00:00:00')
     rqmsg.sluitem_id = 51
     rqmsg.data_mark = 1
@@ -1238,6 +1239,7 @@ def test_sluelecdataget():
     print('post finish')
     time.sleep(0)
 
+
 if __name__ == '__main__':
     print time.localtime(mx.switchStamp(int(636142596164153726)))
     # test_ws()
@@ -1253,7 +1255,7 @@ if __name__ == '__main__':
     # test_test()
     # exit()
     # for i in range(1):
-    # test_userlogin()
+    test_userlogin()
     # test_useredit()
     # test_queryttbind()
     # test_sluctl()
@@ -1299,5 +1301,4 @@ if __name__ == '__main__':
     # test_ipcsubmit()
     # test_userlogout()
     # test_mrudataget()
-    test_sluelecdataget()
-
+    # test_sluelecdataget()

@@ -178,6 +178,29 @@ class CheckUpgradeHandler(base.RequestHandler):
 
     @gen.coroutine
     def get(self):
+        url = '{0}/{1}'.format("http://180.153.108.83:40080/v1",
+                               self.request.uri.replace(self.root_path, ''))
+        try:
+            # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
+            rep = self._pm.request('GET', url, timeout=10.0)
+            # rep = yield self.thc.fetch(
+            #     url, raise_error=True, request_timeout=12)
+            self.write(rep.data)
+        except Exception as ex:
+            self.write(str(ex))
+        self.finish()
+        del url
+
+
+@mxweb.route()
+class CheckUpgradeLocalHandler(base.RequestHandler):
+    help_doc = u'''获取指定程序的升级信息<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;exe - 要检查程序的可执行文件名，不需要带扩展名
+    &nbsp;&nbsp;changellog - 是否同时返回changelog内容，参数存在即返回，不存在不返回'''
+
+    @gen.coroutine
+    def get(self):
         cl = False
         exe = ""
         resu = {}

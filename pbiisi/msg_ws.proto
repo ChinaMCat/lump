@@ -1491,3 +1491,19 @@ message SluElecDataGet {
   Head head = 1;
   repeated DataElecView data_elec_view = 2 ;  //集中器耗电数据
 }
+
+// 故障统计
+message rqQueryErrorCount {
+    Head head = 1;
+    int32 type = 2; // 查询类型，1-按设备查询，2-按故障类型查询
+}
+message QueryErrorCount {
+    Head head = 1;
+    int32 type = 2; // 查询类型，同提交
+    repeated Error_count error_count = 3;
+    message Error_count {
+        int64 id = 1; // 故障id/设备id
+        string name = 2; // 故障名称/设备名称
+        int64 count = 3; // 统计数据
+    }
+}

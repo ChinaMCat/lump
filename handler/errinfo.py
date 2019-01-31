@@ -17,6 +17,57 @@ import zlib
 
 
 @mxweb.route()
+class QueryErrorCountHandler(base.RequestHandler):
+
+    help_doc = u'''故障统计信息获取 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqQueryErrorCount()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;QueryErrorCount()结构序列化并经过base64编码后的字符串'''
+
+    @gen.coroutine
+    def post(self):
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqQueryErrorCount(), msgws.QueryErrorCount())
+
+        if user_data is not None:
+            if user_data['user_auth'] in libiisi.can_read:
+                if rqmsg.type == 1:  # 按设备查询
+                    strsql = 'select a.rtu_id,b.rtu_name,a.fault_num from {1}.sum_fault_by_tml as a \
+                                left join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id order by a.fault_num desc'.format(self._db_name, self._db_name_data)
+                elif rqmsg.type == 2:  # 按故障查询
+                    strsql = 'select a.fault_id,b.fault_name,a.fault_num from {1}.sum_fault_by_faultid as a \
+                                left join {0}.fault_types as b on a.fault_id=b.fault_id order by a.fault_num desc'.format(self._db_name, self._db_name_data)
+                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                    strsql,
+                    need_fetch=1,
+                    need_paging=0)
+                if record_total is None:
+                    msg.head.if_st = 45
+                else:
+                    msg.head.paging_record_total = record_total
+                    msg.head.paging_buffer_tag = buffer_tag
+                    msg.head.paging_idx = paging_idx
+                    msg.head.paging_total = paging_total
+                    msg.type = rqmsg.type
+                    for d in cur:
+                        errnum = msgws.QueryErrorCount.Error_count()
+                        errnum.id = d[0]
+                        errnum.name = d[1]
+                        errnum.count = d[2]
+                        msg.error_count.extend([errnum])
+                        del errnum
+
+                del cur, strsql
+
+        self.write(mx.code_pb2(msg, self._go_back_format))
+
+        self.finish()
+        del msg, rqmsg, user_data, user_uuid
+
+
+@mxweb.route()
 class QueryDataErrGZHandler(base.RequestHandler):
 
     help_doc = u'''故障数据查询-广州专用 (post方式访问)<br/>

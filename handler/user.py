@@ -117,7 +117,6 @@ class UserLoginJKHandler(base.RequestHandler):
                             _area_x = [0]
                         else:
                             user_auth = 0
-                            print(d[0], d[1], d[2])
                             if d[0] is not None:
                                 if len(d[0].split(';')[:-1]) > 0:
                                     user_auth += 4

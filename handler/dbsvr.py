@@ -17,6 +17,34 @@ import json
 
 
 @mxweb.route()
+class WuHanHandler(base.RequestHandler):
+
+    help_doc = u'''中间层接口封装 (get/post方式访问)<br/>
+    <b>参数:</b></br>
+    &nbsp;&nbsp;参考中间层接口相关文档'''
+
+    keep_name_case = False
+    # thc = AsyncHTTPClient()
+
+    root_path = r'/wh/'
+
+    @gen.coroutine
+    def get(self):
+        url = '{0}/{1}'.format(libiisi.cfg_dbsvr_url,
+                               self.request.uri.replace(self.root_path, ''))
+        try:
+            # rep = utils.m_httpclinet_pool.request('GET', url, fields={}, timeout=7.0, retries=False)
+            rep = self._pm.request('GET', url, timeout=10.0)
+            # rep = yield self.thc.fetch(
+            #     url, raise_error=True, request_timeout=12)
+            self.write(rep.data)
+        except Exception as ex:
+            self.write(str(ex))
+        self.finish()
+        del url
+
+
+@mxweb.route()
 class DBSvrTHandler(base.RequestHandler):
 
     help_doc = u'''中间层接口封装 (get/post方式访问)<br/>

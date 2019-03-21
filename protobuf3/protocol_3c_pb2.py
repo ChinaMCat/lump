@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protocol_3c.proto',
   package='wlst.pb2',
   syntax='proto3',
-  serialized_pb=_b('\n\x11protocol_3c.proto\x12\x08wlst.pb2\"\xa1\x01\n\rWlst_com_0000\x12\x11\n\tserver_ip\x18\x01 \x01(\t\x12\x13\n\x0bserver_port\x18\x02 \x01(\t\x12\x0b\n\x03\x61pn\x18\x03 \x01(\t\x12\x12\n\nkeep_alive\x18\x04 \x01(\t\x12\x0c\n\x04type\x18\x05 \x01(\t\x12\x0b\n\x03sim\x18\x06 \x01(\t\x12\x15\n\rcdma_username\x18\x07 \x01(\t\x12\x15\n\rcdma_password\x18\x08 \x01(\t\"D\n\rWlst_com_3e01\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\x12\n\ngroup_mark\x18\x02 \x01(\x05\x12\x11\n\targs_mark\x18\x03 \x03(\x05\"\x8a\x07\n\rWlst_com_3e02\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\x12\n\ngroup_mark\x18\x02 \x01(\x05\x12\x11\n\targs_mark\x18\x03 \x03(\x05\x12\x32\n\toperators\x18\x04 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group01\x12\x30\n\x07\x63hannel\x18\x05 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group02\x12\x32\n\tinterface\x18\x06 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group03\x12,\n\x03sms\x18\x07 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group04\x12\x30\n\x07\x61\x64\x64ress\x18\x08 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group05\x12/\n\x06status\x18\t \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group06\x1a\x31\n\x07Group01\x12\x0b\n\x03\x61pn\x18\x01 \x01(\t\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x0b\n\x03pwd\x18\x03 \x01(\t\x1a\xeb\x01\n\x07Group02\x12\x15\n\rchannel1_type\x18\x01 \x01(\x05\x12\x13\n\x0b\x63hannel1_ip\x18\x02 \x03(\x05\x12\x15\n\rchannel1_port\x18\x03 \x01(\x05\x12\x1b\n\x13\x63hannel1_local_port\x18\x04 \x01(\x05\x12\x15\n\rchannel2_type\x18\x05 \x01(\x05\x12\x13\n\x0b\x63hannel2_ip\x18\x06 \x03(\x05\x12\x15\n\rchannel2_port\x18\x07 \x01(\x05\x12\x1b\n\x13\x63hannel2_local_port\x18\x08 \x01(\x05\x12\x12\n\nkeep_alive\x18\t \x01(\x05\x12\x0c\n\x04idle\x18\n \x01(\x05\x1a\x64\n\x07Group03\x12\x10\n\x08port1_br\x18\x01 \x01(\x05\x12\x10\n\x08port1_rc\x18\x02 \x01(\x05\x12\x10\n\x08port2_br\x18\x03 \x01(\x05\x12\x10\n\x08port2_rc\x18\x04 \x01(\x05\x12\x11\n\twork_mode\x18\x05 \x01(\x05\x1a\x39\n\x07Group04\x12\x13\n\x0bvalid_count\x18\x01 \x01(\x05\x12\x0b\n\x03sim\x18\x02 \x03(\t\x12\x0c\n\x04yecx\x18\x03 \x01(\t\x1a=\n\x07Group05\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\x0e\n\x06street\x18\x02 \x01(\t\x12\x14\n\x0c\x62\x61tch_number\x18\x03 \x01(\t\x1a\x18\n\x07Group06\x12\r\n\x05state\x18\x01 \x01(\t\"F\n\rWlst_com_3e82\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x12\n\ngroup_mark\x18\x02 \x01(\x05\x12\x11\n\targs_mark\x18\x03 \x03(\x05\x42\x02H\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x11protocol_3c.proto\x12\x08wlst.pb2\"\xa1\x01\n\rWlst_com_0000\x12\x11\n\tserver_ip\x18\x01 \x01(\t\x12\x13\n\x0bserver_port\x18\x02 \x01(\t\x12\x0b\n\x03\x61pn\x18\x03 \x01(\t\x12\x12\n\nkeep_alive\x18\x04 \x01(\t\x12\x0c\n\x04type\x18\x05 \x01(\t\x12\x0b\n\x03sim\x18\x06 \x01(\t\x12\x15\n\rcdma_username\x18\x07 \x01(\t\x12\x15\n\rcdma_password\x18\x08 \x01(\t\"D\n\rWlst_com_3e01\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\x12\n\ngroup_mark\x18\x02 \x01(\x05\x12\x11\n\targs_mark\x18\x03 \x03(\x05\"\xa5\x07\n\rWlst_com_3e02\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\x12\n\ngroup_mark\x18\x02 \x01(\x05\x12\x11\n\targs_mark\x18\x03 \x03(\x05\x12\x32\n\toperators\x18\x04 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group01\x12\x30\n\x07\x63hannel\x18\x05 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group02\x12\x32\n\tinterface\x18\x06 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group03\x12,\n\x03sms\x18\x07 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group04\x12\x30\n\x07\x61\x64\x64ress\x18\x08 \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group05\x12/\n\x06status\x18\t \x01(\x0b\x32\x1f.wlst.pb2.Wlst_com_3e02.Group06\x1a\x31\n\x07Group01\x12\x0b\n\x03\x61pn\x18\x01 \x01(\t\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x0b\n\x03pwd\x18\x03 \x01(\t\x1a\xeb\x01\n\x07Group02\x12\x15\n\rchannel1_type\x18\x01 \x01(\x05\x12\x13\n\x0b\x63hannel1_ip\x18\x02 \x03(\x05\x12\x15\n\rchannel1_port\x18\x03 \x01(\x05\x12\x1b\n\x13\x63hannel1_local_port\x18\x04 \x01(\x05\x12\x15\n\rchannel2_type\x18\x05 \x01(\x05\x12\x13\n\x0b\x63hannel2_ip\x18\x06 \x03(\x05\x12\x15\n\rchannel2_port\x18\x07 \x01(\x05\x12\x1b\n\x13\x63hannel2_local_port\x18\x08 \x01(\x05\x12\x12\n\nkeep_alive\x18\t \x01(\x05\x12\x0c\n\x04idle\x18\n \x01(\x05\x1a\x64\n\x07Group03\x12\x10\n\x08port1_br\x18\x01 \x01(\x05\x12\x10\n\x08port1_rc\x18\x02 \x01(\x05\x12\x10\n\x08port2_br\x18\x03 \x01(\x05\x12\x10\n\x08port2_rc\x18\x04 \x01(\x05\x12\x11\n\twork_mode\x18\x05 \x01(\x05\x1a\x39\n\x07Group04\x12\x13\n\x0bvalid_count\x18\x01 \x01(\x05\x12\x0b\n\x03sim\x18\x02 \x03(\t\x12\x0c\n\x04yecx\x18\x03 \x01(\t\x1a=\n\x07Group05\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\x0e\n\x06street\x18\x02 \x01(\t\x12\x14\n\x0c\x62\x61tch_number\x18\x03 \x01(\t\x1a\x33\n\x07Group06\x12\r\n\x05state\x18\x01 \x01(\t\x12\x0c\n\x04imei\x18\x02 \x01(\x03\x12\x0b\n\x03ver\x18\x03 \x01(\t\"F\n\rWlst_com_3e82\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x12\n\ngroup_mark\x18\x02 \x01(\x05\x12\x11\n\targs_mark\x18\x03 \x03(\x05\"k\n\rWlst_com_3e84\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\t\x12\x0e\n\x06signal\x18\x02 \x01(\x05\x12\x10\n\x08net_type\x18\x03 \x01(\x05\x12\x15\n\rdisconn_count\x18\x04 \x01(\x05\x12\x13\n\x0breset_count\x18\x05 \x01(\x05\x42\x02H\x01\x62\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -448,6 +448,20 @@ _WLST_COM_3E02_GROUP06 = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='imei', full_name='wlst.pb2.Wlst_com_3e02.Group06.imei', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='ver', full_name='wlst.pb2.Wlst_com_3e02.Group06.ver', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -461,7 +475,7 @@ _WLST_COM_3E02_GROUP06 = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=1148,
-  serialized_end=1172,
+  serialized_end=1199,
 )
 
 _WLST_COM_3E02 = _descriptor.Descriptor(
@@ -547,7 +561,7 @@ _WLST_COM_3E02 = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=266,
-  serialized_end=1172,
+  serialized_end=1199,
 )
 
 
@@ -591,8 +605,67 @@ _WLST_COM_3E82 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1174,
-  serialized_end=1244,
+  serialized_start=1201,
+  serialized_end=1271,
+)
+
+
+_WLST_COM_3E84 = _descriptor.Descriptor(
+  name='Wlst_com_3e84',
+  full_name='wlst.pb2.Wlst_com_3e84',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='addr', full_name='wlst.pb2.Wlst_com_3e84.addr', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='signal', full_name='wlst.pb2.Wlst_com_3e84.signal', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='net_type', full_name='wlst.pb2.Wlst_com_3e84.net_type', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='disconn_count', full_name='wlst.pb2.Wlst_com_3e84.disconn_count', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='reset_count', full_name='wlst.pb2.Wlst_com_3e84.reset_count', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1273,
+  serialized_end=1380,
 )
 
 _WLST_COM_3E02_GROUP01.containing_type = _WLST_COM_3E02
@@ -611,6 +684,7 @@ DESCRIPTOR.message_types_by_name['Wlst_com_0000'] = _WLST_COM_0000
 DESCRIPTOR.message_types_by_name['Wlst_com_3e01'] = _WLST_COM_3E01
 DESCRIPTOR.message_types_by_name['Wlst_com_3e02'] = _WLST_COM_3E02
 DESCRIPTOR.message_types_by_name['Wlst_com_3e82'] = _WLST_COM_3E82
+DESCRIPTOR.message_types_by_name['Wlst_com_3e84'] = _WLST_COM_3E84
 
 Wlst_com_0000 = _reflection.GeneratedProtocolMessageType('Wlst_com_0000', (_message.Message,), dict(
   DESCRIPTOR = _WLST_COM_0000,
@@ -687,6 +761,13 @@ Wlst_com_3e82 = _reflection.GeneratedProtocolMessageType('Wlst_com_3e82', (_mess
   # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_com_3e82)
   ))
 _sym_db.RegisterMessage(Wlst_com_3e82)
+
+Wlst_com_3e84 = _reflection.GeneratedProtocolMessageType('Wlst_com_3e84', (_message.Message,), dict(
+  DESCRIPTOR = _WLST_COM_3E84,
+  __module__ = 'protocol_3c_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_com_3e84)
+  ))
+_sym_db.RegisterMessage(Wlst_com_3e84)
 
 
 DESCRIPTOR.has_options = True

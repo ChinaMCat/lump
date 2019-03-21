@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protocol_tp.proto',
   package='wlst.pb2',
   syntax='proto3',
-  serialized_pb=_b('\n\x11protocol_tp.proto\x12\x08wlst.pb2\"\xf0\x04\n\rAhhf_rtu_6804\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x15\n\tdata_mark\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x16\n\ndata_point\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x36\n\nswitch_out\x18\x04 \x01(\x0b\x32\".wlst.pb2.Ahhf_rtu_6804.Switch_out\x12\x34\n\tswitch_in\x18\x05 \x01(\x0b\x32!.wlst.pb2.Ahhf_rtu_6804.Switch_in\x12@\n\x0fswitch_in_limit\x18\x06 \x01(\x0b\x32\'.wlst.pb2.Ahhf_rtu_6804.Switch_in_limit\x12\x12\n\x06status\x18\t \x03(\x05\x42\x02\x10\x01\x1a\x43\n\nSwitch_out\x12\x18\n\x10switch_out_total\x18\x01 \x01(\x05\x12\x1b\n\x0fswitch_out_loop\x18\x02 \x03(\x05\x42\x02\x10\x01\x1ax\n\tSwitch_in\x12\x1b\n\x13voltage_transformer\x18\x01 \x01(\x05\x12\x12\n\nloop_total\x18\x02 \x01(\x05\x12\x1f\n\x13\x63urrent_transformer\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x19\n\rcurrent_phase\x18\x04 \x03(\x05\x42\x02\x10\x01\x1a\x9b\x01\n\x0fSwitch_in_limit\x12\x12\n\nloop_total\x18\x05 \x01(\x05\x12\x1b\n\x0fvoltage_uplimit\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10voltage_lowlimit\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x1b\n\x0f\x63urrent_uplimit\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10\x63urrent_lowlimit\x18\x04 \x03(\x01\x42\x02\x10\x01\"L\n\rWxjy_esu_5500\x12\x10\n\x08time_now\x18\x01 \x01(\t\x12\x12\n\x06x_time\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x15\n\tx_voltage\x18\x03 \x03(\x05\x42\x02\x10\x01\"\x8a\x01\n\rWxjy_esu_d700\x12\x12\n\nphase_a_in\x18\x01 \x01(\x05\x12\x12\n\nphase_b_in\x18\x02 \x01(\x05\x12\x12\n\nphase_c_in\x18\x03 \x01(\x05\x12\x13\n\x0bphase_a_out\x18\x04 \x01(\x05\x12\x13\n\x0bphase_b_out\x18\x05 \x01(\x05\x12\x13\n\x0bphase_c_out\x18\x06 \x01(\x05\"\x1f\n\rWxjy_esu_d800\x12\x0e\n\x06status\x18\x01 \x01(\tB\x02H\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x11protocol_tp.proto\x12\x08wlst.pb2\"\xf0\x04\n\rAhhf_rtu_6804\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x15\n\tdata_mark\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x16\n\ndata_point\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x36\n\nswitch_out\x18\x04 \x01(\x0b\x32\".wlst.pb2.Ahhf_rtu_6804.Switch_out\x12\x34\n\tswitch_in\x18\x05 \x01(\x0b\x32!.wlst.pb2.Ahhf_rtu_6804.Switch_in\x12@\n\x0fswitch_in_limit\x18\x06 \x01(\x0b\x32\'.wlst.pb2.Ahhf_rtu_6804.Switch_in_limit\x12\x12\n\x06status\x18\t \x03(\x05\x42\x02\x10\x01\x1a\x43\n\nSwitch_out\x12\x18\n\x10switch_out_total\x18\x01 \x01(\x05\x12\x1b\n\x0fswitch_out_loop\x18\x02 \x03(\x05\x42\x02\x10\x01\x1ax\n\tSwitch_in\x12\x1b\n\x13voltage_transformer\x18\x01 \x01(\x05\x12\x12\n\nloop_total\x18\x02 \x01(\x05\x12\x1f\n\x13\x63urrent_transformer\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x19\n\rcurrent_phase\x18\x04 \x03(\x05\x42\x02\x10\x01\x1a\x9b\x01\n\x0fSwitch_in_limit\x12\x12\n\nloop_total\x18\x05 \x01(\x05\x12\x1b\n\x0fvoltage_uplimit\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10voltage_lowlimit\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x1b\n\x0f\x63urrent_uplimit\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10\x63urrent_lowlimit\x18\x04 \x03(\x01\x42\x02\x10\x01\"L\n\rWxjy_esu_5500\x12\x10\n\x08time_now\x18\x01 \x01(\t\x12\x12\n\x06x_time\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x15\n\tx_voltage\x18\x03 \x03(\x05\x42\x02\x10\x01\"\x8a\x01\n\rWxjy_esu_d700\x12\x12\n\nphase_a_in\x18\x01 \x01(\x05\x12\x12\n\nphase_b_in\x18\x02 \x01(\x05\x12\x12\n\nphase_c_in\x18\x03 \x01(\x05\x12\x13\n\x0bphase_a_out\x18\x04 \x01(\x05\x12\x13\n\x0bphase_b_out\x18\x05 \x01(\x05\x12\x13\n\x0bphase_c_out\x18\x06 \x01(\x05\"\x1f\n\rWxjy_esu_d800\x12\x0e\n\x06status\x18\x01 \x01(\t\"t\n\x0c\x42lk_slu_6891\x12\x0e\n\x06slu_id\x18\x01 \x01(\x05\x12\x12\n\nsluitem_id\x18\x02 \x01(\x05\x12\x16\n\x0esluitem_config\x18\x03 \x01(\x03\x12\x18\n\x0csluitem_loop\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x0e\n\x06status\x18\x05 \x01(\x05\"\xf6\x01\n\x0c\x42lk_slu_6892\x12\x0e\n\x06slu_id\x18\x01 \x01(\x05\x12\x39\n\x0csluitem_data\x18\x02 \x03(\x0b\x32#.wlst.pb2.Blk_slu_6892.Sluitem_data\x1a\x9a\x01\n\x0cSluitem_data\x12\x13\n\x07voltage\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x13\n\x07\x63urrent\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x11\n\x05power\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x11\n\x05\x65rror\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x04node\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nsluitem_id\x18\x07 \x01(\x05\x12\x14\n\x0csluitem_loop\x18\x08 \x01(\x05\"\xd1\x01\n\x0c\x42lk_slu_6895\x12\x0e\n\x06slu_id\x18\x01 \x01(\x05\x12\x12\n\nsluitem_id\x18\x02 \x01(\x05\x12\x11\n\taddr_type\x18\x03 \x01(\x05\x12\x16\n\x0eoperation_type\x18\x04 \x01(\x05\x12\x1b\n\x0foperation_value\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08timer_id\x18\x06 \x01(\x05\x12\x10\n\x08week_set\x18\x07 \x03(\x05\x12\x10\n\x08time_set\x18\x08 \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\t \x01(\x05\x12\x0e\n\x06status\x18\n \x01(\x05\x42\x02H\x01\x62\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -386,16 +386,284 @@ _WXJY_ESU_D800 = _descriptor.Descriptor(
   serialized_end=908,
 )
 
+
+_BLK_SLU_6891 = _descriptor.Descriptor(
+  name='Blk_slu_6891',
+  full_name='wlst.pb2.Blk_slu_6891',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='slu_id', full_name='wlst.pb2.Blk_slu_6891.slu_id', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_id', full_name='wlst.pb2.Blk_slu_6891.sluitem_id', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_config', full_name='wlst.pb2.Blk_slu_6891.sluitem_config', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_loop', full_name='wlst.pb2.Blk_slu_6891.sluitem_loop', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='wlst.pb2.Blk_slu_6891.status', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=910,
+  serialized_end=1026,
+)
+
+
+_BLK_SLU_6892_SLUITEM_DATA = _descriptor.Descriptor(
+  name='Sluitem_data',
+  full_name='wlst.pb2.Blk_slu_6892.Sluitem_data',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='voltage', full_name='wlst.pb2.Blk_slu_6892.Sluitem_data.voltage', index=0,
+      number=1, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='current', full_name='wlst.pb2.Blk_slu_6892.Sluitem_data.current', index=1,
+      number=2, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='power', full_name='wlst.pb2.Blk_slu_6892.Sluitem_data.power', index=2,
+      number=3, type=1, cpp_type=5, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='error', full_name='wlst.pb2.Blk_slu_6892.Sluitem_data.error', index=3,
+      number=5, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='node', full_name='wlst.pb2.Blk_slu_6892.Sluitem_data.node', index=4,
+      number=6, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='sluitem_id', full_name='wlst.pb2.Blk_slu_6892.Sluitem_data.sluitem_id', index=5,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_loop', full_name='wlst.pb2.Blk_slu_6892.Sluitem_data.sluitem_loop', index=6,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1121,
+  serialized_end=1275,
+)
+
+_BLK_SLU_6892 = _descriptor.Descriptor(
+  name='Blk_slu_6892',
+  full_name='wlst.pb2.Blk_slu_6892',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='slu_id', full_name='wlst.pb2.Blk_slu_6892.slu_id', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_data', full_name='wlst.pb2.Blk_slu_6892.sluitem_data', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_BLK_SLU_6892_SLUITEM_DATA, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1029,
+  serialized_end=1275,
+)
+
+
+_BLK_SLU_6895 = _descriptor.Descriptor(
+  name='Blk_slu_6895',
+  full_name='wlst.pb2.Blk_slu_6895',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='slu_id', full_name='wlst.pb2.Blk_slu_6895.slu_id', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sluitem_id', full_name='wlst.pb2.Blk_slu_6895.sluitem_id', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='addr_type', full_name='wlst.pb2.Blk_slu_6895.addr_type', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='operation_type', full_name='wlst.pb2.Blk_slu_6895.operation_type', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='operation_value', full_name='wlst.pb2.Blk_slu_6895.operation_value', index=4,
+      number=5, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='timer_id', full_name='wlst.pb2.Blk_slu_6895.timer_id', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='week_set', full_name='wlst.pb2.Blk_slu_6895.week_set', index=6,
+      number=7, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='time_set', full_name='wlst.pb2.Blk_slu_6895.time_set', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Blk_slu_6895.cmd_idx', index=8,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='wlst.pb2.Blk_slu_6895.status', index=9,
+      number=10, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1278,
+  serialized_end=1487,
+)
+
 _AHHF_RTU_6804_SWITCH_OUT.containing_type = _AHHF_RTU_6804
 _AHHF_RTU_6804_SWITCH_IN.containing_type = _AHHF_RTU_6804
 _AHHF_RTU_6804_SWITCH_IN_LIMIT.containing_type = _AHHF_RTU_6804
 _AHHF_RTU_6804.fields_by_name['switch_out'].message_type = _AHHF_RTU_6804_SWITCH_OUT
 _AHHF_RTU_6804.fields_by_name['switch_in'].message_type = _AHHF_RTU_6804_SWITCH_IN
 _AHHF_RTU_6804.fields_by_name['switch_in_limit'].message_type = _AHHF_RTU_6804_SWITCH_IN_LIMIT
+_BLK_SLU_6892_SLUITEM_DATA.containing_type = _BLK_SLU_6892
+_BLK_SLU_6892.fields_by_name['sluitem_data'].message_type = _BLK_SLU_6892_SLUITEM_DATA
 DESCRIPTOR.message_types_by_name['Ahhf_rtu_6804'] = _AHHF_RTU_6804
 DESCRIPTOR.message_types_by_name['Wxjy_esu_5500'] = _WXJY_ESU_5500
 DESCRIPTOR.message_types_by_name['Wxjy_esu_d700'] = _WXJY_ESU_D700
 DESCRIPTOR.message_types_by_name['Wxjy_esu_d800'] = _WXJY_ESU_D800
+DESCRIPTOR.message_types_by_name['Blk_slu_6891'] = _BLK_SLU_6891
+DESCRIPTOR.message_types_by_name['Blk_slu_6892'] = _BLK_SLU_6892
+DESCRIPTOR.message_types_by_name['Blk_slu_6895'] = _BLK_SLU_6895
 
 Ahhf_rtu_6804 = _reflection.GeneratedProtocolMessageType('Ahhf_rtu_6804', (_message.Message,), dict(
 
@@ -449,6 +717,35 @@ Wxjy_esu_d800 = _reflection.GeneratedProtocolMessageType('Wxjy_esu_d800', (_mess
   ))
 _sym_db.RegisterMessage(Wxjy_esu_d800)
 
+Blk_slu_6891 = _reflection.GeneratedProtocolMessageType('Blk_slu_6891', (_message.Message,), dict(
+  DESCRIPTOR = _BLK_SLU_6891,
+  __module__ = 'protocol_tp_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Blk_slu_6891)
+  ))
+_sym_db.RegisterMessage(Blk_slu_6891)
+
+Blk_slu_6892 = _reflection.GeneratedProtocolMessageType('Blk_slu_6892', (_message.Message,), dict(
+
+  Sluitem_data = _reflection.GeneratedProtocolMessageType('Sluitem_data', (_message.Message,), dict(
+    DESCRIPTOR = _BLK_SLU_6892_SLUITEM_DATA,
+    __module__ = 'protocol_tp_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Blk_slu_6892.Sluitem_data)
+    ))
+  ,
+  DESCRIPTOR = _BLK_SLU_6892,
+  __module__ = 'protocol_tp_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Blk_slu_6892)
+  ))
+_sym_db.RegisterMessage(Blk_slu_6892)
+_sym_db.RegisterMessage(Blk_slu_6892.Sluitem_data)
+
+Blk_slu_6895 = _reflection.GeneratedProtocolMessageType('Blk_slu_6895', (_message.Message,), dict(
+  DESCRIPTOR = _BLK_SLU_6895,
+  __module__ = 'protocol_tp_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Blk_slu_6895)
+  ))
+_sym_db.RegisterMessage(Blk_slu_6895)
+
 
 DESCRIPTOR.has_options = True
 DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), _b('H\001'))
@@ -476,4 +773,18 @@ _WXJY_ESU_5500.fields_by_name['x_time'].has_options = True
 _WXJY_ESU_5500.fields_by_name['x_time']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WXJY_ESU_5500.fields_by_name['x_voltage'].has_options = True
 _WXJY_ESU_5500.fields_by_name['x_voltage']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_BLK_SLU_6891.fields_by_name['sluitem_loop'].has_options = True
+_BLK_SLU_6891.fields_by_name['sluitem_loop']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['voltage'].has_options = True
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['voltage']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['current'].has_options = True
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['current']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['power'].has_options = True
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['power']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['error'].has_options = True
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['error']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['node'].has_options = True
+_BLK_SLU_6892_SLUITEM_DATA.fields_by_name['node']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_BLK_SLU_6895.fields_by_name['operation_value'].has_options = True
+_BLK_SLU_6895.fields_by_name['operation_value']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 # @@protoc_insertion_point(module_scope)

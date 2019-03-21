@@ -80,7 +80,12 @@ message Wlst_com_3e02 {
         string batch_number = 3;
     }
     message Group06 {
+        // 状态
         string state = 1;
+        // 15位imei号码
+        int64 imei = 2;
+        // 模块版本
+        string ver = 3;
     }
 }
 
@@ -91,4 +96,17 @@ message Wlst_com_3e82 {
     int32 group_mark = 2;
     //位号，依据组号排序
     repeated int32 args_mark = 3;
+}
+
+message Wlst_com_3e84 {
+    //11位地址，默认”00000000000“
+    string addr = 1;
+    // 信号强度
+    int32 signal = 2;
+    // 网络模式，4-4g，2-2/3g
+    int32 net_type = 3;
+    // 掉线次数
+    int32 disconn_count = 4;
+    // 重启次数
+    int32 reset_count = 5;
 }

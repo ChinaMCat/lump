@@ -11,9 +11,88 @@ from tornado import gen
 from mxpbjson import pb2json
 import base
 import time
+import random
 import pbiisi.msg_ws_pb2 as msgws
 import zmq
 import mlib_iisi.utils as libiisi
+
+
+@mxweb.route()
+class SysLightingRateHandler(base.RequestHandler):
+
+    help_doc = u'''基于单灯数据的系统亮灯率计算 (post方式访问)<br/>
+    <b>参数:</b><br/>
+    &nbsp;&nbsp;uuid - 用户登录成功获得的uuid<br/>
+    &nbsp;&nbsp;pb2 - rqTreeInfo()结构序列化并经过base64编码后的字符串<br/>
+    <b>返回:</b><br/>
+    &nbsp;&nbsp;TreeInfo()结构序列化并经过base64编码后的字符串'''
+
+    @gen.coroutine
+    def post(self):
+        user_data, rqmsg, msg, user_uuid = yield self.check_arguments(
+            msgws.rqQueryLightingRate(), msgws.QueryLightingRate())
+        msg.type = rqmsg.type
+
+        env = False
+        if user_data is not None:
+            t = time.localtime()
+            strsql = '''select time_sunrise,time_sunset from {0}.time_sunriset_info where date_month={1} and date_day={2}'''.format(
+                self._db_name, t[1], t[2])
+            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                strsql, need_fetch=1, need_paging=0)
+            tr = 0
+            ts = 0
+            daylight = False
+            if record_total is None:
+                msg.head.if_st = 45
+            else:
+                if len(cur) > 0:
+                    tr = cur[0][0]
+                    ts = cur[0][1]
+                    if t[3] * 60 + t[4] > tr - 20 and t[3] * 60 + t[4] < ts + 20:
+                        daylight = True
+            if daylight:
+                msg.lighting_rate = 0.0
+                try:
+                    os.remove(os.path.join(libiisi.m_cachedir, ".fakelr"))
+                except:
+                    pass
+            else:
+                if rqmsg.type == 0:  # 假亮灯率
+                    if os.isfile(os.path.join(libiisi.m_cachedir, ".fakelr")):
+                        with open(
+                                os.path.join(libiisi.m_cachedir, ".fakelr"),
+                                "r") as f:
+                            a = f.readline()
+                            f.close()
+                        if int(a) > 93:
+                            msg.lighting_rate = random.uniform(int(a), 98)
+                        else:
+                            msg.lighting_rate = random.uniform(93, 98)
+                elif rqmsg.type == 1:  # 依据data_slu_state_new表数据进行亮灯率计算
+                    lighton = 0
+                    lightall = 0
+                    strsql = '''select count(*) from {0}.data_slu_state_new where is_online=1
+                                union all
+                                select count(*) from {0}.data_slu_state_new where is_online=1 and is_light=1'''.format(
+                        self._db_name_data)
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                        strsql, need_fetch=1, need_paging=0)
+                    try:
+                        if cur is not None:
+                            lightall = int(cur[0][0])
+                            lighton = int(cur[1][0])
+                    except:
+                        lightall = 0
+                    if lightall == 0:
+                        msg.lighting_rate = random.uniform(93, 98)
+                    else:
+                        msg.lighting_rate = lighton * 1.0 / (lightall * 1.0)
+            del cur, strsql
+
+        self.write(mx.code_pb2(msg, self._go_back_format))
+        self.finish()
+        del user_data, rqmsg, msg
 
 
 @mxweb.route()
@@ -737,7 +816,8 @@ class TmlInfoHandler(base.RequestHandler):
                                     if d[9] is not None:
                                         loopinfo = msgws.TmlInfo.RtuLoopItem()
                                         loopinfo.loop_id = int(d[9])
-                                        loopinfo.loop_name = d[10] if d[10] is not None else ""
+                                        loopinfo.loop_name = d[
+                                            10] if d[10] is not None else ""
                                         loopinfo.loop_phase = int(d[11])
                                         loopinfo.loop_current_range = int(
                                             d[12])

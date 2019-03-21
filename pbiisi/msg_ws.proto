@@ -1507,3 +1507,14 @@ message QueryErrorCount {
         int64 count = 3; // 统计数据
     }
 }
+
+// 亮灯率计算
+message rqQueryLightingRate {
+    Head head = 1;
+    int32 type = 2; // 0-估算模式，1-依据data_slu_state_new表数据进行亮灯率计算
+}
+message QueryLightingRate {
+    Head head = 1;
+    int32 type = 2; // 同提交
+    double lighting_rate = 3;  // 亮灯率
+}

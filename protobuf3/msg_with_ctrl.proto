@@ -17,7 +17,7 @@ message MsgWithCtrl {
     //系统级别协议集
     wlst.pb2.SysCommands syscmds = 3;
     // 设备升级公共协议
-    wlst.pb2.Passthrough passthrough = 99;
+    wlst.pb2.Passthrough Passthrough = 99;
     //终端协议集
     wlst.pb2.WlstTerminal wlst_tml = 100;
     //模块协议集
@@ -26,6 +26,7 @@ message MsgWithCtrl {
     wlst.pb2.Wlst_com_3e02 wlst_com_3e02 = 1002;
     wlst.pb2.Wlst_com_3e82 wlst_com_3e82 = 1003;
     wlst.pb2.Wlst_com_3e02 wlst_com_3e81 = 1004;
+    wlst.pb2.Wlst_com_3e84 wlst_com_3e84 = 1005;
 
     //第三方设备
     //江阴节能
@@ -45,6 +46,28 @@ message MsgWithCtrl {
     // 读取时钟，cmd=ahhf.rtu.1300，应答采用wlst_rtu_9300
     // 读取年设置，采用wlst_rtu_7061，应答采用wlst_rtu_70e1
     // 选测, cmd=ahhf.rtu.2000,应答采用wlst_rtu_70d0
+
+    // 勃洛克单灯
+    // 选测控制器数据
+    wlst.pb2.Blk_slu_6891 blk_slu_6891 = 2201;
+    // 选测控制器数据应答
+    wlst.pb2.Blk_slu_6892 blk_slu_6892 = 2202;
+    // 对时
+    wlst.pb2.Blk_slu_6891 blk_slu_6887 = 2203;
+    // 对时应答
+    wlst.pb2.Blk_slu_6891 blk_slu_6888 = 2204;
+    // 即时控制
+    wlst.pb2.Blk_slu_6895 blk_slu_6895 = 2205;
+    // 即时控制应答
+    wlst.pb2.Blk_slu_6895 blk_slu_6896 = 2206;
+    // 集中器定时设置
+    wlst.pb2.Blk_slu_6895 blk_slu_6889 = 2207;
+    // 集中器定时设置应答
+    wlst.pb2.Blk_slu_6895 blk_slu_6890 = 2208;
+    // 控制器回路数设置
+    wlst.pb2.Blk_slu_6891 blk_slu_6893 = 2209;
+    // 控制器回路数设置应答
+    wlst.pb2.Blk_slu_6891 blk_slu_6894 = 2210;
 }
 
 // 中间层报警信息提交

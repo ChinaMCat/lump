@@ -12,7 +12,183 @@ message Wlst_rtu_ans {
     repeated int32 data_point = 3 [packed=true];
     // 应答,0-失败，1-成功，填充顺序和data_mark相同
     repeated int32 status = 4 [packed=true];
+    // 状态码，详细参考文档
+    int32 status_code = 5;
 }
+// 3006主动上报
+message Wlst_rtu_7094 {
+    // 序号
+    int32 cmd_idx = 1;
+    // 报警类型，400-火零不平衡,401-24路设备开关灯操作后应答
+    int32 alarm_type = 2;
+    // 火零不平衡报警内容
+    Alarm_LN alarmln = 3;
+    message Alarm_LN {
+        // 回路序号，1-12
+        int32 loop_no = 1;
+        // 报警类型，1-报警，2-报警并分匝
+        int32 alarm_status = 2;
+        // 报警电流
+        double alarm_current = 3;
+    }
+    // 24路开关灯后操作结果，依次为1-24路输出状态，1-通，0-断
+    repeated int32 switch_out_st_packed = 4 [packed=true]; 
+}
+// 设置/读取终端参数 （火零不平衡参数,1-24路周控制时间表）
+message Wlst_rtu_7021 {
+    // 序号
+    int32 cmd_idx = 1;
+    // 参数类别，1-火零不平衡参数,2-1~24路周控制时间表
+    int32 data_type = 2;
+    // 火零不平衡参数
+    repeated Args_LN argsln = 3;
+    // 设置应答状态码
+    int32 status_code = 4;
+
+    // 回路代码 0-1~8回路,1-9~16回路,2-17~24回路
+    int32 loop_type = 5;
+    // 周日到周六 时间表参数(定长7)
+    repeated Args_WC argswc=6;
+
+    message Args_LN {
+        // 回路启用标识,1-12回路序号,填充回路号,超范围无视,不启用的回路不用填充
+        int32 loop_no = 1;
+        // 基础值(0-200)
+        int32 base_value = 2;
+        // 报警阀值(0-200)
+        int32 alarm_value = 3;
+        // 分闸阀值(0-200)
+        int32 break_value = 4;
+    }
+    message Args_WC {
+      // L1开灯时间(时*60+分钟,不操作填1500)
+      int32 l1_on = 1;
+      // L1关灯时间
+      int32 l1_off = 2;
+      // L2开灯时间
+      int32 l2_on = 3;
+      // L2关灯时间
+      int32 l2_off = 4;
+      // L3开灯时间
+      int32 l3_on = 5;
+      // L3关灯时间
+      int32 l3_off = 6;
+      // L4开灯时间
+      int32 l4_on = 7;
+      // L4关灯时间
+      int32 l4_off = 8;
+      // L5开灯时间
+      int32 l5_on = 9;
+      // L5关灯时间
+      int32 l5_off = 10;
+      // L6开灯时间
+      int32 l6_on = 11;
+      // L6关灯时间
+      int32 l6_off = 12;
+      // L7开灯时间
+      int32 l7_on = 13;
+      // L7关灯时间
+      int32 l7_off = 14;
+      // L8开灯时间
+      int32 l8_on = 15;
+      // L8关灯时间
+      int32 l8_off = 16;
+    }
+}
+// 遥控
+message Wlst_rtu_7023 {
+    // 序号
+    int32 cmd_idx = 1;
+    // 参数类别，1-遥控
+    int32 data_type = 2;
+    // 控制参数
+    repeated Args_Control argscontrol = 3;
+    // 应答状态码 0-成功
+    int32 status_code = 4;
+    message Args_Control {
+        // 回路启用标识,1-24回路序号,填充回路号,超范围无视,不启用的回路不用填充
+        int32 loop_no = 1;
+        // 开关标识 0-关,1-开
+        int32 operation = 2;
+    }
+}
+// 硬件相关参数招测
+message Wlst_rtu_705b {
+    // 序号
+    int32 cmd_idx = 1;
+    // 数据类型，1-硬件版本信息
+    int32 cmd_type = 2;
+    // 硬件版本
+    string hardware_ver = 3;
+    // 生产批次,年周 如：1820
+    string production_batch = 4;
+    // 生产日期,年月日
+    string production_date = 5;
+    // 安装日期，年月日
+    string installation_date = 6;
+}
+// 电能计量
+message Wlst_rtu_70a0 {
+    // 序号
+    int32 cmd_idx = 1;
+    // 数据类型，1-电能计量，2-辅助数据+gps定位数据,3-24路输出选测数据
+    int32 cmd_type = 2;
+    // 频率，cmd_type==1时填
+    float frequency = 3;
+    // 依次三相位电能数据
+    repeated Electric_energy ee = 4;
+    message Electric_energy {
+        // 电压，cmd_type==1，3时填
+        float voltage = 1;
+        // 电流，cmd_type==1，3时填
+        float current = 2;
+        // 功率因素，cmd_type==1时填
+        float power_factor = 3;
+        // 有功功率，cmd_type==1，3时填
+        float active_power = 4;
+        // 无功功率，cmd_type==1时填
+        float reactive_power = 5;
+        // 有功电能，cmd_type==1时填
+        float active_energy = 6;
+        // 无功电能，cmd_type==1时填
+        float reactive_energy = 7;
+    }
+    // 温度，-25-100，cmd_type==2,3时填
+    int32 temperature = 5;
+    // 湿度，0-99%，cmd_type==2,3时填
+    int32 humidity = 6;
+    // 主电源电压，cmd_type==2,3时填
+    double main_voltage = 7;
+    // 蓄电池电量，cmd_type==2时填
+    int32 battery_power = 8;
+    // 经度，cmd_type==2时填
+    double longitude = 9;
+    // 纬度，cmd_type==2时填
+    double latitude = 10;
+    // cmd_type==2时填
+    Gps_args gpsargs = 11;
+    message Gps_args {
+        // 定位方式:1—GPS定位,2—北斗定位,3—混合定位
+        int32 gps_type = 1;
+        // 纬度类型：0-北纬,1-南纬
+        int32 lat_type = 2;
+        // 经度类型：0-东经，1-西经
+        int32 lon_type = 3;
+        // 定位状态：0-未定位,1-已定位
+        int32 location_status = 4;
+    }
+    // 开关量输入状态 0-断,1-通，cmd_type==3时填
+    repeated int32 switch_in_st_packed = 12 [packed=true];
+    // 开关量输出状态 0-断,1-通，cmd_type==3时填
+    repeated int32 switch_out_st_packed = 13 [packed=true];
+    // 终端运行状态，cmd_type==3时填 [供电位0-有电,1-无电;开机申请位,0-无,1-开机;停运位,0-正常,1-停运;报警位,0-无警,1-告警;电压超限,0-正常,1-超限;电流超限,0-正常,1-超限;无电流报警,0-正常,1-报警;参数错误,0-正常,1-错误]
+    repeated int32 tml_st_packed = 14 [packed=true];
+    // 终端复位次数[当前,昨天,前天,大前天]，cmd_type==3时填
+    repeated int32 tml_reset = 15 [packed=true];
+    // 回路数量，cmd_type==3时填
+    int32 loop_count = 16;
+}
+
 // sd卡数据招测
 message Wlst_rtu_7053 {
     // 序号
@@ -152,7 +328,10 @@ message Wlst_rtu_70d0 {
 
 // 召测终端参数(旧版召测协议也将升级为该结构)
 message Wlst_rtu_705a {
+    // 序号
     int32 cmd_idx = 1;
+    // 指令类型，1-招测基础参数，2-招测互感比值
+    int32 cmd_type = 2;
 }
 message Wlst_rtu_70da {
     int32 cmd_idx = 1;
@@ -198,6 +377,10 @@ message Wlst_rtu_70da {
     repeated int32 x_lower_current_limit = 21 [packed=true];
     //优先组地址
     int32 group_id = 22;
+    // 指令类型，1-招测基础参数，2-招测互感比值
+    int32 cmd_type = 23;
+    // ABC三项电能板互感比
+    repeated int32 transformers = 24 [packed=true];
 }
 
 //远程修改主板通讯参数
@@ -205,23 +388,9 @@ message Wlst_rtu_700a {
     repeated int32 com_argv = 1;
 }
 
-// 终端升级上报
-message Wlst_rtu_7081 {
-    // 序号
-    int32 cmd_idx = 1;
-    // 状态
-    int32 status = 2;
-    // 旧版本
-    string old_ver = 3;
-    // 新版本
-    string new_ver = 4;
-    // 位置关系
-    int32 data_location  = 5;
-}
-
 //模块ftp升级
 message Wlst_rtu_7010 {
-    // 复位类型，1-复位终端，2-恢复出厂参数，3-复位通信模块
+    // 复位类型，1-复位终端，2-恢复出厂参数，3-复位通信模块，4-火零不平衡复位
     int32 data_mark = 1;
     //序号
     int32 cmd_idx = 2;
@@ -264,6 +433,20 @@ message Wlst_rtu_7087 {
     repeated int32 failed_packages = 3;
     //设备传回的失败标识字节数
     int32 bytes_count = 4;
+}
+
+// 终端升级上报
+message Wlst_rtu_7081 {
+    // 序号
+    int32 cmd_idx = 1;
+    // 状态
+    int32 status = 2;
+    // 旧版本
+    string old_ver = 3;
+    // 新版本
+    string new_ver = 4;
+    // 位置关系
+    int32 data_location  = 5;
 }
 
 //3006终端升级发送数据包
@@ -365,6 +548,14 @@ message Wlst_rtu_4104 {
 message Wlst_rtu_4110 {
     //开关量输入路数总数
     int32 switch_in_sum = 1;
+}
+
+// 设置电能采集版电流互感器比值
+message Wlst_rtu_4111 {
+    // A,B,C三项互感比，下行不需要/5,如100：5的填充100即可
+    repeated int32 transformers = 1 [packed=true];
+    // 设置状态，0-失败，1-成功
+    int32 status = 2;
 }
 
 message Wlst_rtu_4200 {

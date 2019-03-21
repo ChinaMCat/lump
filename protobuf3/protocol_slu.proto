@@ -17,6 +17,134 @@ message Wlst_slu_f400 {
     int32 sluitem_addr = 4;
 }
 
+// Wlst_slu_b900 nb控制器数据主报
+message Wlst_slu_3900 {
+    // 序号
+    int32 cmd_idx =  1;
+    // 型号
+    Model_info model_info=2;
+    // 回路数据
+    repeated Light_data light_data = 3;
+    // 漏电流
+    double leakage_current = 4;
+    // 控制器状态
+    Sluitem_status sluitem_status = 5;
+    // 时钟故障
+    Time_fault time_fault = 6;
+    // 自复位次数
+    int32 reset_count = 7;
+    // 时间
+    int64 date_time = 8;
+    // 控制器运行参数
+    Sluitem_para sluitem_para = 9;
+    // 参考信号接收功率
+    int64 rsrp = 10;
+    // 接收信号强度等级
+    int64 rssi = 11;
+    // 信噪比
+    int64 snr = 12;
+    // 物理小区标识
+    int64 pci = 13;
+    // 参考信号接收质量
+    int64 rsrq = 14;
+    // 终端发射功率
+    int64 txpower = 15;
+    // 频点号
+    int64 earfcn = 16;
+    // 信号覆盖等级
+    int32 ecl = 17;
+    // 信号强度值
+    int32 csq = 18;
+    // 主动上报原因，0-非主动上报，1-上电，2-开关灯状态变化，3-故障发生/消除，4-定时主动上报
+    int32 reson = 19;
+    // 重连次数
+    int32 retry = 20;
+    // 日出时间
+    int32 sunrise = 21;
+    // 日落时间
+    int32 sunset = 22;
+
+    message Model_info {
+        // 控制器回路数量
+        int32 sluitem_loop = 1;
+        // 节能方式 0-无控制，1-只有开关灯，2-一档节能，3-二档节能，4-RS485，5-PWM，6-0~10V
+        int32 power_saving = 2;
+        // 漏电流测量 0-无，1-有
+        int32 has_leakage = 3;
+        // 温度采集 0-无，1-有
+        int32 has_temperature = 4;
+        // 时钟 0-无，1-有
+        int32 has_timer = 5;
+        // 型号 0-unknow
+        int32 model = 6;
+        // 字符串型号
+        string sluitem_type = 7;
+    }
+
+    message Light_data {
+        // 电压
+        double voltage = 1;
+        // 电流
+        double current = 2;
+        // 有功功率
+        double active_power = 3;
+        // 无功功率
+        double reactive_power = 4;
+        // 视在功率
+        double apparent_power = 5;
+        // 电量
+        double electricity = 6;
+        // 运行时间
+        double active_time = 7;
+        // 灯状态
+        Light_status light_status=8;
+        // 节能档位
+        int32 power_level = 9;
+        // 控制器上电开灯 true-开灯，false-关灯
+        int32 sluitem_power_turnon = 10;
+        // 1-4回路额定功率
+        int32 rated_power = 11;
+    }
+
+    message Light_status {
+      // 灯具漏电 0-正常，1-漏电
+      int32 leakage = 1;
+      // 故障 0-正常，1-光源故障，2-补偿电容故障，3-意外灭灯，4-意外亮灯，5-自熄灯
+      int32 fault = 2;
+      // 工作状态 0-正常亮灯，1-保留，2-调光节能，3-关灯
+      int32 working_on = 3;
+    }
+
+    message Sluitem_status {
+        // flash故障 0-正常 1-故障
+        int32 flash_fault = 1;
+        // 主动报警禁止 0-正常 1-禁止
+        int32 enable_alarm = 2;
+    }
+
+    message Time_fault {
+        // 本地时钟故障 0-正常 1-故障
+        int32 clock_fault = 1;
+        // 本地时钟超差故障 0-正常 1-故障
+        int32 clock_out_fault = 2;
+        // 校时超差故障 0-正常 1-故障
+        int32 clock_out_alarm = 3;
+    }
+
+    message Sluitem_para {
+        // 经度
+        double longitude = 1;
+        // 纬度
+        double latitude = 2;
+        // 是否允许主报 0-允许 1-不允许
+        int32 has_enable_alarm = 3;
+        // 是否投运 0-投运 1-停运
+        int32 is_running = 4;
+        // 主动报警间隔 单位分钟 0表示30分钟
+        int32 alarm_interval = 5;
+    }
+}
+
 // 单灯事件查询
 message Wlst_slu_7800 {
     int32 cmd_idx = 1;
@@ -159,7 +287,7 @@ message Wlst_slu_6b00 {
     message Cmd_pwm {
         // 回路(仅需要操作的回路序号)
         repeated int32 loop_can_do = 1 [packed=true];
-        // 比例 0-10 -> 0%-100%
+        // 比例 0-100 -> 0%-100%
         int32 scale = 2;
         // 频率 /100为发送值
         int32 rate = 3;
@@ -333,6 +461,8 @@ message Wlst_slu_9d00 {
     // 读取状态0-失败，1-成功
     int32 status = 14;
     Set_mark set_mark = 15;
+    // 是否有后续数据,0-没有，1-有
+    int32 data_continue = 16;
 
     message Set_mark {
         int32 set_timer = 1;
@@ -393,7 +523,7 @@ message Wlst_slu_9d00 {
         // 自复位次数
         int32 reset_count = 13;
         // 节能档位
-        repeated int32 energy_saving = 14;
+        repeated int32 energy_saving = 14 [packed=true];
     }
     message Sluitem_para {
         // 域名
@@ -412,6 +542,10 @@ message Wlst_slu_9d00 {
         double latitude = 7;
         // 1-4回路额定功率
         repeated int32 rated_power = 8 [packed=true];
+        // nb主报间隔，(0～127)*5
+        int32 uplink_timer = 9;
+        // nb主报需要主站应答，0-不需要，1-需要
+        int32 uplink_reply = 10;
     }
     message Sluitem_ver {
         // 控制器回路
@@ -581,6 +715,10 @@ message Wlst_slu_f200 {
         double longitude = 13;
         // 纬度
         double latitude = 14;
+        // nb主报间隔，(0～127)*5
+        int32 uplink_timer = 15;
+        // nb主报需要主站应答，0-不需要，1-需要
+        int32 uplink_reply = 16;
     }
 }
 
@@ -897,7 +1035,7 @@ message Wlst_slu_7400 {
     message Cmd_pwm {
         // 回路(仅需要操作的回路序号)
         repeated int32 loop_can_do = 1 [packed=true];
-        // 比例 0-10 -> 0%-100%
+        // 比例 0-100 -> 0%-100%
         int32 scale = 2;
         // 频率 /100为发送值
         int32 rate = 3;
@@ -937,7 +1075,7 @@ message Wlst_slu_7c00 {
         message Cmd_pwm {
             // 回路
             repeated int32 loop_can_do = 1 [packed=true];
-            // 比例 0-100～0%-100%
+            // 比例 0-100～10%-100%
             int32 scale = 2;
             // 频率 /100为发送值
             int32 rate = 3;

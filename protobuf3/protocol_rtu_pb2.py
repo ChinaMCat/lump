@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protocol_rtu.proto',
   package='wlst.pb2',
   syntax='proto3',
-  serialized_pb=_b('\n\x12protocol_rtu.proto\x12\x08wlst.pb2\"b\n\x0cWlst_rtu_ans\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x15\n\tdata_mark\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x16\n\ndata_point\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06status\x18\x04 \x03(\x05\x42\x02\x10\x01\"v\n\rWlst_rtu_7053\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0brecord_type\x18\x02 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x14\n\x0crecord_count\x18\x04 \x01(\x05\x12\x17\n\x0frecord_distance\x18\x05 \x01(\x03\"\x97\x02\n\rWlst_rtu_70d3\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x14\n\x0crecord_total\x18\x02 \x01(\x05\x12\x12\n\nrecord_idx\x18\x03 \x01(\x05\x12\x15\n\rrecord_status\x18\x04 \x01(\x05\x12\x13\n\x0brecord_type\x18\x05 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x06 \x01(\x03\x12\x14\n\x0crecord_count\x18\x07 \x01(\x05\x12\x17\n\x0frecord_distance\x18\x08 \x01(\x03\x12*\n\tdata_70d0\x18\t \x03(\x0b\x32\x17.wlst.pb2.Wlst_rtu_70d0\x12\x32\n\rdata_70d0_max\x18\n \x03(\x0b\x32\x1b.wlst.pb2.Wlst_rtu_70d0_max\"\xbb\x01\n\x11Wlst_rtu_70d0_max\x12\x11\n\tdt_record\x18\x01 \x01(\x03\x12\x13\n\x0brecord_type\x18\x02 \x01(\x05\x12\x12\n\nloop_count\x18\x03 \x01(\x05\x12\x36\n\x08max_data\x18\x04 \x03(\x0b\x32$.wlst.pb2.Wlst_rtu_70d0_max.Max_data\x1a\x32\n\x08Max_data\x12\x13\n\x0b\x63urrent_max\x18\x01 \x01(\x01\x12\x11\n\tdt_record\x18\x02 \x01(\x03\"\xa0\x01\n\rWlst_rtu_7800\x12\x12\n\nevent_type\x18\x01 \x01(\x05\x12\x13\n\x0b\x65vent_class\x18\x02 \x01(\x05\x12\x10\n\x08\x64\x61ta_num\x18\x03 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x04 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x05 \x01(\x03\x12\x0f\n\x07\x61ll_num\x18\x06 \x01(\x05\x12\x0f\n\x07\x63ur_num\x18\x07 \x01(\x05\x12\x10\n\x08raw_data\x18\x08 \x01(\t\"3\n\rWlst_rtu_7050\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\"\xaf\x06\n\rWlst_rtu_70d0\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x34\n\tdata_mark\x18\x02 \x01(\x0b\x32!.wlst.pb2.Wlst_rtu_70d0.Data_mark\x12\x1f\n\x13switch_in_st_packed\x18\x03 \x03(\x05\x42\x02\x10\x01\x12 \n\x14switch_out_st_packed\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x19\n\rtml_st_packed\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0btemperature\x18\x06 \x01(\x05\x12\x12\n\ngprs_reset\x18\x07 \x01(\x05\x12\x13\n\x0bgprs_signal\x18\x08 \x01(\x05\x12\x15\n\ttml_reset\x18\t \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x0ftml_args_status\x18\n \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0cpower_supply\x18\x0b \x01(\x01\x12\x42\n\x10sampling_voltage\x18\x0c \x03(\x0b\x32(.wlst.pb2.Wlst_rtu_70d0.Sampling_voltage\x12\x38\n\x0b\x61nalog_data\x18\r \x03(\x0b\x32#.wlst.pb2.Wlst_rtu_70d0.Analog_data\x12\x14\n\x0cswitch_in_st\x18\x0e \x01(\x03\x12\x15\n\rswitch_out_st\x18\x0f \x01(\x05\x12\x0e\n\x06tml_st\x18\x10 \x01(\x05\x12\x12\n\nfull_range\x18\x11 \x01(\x05\x12\x11\n\tdt_record\x18\x12 \x01(\x03\x12\x1d\n\x11switch_out_reason\x18\x13 \x03(\x05\x42\x02\x10\x01\x1a?\n\tData_mark\x12\x14\n\x0cget_run_data\x18\x01 \x01(\x05\x12\x1c\n\x14get_switchout_reason\x18\x02 \x01(\x05\x1a?\n\x10Sampling_voltage\x12\r\n\x05vol_a\x18\x01 \x01(\x01\x12\r\n\x05vol_b\x18\x02 \x01(\x01\x12\r\n\x05vol_c\x18\x03 \x01(\x01\x1an\n\x0b\x41nalog_data\x12\x0f\n\x07voltage\x18\x01 \x01(\x01\x12\x0f\n\x07\x63urrent\x18\x02 \x01(\x01\x12\r\n\x05power\x18\x03 \x01(\x01\x12\x16\n\x0evoltage_status\x18\x04 \x01(\x05\x12\x16\n\x0e\x63urrent_status\x18\x05 \x01(\x05\" \n\rWlst_rtu_705a\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\"\xcc\x04\n\rWlst_rtu_70da\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x12\n\nkeep_alive\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x03 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x04 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x05 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x06 \x01(\x05\x12\x12\n\nanalog_sum\x18\x07 \x01(\x05\x12\x18\n\x10x_switching_time\x18\x08 \x03(\t\x12\x15\n\rcity_pay_time\x18\t \x01(\t\x12\x15\n\rself_pay_time\x18\n \x01(\t\x12\x1e\n\x12x_switch_out_count\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x1d\n\x11switch_in_hopping\x18\x0c \x03(\x05\x42\x02\x10\x01\x12\x15\n\rvoltage_range\x18\r \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x0e \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x0f \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x10 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x0fx_analog_vector\x18\x11 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x13upper_voltage_limit\x18\x12 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x13 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x14 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x15 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08group_id\x18\x16 \x01(\x05\"!\n\rWlst_rtu_700a\x12\x10\n\x08\x63om_argv\x18\x01 \x03(\x05\"i\n\rWlst_rtu_7081\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x0f\n\x07old_ver\x18\x03 \x01(\t\x12\x0f\n\x07new_ver\x18\x04 \x01(\t\x12\x15\n\rdata_location\x18\x05 \x01(\x05\"C\n\rWlst_rtu_7010\x12\x11\n\tdata_mark\x18\x01 \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\x02 \x01(\x05\x12\x0e\n\x06status\x18\x03 \x01(\x05\"2\n\rWlst_rtu_7003\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x66tp_data\x18\x02 \x03(\x05\"G\n\rWlst_rtu_7006\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tall_count\x18\x02 \x01(\x05\x12\x12\n\ncache_name\x18\x03 \x01(\t\" \n\rWlst_rtu_7007\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\"^\n\rWlst_rtu_7087\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x17\n\x0f\x66\x61iled_packages\x18\x03 \x03(\x05\x12\x13\n\x0b\x62ytes_count\x18\x04 \x01(\x05\"o\n\rWlst_rtu_7008\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08upd_data\x18\x02 \x03(\t\x12\x12\n\ncache_name\x18\x03 \x01(\t\x12\r\n\x05\x63lean\x18\x04 \x01(\x05\x12\x18\n\x0cint_upd_data\x18\x05 \x03(\x05\x42\x02\x10\x01\"\xbc\x01\n\rWlst_rtu_7060\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ys\x18\x03 \x01(\x05\x12\x33\n\tyear_ctrl\x18\x04 \x03(\x0b\x32 .wlst.pb2.Wlst_rtu_7060.YearCtrl\x1a\x45\n\x08YearCtrl\x12\x0f\n\x07loop_no\x18\x01 \x01(\x05\x12\x12\n\ntime_count\x18\x02 \x01(\x05\x12\x14\n\x08opt_time\x18\x03 \x03(\x05\x42\x02\x10\x01\"U\n\rWlst_rtu_7061\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ys\x18\x03 \x01(\x05\x12\x13\n\x07loop_no\x18\x04 \x03(\x05\x42\x02\x10\x01\"0\n\rWlst_rtu_70e0\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\",\n\rWlst_rtu_7b00\x12\x0b\n\x03sim\x18\x01 \x01(\t\x12\x0e\n\x06signal\x18\x02 \x01(\x05\"-\n\rWlst_rtu_1900\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\x05\x12\x0e\n\x06tml_ip\x18\x02 \x01(\x03\"z\n\rWlst_rtu_4000\x12\x11\n\twork_mark\x18\x01 \x01(\x05\x12\x12\n\nkeep_alive\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x03 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x04 \x01(\x05\x12\x18\n\x0cx_loop_count\x18\x05 \x03(\x05\x42\x02\x10\x01\"W\n\rWlst_rtu_4101\x12\x12\n\nanalog_sum\x18\x01 \x01(\x05\x12\x15\n\rvoltage_range\x18\x02 \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x03 \x03(\x05\x42\x02\x10\x01\"`\n\rWlst_rtu_4104\x12\x14\n\x0cswitchin_sum\x18\x01 \x01(\x05\x12\x1b\n\x0fx_switch_vector\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x1c\n\x10x_switch_hopping\x18\x03 \x03(\x05\x42\x02\x10\x01\"&\n\rWlst_rtu_4110\x12\x15\n\rswitch_in_sum\x18\x01 \x01(\x05\"\xb0\x01\n\rWlst_rtu_4200\x12\x1b\n\x0fx_analog_vector\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nanalog_sum\x18\x04 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x05 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x06 \x01(\x05\"\xd7\x01\n\rWlst_rtu_4401\x12\x12\n\nanalog_sum\x18\x01 \x01(\x05\x12\x1b\n\x13upper_voltage_limit\x18\x02 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x03 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x04 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rvoltage_range\x18\x06 \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x07 \x03(\x05\x42\x02\x10\x01\"\xc5\x04\n\rWlst_rtu_da00\x12\x12\n\nkeep_alive\x18\x01 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x03 \x01(\x05\x12\x0c\n\x04\x61\x64\x64r\x18\x04 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x05 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x06 \x01(\x05\x12\x12\n\nanalog_sum\x18\x07 \x01(\x05\x12\x18\n\x10x_switching_time\x18\x08 \x03(\t\x12\x15\n\rcity_pay_time\x18\t \x01(\t\x12\x15\n\rself_pay_time\x18\n \x01(\t\x12\x1e\n\x12x_switch_out_count\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x19\n\x11switch_in_hopping\x18\x0c \x01(\x05\x12\x15\n\rvoltage_range\x18\r \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x0e \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x0f \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x10 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x0fx_analog_vector\x18\x11 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x13upper_voltage_limit\x18\x12 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x13 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x14 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x15 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08group_id\x18\x16 \x01(\x05\"j\n\rWlst_rtu_df00\x12\x18\n\x10x_switching_time\x18\x08 \x03(\t\x12\x1e\n\x12x_switch_out_count\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x0f \x03(\x05\x42\x02\x10\x01\",\n\rWlst_rtu_6100\x12\x1b\n\x0fx_voltage_phase\x18\x01 \x03(\x05\x42\x02\x10\x01\"\x89\x02\n\rWlst_rtu_a000\x12\x1c\n\x10x_analog_voltage\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10x_analog_current\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x1a\n\x0ex_analog_power\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x14\n\x0cswitch_in_st\x18\x04 \x01(\x03\x12\x15\n\rswitch_out_st\x18\x05 \x01(\x05\x12\x0e\n\x06tml_st\x18\x06 \x01(\x05\x12\x1c\n\x10x_current_status\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x1c\n\x10x_voltage_status\x18\x08 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nfull_range\x18\t \x01(\x05\x12\x13\n\x0btemperature\x18\n \x01(\x05\"0\n\rWlst_rtu_a200\x12\x0c\n\x04k_no\x18\x01 \x01(\x05\x12\x11\n\toperation\x18\x02 \x01(\x05\"&\n\rWlst_rtu_4b00\x12\x15\n\toperation\x18\x01 \x03(\x05\x42\x02\x10\x01\"!\n\rWlst_rtu_9300\x12\x10\n\x08tml_date\x18\x01 \x01(\t\"\xf9\x01\n\rWlst_rtu_b200\x12\x15\n\rx_k1_opt_time\x18\x01 \x03(\t\x12\x15\n\rx_k2_opt_time\x18\x02 \x03(\t\x12\x15\n\rx_k3_opt_time\x18\x03 \x03(\t\x12\x17\n\x0fx_city_pay_time\x18\x04 \x03(\t\x12\x17\n\x0fx_self_pay_time\x18\x05 \x03(\t\x12\x15\n\rx_k4_opt_time\x18\x06 \x03(\t\x12\x15\n\rx_k5_opt_time\x18\x07 \x03(\t\x12\x15\n\rx_k6_opt_time\x18\x08 \x03(\t\x12\x15\n\rx_k7_opt_time\x18\t \x03(\t\x12\x15\n\rx_k8_opt_time\x18\n \x03(\t\"\xed\x01\n\rWlst_rtu_e600\x12\x12\n\nx_holidays\x18\x01 \x03(\t\x12\x11\n\tx_k1_time\x18\x02 \x03(\t\x12\x11\n\tx_k2_time\x18\x03 \x03(\t\x12\x11\n\tx_k3_time\x18\x04 \x03(\t\x12\x11\n\tx_k4_time\x18\x05 \x03(\t\x12\x11\n\tx_k5_time\x18\x06 \x03(\t\x12\x11\n\tx_k6_time\x18\x07 \x03(\t\x12\x11\n\tx_k7_time\x18\n \x03(\t\x12\x11\n\tx_k8_time\x18\x0b \x03(\t\x12\x17\n\x0fx_city_pay_time\x18\x08 \x03(\t\x12\x17\n\x0fx_self_pay_time\x18\t \x03(\t\"\x1f\n\rWlst_rtu_9800\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1c\n\rWlst_rtu_dc00\x12\x0b\n\x03ver\x18\x01 \x01(\tB\x02H\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x12protocol_rtu.proto\x12\x08wlst.pb2\"w\n\x0cWlst_rtu_ans\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x15\n\tdata_mark\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x16\n\ndata_point\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x12\n\x06status\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0bstatus_code\x18\x05 \x01(\x05\"\xd3\x01\n\rWlst_rtu_7094\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x12\n\nalarm_type\x18\x02 \x01(\x05\x12\x31\n\x07\x61larmln\x18\x03 \x01(\x0b\x32 .wlst.pb2.Wlst_rtu_7094.Alarm_LN\x12 \n\x14switch_out_st_packed\x18\x04 \x03(\x05\x42\x02\x10\x01\x1aH\n\x08\x41larm_LN\x12\x0f\n\x07loop_no\x18\x01 \x01(\x05\x12\x14\n\x0c\x61larm_status\x18\x02 \x01(\x05\x12\x15\n\ralarm_current\x18\x03 \x01(\x01\"\x9b\x04\n\rWlst_rtu_7021\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tdata_type\x18\x02 \x01(\x05\x12/\n\x06\x61rgsln\x18\x03 \x03(\x0b\x32\x1f.wlst.pb2.Wlst_rtu_7021.Args_LN\x12\x13\n\x0bstatus_code\x18\x04 \x01(\x05\x12\x11\n\tloop_type\x18\x05 \x01(\x05\x12/\n\x06\x61rgswc\x18\x06 \x03(\x0b\x32\x1f.wlst.pb2.Wlst_rtu_7021.Args_WC\x1aX\n\x07\x41rgs_LN\x12\x0f\n\x07loop_no\x18\x01 \x01(\x05\x12\x12\n\nbase_value\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_value\x18\x03 \x01(\x05\x12\x13\n\x0b\x62reak_value\x18\x04 \x01(\x05\x1a\x81\x02\n\x07\x41rgs_WC\x12\r\n\x05l1_on\x18\x01 \x01(\x05\x12\x0e\n\x06l1_off\x18\x02 \x01(\x05\x12\r\n\x05l2_on\x18\x03 \x01(\x05\x12\x0e\n\x06l2_off\x18\x04 \x01(\x05\x12\r\n\x05l3_on\x18\x05 \x01(\x05\x12\x0e\n\x06l3_off\x18\x06 \x01(\x05\x12\r\n\x05l4_on\x18\x07 \x01(\x05\x12\x0e\n\x06l4_off\x18\x08 \x01(\x05\x12\r\n\x05l5_on\x18\t \x01(\x05\x12\x0e\n\x06l5_off\x18\n \x01(\x05\x12\r\n\x05l6_on\x18\x0b \x01(\x05\x12\x0e\n\x06l6_off\x18\x0c \x01(\x05\x12\r\n\x05l7_on\x18\r \x01(\x05\x12\x0e\n\x06l7_off\x18\x0e \x01(\x05\x12\r\n\x05l8_on\x18\x0f \x01(\x05\x12\x0e\n\x06l8_off\x18\x10 \x01(\x05\"\xb7\x01\n\rWlst_rtu_7023\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tdata_type\x18\x02 \x01(\x05\x12\x39\n\x0b\x61rgscontrol\x18\x03 \x03(\x0b\x32$.wlst.pb2.Wlst_rtu_7023.Args_Control\x12\x13\n\x0bstatus_code\x18\x04 \x01(\x05\x1a\x32\n\x0c\x41rgs_Control\x12\x0f\n\x07loop_no\x18\x01 \x01(\x05\x12\x11\n\toperation\x18\x02 \x01(\x05\"\x96\x01\n\rWlst_rtu_705b\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x63md_type\x18\x02 \x01(\x05\x12\x14\n\x0chardware_ver\x18\x03 \x01(\t\x12\x18\n\x10production_batch\x18\x04 \x01(\t\x12\x17\n\x0fproduction_date\x18\x05 \x01(\t\x12\x19\n\x11installation_date\x18\x06 \x01(\t\"\xb4\x05\n\rWlst_rtu_70a0\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x63md_type\x18\x02 \x01(\x05\x12\x11\n\tfrequency\x18\x03 \x01(\x02\x12\x33\n\x02\x65\x65\x18\x04 \x03(\x0b\x32\'.wlst.pb2.Wlst_rtu_70a0.Electric_energy\x12\x13\n\x0btemperature\x18\x05 \x01(\x05\x12\x10\n\x08humidity\x18\x06 \x01(\x05\x12\x14\n\x0cmain_voltage\x18\x07 \x01(\x01\x12\x15\n\rbattery_power\x18\x08 \x01(\x05\x12\x11\n\tlongitude\x18\t \x01(\x01\x12\x10\n\x08latitude\x18\n \x01(\x01\x12\x31\n\x07gpsargs\x18\x0b \x01(\x0b\x32 .wlst.pb2.Wlst_rtu_70a0.Gps_args\x12\x1f\n\x13switch_in_st_packed\x18\x0c \x03(\x05\x42\x02\x10\x01\x12 \n\x14switch_out_st_packed\x18\r \x03(\x05\x42\x02\x10\x01\x12\x19\n\rtml_st_packed\x18\x0e \x03(\x05\x42\x02\x10\x01\x12\x15\n\ttml_reset\x18\x0f \x03(\x05\x42\x02\x10\x01\x12\x12\n\nloop_count\x18\x10 \x01(\x05\x1a\xa7\x01\n\x0f\x45lectric_energy\x12\x0f\n\x07voltage\x18\x01 \x01(\x02\x12\x0f\n\x07\x63urrent\x18\x02 \x01(\x02\x12\x14\n\x0cpower_factor\x18\x03 \x01(\x02\x12\x14\n\x0c\x61\x63tive_power\x18\x04 \x01(\x02\x12\x16\n\x0ereactive_power\x18\x05 \x01(\x02\x12\x15\n\ractive_energy\x18\x06 \x01(\x02\x12\x17\n\x0freactive_energy\x18\x07 \x01(\x02\x1aY\n\x08Gps_args\x12\x10\n\x08gps_type\x18\x01 \x01(\x05\x12\x10\n\x08lat_type\x18\x02 \x01(\x05\x12\x10\n\x08lon_type\x18\x03 \x01(\x05\x12\x17\n\x0flocation_status\x18\x04 \x01(\x05\"v\n\rWlst_rtu_7053\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x13\n\x0brecord_type\x18\x02 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x03 \x01(\x03\x12\x14\n\x0crecord_count\x18\x04 \x01(\x05\x12\x17\n\x0frecord_distance\x18\x05 \x01(\x03\"\x97\x02\n\rWlst_rtu_70d3\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x14\n\x0crecord_total\x18\x02 \x01(\x05\x12\x12\n\nrecord_idx\x18\x03 \x01(\x05\x12\x15\n\rrecord_status\x18\x04 \x01(\x05\x12\x13\n\x0brecord_type\x18\x05 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x06 \x01(\x03\x12\x14\n\x0crecord_count\x18\x07 \x01(\x05\x12\x17\n\x0frecord_distance\x18\x08 \x01(\x03\x12*\n\tdata_70d0\x18\t \x03(\x0b\x32\x17.wlst.pb2.Wlst_rtu_70d0\x12\x32\n\rdata_70d0_max\x18\n \x03(\x0b\x32\x1b.wlst.pb2.Wlst_rtu_70d0_max\"\xbb\x01\n\x11Wlst_rtu_70d0_max\x12\x11\n\tdt_record\x18\x01 \x01(\x03\x12\x13\n\x0brecord_type\x18\x02 \x01(\x05\x12\x12\n\nloop_count\x18\x03 \x01(\x05\x12\x36\n\x08max_data\x18\x04 \x03(\x0b\x32$.wlst.pb2.Wlst_rtu_70d0_max.Max_data\x1a\x32\n\x08Max_data\x12\x13\n\x0b\x63urrent_max\x18\x01 \x01(\x01\x12\x11\n\tdt_record\x18\x02 \x01(\x03\"\xa0\x01\n\rWlst_rtu_7800\x12\x12\n\nevent_type\x18\x01 \x01(\x05\x12\x13\n\x0b\x65vent_class\x18\x02 \x01(\x05\x12\x10\n\x08\x64\x61ta_num\x18\x03 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x04 \x01(\x03\x12\x0e\n\x06\x64t_end\x18\x05 \x01(\x03\x12\x0f\n\x07\x61ll_num\x18\x06 \x01(\x05\x12\x0f\n\x07\x63ur_num\x18\x07 \x01(\x05\x12\x10\n\x08raw_data\x18\x08 \x01(\t\"3\n\rWlst_rtu_7050\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tdata_mark\x18\x02 \x01(\x05\"\xaf\x06\n\rWlst_rtu_70d0\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x34\n\tdata_mark\x18\x02 \x01(\x0b\x32!.wlst.pb2.Wlst_rtu_70d0.Data_mark\x12\x1f\n\x13switch_in_st_packed\x18\x03 \x03(\x05\x42\x02\x10\x01\x12 \n\x14switch_out_st_packed\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x19\n\rtml_st_packed\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x13\n\x0btemperature\x18\x06 \x01(\x05\x12\x12\n\ngprs_reset\x18\x07 \x01(\x05\x12\x13\n\x0bgprs_signal\x18\x08 \x01(\x05\x12\x15\n\ttml_reset\x18\t \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x0ftml_args_status\x18\n \x03(\x05\x42\x02\x10\x01\x12\x14\n\x0cpower_supply\x18\x0b \x01(\x01\x12\x42\n\x10sampling_voltage\x18\x0c \x03(\x0b\x32(.wlst.pb2.Wlst_rtu_70d0.Sampling_voltage\x12\x38\n\x0b\x61nalog_data\x18\r \x03(\x0b\x32#.wlst.pb2.Wlst_rtu_70d0.Analog_data\x12\x14\n\x0cswitch_in_st\x18\x0e \x01(\x03\x12\x15\n\rswitch_out_st\x18\x0f \x01(\x05\x12\x0e\n\x06tml_st\x18\x10 \x01(\x05\x12\x12\n\nfull_range\x18\x11 \x01(\x05\x12\x11\n\tdt_record\x18\x12 \x01(\x03\x12\x1d\n\x11switch_out_reason\x18\x13 \x03(\x05\x42\x02\x10\x01\x1a?\n\tData_mark\x12\x14\n\x0cget_run_data\x18\x01 \x01(\x05\x12\x1c\n\x14get_switchout_reason\x18\x02 \x01(\x05\x1a?\n\x10Sampling_voltage\x12\r\n\x05vol_a\x18\x01 \x01(\x01\x12\r\n\x05vol_b\x18\x02 \x01(\x01\x12\r\n\x05vol_c\x18\x03 \x01(\x01\x1an\n\x0b\x41nalog_data\x12\x0f\n\x07voltage\x18\x01 \x01(\x01\x12\x0f\n\x07\x63urrent\x18\x02 \x01(\x01\x12\r\n\x05power\x18\x03 \x01(\x01\x12\x16\n\x0evoltage_status\x18\x04 \x01(\x05\x12\x16\n\x0e\x63urrent_status\x18\x05 \x01(\x05\"2\n\rWlst_rtu_705a\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x63md_type\x18\x02 \x01(\x05\"\xf8\x04\n\rWlst_rtu_70da\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x12\n\nkeep_alive\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x03 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x04 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x05 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x06 \x01(\x05\x12\x12\n\nanalog_sum\x18\x07 \x01(\x05\x12\x18\n\x10x_switching_time\x18\x08 \x03(\t\x12\x15\n\rcity_pay_time\x18\t \x01(\t\x12\x15\n\rself_pay_time\x18\n \x01(\t\x12\x1e\n\x12x_switch_out_count\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x1d\n\x11switch_in_hopping\x18\x0c \x03(\x05\x42\x02\x10\x01\x12\x15\n\rvoltage_range\x18\r \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x0e \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x0f \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x10 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x0fx_analog_vector\x18\x11 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x13upper_voltage_limit\x18\x12 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x13 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x14 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x15 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08group_id\x18\x16 \x01(\x05\x12\x10\n\x08\x63md_type\x18\x17 \x01(\x05\x12\x18\n\x0ctransformers\x18\x18 \x03(\x05\x42\x02\x10\x01\"!\n\rWlst_rtu_700a\x12\x10\n\x08\x63om_argv\x18\x01 \x03(\x05\"C\n\rWlst_rtu_7010\x12\x11\n\tdata_mark\x18\x01 \x01(\x05\x12\x0f\n\x07\x63md_idx\x18\x02 \x01(\x05\x12\x0e\n\x06status\x18\x03 \x01(\x05\"2\n\rWlst_rtu_7003\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x66tp_data\x18\x02 \x03(\x05\"G\n\rWlst_rtu_7006\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x11\n\tall_count\x18\x02 \x01(\x05\x12\x12\n\ncache_name\x18\x03 \x01(\t\" \n\rWlst_rtu_7007\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\"^\n\rWlst_rtu_7087\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x17\n\x0f\x66\x61iled_packages\x18\x03 \x03(\x05\x12\x13\n\x0b\x62ytes_count\x18\x04 \x01(\x05\"i\n\rWlst_rtu_7081\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x0f\n\x07old_ver\x18\x03 \x01(\t\x12\x0f\n\x07new_ver\x18\x04 \x01(\t\x12\x15\n\rdata_location\x18\x05 \x01(\x05\"o\n\rWlst_rtu_7008\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08upd_data\x18\x02 \x03(\t\x12\x12\n\ncache_name\x18\x03 \x01(\t\x12\r\n\x05\x63lean\x18\x04 \x01(\x05\x12\x18\n\x0cint_upd_data\x18\x05 \x03(\x05\x42\x02\x10\x01\"\xbc\x01\n\rWlst_rtu_7060\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ys\x18\x03 \x01(\x05\x12\x33\n\tyear_ctrl\x18\x04 \x03(\x0b\x32 .wlst.pb2.Wlst_rtu_7060.YearCtrl\x1a\x45\n\x08YearCtrl\x12\x0f\n\x07loop_no\x18\x01 \x01(\x05\x12\x12\n\ntime_count\x18\x02 \x01(\x05\x12\x14\n\x08opt_time\x18\x03 \x03(\x05\x42\x02\x10\x01\"U\n\rWlst_rtu_7061\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x10\n\x08\x64t_start\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ys\x18\x03 \x01(\x05\x12\x13\n\x07loop_no\x18\x04 \x03(\x05\x42\x02\x10\x01\"0\n\rWlst_rtu_70e0\x12\x0f\n\x07\x63md_idx\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\",\n\rWlst_rtu_7b00\x12\x0b\n\x03sim\x18\x01 \x01(\t\x12\x0e\n\x06signal\x18\x02 \x01(\x05\"-\n\rWlst_rtu_1900\x12\x0c\n\x04\x61\x64\x64r\x18\x01 \x01(\x05\x12\x0e\n\x06tml_ip\x18\x02 \x01(\x03\"z\n\rWlst_rtu_4000\x12\x11\n\twork_mark\x18\x01 \x01(\x05\x12\x12\n\nkeep_alive\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x03 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x04 \x01(\x05\x12\x18\n\x0cx_loop_count\x18\x05 \x03(\x05\x42\x02\x10\x01\"W\n\rWlst_rtu_4101\x12\x12\n\nanalog_sum\x18\x01 \x01(\x05\x12\x15\n\rvoltage_range\x18\x02 \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x03 \x03(\x05\x42\x02\x10\x01\"`\n\rWlst_rtu_4104\x12\x14\n\x0cswitchin_sum\x18\x01 \x01(\x05\x12\x1b\n\x0fx_switch_vector\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x1c\n\x10x_switch_hopping\x18\x03 \x03(\x05\x42\x02\x10\x01\"&\n\rWlst_rtu_4110\x12\x15\n\rswitch_in_sum\x18\x01 \x01(\x05\"9\n\rWlst_rtu_4111\x12\x18\n\x0ctransformers\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\x0e\n\x06status\x18\x02 \x01(\x05\"\xb0\x01\n\rWlst_rtu_4200\x12\x1b\n\x0fx_analog_vector\x18\x01 \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x02 \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x03 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nanalog_sum\x18\x04 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x05 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x06 \x01(\x05\"\xd7\x01\n\rWlst_rtu_4401\x12\x12\n\nanalog_sum\x18\x01 \x01(\x05\x12\x1b\n\x13upper_voltage_limit\x18\x02 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x03 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x04 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x05 \x03(\x05\x42\x02\x10\x01\x12\x15\n\rvoltage_range\x18\x06 \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x07 \x03(\x05\x42\x02\x10\x01\"\xc5\x04\n\rWlst_rtu_da00\x12\x12\n\nkeep_alive\x18\x01 \x01(\x05\x12\x13\n\x0b\x61larm_cycle\x18\x02 \x01(\x05\x12\x13\n\x0b\x61larm_delay\x18\x03 \x01(\x05\x12\x0c\n\x04\x61\x64\x64r\x18\x04 \x01(\x05\x12\x16\n\x0eswitch_out_sum\x18\x05 \x01(\x05\x12\x15\n\rswitch_in_sum\x18\x06 \x01(\x05\x12\x12\n\nanalog_sum\x18\x07 \x01(\x05\x12\x18\n\x10x_switching_time\x18\x08 \x03(\t\x12\x15\n\rcity_pay_time\x18\t \x01(\t\x12\x15\n\rself_pay_time\x18\n \x01(\t\x12\x1e\n\x12x_switch_out_count\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x19\n\x11switch_in_hopping\x18\x0c \x01(\x05\x12\x15\n\rvoltage_range\x18\r \x01(\x05\x12\x1b\n\x0fx_current_range\x18\x0e \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x0f \x03(\x05\x42\x02\x10\x01\x12\x1e\n\x12x_switch_in_vector\x18\x10 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x0fx_analog_vector\x18\x11 \x03(\x05\x42\x02\x10\x01\x12\x1b\n\x13upper_voltage_limit\x18\x12 \x01(\x05\x12\x1b\n\x13lower_voltage_limit\x18\x13 \x01(\x05\x12!\n\x15x_upper_current_limit\x18\x14 \x03(\x05\x42\x02\x10\x01\x12!\n\x15x_lower_current_limit\x18\x15 \x03(\x05\x42\x02\x10\x01\x12\x10\n\x08group_id\x18\x16 \x01(\x05\"j\n\rWlst_rtu_df00\x12\x18\n\x10x_switching_time\x18\x08 \x03(\t\x12\x1e\n\x12x_switch_out_count\x18\x0b \x03(\x05\x42\x02\x10\x01\x12\x1f\n\x13x_switch_out_vector\x18\x0f \x03(\x05\x42\x02\x10\x01\",\n\rWlst_rtu_6100\x12\x1b\n\x0fx_voltage_phase\x18\x01 \x03(\x05\x42\x02\x10\x01\"\x89\x02\n\rWlst_rtu_a000\x12\x1c\n\x10x_analog_voltage\x18\x01 \x03(\x01\x42\x02\x10\x01\x12\x1c\n\x10x_analog_current\x18\x02 \x03(\x01\x42\x02\x10\x01\x12\x1a\n\x0ex_analog_power\x18\x03 \x03(\x01\x42\x02\x10\x01\x12\x14\n\x0cswitch_in_st\x18\x04 \x01(\x03\x12\x15\n\rswitch_out_st\x18\x05 \x01(\x05\x12\x0e\n\x06tml_st\x18\x06 \x01(\x05\x12\x1c\n\x10x_current_status\x18\x07 \x03(\x05\x42\x02\x10\x01\x12\x1c\n\x10x_voltage_status\x18\x08 \x03(\x05\x42\x02\x10\x01\x12\x12\n\nfull_range\x18\t \x01(\x05\x12\x13\n\x0btemperature\x18\n \x01(\x05\"0\n\rWlst_rtu_a200\x12\x0c\n\x04k_no\x18\x01 \x01(\x05\x12\x11\n\toperation\x18\x02 \x01(\x05\"&\n\rWlst_rtu_4b00\x12\x15\n\toperation\x18\x01 \x03(\x05\x42\x02\x10\x01\"!\n\rWlst_rtu_9300\x12\x10\n\x08tml_date\x18\x01 \x01(\t\"\xf9\x01\n\rWlst_rtu_b200\x12\x15\n\rx_k1_opt_time\x18\x01 \x03(\t\x12\x15\n\rx_k2_opt_time\x18\x02 \x03(\t\x12\x15\n\rx_k3_opt_time\x18\x03 \x03(\t\x12\x17\n\x0fx_city_pay_time\x18\x04 \x03(\t\x12\x17\n\x0fx_self_pay_time\x18\x05 \x03(\t\x12\x15\n\rx_k4_opt_time\x18\x06 \x03(\t\x12\x15\n\rx_k5_opt_time\x18\x07 \x03(\t\x12\x15\n\rx_k6_opt_time\x18\x08 \x03(\t\x12\x15\n\rx_k7_opt_time\x18\t \x03(\t\x12\x15\n\rx_k8_opt_time\x18\n \x03(\t\"\xed\x01\n\rWlst_rtu_e600\x12\x12\n\nx_holidays\x18\x01 \x03(\t\x12\x11\n\tx_k1_time\x18\x02 \x03(\t\x12\x11\n\tx_k2_time\x18\x03 \x03(\t\x12\x11\n\tx_k3_time\x18\x04 \x03(\t\x12\x11\n\tx_k4_time\x18\x05 \x03(\t\x12\x11\n\tx_k5_time\x18\x06 \x03(\t\x12\x11\n\tx_k6_time\x18\x07 \x03(\t\x12\x11\n\tx_k7_time\x18\n \x03(\t\x12\x11\n\tx_k8_time\x18\x0b \x03(\t\x12\x17\n\x0fx_city_pay_time\x18\x08 \x03(\t\x12\x17\n\x0fx_self_pay_time\x18\t \x03(\t\"\x1f\n\rWlst_rtu_9800\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1c\n\rWlst_rtu_dc00\x12\x0b\n\x03ver\x18\x01 \x01(\tB\x02H\x01\x62\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -61,6 +61,13 @@ _WLST_RTU_ANS = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='status_code', full_name='wlst.pb2.Wlst_rtu_ans.status_code', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -74,7 +81,769 @@ _WLST_RTU_ANS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=32,
-  serialized_end=130,
+  serialized_end=151,
+)
+
+
+_WLST_RTU_7094_ALARM_LN = _descriptor.Descriptor(
+  name='Alarm_LN',
+  full_name='wlst.pb2.Wlst_rtu_7094.Alarm_LN',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='loop_no', full_name='wlst.pb2.Wlst_rtu_7094.Alarm_LN.loop_no', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='alarm_status', full_name='wlst.pb2.Wlst_rtu_7094.Alarm_LN.alarm_status', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='alarm_current', full_name='wlst.pb2.Wlst_rtu_7094.Alarm_LN.alarm_current', index=2,
+      number=3, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=293,
+  serialized_end=365,
+)
+
+_WLST_RTU_7094 = _descriptor.Descriptor(
+  name='Wlst_rtu_7094',
+  full_name='wlst.pb2.Wlst_rtu_7094',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7094.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='alarm_type', full_name='wlst.pb2.Wlst_rtu_7094.alarm_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='alarmln', full_name='wlst.pb2.Wlst_rtu_7094.alarmln', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='switch_out_st_packed', full_name='wlst.pb2.Wlst_rtu_7094.switch_out_st_packed', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+  ],
+  extensions=[
+  ],
+  nested_types=[_WLST_RTU_7094_ALARM_LN, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=154,
+  serialized_end=365,
+)
+
+
+_WLST_RTU_7021_ARGS_LN = _descriptor.Descriptor(
+  name='Args_LN',
+  full_name='wlst.pb2.Wlst_rtu_7021.Args_LN',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='loop_no', full_name='wlst.pb2.Wlst_rtu_7021.Args_LN.loop_no', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='base_value', full_name='wlst.pb2.Wlst_rtu_7021.Args_LN.base_value', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='alarm_value', full_name='wlst.pb2.Wlst_rtu_7021.Args_LN.alarm_value', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='break_value', full_name='wlst.pb2.Wlst_rtu_7021.Args_LN.break_value', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=559,
+  serialized_end=647,
+)
+
+_WLST_RTU_7021_ARGS_WC = _descriptor.Descriptor(
+  name='Args_WC',
+  full_name='wlst.pb2.Wlst_rtu_7021.Args_WC',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='l1_on', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l1_on', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l1_off', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l1_off', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l2_on', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l2_on', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l2_off', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l2_off', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l3_on', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l3_on', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l3_off', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l3_off', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l4_on', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l4_on', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l4_off', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l4_off', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l5_on', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l5_on', index=8,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l5_off', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l5_off', index=9,
+      number=10, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l6_on', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l6_on', index=10,
+      number=11, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l6_off', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l6_off', index=11,
+      number=12, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l7_on', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l7_on', index=12,
+      number=13, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l7_off', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l7_off', index=13,
+      number=14, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l8_on', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l8_on', index=14,
+      number=15, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='l8_off', full_name='wlst.pb2.Wlst_rtu_7021.Args_WC.l8_off', index=15,
+      number=16, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=650,
+  serialized_end=907,
+)
+
+_WLST_RTU_7021 = _descriptor.Descriptor(
+  name='Wlst_rtu_7021',
+  full_name='wlst.pb2.Wlst_rtu_7021',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7021.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='data_type', full_name='wlst.pb2.Wlst_rtu_7021.data_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='argsln', full_name='wlst.pb2.Wlst_rtu_7021.argsln', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='status_code', full_name='wlst.pb2.Wlst_rtu_7021.status_code', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='loop_type', full_name='wlst.pb2.Wlst_rtu_7021.loop_type', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='argswc', full_name='wlst.pb2.Wlst_rtu_7021.argswc', index=5,
+      number=6, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_WLST_RTU_7021_ARGS_LN, _WLST_RTU_7021_ARGS_WC, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=368,
+  serialized_end=907,
+)
+
+
+_WLST_RTU_7023_ARGS_CONTROL = _descriptor.Descriptor(
+  name='Args_Control',
+  full_name='wlst.pb2.Wlst_rtu_7023.Args_Control',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='loop_no', full_name='wlst.pb2.Wlst_rtu_7023.Args_Control.loop_no', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='operation', full_name='wlst.pb2.Wlst_rtu_7023.Args_Control.operation', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1043,
+  serialized_end=1093,
+)
+
+_WLST_RTU_7023 = _descriptor.Descriptor(
+  name='Wlst_rtu_7023',
+  full_name='wlst.pb2.Wlst_rtu_7023',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7023.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='data_type', full_name='wlst.pb2.Wlst_rtu_7023.data_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='argscontrol', full_name='wlst.pb2.Wlst_rtu_7023.argscontrol', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='status_code', full_name='wlst.pb2.Wlst_rtu_7023.status_code', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_WLST_RTU_7023_ARGS_CONTROL, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=910,
+  serialized_end=1093,
+)
+
+
+_WLST_RTU_705B = _descriptor.Descriptor(
+  name='Wlst_rtu_705b',
+  full_name='wlst.pb2.Wlst_rtu_705b',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_705b.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cmd_type', full_name='wlst.pb2.Wlst_rtu_705b.cmd_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='hardware_ver', full_name='wlst.pb2.Wlst_rtu_705b.hardware_ver', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='production_batch', full_name='wlst.pb2.Wlst_rtu_705b.production_batch', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='production_date', full_name='wlst.pb2.Wlst_rtu_705b.production_date', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='installation_date', full_name='wlst.pb2.Wlst_rtu_705b.installation_date', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1096,
+  serialized_end=1246,
+)
+
+
+_WLST_RTU_70A0_ELECTRIC_ENERGY = _descriptor.Descriptor(
+  name='Electric_energy',
+  full_name='wlst.pb2.Wlst_rtu_70a0.Electric_energy',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='voltage', full_name='wlst.pb2.Wlst_rtu_70a0.Electric_energy.voltage', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='current', full_name='wlst.pb2.Wlst_rtu_70a0.Electric_energy.current', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='power_factor', full_name='wlst.pb2.Wlst_rtu_70a0.Electric_energy.power_factor', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='active_power', full_name='wlst.pb2.Wlst_rtu_70a0.Electric_energy.active_power', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='reactive_power', full_name='wlst.pb2.Wlst_rtu_70a0.Electric_energy.reactive_power', index=4,
+      number=5, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='active_energy', full_name='wlst.pb2.Wlst_rtu_70a0.Electric_energy.active_energy', index=5,
+      number=6, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='reactive_energy', full_name='wlst.pb2.Wlst_rtu_70a0.Electric_energy.reactive_energy', index=6,
+      number=7, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1683,
+  serialized_end=1850,
+)
+
+_WLST_RTU_70A0_GPS_ARGS = _descriptor.Descriptor(
+  name='Gps_args',
+  full_name='wlst.pb2.Wlst_rtu_70a0.Gps_args',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='gps_type', full_name='wlst.pb2.Wlst_rtu_70a0.Gps_args.gps_type', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='lat_type', full_name='wlst.pb2.Wlst_rtu_70a0.Gps_args.lat_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='lon_type', full_name='wlst.pb2.Wlst_rtu_70a0.Gps_args.lon_type', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='location_status', full_name='wlst.pb2.Wlst_rtu_70a0.Gps_args.location_status', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1852,
+  serialized_end=1941,
+)
+
+_WLST_RTU_70A0 = _descriptor.Descriptor(
+  name='Wlst_rtu_70a0',
+  full_name='wlst.pb2.Wlst_rtu_70a0',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_70a0.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cmd_type', full_name='wlst.pb2.Wlst_rtu_70a0.cmd_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='frequency', full_name='wlst.pb2.Wlst_rtu_70a0.frequency', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='ee', full_name='wlst.pb2.Wlst_rtu_70a0.ee', index=3,
+      number=4, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='temperature', full_name='wlst.pb2.Wlst_rtu_70a0.temperature', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='humidity', full_name='wlst.pb2.Wlst_rtu_70a0.humidity', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='main_voltage', full_name='wlst.pb2.Wlst_rtu_70a0.main_voltage', index=6,
+      number=7, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='battery_power', full_name='wlst.pb2.Wlst_rtu_70a0.battery_power', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='longitude', full_name='wlst.pb2.Wlst_rtu_70a0.longitude', index=8,
+      number=9, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='latitude', full_name='wlst.pb2.Wlst_rtu_70a0.latitude', index=9,
+      number=10, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='gpsargs', full_name='wlst.pb2.Wlst_rtu_70a0.gpsargs', index=10,
+      number=11, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='switch_in_st_packed', full_name='wlst.pb2.Wlst_rtu_70a0.switch_in_st_packed', index=11,
+      number=12, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='switch_out_st_packed', full_name='wlst.pb2.Wlst_rtu_70a0.switch_out_st_packed', index=12,
+      number=13, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='tml_st_packed', full_name='wlst.pb2.Wlst_rtu_70a0.tml_st_packed', index=13,
+      number=14, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='tml_reset', full_name='wlst.pb2.Wlst_rtu_70a0.tml_reset', index=14,
+      number=15, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='loop_count', full_name='wlst.pb2.Wlst_rtu_70a0.loop_count', index=15,
+      number=16, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_WLST_RTU_70A0_ELECTRIC_ENERGY, _WLST_RTU_70A0_GPS_ARGS, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1249,
+  serialized_end=1941,
 )
 
 
@@ -132,8 +901,8 @@ _WLST_RTU_7053 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=132,
-  serialized_end=250,
+  serialized_start=1943,
+  serialized_end=2061,
 )
 
 
@@ -226,8 +995,8 @@ _WLST_RTU_70D3 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=253,
-  serialized_end=532,
+  serialized_start=2064,
+  serialized_end=2343,
 )
 
 
@@ -264,8 +1033,8 @@ _WLST_RTU_70D0_MAX_MAX_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=672,
-  serialized_end=722,
+  serialized_start=2483,
+  serialized_end=2533,
 )
 
 _WLST_RTU_70D0_MAX = _descriptor.Descriptor(
@@ -315,8 +1084,8 @@ _WLST_RTU_70D0_MAX = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=535,
-  serialized_end=722,
+  serialized_start=2346,
+  serialized_end=2533,
 )
 
 
@@ -395,8 +1164,8 @@ _WLST_RTU_7800 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=725,
-  serialized_end=885,
+  serialized_start=2536,
+  serialized_end=2696,
 )
 
 
@@ -433,8 +1202,8 @@ _WLST_RTU_7050 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=887,
-  serialized_end=938,
+  serialized_start=2698,
+  serialized_end=2749,
 )
 
 
@@ -471,8 +1240,8 @@ _WLST_RTU_70D0_DATA_MARK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1516,
-  serialized_end=1579,
+  serialized_start=3327,
+  serialized_end=3390,
 )
 
 _WLST_RTU_70D0_SAMPLING_VOLTAGE = _descriptor.Descriptor(
@@ -515,8 +1284,8 @@ _WLST_RTU_70D0_SAMPLING_VOLTAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1581,
-  serialized_end=1644,
+  serialized_start=3392,
+  serialized_end=3455,
 )
 
 _WLST_RTU_70D0_ANALOG_DATA = _descriptor.Descriptor(
@@ -573,8 +1342,8 @@ _WLST_RTU_70D0_ANALOG_DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1646,
-  serialized_end=1756,
+  serialized_start=3457,
+  serialized_end=3567,
 )
 
 _WLST_RTU_70D0 = _descriptor.Descriptor(
@@ -729,8 +1498,8 @@ _WLST_RTU_70D0 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=941,
-  serialized_end=1756,
+  serialized_start=2752,
+  serialized_end=3567,
 )
 
 
@@ -748,6 +1517,13 @@ _WLST_RTU_705A = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='cmd_type', full_name='wlst.pb2.Wlst_rtu_705a.cmd_type', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -760,8 +1536,8 @@ _WLST_RTU_705A = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1758,
-  serialized_end=1790,
+  serialized_start=3569,
+  serialized_end=3619,
 )
 
 
@@ -926,6 +1702,20 @@ _WLST_RTU_70DA = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='cmd_type', full_name='wlst.pb2.Wlst_rtu_70da.cmd_type', index=22,
+      number=23, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='transformers', full_name='wlst.pb2.Wlst_rtu_70da.transformers', index=23,
+      number=24, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
   ],
   extensions=[
   ],
@@ -938,8 +1728,8 @@ _WLST_RTU_70DA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1793,
-  serialized_end=2381,
+  serialized_start=3622,
+  serialized_end=4254,
 )
 
 
@@ -969,8 +1759,219 @@ _WLST_RTU_700A = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2383,
-  serialized_end=2416,
+  serialized_start=4256,
+  serialized_end=4289,
+)
+
+
+_WLST_RTU_7010 = _descriptor.Descriptor(
+  name='Wlst_rtu_7010',
+  full_name='wlst.pb2.Wlst_rtu_7010',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='data_mark', full_name='wlst.pb2.Wlst_rtu_7010.data_mark', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7010.cmd_idx', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='wlst.pb2.Wlst_rtu_7010.status', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4291,
+  serialized_end=4358,
+)
+
+
+_WLST_RTU_7003 = _descriptor.Descriptor(
+  name='Wlst_rtu_7003',
+  full_name='wlst.pb2.Wlst_rtu_7003',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7003.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='ftp_data', full_name='wlst.pb2.Wlst_rtu_7003.ftp_data', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4360,
+  serialized_end=4410,
+)
+
+
+_WLST_RTU_7006 = _descriptor.Descriptor(
+  name='Wlst_rtu_7006',
+  full_name='wlst.pb2.Wlst_rtu_7006',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7006.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='all_count', full_name='wlst.pb2.Wlst_rtu_7006.all_count', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cache_name', full_name='wlst.pb2.Wlst_rtu_7006.cache_name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4412,
+  serialized_end=4483,
+)
+
+
+_WLST_RTU_7007 = _descriptor.Descriptor(
+  name='Wlst_rtu_7007',
+  full_name='wlst.pb2.Wlst_rtu_7007',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7007.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4485,
+  serialized_end=4517,
+)
+
+
+_WLST_RTU_7087 = _descriptor.Descriptor(
+  name='Wlst_rtu_7087',
+  full_name='wlst.pb2.Wlst_rtu_7087',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7087.cmd_idx', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='wlst.pb2.Wlst_rtu_7087.status', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='failed_packages', full_name='wlst.pb2.Wlst_rtu_7087.failed_packages', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='bytes_count', full_name='wlst.pb2.Wlst_rtu_7087.bytes_count', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4519,
+  serialized_end=4613,
 )
 
 
@@ -1028,219 +2029,8 @@ _WLST_RTU_7081 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2418,
-  serialized_end=2523,
-)
-
-
-_WLST_RTU_7010 = _descriptor.Descriptor(
-  name='Wlst_rtu_7010',
-  full_name='wlst.pb2.Wlst_rtu_7010',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='data_mark', full_name='wlst.pb2.Wlst_rtu_7010.data_mark', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7010.cmd_idx', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='status', full_name='wlst.pb2.Wlst_rtu_7010.status', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2525,
-  serialized_end=2592,
-)
-
-
-_WLST_RTU_7003 = _descriptor.Descriptor(
-  name='Wlst_rtu_7003',
-  full_name='wlst.pb2.Wlst_rtu_7003',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7003.cmd_idx', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='ftp_data', full_name='wlst.pb2.Wlst_rtu_7003.ftp_data', index=1,
-      number=2, type=5, cpp_type=1, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2594,
-  serialized_end=2644,
-)
-
-
-_WLST_RTU_7006 = _descriptor.Descriptor(
-  name='Wlst_rtu_7006',
-  full_name='wlst.pb2.Wlst_rtu_7006',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7006.cmd_idx', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='all_count', full_name='wlst.pb2.Wlst_rtu_7006.all_count', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='cache_name', full_name='wlst.pb2.Wlst_rtu_7006.cache_name', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2646,
-  serialized_end=2717,
-)
-
-
-_WLST_RTU_7007 = _descriptor.Descriptor(
-  name='Wlst_rtu_7007',
-  full_name='wlst.pb2.Wlst_rtu_7007',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7007.cmd_idx', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2719,
-  serialized_end=2751,
-)
-
-
-_WLST_RTU_7087 = _descriptor.Descriptor(
-  name='Wlst_rtu_7087',
-  full_name='wlst.pb2.Wlst_rtu_7087',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='cmd_idx', full_name='wlst.pb2.Wlst_rtu_7087.cmd_idx', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='status', full_name='wlst.pb2.Wlst_rtu_7087.status', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='failed_packages', full_name='wlst.pb2.Wlst_rtu_7087.failed_packages', index=2,
-      number=3, type=5, cpp_type=1, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='bytes_count', full_name='wlst.pb2.Wlst_rtu_7087.bytes_count', index=3,
-      number=4, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2753,
-  serialized_end=2847,
+  serialized_start=4615,
+  serialized_end=4720,
 )
 
 
@@ -1298,8 +2088,8 @@ _WLST_RTU_7008 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2849,
-  serialized_end=2960,
+  serialized_start=4722,
+  serialized_end=4833,
 )
 
 
@@ -1343,8 +2133,8 @@ _WLST_RTU_7060_YEARCTRL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3082,
-  serialized_end=3151,
+  serialized_start=4955,
+  serialized_end=5024,
 )
 
 _WLST_RTU_7060 = _descriptor.Descriptor(
@@ -1394,8 +2184,8 @@ _WLST_RTU_7060 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2963,
-  serialized_end=3151,
+  serialized_start=4836,
+  serialized_end=5024,
 )
 
 
@@ -1446,8 +2236,8 @@ _WLST_RTU_7061 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3153,
-  serialized_end=3238,
+  serialized_start=5026,
+  serialized_end=5111,
 )
 
 
@@ -1484,8 +2274,8 @@ _WLST_RTU_70E0 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3240,
-  serialized_end=3288,
+  serialized_start=5113,
+  serialized_end=5161,
 )
 
 
@@ -1522,8 +2312,8 @@ _WLST_RTU_7B00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3290,
-  serialized_end=3334,
+  serialized_start=5163,
+  serialized_end=5207,
 )
 
 
@@ -1560,8 +2350,8 @@ _WLST_RTU_1900 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3336,
-  serialized_end=3381,
+  serialized_start=5209,
+  serialized_end=5254,
 )
 
 
@@ -1619,8 +2409,8 @@ _WLST_RTU_4000 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3383,
-  serialized_end=3505,
+  serialized_start=5256,
+  serialized_end=5378,
 )
 
 
@@ -1664,8 +2454,8 @@ _WLST_RTU_4101 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3507,
-  serialized_end=3594,
+  serialized_start=5380,
+  serialized_end=5467,
 )
 
 
@@ -1709,8 +2499,8 @@ _WLST_RTU_4104 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3596,
-  serialized_end=3692,
+  serialized_start=5469,
+  serialized_end=5565,
 )
 
 
@@ -1740,8 +2530,46 @@ _WLST_RTU_4110 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3694,
-  serialized_end=3732,
+  serialized_start=5567,
+  serialized_end=5605,
+)
+
+
+_WLST_RTU_4111 = _descriptor.Descriptor(
+  name='Wlst_rtu_4111',
+  full_name='wlst.pb2.Wlst_rtu_4111',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='transformers', full_name='wlst.pb2.Wlst_rtu_4111.transformers', index=0,
+      number=1, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='wlst.pb2.Wlst_rtu_4111.status', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=5607,
+  serialized_end=5664,
 )
 
 
@@ -1806,8 +2634,8 @@ _WLST_RTU_4200 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3735,
-  serialized_end=3911,
+  serialized_start=5667,
+  serialized_end=5843,
 )
 
 
@@ -1879,8 +2707,8 @@ _WLST_RTU_4401 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3914,
-  serialized_end=4129,
+  serialized_start=5846,
+  serialized_end=6061,
 )
 
 
@@ -2057,8 +2885,8 @@ _WLST_RTU_DA00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4132,
-  serialized_end=4713,
+  serialized_start=6064,
+  serialized_end=6645,
 )
 
 
@@ -2102,8 +2930,8 @@ _WLST_RTU_DF00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4715,
-  serialized_end=4821,
+  serialized_start=6647,
+  serialized_end=6753,
 )
 
 
@@ -2133,8 +2961,8 @@ _WLST_RTU_6100 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4823,
-  serialized_end=4867,
+  serialized_start=6755,
+  serialized_end=6799,
 )
 
 
@@ -2227,8 +3055,8 @@ _WLST_RTU_A000 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4870,
-  serialized_end=5135,
+  serialized_start=6802,
+  serialized_end=7067,
 )
 
 
@@ -2265,8 +3093,8 @@ _WLST_RTU_A200 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5137,
-  serialized_end=5185,
+  serialized_start=7069,
+  serialized_end=7117,
 )
 
 
@@ -2296,8 +3124,8 @@ _WLST_RTU_4B00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5187,
-  serialized_end=5225,
+  serialized_start=7119,
+  serialized_end=7157,
 )
 
 
@@ -2327,8 +3155,8 @@ _WLST_RTU_9300 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5227,
-  serialized_end=5260,
+  serialized_start=7159,
+  serialized_end=7192,
 )
 
 
@@ -2421,8 +3249,8 @@ _WLST_RTU_B200 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5263,
-  serialized_end=5512,
+  serialized_start=7195,
+  serialized_end=7444,
 )
 
 
@@ -2522,8 +3350,8 @@ _WLST_RTU_E600 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5515,
-  serialized_end=5752,
+  serialized_start=7447,
+  serialized_end=7684,
 )
 
 
@@ -2553,8 +3381,8 @@ _WLST_RTU_9800 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5754,
-  serialized_end=5785,
+  serialized_start=7686,
+  serialized_end=7717,
 )
 
 
@@ -2584,10 +3412,22 @@ _WLST_RTU_DC00 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5787,
-  serialized_end=5815,
+  serialized_start=7719,
+  serialized_end=7747,
 )
 
+_WLST_RTU_7094_ALARM_LN.containing_type = _WLST_RTU_7094
+_WLST_RTU_7094.fields_by_name['alarmln'].message_type = _WLST_RTU_7094_ALARM_LN
+_WLST_RTU_7021_ARGS_LN.containing_type = _WLST_RTU_7021
+_WLST_RTU_7021_ARGS_WC.containing_type = _WLST_RTU_7021
+_WLST_RTU_7021.fields_by_name['argsln'].message_type = _WLST_RTU_7021_ARGS_LN
+_WLST_RTU_7021.fields_by_name['argswc'].message_type = _WLST_RTU_7021_ARGS_WC
+_WLST_RTU_7023_ARGS_CONTROL.containing_type = _WLST_RTU_7023
+_WLST_RTU_7023.fields_by_name['argscontrol'].message_type = _WLST_RTU_7023_ARGS_CONTROL
+_WLST_RTU_70A0_ELECTRIC_ENERGY.containing_type = _WLST_RTU_70A0
+_WLST_RTU_70A0_GPS_ARGS.containing_type = _WLST_RTU_70A0
+_WLST_RTU_70A0.fields_by_name['ee'].message_type = _WLST_RTU_70A0_ELECTRIC_ENERGY
+_WLST_RTU_70A0.fields_by_name['gpsargs'].message_type = _WLST_RTU_70A0_GPS_ARGS
 _WLST_RTU_70D3.fields_by_name['data_70d0'].message_type = _WLST_RTU_70D0
 _WLST_RTU_70D3.fields_by_name['data_70d0_max'].message_type = _WLST_RTU_70D0_MAX
 _WLST_RTU_70D0_MAX_MAX_DATA.containing_type = _WLST_RTU_70D0_MAX
@@ -2601,6 +3441,11 @@ _WLST_RTU_70D0.fields_by_name['analog_data'].message_type = _WLST_RTU_70D0_ANALO
 _WLST_RTU_7060_YEARCTRL.containing_type = _WLST_RTU_7060
 _WLST_RTU_7060.fields_by_name['year_ctrl'].message_type = _WLST_RTU_7060_YEARCTRL
 DESCRIPTOR.message_types_by_name['Wlst_rtu_ans'] = _WLST_RTU_ANS
+DESCRIPTOR.message_types_by_name['Wlst_rtu_7094'] = _WLST_RTU_7094
+DESCRIPTOR.message_types_by_name['Wlst_rtu_7021'] = _WLST_RTU_7021
+DESCRIPTOR.message_types_by_name['Wlst_rtu_7023'] = _WLST_RTU_7023
+DESCRIPTOR.message_types_by_name['Wlst_rtu_705b'] = _WLST_RTU_705B
+DESCRIPTOR.message_types_by_name['Wlst_rtu_70a0'] = _WLST_RTU_70A0
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7053'] = _WLST_RTU_7053
 DESCRIPTOR.message_types_by_name['Wlst_rtu_70d3'] = _WLST_RTU_70D3
 DESCRIPTOR.message_types_by_name['Wlst_rtu_70d0_max'] = _WLST_RTU_70D0_MAX
@@ -2610,12 +3455,12 @@ DESCRIPTOR.message_types_by_name['Wlst_rtu_70d0'] = _WLST_RTU_70D0
 DESCRIPTOR.message_types_by_name['Wlst_rtu_705a'] = _WLST_RTU_705A
 DESCRIPTOR.message_types_by_name['Wlst_rtu_70da'] = _WLST_RTU_70DA
 DESCRIPTOR.message_types_by_name['Wlst_rtu_700a'] = _WLST_RTU_700A
-DESCRIPTOR.message_types_by_name['Wlst_rtu_7081'] = _WLST_RTU_7081
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7010'] = _WLST_RTU_7010
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7003'] = _WLST_RTU_7003
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7006'] = _WLST_RTU_7006
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7007'] = _WLST_RTU_7007
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7087'] = _WLST_RTU_7087
+DESCRIPTOR.message_types_by_name['Wlst_rtu_7081'] = _WLST_RTU_7081
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7008'] = _WLST_RTU_7008
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7060'] = _WLST_RTU_7060
 DESCRIPTOR.message_types_by_name['Wlst_rtu_7061'] = _WLST_RTU_7061
@@ -2626,6 +3471,7 @@ DESCRIPTOR.message_types_by_name['Wlst_rtu_4000'] = _WLST_RTU_4000
 DESCRIPTOR.message_types_by_name['Wlst_rtu_4101'] = _WLST_RTU_4101
 DESCRIPTOR.message_types_by_name['Wlst_rtu_4104'] = _WLST_RTU_4104
 DESCRIPTOR.message_types_by_name['Wlst_rtu_4110'] = _WLST_RTU_4110
+DESCRIPTOR.message_types_by_name['Wlst_rtu_4111'] = _WLST_RTU_4111
 DESCRIPTOR.message_types_by_name['Wlst_rtu_4200'] = _WLST_RTU_4200
 DESCRIPTOR.message_types_by_name['Wlst_rtu_4401'] = _WLST_RTU_4401
 DESCRIPTOR.message_types_by_name['Wlst_rtu_da00'] = _WLST_RTU_DA00
@@ -2646,6 +3492,89 @@ Wlst_rtu_ans = _reflection.GeneratedProtocolMessageType('Wlst_rtu_ans', (_messag
   # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_ans)
   ))
 _sym_db.RegisterMessage(Wlst_rtu_ans)
+
+Wlst_rtu_7094 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7094', (_message.Message,), dict(
+
+  Alarm_LN = _reflection.GeneratedProtocolMessageType('Alarm_LN', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_RTU_7094_ALARM_LN,
+    __module__ = 'protocol_rtu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7094.Alarm_LN)
+    ))
+  ,
+  DESCRIPTOR = _WLST_RTU_7094,
+  __module__ = 'protocol_rtu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7094)
+  ))
+_sym_db.RegisterMessage(Wlst_rtu_7094)
+_sym_db.RegisterMessage(Wlst_rtu_7094.Alarm_LN)
+
+Wlst_rtu_7021 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7021', (_message.Message,), dict(
+
+  Args_LN = _reflection.GeneratedProtocolMessageType('Args_LN', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_RTU_7021_ARGS_LN,
+    __module__ = 'protocol_rtu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7021.Args_LN)
+    ))
+  ,
+
+  Args_WC = _reflection.GeneratedProtocolMessageType('Args_WC', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_RTU_7021_ARGS_WC,
+    __module__ = 'protocol_rtu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7021.Args_WC)
+    ))
+  ,
+  DESCRIPTOR = _WLST_RTU_7021,
+  __module__ = 'protocol_rtu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7021)
+  ))
+_sym_db.RegisterMessage(Wlst_rtu_7021)
+_sym_db.RegisterMessage(Wlst_rtu_7021.Args_LN)
+_sym_db.RegisterMessage(Wlst_rtu_7021.Args_WC)
+
+Wlst_rtu_7023 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7023', (_message.Message,), dict(
+
+  Args_Control = _reflection.GeneratedProtocolMessageType('Args_Control', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_RTU_7023_ARGS_CONTROL,
+    __module__ = 'protocol_rtu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7023.Args_Control)
+    ))
+  ,
+  DESCRIPTOR = _WLST_RTU_7023,
+  __module__ = 'protocol_rtu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7023)
+  ))
+_sym_db.RegisterMessage(Wlst_rtu_7023)
+_sym_db.RegisterMessage(Wlst_rtu_7023.Args_Control)
+
+Wlst_rtu_705b = _reflection.GeneratedProtocolMessageType('Wlst_rtu_705b', (_message.Message,), dict(
+  DESCRIPTOR = _WLST_RTU_705B,
+  __module__ = 'protocol_rtu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_705b)
+  ))
+_sym_db.RegisterMessage(Wlst_rtu_705b)
+
+Wlst_rtu_70a0 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_70a0', (_message.Message,), dict(
+
+  Electric_energy = _reflection.GeneratedProtocolMessageType('Electric_energy', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_RTU_70A0_ELECTRIC_ENERGY,
+    __module__ = 'protocol_rtu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_70a0.Electric_energy)
+    ))
+  ,
+
+  Gps_args = _reflection.GeneratedProtocolMessageType('Gps_args', (_message.Message,), dict(
+    DESCRIPTOR = _WLST_RTU_70A0_GPS_ARGS,
+    __module__ = 'protocol_rtu_pb2'
+    # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_70a0.Gps_args)
+    ))
+  ,
+  DESCRIPTOR = _WLST_RTU_70A0,
+  __module__ = 'protocol_rtu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_70a0)
+  ))
+_sym_db.RegisterMessage(Wlst_rtu_70a0)
+_sym_db.RegisterMessage(Wlst_rtu_70a0.Electric_energy)
+_sym_db.RegisterMessage(Wlst_rtu_70a0.Gps_args)
 
 Wlst_rtu_7053 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7053', (_message.Message,), dict(
   DESCRIPTOR = _WLST_RTU_7053,
@@ -2742,13 +3671,6 @@ Wlst_rtu_700a = _reflection.GeneratedProtocolMessageType('Wlst_rtu_700a', (_mess
   ))
 _sym_db.RegisterMessage(Wlst_rtu_700a)
 
-Wlst_rtu_7081 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7081', (_message.Message,), dict(
-  DESCRIPTOR = _WLST_RTU_7081,
-  __module__ = 'protocol_rtu_pb2'
-  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7081)
-  ))
-_sym_db.RegisterMessage(Wlst_rtu_7081)
-
 Wlst_rtu_7010 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7010', (_message.Message,), dict(
   DESCRIPTOR = _WLST_RTU_7010,
   __module__ = 'protocol_rtu_pb2'
@@ -2783,6 +3705,13 @@ Wlst_rtu_7087 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7087', (_mess
   # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7087)
   ))
 _sym_db.RegisterMessage(Wlst_rtu_7087)
+
+Wlst_rtu_7081 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7081', (_message.Message,), dict(
+  DESCRIPTOR = _WLST_RTU_7081,
+  __module__ = 'protocol_rtu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_7081)
+  ))
+_sym_db.RegisterMessage(Wlst_rtu_7081)
 
 Wlst_rtu_7008 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_7008', (_message.Message,), dict(
   DESCRIPTOR = _WLST_RTU_7008,
@@ -2861,6 +3790,13 @@ Wlst_rtu_4110 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_4110', (_mess
   # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_4110)
   ))
 _sym_db.RegisterMessage(Wlst_rtu_4110)
+
+Wlst_rtu_4111 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_4111', (_message.Message,), dict(
+  DESCRIPTOR = _WLST_RTU_4111,
+  __module__ = 'protocol_rtu_pb2'
+  # @@protoc_insertion_point(class_scope:wlst.pb2.Wlst_rtu_4111)
+  ))
+_sym_db.RegisterMessage(Wlst_rtu_4111)
 
 Wlst_rtu_4200 = _reflection.GeneratedProtocolMessageType('Wlst_rtu_4200', (_message.Message,), dict(
   DESCRIPTOR = _WLST_RTU_4200,
@@ -2962,6 +3898,16 @@ _WLST_RTU_ANS.fields_by_name['data_point'].has_options = True
 _WLST_RTU_ANS.fields_by_name['data_point']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_RTU_ANS.fields_by_name['status'].has_options = True
 _WLST_RTU_ANS.fields_by_name['status']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_RTU_7094.fields_by_name['switch_out_st_packed'].has_options = True
+_WLST_RTU_7094.fields_by_name['switch_out_st_packed']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_RTU_70A0.fields_by_name['switch_in_st_packed'].has_options = True
+_WLST_RTU_70A0.fields_by_name['switch_in_st_packed']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_RTU_70A0.fields_by_name['switch_out_st_packed'].has_options = True
+_WLST_RTU_70A0.fields_by_name['switch_out_st_packed']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_RTU_70A0.fields_by_name['tml_st_packed'].has_options = True
+_WLST_RTU_70A0.fields_by_name['tml_st_packed']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_RTU_70A0.fields_by_name['tml_reset'].has_options = True
+_WLST_RTU_70A0.fields_by_name['tml_reset']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_RTU_70D0.fields_by_name['switch_in_st_packed'].has_options = True
 _WLST_RTU_70D0.fields_by_name['switch_in_st_packed']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_RTU_70D0.fields_by_name['switch_out_st_packed'].has_options = True
@@ -2990,6 +3936,8 @@ _WLST_RTU_70DA.fields_by_name['x_upper_current_limit'].has_options = True
 _WLST_RTU_70DA.fields_by_name['x_upper_current_limit']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_RTU_70DA.fields_by_name['x_lower_current_limit'].has_options = True
 _WLST_RTU_70DA.fields_by_name['x_lower_current_limit']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_RTU_70DA.fields_by_name['transformers'].has_options = True
+_WLST_RTU_70DA.fields_by_name['transformers']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_RTU_7008.fields_by_name['int_upd_data'].has_options = True
 _WLST_RTU_7008.fields_by_name['int_upd_data']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_RTU_7060_YEARCTRL.fields_by_name['opt_time'].has_options = True
@@ -3004,6 +3952,8 @@ _WLST_RTU_4104.fields_by_name['x_switch_vector'].has_options = True
 _WLST_RTU_4104.fields_by_name['x_switch_vector']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_RTU_4104.fields_by_name['x_switch_hopping'].has_options = True
 _WLST_RTU_4104.fields_by_name['x_switch_hopping']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
+_WLST_RTU_4111.fields_by_name['transformers'].has_options = True
+_WLST_RTU_4111.fields_by_name['transformers']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_RTU_4200.fields_by_name['x_analog_vector'].has_options = True
 _WLST_RTU_4200.fields_by_name['x_analog_vector']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 _WLST_RTU_4200.fields_by_name['x_switch_in_vector'].has_options = True

@@ -309,6 +309,8 @@ def send_to_zmq_pub(sfilter, msg):
                 f = bytes(sfilter)
             except:
                 f = bytes(sfilter.encode('utf-8'))
+            import base64
+            print(f,base64.b64encode(msg))
             m_zmq_pub.send_multipart([f, msg])
     except Exception as ex:
         print('zmq pub err:{0}'.format(ex))

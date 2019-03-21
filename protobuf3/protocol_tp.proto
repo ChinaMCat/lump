@@ -75,3 +75,62 @@ message Wxjy_esu_d800 {
     //报警状态
     string status = 1;
 }
+
+// 勃洛克单灯
+message Blk_slu_6891{
+	// 高地址（集中器地址）
+    int32 slu_id = 1;
+    // 低地址（控制器地址）
+    int32 sluitem_id = 2;
+    // 控制器数量（1～100）/时钟时间戳/是否启动扫描
+    int64 sluitem_config = 3;
+    // 每个控制器回路数量
+    repeated int32 sluitem_loop = 4 [packed=true];
+    // 设备应答状态，0-失败，1-成功
+    int32 status = 5;
+}
+
+message Blk_slu_6892{
+	// 高地址（集中器地址）
+    int32 slu_id = 1;
+    message Sluitem_data{
+    	// 依次各灯头电压
+        repeated double voltage = 1 [packed=true];
+        // 依次各灯头电流
+        repeated double current = 2 [packed=true];
+        // 依次各灯头功率
+        repeated double power = 3 [packed=true];
+
+        // 依次各灯头错误代码，0-关灯正常,1-关灯有电流，8-开灯正常，9-开灯无电流，10-开灯功率因数低，255-设备通讯故障
+        repeated int32 error = 5 [packed=true];
+        // 依次各灯头节点
+		repeated int32 node = 6 [packed=true];
+		// 控制器地址
+		int32 sluitem_id = 7;
+		// 控制器回路数量
+		int32 sluitem_loop = 8;
+    }
+    repeated Sluitem_data sluitem_data = 2;
+}
+message Blk_slu_6895{
+	// 高地址（集中器地址）
+    int32 slu_id = 1;
+    // addr_type==3时表示组地址，addr_type==4时表示单个控制器地址（单个控制器地址为255时下发0x1,0x1）
+    int32 sluitem_id = 2;
+    // 地址类型，0-全部，1-单号，2-双号，3-组，4-单一
+    int32 addr_type = 3;
+    // 指令类型,0-清除，1-定时，3-即时
+    int32 operation_type = 4;
+    // 控制方式,按灯头数量填充，0-关灯，1-开灯，2-不操作，10～100-调光
+    repeated int32 operation_value = 5 [packed=true];
+    // 定时序号,范围1-5
+    int32 timer_id = 6;
+    // 周设置，[周1,2,3,4,5,6,7],0-不操作，1-操作
+    repeated int32 week_set = 7;
+    // 时间hh×60+mm
+    int32 time_set = 8;
+    // 命令序号，范围0-255
+    int32 cmd_idx = 9;
+    // 执行状态，0-失败，1-成功
+    int32 status = 10;
+}

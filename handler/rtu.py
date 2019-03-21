@@ -474,8 +474,8 @@ class QueryDataRtuHandler(base.RequestHandler):
                                     a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range,a.temperature,
                                     c.loop_name,b.rtu_phy_id,b.rtu_name,c.switch_output_id
                                     from {2}.data_rtu_view_new as a
-                                    left join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id
-                                    left join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id
+                                    right join {0}.para_rtu_loop_info as c on a.rtu_id=c.rtu_id and a.loop_id=c.loop_id
+                                    right join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id
                                     where a.temperature>-50 {1}
                                     order by a.rtu_id,a.loop_id'''.format(
                                 self._db_name, str_tmls, self._db_name_data)
@@ -489,8 +489,8 @@ class QueryDataRtuHandler(base.RequestHandler):
                                     from {2}.data_rtu_record as a where a.temperature>-50 {1} group by a.rtu_id) as x
                                     left join {2}.data_rtu_record as a on x.rtu_id=a.rtu_id and x.date_create=a.date_create
                                     left join {2}.data_rtu_loop_record as d on x.rtu_id=d.rtu_id and x.date_create=d.date_create
-                                    left join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
-                                    left join {0}.para_rtu_loop_info as c on d.rtu_id=c.rtu_id and d.loop_id=c.loop_id'''.format(
+                                    right join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
+                                    right join {0}.para_rtu_loop_info as c on d.rtu_id=c.rtu_id and d.loop_id=c.loop_id'''.format(
                                 self._db_name, str_tmls, self._db_name_data)
 
                             # strsql = 'select a.date_create,a.rtu_id,a.rtu_voltage_a,a.rtu_voltage_b,a.rtu_voltage_c, \
@@ -513,8 +513,8 @@ class QueryDataRtuHandler(base.RequestHandler):
                                     a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range,a.temperature
                                     from {5}.data_rtu_view as a
                                     where a.temperature>-50 and a.date_create>={1} and a.date_create<={2} {3}) as x
-                                    left join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
-                                    left join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id
+                                    right join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
+                                    right join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id
                                     ORDER BY x.rtu_id ,x.date_create'''.format(
                                 self._db_name, sdt, edt, str_tmls,
                                 self._fetch_limited, self._db_name_data)

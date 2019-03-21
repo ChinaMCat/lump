@@ -49,6 +49,8 @@ message Args {
     int32 rc = 9;
     // 485波特率，0-300,1-600,2-1200,3-2400,4-4800,5-9600，防盗默认2,其他默认5
     int32 br = 10;
+	// 设备标识，用于电信nb平台，本公司产品使用0xd0
+	repeated int32 data_flag = 11 [packed=true];
 }
 
 message SysCommands {
@@ -62,6 +64,10 @@ message SysCommands {
     message OnlineInfo {
 		int64 ip = 1;
 		repeated string members = 2;
+		int32 net_type = 3;
+		int32 signal = 4;
+		int64 phy_id = 5;
+		int64 imei = 6;
 	}
 	repeated OnlineInfo online_info = 6;
 }

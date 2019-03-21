@@ -1,3 +1,8 @@
+[2019-03-14]
+---
+- QueryDataRtu接口sql语句修改，屏蔽非法回路数据
+- 增加syslightingrate接口
+
 [2019-01-15]
 ---
 - 增加checkupgrade接口

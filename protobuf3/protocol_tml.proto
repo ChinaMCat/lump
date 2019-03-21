@@ -110,7 +110,7 @@ message WlstTerminal {
     wlst.pb2.Wlst_rtu_df00 wlst_rtu_df00 = 57;
     // 新版选测
     wlst.pb2.Wlst_rtu_70d0 wlst_rtu_70d0 = 58;
-    // 新版召测参数
+    // 新版召测参数应答
     wlst.pb2.Wlst_rtu_70da wlst_rtu_70da = 59;
     // 多路开关灯应答
     wlst.pb2.Wlst_rtu_ans wlst_rtu_cb00 = 60;
@@ -132,6 +132,36 @@ message WlstTerminal {
     wlst.pb2.Wlst_rtu_7081 wlst_rtu_7086 = 68;
     // 升级版本查询
     wlst.pb2.Wlst_rtu_7081 wlst_rtu_7085 = 69;
+    // 电能计量查询
+    wlst.pb2.Wlst_rtu_70a0 wlst_rtu_7020 = 70;
+    // 电能计量应答
+    wlst.pb2.Wlst_rtu_70a0 wlst_rtu_70a0 = 71;
+    // 设置电能采集板互感器比值
+    wlst.pb2.Wlst_rtu_4111 wlst_rtu_4111 = 72;
+    // 设置电能采集板互感器比值应答
+    wlst.pb2.Wlst_rtu_4111 wlst_rtu_c111 = 73;
+    // 新版招测参数
+    wlst.pb2.Wlst_rtu_705a wlst_rtu_705a = 74;
+    //设置各种参数应答
+    wlst.pb2.Wlst_rtu_4111 wlst_rtu_cxxx = 75;
+    // 读取硬件相关参数
+    wlst.pb2.Wlst_rtu_705b wlst_rtu_705b = 76;
+    // 读取硬件相关参数应答
+    wlst.pb2.Wlst_rtu_705b wlst_rtu_70db = 77;
+    // 3006主动上报
+    wlst.pb2.Wlst_rtu_7094 wlst_rtu_7094 = 78;
+    // 设置火零不平衡
+    wlst.pb2.Wlst_rtu_7021 wlst_rtu_7021 = 79;
+    // 设置火零不平衡应答 (填充status_code)
+    wlst.pb2.Wlst_rtu_7021 wlst_rtu_70a1 = 80;
+    // 读取火零不平衡
+    wlst.pb2.Wlst_rtu_7021 wlst_rtu_7022 = 81;
+    // 读取火零不平衡应答
+    wlst.pb2.Wlst_rtu_7021 wlst_rtu_70a2 = 82;
+    // 遥控
+    wlst.pb2.Wlst_rtu_7023 wlst_rtu_7023 = 83;
+    // 遥控应答
+    wlst.pb2.Wlst_rtu_7023 wlst_rtu_70a3 = 84;
 
     //线路检测
     //召测终端软件版本
@@ -369,4 +399,6 @@ message WlstTerminal {
     wlst.pb2.Wlst_slu_7800 wlst_slu_7800 = 647;
     // 召测事件记录应答
     wlst.pb2.Wlst_slu_f800 wlst_slu_f800 = 648;
+    // nb控制器数据主报
+    wlst.pb2.Wlst_slu_3900 wlst_slu_b900 = 649;
 }

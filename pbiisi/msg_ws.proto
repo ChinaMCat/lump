@@ -1517,4 +1517,6 @@ message QueryLightingRate {
     Head head = 1;
     int32 type = 2; // 同提交
     double lighting_rate = 3;  // 亮灯率
+    int32 lamp_total = 4; // 总灯头数量
+    int32 lamp_on = 5; // 亮灯灯头数量
 }

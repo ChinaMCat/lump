@@ -52,7 +52,7 @@ class SysLightingRateHandler(base.RequestHandler):
                     ts = cur[0][1]
                     if t[3] * 60 + t[4] > tr - 20 and t[3] * 60 + t[4] < ts + 20:
                         daylight = True
-            daylight = False
+            # daylight = False # 调试用
             lighton = 0
             lightall = 0
             strsql = '''select count(*) from {0}.data_slu_state_new where is_online=1
@@ -72,10 +72,6 @@ class SysLightingRateHandler(base.RequestHandler):
             if daylight:
                 msg.lighting_rate = 0.0
                 msg.lamp_on = 0
-                try:
-                    os.remove(os.path.join(libiisi.m_cachedir, ".fakelr"))
-                except:
-                    pass
             else:
                 if rqmsg.type == 0:  # 假亮灯率
                     if os.path.isfile(os.path.join(libiisi.m_cachedir, ".fakelr")):
@@ -84,12 +80,9 @@ class SysLightingRateHandler(base.RequestHandler):
                                 "r") as f:
                             a = f.readline()
                             f.close()
-                        if int(float(a)) > 93:
-                            msg.lighting_rate = random.uniform(int(float(a)), 98)
-                        else:
-                            msg.lighting_rate = random.uniform(93, 98)
+                        msg.lighting_rate = random.uniform(int(float(a)), 100)
                     else:
-                        msg.lighting_rate = random.uniform(93, 98)
+                        msg.lighting_rate = random.uniform(98, 100)
                         with open(
                                 os.path.join(libiisi.m_cachedir, ".fakelr"),
                                 "w") as f:
@@ -99,7 +92,7 @@ class SysLightingRateHandler(base.RequestHandler):
                 elif rqmsg.type == 1:  # 依据data_slu_state_new表数据进行亮灯率计算
                     msg.lamp_on = lighton
                     if lightall == 0:
-                        msg.lighting_rate = random.uniform(93, 98)
+                        msg.lighting_rate = random.uniform(95, 100)
                     else:
                         msg.lighting_rate = lighton * 1.0 / (lightall * 1.0)
             del cur, strsql

@@ -59,6 +59,7 @@ message UserLogin {
     int32 is_user_operator_code = 19;
     string code = 20;  // 安全码(移动用)
     string app_config = 21; // app配置文件信息
+    int32 mobile_auth = 22; // 用户手机权限，7-最高，全部操作，6-可以开关灯，不能设参数，0-只读，只能查数据
 }
 
 // 用户注销

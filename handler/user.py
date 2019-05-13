@@ -261,7 +261,7 @@ class UserLoginHandler(base.RequestHandler):
             msg.head.if_st = 46
 
         # 检查用户名密码是否合法
-        strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code,is_user_user_operator_code from {0}.user_list \
+        strsql = 'select user_name,user_real_name,user_phonenumber,user_operator_code,is_user_user_operator_code,user_right_mobile from {0}.user_list \
         where user_name="{1}" and user_password="{2}"'.format(
             self._db_name, rqmsg.user.replace('"', ''),
             rqmsg.pwd.replace('"', ''))
@@ -300,6 +300,7 @@ class UserLoginHandler(base.RequestHandler):
             msg.fullname = d[1] if d[1] is not None else ''
             msg.is_user_operator_code = d[4] if d[4] is not None else 0
             msg.code = d[3] if d[3] is not None else ""
+            msg.mobile_auth = d[5] if d[5] is not None else 6
             zmq_addr = libiisi.m_config.getData('zmq_port')
             if zmq_addr.find(':') == -1:
                 msg.zmq = '{0},{1}'.format(

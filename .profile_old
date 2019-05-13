@@ -1,0 +1,8 @@
+{"uuid": "ab6443e6781911e78ad6fcaa14e489ec", "user_name": "hefeigaoxin", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "querydatartu,querydataslu,tmlinfo,errinfo,querydataerr,statusslu,syslightingrate"}
+{"uuid": "e9251f34735a11e7a88ffcaa14e489ec", "user_name": "dgwaibao", "user_auth": 5, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "enable_all"}
+{"uuid": "ef61022b553911e6832074d435009085", "user_name": "mahalo", "user_auth": 15, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "enable_all"}
+{"uuid": "1e47909ef67711e7a9a6000af77f0b3c", "user_name": "chongqingchangshou", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "tmlinfo,querydataerr"}
+{"uuid": "9b388e7e5fb711e8b15cfcaa14e489ec", "user_name": "hefeigaoxintest", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "enable_all"}
+{"uuid": "225b0a8a035011e9a3adfcaa14e489ec", "user_name": "zhuanghe", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "querydatartu,querydataslu,errinfo,tmlinfo,querydataerr,statusslu,statusrtu"}
+{"uuid": "4dbc28d861a811e99f0bfcaa14e489ec", "user_name": "shapingba", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "querydatartu,errinfo,tmlinfo,querydataerr"}
+{"uuid": "708eefe0662f11e98916fcaa14e489ec", "user_name": "xinqiao", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "querydatartu,errinfo,tmlinfo,querydataslu"}

@@ -299,6 +299,7 @@ class QueryDataErrHandler(base.RequestHandler):
                             strsql += ' {0}'.format(str_errs)
                         strsql += ' order by a.date_create desc {0}'.format(
                             self._fetch_limited)
+
                     elif rqmsg.type == 1:  # 历史故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_remove, \
                         c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id,a.v,a.a,b.fault_name_define,d.loop_name \
@@ -330,9 +331,9 @@ class QueryDataErrHandler(base.RequestHandler):
                         if len(str_errs) > 0:
                             strsql += ' {0}'.format(str_errs)
                     if rqmsg.type in (0, 1):
-                        np = 1
+                        np = True
                     else:
-                        np = 0
+                        np = False
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,

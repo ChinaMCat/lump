@@ -162,6 +162,8 @@ class RequestHandler(mxweb.MXRequestHandler):
             key_column: 内容关键字段序号，若该序号字段为None则跳过该条记录处理，主要用于关联查询时排除无效数据
         return: (record_total, buffer_tag, paging_idx, paging_total, lst_data)
         '''
+        if paging_idx == 0:
+            paging_idx = 1
         if len(strsql) == 0:
             return (None, None, None, None, None)
         if isinstance(key_column, int):

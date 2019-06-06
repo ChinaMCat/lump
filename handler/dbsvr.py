@@ -200,10 +200,12 @@ class DBSvrHandler(base.RequestHandler):
         url = '{0}/{1}?{2}'.format(libiisi.cfg_dbsvr_url,
                                    self.request.path.replace(
                                        self.root_path, ''), urlencode(args))
+        # print("---", url)
         if goodtogo:
             try:
                 rep = self._pm.request('GET', url, timeout=10.0)
                 self.write(rep.data)
+                # print("===", rep.body)
                 # rep = yield self.thc.fetch(
                 #     url, method="GET", raise_error=True, request_timeout=10)
                 # self.write(rep.body)

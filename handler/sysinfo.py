@@ -88,7 +88,7 @@ class SysLightingRateHandler(base.RequestHandler):
                                 "w") as f:
                             f.write(str(msg.lighting_rate))
                             f.close()
-                    msg.lamp_on = int(msg.lamp_total * msg.lighting_rate)
+                    msg.lamp_on = int(msg.lamp_total * (msg.lighting_rate/100))
                 elif rqmsg.type == 1:  # 依据data_slu_state_new表数据进行亮灯率计算
                     msg.lamp_on = lighton
                     if lightall == 0:

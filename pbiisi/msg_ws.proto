@@ -1520,4 +1520,5 @@ message QueryLightingRate {
     double lighting_rate = 3;  // 亮灯率
     int32 lamp_total = 4; // 总灯头数量
     int32 lamp_on = 5; // 亮灯灯头数量
+    double power_sum = 6; // 在线且亮灯的功率总和
 }

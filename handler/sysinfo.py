@@ -50,7 +50,7 @@ class SysLightingRateHandler(base.RequestHandler):
                 if len(cur) > 0:
                     tr = cur[0][0]
                     ts = cur[0][1]
-                    if t[3] * 60 + t[4] > tr - 20 and t[3] * 60 + t[4] < ts + 20:
+                    if t[3] * 60 + t[4] > tr and t[3] * 60 + t[4] < ts:
                         daylight = True
             # daylight = False # 调试用
             lighton = 0
@@ -68,6 +68,7 @@ class SysLightingRateHandler(base.RequestHandler):
             except:
                 lightall = 0
             msg.lamp_total = lightall
+            msg.power_sum = 0.0
 
             if daylight:
                 msg.lighting_rate = 0.0
@@ -90,11 +91,20 @@ class SysLightingRateHandler(base.RequestHandler):
                             f.close()
                     msg.lamp_on = int(msg.lamp_total * (msg.lighting_rate/100))
                 elif rqmsg.type == 1:  # 依据data_slu_state_new表数据进行亮灯率计算
+                    strsql = '''select sum(lamp_power) from {0}.data_slu_state_new where is_online = 1 and is_light = 1'''.format(
+                        self._db_name_data)
+                    record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                        strsql, need_fetch=1, need_paging=0)
+                    try:
+                        if cur is not None:
+                            msg.power_sum = float(cur[0][0])
+                    except:
+                        msg.power_sum = 0
                     msg.lamp_on = lighton
                     if lightall == 0:
                         msg.lighting_rate = random.uniform(95, 100)
                     else:
-                        msg.lighting_rate = lighton * 1.0 / (lightall * 1.0)
+                        msg.lighting_rate = lighton * 1.0 / (lightall * 1.0)*100
             del cur, strsql
 
         self.write(mx.code_pb2(msg, self._go_back_format))

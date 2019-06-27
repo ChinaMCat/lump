@@ -1311,17 +1311,14 @@ message StatusSlu {
     message StatusSluitemView {
         int32 sluitem_id = 1;  // 控制器地址
         string sluitem_name = 2;  // 控制器名称
-        int32 st_sluitem = 3;  // 控制器状态0-正常,1-电压越上限,2-电压越下限,3-通信故障
-        repeated int32 st_lamp = 4 [packed=true];  // 灯状态（依次为每个灯头，最大4个） 0-亮灯,1-调档节能,2-调光节能,3-关灯
-        repeated int32 err_lamp = 5 [packed=true];  // 灯故障（依次为每个灯头，最大4个）0-正常,1-光源故障,2-补偿电容故障,3-意外灭灯,4-意外亮灯,5-自熄灯
-        repeated int32 leak_lamp = 6 [packed=true];  // 灯漏电状态（依次为每个灯头，最大4个）0-无漏电,1-漏电
-        int64 dt_create = 7;  // 控制器数据缓存时间，通信故障时为0
+        int32 st_sluitem = 3;  // 控制器状态0-掉线，1-在线
+        repeated int32 st_lamp = 4 [packed=true];  // 灯状态（依次为每个灯头，最大4个） 0-灭灯，1-亮灯
     }
     message StatusSluView {
-        int32 tml_id = 1;  // 设备id（界面不显示）
+        int32 tml_id = 1;  // 设备id
         int32 phy_id = 2;  // 设备物理地址
         string tml_name = 3;  // 设备名称
-        int32 is_online = 4;  // 是否在线(暂不支持，预留)
+        int32 is_online = 4;  // 是否在线0-掉线，1-在线
         repeated StatusSluitemView status_sluitem_view = 5;  // 控制器状态
         int32 err_num = 6;  // 当前故障总数
         int64 dt_create = 7;  // 最新数据采集时间
@@ -1329,6 +1326,28 @@ message StatusSlu {
     Head head = 1;
     repeated StatusSluView status_slu_view = 2;
 }
+// message StatusSlu {
+//     message StatusSluitemView {
+//         int32 sluitem_id = 1;  // 控制器地址
+//         string sluitem_name = 2;  // 控制器名称
+//         int32 st_sluitem = 3;  // 控制器状态0-正常,1-电压越上限,2-电压越下限,3-通信故障
+//         repeated int32 st_lamp = 4 [packed=true];  // 灯状态（依次为每个灯头，最大4个） 0-亮灯,1-调档节能,2-调光节能,3-关灯
+//         repeated int32 err_lamp = 5 [packed=true];  // 灯故障（依次为每个灯头，最大4个）0-正常,1-光源故障,2-补偿电容故障,3-意外灭灯,4-意外亮灯,5-自熄灯
+//         repeated int32 leak_lamp = 6 [packed=true];  // 灯漏电状态（依次为每个灯头，最大4个）0-无漏电,1-漏电
+//         int64 dt_create = 7;  // 控制器数据缓存时间，通信故障时为0
+//     }
+//     message StatusSluView {
+//         int32 tml_id = 1;  // 设备id（界面不显示）
+//         int32 phy_id = 2;  // 设备物理地址
+//         string tml_name = 3;  // 设备名称
+//         int32 is_online = 4;  // 是否在线(暂不支持，预留)
+//         repeated StatusSluitemView status_sluitem_view = 5;  // 控制器状态
+//         int32 err_num = 6;  // 当前故障总数
+//         int64 dt_create = 7;  // 最新数据采集时间
+//     }
+//     Head head = 1;
+//     repeated StatusSluView status_slu_view = 2;
+// }
 
 // 短信待报警信息查询
 message rqQuerySmsAlarm {

@@ -1530,8 +1530,9 @@ class StatusSluHandler(base.RequestHandler):
                         msg.head.paging_total = paging_total
                         for d in cur:
                             if dv.tml_id!=int(d[0]):
-                                msg.status_slu_view.extend([dv])
-                                dv = msgws.StatusSlu.StatusSluView()
+                                if dv.tml_id > 0:
+                                    msg.status_slu_view.extend([dv])
+                                    dv = msgws.StatusSlu.StatusSluView()
                                 dv.tml_id = int(d[0])
                                 dv.tml_name = str(d[7])
                                 dv.phy_id = int(d[8])
@@ -1553,6 +1554,8 @@ class StatusSluHandler(base.RequestHandler):
                                 dva.st_sluitem = int(d[4])
                                 
                             dva.st_lamp.extend([int(d[5])])
+                        if dv.tml_id > 0:
+                            msg.status_slu_view.extend([dv])
                     del cur, strsql
 
                                 

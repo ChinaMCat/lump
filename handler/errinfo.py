@@ -34,8 +34,8 @@ class QueryErrorCountHandler(base.RequestHandler):
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
                 if rqmsg.type == 1:  # 按设备查询
-                    strsql = 'select a.rtu_id,b.rtu_name,a.fault_num from {1}.sum_fault_by_tml as a \
-                                left join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id order by a.fault_num desc'.format(self._db_name, self._db_name_data)
+                    strsql = 'select a.rtu_id,b.rtu_name,a.fault_num from {0}.para_base_equipment as b \
+                                left join {1}.sum_fault_by_tml as a on a.rtu_id=b.rtu_id order by a.fault_num desc'.format(self._db_name, self._db_name_data)
                 elif rqmsg.type == 2:  # 按故障查询
                     strsql = 'select a.fault_id,b.fault_name,a.fault_num from {1}.sum_fault_by_faultid as a \
                                 left join {0}.fault_types as b on a.fault_id=b.fault_id order by a.fault_num desc'.format(self._db_name, self._db_name_data)
@@ -52,12 +52,13 @@ class QueryErrorCountHandler(base.RequestHandler):
                     msg.head.paging_total = paging_total
                     msg.type = rqmsg.type
                     for d in cur:
-                        errnum = msgws.QueryErrorCount.Error_count()
-                        errnum.id = d[0]
-                        errnum.name = d[1]
-                        errnum.count = d[2]
-                        msg.error_count.extend([errnum])
-                        del errnum
+                        if d[0] is not None:
+                            errnum = msgws.QueryErrorCount.Error_count()
+                            errnum.id = d[0] if d[0] is not None else 0
+                            errnum.name = d[1] if d[1] is not None else ""
+                            errnum.count = d[2]
+                            msg.error_count.extend([errnum])
+                            del errnum
 
                 del cur, strsql
 

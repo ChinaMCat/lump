@@ -1312,7 +1312,10 @@ message StatusSlu {
         int32 sluitem_id = 1;  // 控制器地址
         string sluitem_name = 2;  // 控制器名称
         int32 st_sluitem = 3;  // 控制器状态0-掉线，1-在线
-        repeated int32 st_lamp = 4 [packed=true];  // 灯状态（依次为每个灯头，最大4个） 0-灭灯，1-亮灯
+        repeated int32 st_lamp = 4 [packed=true];  // 灯状态，0-关灯，1-开灯
+        repeated float lamp_current = 5 [packed=true];// 灯电流
+        repeated float lamp_voltage = 6 [packed=true];// 灯电压
+        repeated float lamp_power = 7 [packed=true];// 灯功率
     }
     message StatusSluView {
         int32 tml_id = 1;  // 设备id

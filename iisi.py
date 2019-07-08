@@ -39,7 +39,8 @@ if __name__ == '__main__':
                        type=str,
                        help='Setting profile path.')
 
-    group.add_argument('--port', action='store', dest='port', type=int, help='Setting port number.')
+    group.add_argument('--port', action='store', dest='port',
+                       type=int, help='Setting port number.')
 
     parser_debug = argparse.ArgumentParser(add_help=False)
 
@@ -100,7 +101,8 @@ if __name__ == '__main__':
                               port=3306 if len(libiisi.m_config.getData('db_host').split(':')) == 1
                               else int(libiisi.m_config.getData('db_host').split(':')[1]),
                               user=libiisi.m_config.getData('db_user'),
-                              pwd=mx.decode_string(libiisi.m_config.getData('db_pwd')),
+                              pwd=mx.decode_string(
+                                  libiisi.m_config.getData('db_pwd')),
                               maxconn=int(libiisi.m_config.getData('max_db_conn')))
     libiisi.m_sql.set_debug(results.debug)
 
@@ -127,11 +129,11 @@ if __name__ == '__main__':
     application = tornado.web.Application(handlers=lst_handler, **settings)
     try:
         application.listen(int(libiisi.cfg_bind_port))
-        logging.error('======= start the service on port {0} ======='.format(libiisi.cfg_bind_port))
-        print('======= start the service on port {0} ======='.format(libiisi.cfg_bind_port))
+        logging.error('======= start the service on port {0} ======='.format(
+            libiisi.cfg_bind_port))
+        print('======= start the service on port {0} ======='.format(
+            libiisi.cfg_bind_port))
         tornado.ioloop.IOLoop.instance().start()
     except Exception as ex:
         logging.error('------- service error: {0}'.format(ex))
         print('------- service error: {0}'.format(ex))
-        if os.name == 'nt':
-            raw_input('press any key to exit...')

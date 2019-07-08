@@ -55,9 +55,11 @@ class SysLightingRateHandler(base.RequestHandler):
             # daylight = False # 调试用
             lighton = 0
             lightall = 0
-            strsql = '''select count(*) from {0}.data_slu_state_new where is_online=1
+            strsql = '''select count(*) from {0}.data_slu_state_new 
                         union all
-                        select count(*) from {0}.data_slu_state_new where is_online=1 and is_light=1'''.format(
+                        select count(*) from {0}.data_slu_state_new where is_online=1 and is_light=1
+                        union all
+                        select count(*) from {0}.data_slu_state_new where is_light=0'''.format(
                 self._db_name_data)
             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                 strsql, need_fetch=1, need_paging=0)
@@ -65,6 +67,7 @@ class SysLightingRateHandler(base.RequestHandler):
                 if cur is not None:
                     lightall = int(cur[0][0])
                     lighton = int(cur[1][0])
+                    lightoff = int(cur[2][0])
             except:
                 lightall = 0
             msg.lamp_total = lightall
@@ -91,7 +94,7 @@ class SysLightingRateHandler(base.RequestHandler):
                             f.close()
                     msg.lamp_on = int(msg.lamp_total * (msg.lighting_rate/100))
                 elif rqmsg.type == 1:  # 依据data_slu_state_new表数据进行亮灯率计算
-                    strsql = '''select sum(lamp_power) from {0}.data_slu_state_new where is_online = 1 and is_light = 1'''.format(
+                    strsql = '''select sum(lamp_power) from {0}.data_slu_state_new where is_light = 1'''.format(
                         self._db_name_data)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql, need_fetch=1, need_paging=0)
@@ -104,7 +107,8 @@ class SysLightingRateHandler(base.RequestHandler):
                     if lightall == 0:
                         msg.lighting_rate = random.uniform(95, 100)
                     else:
-                        msg.lighting_rate = lighton * 1.0 / (lightall * 1.0)*100
+                        # msg.lighting_rate = 1-(lightoff * 1.0 / lightall)*100
+                        msg.lighting_rate = (lighton*1.0/lightall)*100
             del cur, strsql
 
         self.write(mx.code_pb2(msg, self._go_back_format))
@@ -1501,16 +1505,24 @@ class StatusSluHandler(base.RequestHandler):
                     else:
                         str_tmls = ' and a.slu_id in ({0}) '.format(
                             ','.join([str(a) for a in tml_ids]))
-
-                    strsql = '''select a.slu_id,a.ctrl_id,a.lamp_id,a.date_create,a.is_online,a.is_light,a.lamp_power,
-                        b.rtu_name,b.rtu_phy_id,
-                        c.err_num 
-                        from {0}.data_slu_state_new as a left join
-                        {1}.para_base_equipment as b on a.slu_id=b.rtu_id left join
-                        (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist 
-                        where rtu_id<1600000 and rtu_id>1500000 group by rtu_id) as c on a.slu_id=c.rtu_id
-                        where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(self._db_name_data,self._db_name,str_tmls)
-
+                    if user_uuid == "ab6443e6781911e78ad6fcaa14e489ec":
+                        strsql = '''select a.slu_id,a.ctrl_id,a.lamp_id,a.date_create,a.is_online,a.is_light,a.lamp_power,
+                            b.rtu_name,b.rtu_phy_id,
+                            c.err_num,a.lamp_current,a.lamp_voltage 
+                            from {0}.data_slu_state_new as a left join
+                            {1}.para_base_equipment as b on a.slu_id=b.rtu_id left join
+                            (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist 
+                            where rtu_id<1600000 and rtu_id>1500000 group by rtu_id) as c on a.slu_id=c.rtu_id
+                            where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(self._db_name_data,self._db_name,str_tmls)
+                    else:
+                        strsql = '''select a.slu_id,a.ctrl_id,a.lamp_id,a.date_create,a.is_online,a.is_light,a.is_light,
+                            b.rtu_name,b.rtu_phy_id,
+                            c.err_num,a.is_light,a.is_light  
+                            from {0}.data_slu_state_new as a left join
+                            {1}.para_base_equipment as b on a.slu_id=b.rtu_id left join
+                            (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist 
+                            where rtu_id<1600000 and rtu_id>1500000 group by rtu_id) as c on a.slu_id=c.rtu_id
+                            where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(self._db_name_data, self._db_name, str_tmls)
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -1552,8 +1564,11 @@ class StatusSluHandler(base.RequestHandler):
                                 dva = msgws.StatusSlu.StatusSluitemView()
                                 dva.sluitem_id = int(d[1])
                                 dva.st_sluitem = int(d[4])
-                                
+                            
                             dva.st_lamp.extend([int(d[5])])
+                            dva.lamp_current.extend([float(d[10])])
+                            dva.lamp_voltage.extend([float(d[11])])
+                            dva.lamp_power.extend([float(d[6])])
                         if dv.tml_id > 0:
                             msg.status_slu_view.extend([dv])
                     del cur, strsql

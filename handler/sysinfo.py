@@ -59,7 +59,7 @@ class SysLightingRateHandler(base.RequestHandler):
                         union all
                         select count(*) from {0}.data_slu_state_new where is_online=1 and is_light=1
                         union all
-                        select count(*) from {0}.data_slu_state_new where is_light=0'''.format(
+                        select count(*) from {0}.data_slu_state_new where is_online=1 and is_light=0'''.format(
                 self._db_name_data)
             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                 strsql, need_fetch=1, need_paging=0)
@@ -107,8 +107,8 @@ class SysLightingRateHandler(base.RequestHandler):
                     if lightall == 0:
                         msg.lighting_rate = random.uniform(95, 100)
                     else:
-                        # msg.lighting_rate = 1-(lightoff * 1.0 / lightall)*100
-                        msg.lighting_rate = (lighton*1.0/lightall)*100
+                        # msg.lighting_rate = (lighton * 1.0 / lightall)*100
+                        msg.lighting_rate = (1-lightoff*1.0/lightall)*100
             del cur, strsql
 
         self.write(mx.code_pb2(msg, self._go_back_format))
@@ -1498,7 +1498,7 @@ class StatusSluHandler(base.RequestHandler):
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
-
+                        
                 if msg.head.if_st == 1:
                     if len(tml_ids) == 0:
                         str_tmls = ''
@@ -1523,6 +1523,7 @@ class StatusSluHandler(base.RequestHandler):
                             (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist 
                             where rtu_id<1600000 and rtu_id>1500000 group by rtu_id) as c on a.slu_id=c.rtu_id
                             where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(self._db_name_data, self._db_name, str_tmls)
+                            
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -1543,6 +1544,8 @@ class StatusSluHandler(base.RequestHandler):
                         for d in cur:
                             if dv.tml_id!=int(d[0]):
                                 if dv.tml_id > 0:
+                                    if dva.sluitem_id>0:
+                                        dv.status_sluitem_view.extend([dva])
                                     msg.status_slu_view.extend([dv])
                                     dv = msgws.StatusSlu.StatusSluView()
                                 dv.tml_id = int(d[0])
@@ -1558,6 +1561,7 @@ class StatusSluHandler(base.RequestHandler):
 
                                 dva = msgws.StatusSlu.StatusSluitemView()
                                 dva.sluitem_id = int(d[1])
+                                dva.st_sluitem = int(d[4])
 
                             if dva.sluitem_id!=int(d[1]):
                                 dv.status_sluitem_view.extend([dva])
@@ -1570,6 +1574,7 @@ class StatusSluHandler(base.RequestHandler):
                             dva.lamp_voltage.extend([float(d[11])])
                             dva.lamp_power.extend([float(d[6])])
                         if dv.tml_id > 0:
+                            dv.status_sluitem_view.extend([dva])
                             msg.status_slu_view.extend([dv])
                     del cur, strsql
 
@@ -1617,7 +1622,7 @@ class StatusSluHandler(base.RequestHandler):
         #                 self._db_name, str_tmls,
         #                 mx.switchStamp(time.time() - 60 * 60 * 24 * 30),
         #                 self._db_name_data)
-        #             print(strsql)
+        
         #             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
         #                 strsql,
         #                 need_fetch=1,

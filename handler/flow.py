@@ -7,7 +7,9 @@ __doc__ = 'rtu handler'
 import xml.dom.minidom as xmld
 from urllib import urlencode
 import mlib_iisi.utils as libiisi
+import json
 import mxweb
+import urllib2
 from tornado import gen
 # from tornado.httpclient import AsyncHTTPClient
 import base
@@ -47,8 +49,15 @@ class FlowWorkHandler(base.RequestHandler):
             data[k] = x.get(k)[0]
         url = '{0}/{1}'.format(libiisi.cfg_fs_url,
                                self.request.uri.replace(self.root_path, ''))
+
         try:
-            rep = self._pm.request('POST', url, fields=data, timeout=10.0)
+            header = {}
+            header["Content-Type"] = "application/x-www-form-urlencoded"
+            # req = urllib2.Request(url, urlencode(data))
+            # req.add_header("Content-Type", "application/x-www-form-urlencoded")
+            # rep = urllib2.urlopen(req)
+            rep = self._pm.request(
+                'POST', url, body=urlencode(data), timeout=10.0, headers=header)
             # url += '?{0}'.format(urlencode(data))
             #
             # rep = yield self.thc.fetch(url, raise_error=True, request_timeout=12)

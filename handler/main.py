@@ -165,6 +165,7 @@ class MainHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
+        print(self.request.arguments)
         self.write('post test ok.')
         self.finish()
 

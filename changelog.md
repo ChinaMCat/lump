@@ -1,3 +1,7 @@
+[2019-08-12]
+---
+- 调整工单透传接口POST方式，设置head为`application/x-www-form-urlencoded`，body为urlencode字符串
+
 [2019-07-08]
 ---
 - QueryErrorCount 排除id字段为空的数据

@@ -18,6 +18,7 @@ from tornado.httpclient import AsyncHTTPClient
 import base
 import mlib_iisi.utils as libiisi
 from urllib import urlencode
+import requests
 
 
 @mxweb.route()
@@ -165,7 +166,33 @@ class MainHandler(base.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        print(self.request.arguments)
+        # args = self.request.arguments
+        # print(args)
+        # requrl = "http://api.heclouds.com/nbiot?imei=867726033162555&obj_id=3311&obj_inst_id=0&mode=1&timeout=10"
+        # header = {
+        #     "api-key": "KaCWAGVbBq=muz0yv1kmXRfJimM=",
+        #     "Content-Type": "application/json",
+        #     "Host": "api.heclouds.com"
+        # }
+        # body = \
+        #     {
+        #         "data": [
+        #             {
+        #                 "res_id": 5706,
+        #                 "val": "DAD9001768AAAAAAAAAAAA681C0B7D0700002100004000FB835616"
+        #             }
+        #         ]
+        #     }
+        # r = requests.post(requrl, headers=header, data=json.dumps(body))
+
+        # print(r.text)
+        # req = urllib2.Request(
+        #     "http://api.heclouds.com/devices/nbiot?imei=867726033162555&obj_id=3311&obj_inst_id=0&mode=1&timeout=10", urlencode(args))
+
+        # try:
+        #     rep = urllib2.urlopen(req)
+        # except Exception as ex:
+        #     print(ex)
         self.write('post test ok.')
         self.finish()
 

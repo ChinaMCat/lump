@@ -112,7 +112,7 @@ class QueryDataRtuGZHandler(base.RequestHandler):
                             # where t.rtu_id=a.rtu_id and t.date_create=a.date_create) {1} order by a.date_create desc,a.rtu_id,a.loop_id;'.format(
                             #     self._db_name, str_tmls)
                     else:
-                        if len(tml_ids) !=1:
+                        if len(tml_ids) != 1:
                             strsql = ""
                         else:
                             strsql = '''select x.*,c.loop_name,b.rtu_phy_id,b.rtu_name,c.switch_output_id from
@@ -545,6 +545,8 @@ class QueryDataRtuHandler(base.RequestHandler):
                         msg.head.paging_idx = paging_idx
                         msg.head.paging_total = paging_total
                         for d in cur:
+                            if d[0] is None:
+                                continue
                             if drv.tml_id != int(
                                     d[1]) or drv.dt_receive != mx.switchStamp(
                                         int(d[0])):
@@ -648,7 +650,7 @@ class RtuDataGetHandler(base.RequestHandler):
                             cmd='ahhf.rtu.2000', addr=list(addr), tver=tver)
                         libiisi.send_to_zmq_pub('tcs.req.{0}.{1}'.format(
                             libiisi.cfg_tcs_port, tcsmsg.head.cmd),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -781,7 +783,7 @@ class RtuCtlHandler(base.RequestHandler):
         self.finish()
         if env:
             cur = yield self.write_event(
-                event_id, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+                event_id, contents, 2, user_name=user_data['user_name'], app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -834,7 +836,7 @@ class RtuVerGetHandler(base.RequestHandler):
                             cmd='ahhf.rtu.5c00', tver=tver)
                         libiisi.send_to_zmq_pub('tcs.req.{0}.{1}'.format(
                             libiisi.cfg_tcs_port, tcsmsg.head.cmd),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -896,10 +898,10 @@ class RtuTimerCtlHandler(base.RequestHandler):
                         # libiisi.set_to_send(tcsmsg, 0, False)
                         libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                             cmd, libiisi.cfg_tcs_port),
-                                                json.dumps(
-                                                    tcsmsg,
-                                                    separators=(',',
-                                                                ':')).lower())
+                            json.dumps(
+                            tcsmsg,
+                            separators=(',',
+                                        ':')).lower())
                     elif tver == 2:
                         if rqmsg.data_mark == 0:
                             cmd = 'ahhf.rtu.1200'
@@ -908,12 +910,13 @@ class RtuTimerCtlHandler(base.RequestHandler):
                         tcsmsg = libiisi.initRtuProtobuf(cmd=cmd, tver=2)
                         libiisi.send_to_zmq_pub('tcs.req.{0}.{1}'.format(
                             libiisi.cfg_tcs_port, cmd),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env and rqmsg.data_mark == 1:
-            self.write_event(11, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+            self.write_event(
+                11, contents, 2, user_name=user_data['user_name'], app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data

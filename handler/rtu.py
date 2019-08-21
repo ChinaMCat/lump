@@ -506,6 +506,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                         if len(tml_ids) != 1:
                             strsql = ""
                         else:
+                            # 徐坤说把right join 改成join
                             strsql = '''select x.*,c.loop_name,b.rtu_phy_id,b.rtu_name,c.switch_output_id from
                                     (select a.date_create, a.rtu_id,a.rtu_voltage_a,a.rtu_voltage_b,a.rtu_voltage_c,
                                     a.rtu_current_sum_a,a.rtu_current_sum_b,a.rtu_current_sum_c,
@@ -513,8 +514,8 @@ class QueryDataRtuHandler(base.RequestHandler):
                                     a.power_factor,a.bright_rate,a.switch_in_state,a.a_over_range,a.v_over_range,a.temperature
                                     from {5}.data_rtu_view as a
                                     where a.temperature>-50 and a.date_create>={1} and a.date_create<={2} {3}) as x
-                                    right join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
-                                    right join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id
+                                    join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
+                                    join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id
                                     ORDER BY x.rtu_id ,x.date_create'''.format(
                                 self._db_name, sdt, edt, str_tmls,
                                 self._fetch_limited, self._db_name_data)

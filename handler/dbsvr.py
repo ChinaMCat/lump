@@ -14,6 +14,7 @@ from tornado import gen
 import base
 import time
 import json
+import pbiisi.msg_ws_pb2 as msgws
 
 
 @mxweb.route()
@@ -212,7 +213,9 @@ class DBSvrHandler(base.RequestHandler):
             except Exception as ex:
                 self.write(str(ex))
         else:
-            self.write("uuid error.")
+            msg.head.if_st = 10
+            msg.head.if_msg = "uuid error."
+            self.write(mx.code_pb2(msg, self._go_back_format))
 
         del url, args
         self.finish()
@@ -264,7 +267,9 @@ class DBSvrHandler(base.RequestHandler):
             except Exception as ex:
                 self.write(str(ex))
         else:
-            self.write("uuid error.")
+            msg.head.if_st = 10
+            msg.head.if_msg = "uuid error."
+            self.write(mx.code_pb2(msg, self._go_back_format))
 
         del url, args
         self.finish()

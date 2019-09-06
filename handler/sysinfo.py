@@ -1715,15 +1715,15 @@ class SysStatusHandler(base.RequestHandler):
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
-                strsql = '''select count(*) from mydb1024.para_base_equipment where rtu_id <1100000 union all
-                	select count(distinct(rtu_id)) from mydb1024_data.data_rtu_state_new where is_online=1 union all
-                	select count(*) from mydb1024_data.info_fault_exist where rtu_id<1100000 union all
-                	select count(*) from mydb1024.para_base_equipment where rtu_id>=1500000 and rtu_id < 1600000 union all
-                	select count(distinct(slu_id)) from mydb1024_data.data_slu_state_new where is_online=1 union all
-                	select count(*) from mydb1024_data.info_fault_exist where rtu_id <1600000 and rtu_id>=1500000 and fault_id=50 union all
-                	select count(*) from mydb1024.para_slu_ctrl union all
-                	select count(*) from mydb1024_data.data_slu_state_new where is_online=1 union all
-                	select count(*) from mydb1024_data.info_fault_exist where rtu_id <1600000 and rtu_id>=1500000 and fault_id>=51 and fault_id <=64'''
+                strsql = '''select count(*) from {0}.para_base_equipment where rtu_id <1100000 union all
+                	select count(distinct(rtu_id)) from {1}.data_rtu_state_new where is_online=1 union all
+                	select count(*) from {1}.info_fault_exist where rtu_id<1100000 union all
+                	select count(*) from {0}.para_base_equipment where rtu_id>=1500000 and rtu_id < 1600000 union all
+                	select count(distinct(slu_id)) from {1}.data_slu_state_new where is_online=1 union all
+                	select count(*) from {1}.info_fault_exist where rtu_id <1600000 and rtu_id>=1500000 and fault_id=50 union all
+                	select count(*) from {0}.para_slu_ctrl union all
+                	select count(*) from {1}.data_slu_state_new where is_online=1 union all
+                	select count(*) from {1}.info_fault_exist where rtu_id <1600000 and rtu_id>=1500000 and fault_id>=51 and fault_id <=64'''.format(self._db_name, self._db_name_data)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql, need_fetch=1, need_paging=0)

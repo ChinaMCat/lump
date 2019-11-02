@@ -1,5 +1,10 @@
 # changelog
 
+## [2019-11-02]
+
+- tmlinfo增加17标识，查询运营商nb设备信息
+- sluitem_info增加imei，platform字段
+
 ## [2019-09-05]
 
 - 修正sysstatus接口数据库语句中数据库名称错误问题

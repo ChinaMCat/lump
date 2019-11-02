@@ -1356,6 +1356,99 @@ class TmlInfoHandler(base.RequestHandler):
                                         msg.slu_info.extend([info])
 
                                 del cur, strsql
+                        elif mk == 17: # 运营上平台nb单灯
+                            if 6 not in [int(a) for a in rqmsg.data_mark]:
+                                if len(tml_ids) == 0:
+                                    str_tmls = ''
+                                else:
+                                    str_tmls = ' and a.field_id in ({0})'.format(
+                                        ','.join(
+                                            [str(a) for a in list(tml_ids)]))
+
+                                strsql = 'select a.field_id,c.ctrl_id,c.bar_code_id,c.ctrl_name,c.phy_id,c.lamp_code, \
+                                c.ctrl_gis_x,c.ctrl_gis_y,c.upper_power,c.lower_power, \
+                                c.route_pass_1,c.route_pass_2,c.route_pass_3,c.route_pass_4, \
+                                c.phy_id,c.is_auto_open_light_when_elec1,c.is_auto_open_light_when_elec2, \
+                                c.is_auto_open_light_when_elec3,c.is_auto_open_light_when_elec4, \
+                                c.is_used,c.is_alarm_auto,c.vector_loop_1,c.vector_loop_2, \
+                                c.vector_loop_3,c.vector_loop_4,c.light_count,c.power_rate_1, \
+                                c.power_rate_2,c.power_rate_3,c.power_rate_4,c.imei,c.platform \
+                                from {0}.para_slu_sgl as b left join {0}.para_slu_sgl_item as a  \
+                                on a.field_id=b.field_id left join {0}.para_slu_sgl_ctrl as c on  \
+                                c.ctrl_id=a.ctrl_id where a.field_id>=1700000 and a.field_id<=1799999 {1} order by a.ctrl_id'.format(
+                                    self._db_name, str_tmls)
+
+                                record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                                    strsql,
+                                    need_fetch=1,
+                                    need_paging=0,
+                                    multi_record=[0])
+                                if record_total is None:
+                                    msg.head.if_st = 45
+                                else:
+                                    info = msgws.TmlInfo.SluInfo()
+                                    msg.head.paging_record_total = record_total
+                                    msg.head.paging_buffer_tag = buffer_tag
+                                    msg.head.paging_idx = paging_idx
+                                    msg.head.paging_total = paging_total
+                                    for d in cur:
+                                        if info.tml_id != int(d[0]):
+                                            if info.tml_id > 0:
+                                                msg.slu_info.extend([info])
+                                                info = msgws.TmlInfo.SluInfo()
+                                            info.tml_id = int(d[0])
+                                        if d[2] is None:
+                                            continue
+                                        iteminfo = msgws.TmlInfo.SluItemInfo()
+                                        iteminfo.sluitem_id = int(d[1])
+                                        iteminfo.sluitem_barcode = int(d[2])
+                                        # iteminfo.sluitem_loop_num = int(d[40])
+                                        iteminfo.sluitem_name = d[3]
+                                        iteminfo.sluitem_phy_id = int(d[4])
+                                        iteminfo.sluitem_lamp_id = d[
+                                            5] if d[5] is not None else ''
+                                        iteminfo.sluitem_gis_x = float(d[6])
+                                        iteminfo.sluitem_gis_y = float(d[7])
+                                        iteminfo.sluitem_power_uplimit = int(
+                                            d[8])
+                                        iteminfo.sluitem_power_lowlimit = int(
+                                            d[9])
+                                        iteminfo.sluitem_route.extend([
+                                            int(d[10]),
+                                            int(d[11]),
+                                            int(d[12]),
+                                            int(d[13])
+                                        ])
+                                        iteminfo.sluitem_order = int(
+                                            d[14]) if d[14] is not None else 0
+                                        iteminfo.sluitem_st_poweron.extend([
+                                            int(d[15]),
+                                            int(d[16]),
+                                            int(d[17]),
+                                            int(d[18])
+                                        ])
+                                        iteminfo.sluitem_st = int(d[19])
+                                        iteminfo.sluitem_alarm = int(d[20])
+                                        iteminfo.sluitem_vector.extend([
+                                            int(d[21]),
+                                            int(d[22]),
+                                            int(d[23]),
+                                            int(d[24])
+                                        ])
+                                        iteminfo.sluitem_rated_power.extend([
+                                            int(d[26]),
+                                            int(d[27]),
+                                            int(d[28]),
+                                            int(d[29])
+                                        ])
+                                        iteminfo.sluitem_imei=d[30]
+                                        iteminfo.sluitem_platform=d[31]
+                                        info.sluitem_info.extend([iteminfo])
+                                        del iteminfo
+                                    if info.tml_id > 0:
+                                        msg.slu_info.extend([info])
+
+                                del cur, strsql
 
         self.write(mx.code_pb2(msg, self._go_back_format))
 

@@ -852,6 +852,8 @@ message TmlInfo {
         string sluitem_lamp_id = 16;  // 灯杆编号/名称
         double sluitem_gis_x = 17;  // x坐标
         double sluitem_gis_y = 18;  // y坐标
+        int64 sluitem_imei=19; // imei
+        int32 sluitem_platform=20; // 1-电信，2-移动，3-联通
     }
     message LduItemInfo {
         int32 loop_id = 1;  // 线路id

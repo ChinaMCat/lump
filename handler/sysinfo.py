@@ -1194,24 +1194,50 @@ class TmlInfoHandler(base.RequestHandler):
                             if len(tml_ids) == 0:
                                 str_tmls = ''
                             else:
-                                str_tmls = ' and a.rtu_id in ({0})'.format(
+                                str_tmls = ' and a.leak_id in ({0})'.format(
                                     ','.join([str(a) for a in list(tml_ids)]))
 
-                            strsql = 'select a.rtu_id,a.rtu_phy_id,b.ldu_line_id,b.ldu_line_name, \
-                            b.is_used,b.mutual_inductor_radio,b.ldu_phase,b.ldu_end_lampport_sn, \
-                            b.ldu_lighton_single_limit,b.ldu_lightoff_single_limit, \
-                            b.ldu_lighton_impedance_limit,b.ldu_lightoff_impedance_limit, \
-                            b.ldu_bright_rate_alarm_limit,b.ldu_fault_param,b.remark, \
-                            b.ldu_loop_id,b.ldu_control_type_code,b.ldu_comm_type_code  \
-                            from {0}.para_ldu_line as b left join {0}.para_base_equipment as a  \
-                            on a.rtu_id=b.ldu_fid where a.rtu_id>=1100000 and a.rtu_id<=1199999 {1} order by a.rtu_id'.format(
+                            strsql = 'select a.rtu_id,a.rtu_phy_id,b.leak_line_id, \
+                            b.is_used, b.leak_line_name, b.leak_comm_type_code, b.leak_mode, \
+                            b.autobreak_autoalarm, b.upper_alarm_break_forleak_temperature, \
+                            b.time_delayfor_break,b.leak_end_lampport_sn,b.remark \
+                            from {0}.para_leak_line as b left join {0}.para_base_equipment as a  \
+                            on a.rtu_id=b.leak_id where a.rtu_id>=1600000 and a.rtu_id<=1699999 {1} order by a.rtu_id'.format(
                                 self._db_name, str_tmls)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql, need_fetch=1, need_paging=0)
                             if record_total is None:
                                 msg.head.if_st = 45
                             else:
-                                pass
+                                info = msgws.TmlInfo.EluInfo()
+
+                                msg.head.paging_record_total = record_total
+                                msg.head.paging_buffer_tag = buffer_tag
+                                msg.head.paging_idx = paging_idx
+                                msg.head.paging_total = paging_total
+                                for d in cur:
+                                    if info.tml_id != int(d[0]):
+                                        if info.tml_id > 0:
+                                            msg.elu_info.extend([info])
+                                            info = msgws.TmlInfo.EluInfo()
+                                        info.tml_id = int(d[0])
+                                        info.elu_id = int(d[1])
+
+                                    iteminfo = msgws.TmlInfo.EluitemInfo()
+                                    iteminfo.eluitem_id = int(d[2])
+                                    iteminfo.eluitem_st = d[3]
+                                    iteminfo.eluitem_name = int(d[4])
+                                    iteminfo.eluitem_type = int(d[5])
+                                    iteminfo.eluitem_set = int(d[6])
+                                    iteminfo.eluitem_alarm_upper = d[7]
+                                    iteminfo.eluitem_alarm_delay = int(d[8])
+                                    iteminfo.eluitem_remark = int(d[9])
+                                    info.lduitem_info.extend([iteminfo])
+                                    del iteminfo
+                                if info.tml_id > 0:
+                                    msg.elu_info.extend([info])
+
+                            del cur, strsql
                         elif mk == 15:  # 物联网单灯分组信息
                             if 5 not in [int(a) for a in rqmsg.data_mark]:
                                 if len(tml_ids) == 0:

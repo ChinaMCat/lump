@@ -1226,13 +1226,13 @@ class TmlInfoHandler(base.RequestHandler):
                                     iteminfo = msgws.TmlInfo.EluitemInfo()
                                     iteminfo.eluitem_id = int(d[2])
                                     iteminfo.eluitem_st = d[3]
-                                    iteminfo.eluitem_name = int(d[4])
+                                    iteminfo.eluitem_name = d[4]
                                     iteminfo.eluitem_type = int(d[5])
                                     iteminfo.eluitem_set = int(d[6])
                                     iteminfo.eluitem_alarm_upper = d[7]
                                     iteminfo.eluitem_alarm_delay = int(d[8])
-                                    iteminfo.eluitem_remark = int(d[9])
-                                    info.lduitem_info.extend([iteminfo])
+                                    iteminfo.eluitem_remark = d[11]
+                                    info.eluitem_info.extend([iteminfo])
                                     del iteminfo
                                 if info.tml_id > 0:
                                     msg.elu_info.extend([info])

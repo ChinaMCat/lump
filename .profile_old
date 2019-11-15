@@ -7,3 +7,4 @@
 {"uuid": "4dbc28d861a811e99f0bfcaa14e489ec", "user_name": "shapingba", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "querydatartu,errinfo,tmlinfo,querydataerr"}
 {"uuid": "708eefe0662f11e98916fcaa14e489ec", "user_name": "xinqiao", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "querydatartu,errinfo,tmlinfo,querydataslu"}
 {"uuid": "ddb781ee77b011e9a023fcaa14e489ec", "user_name": "huailaikaifaqu", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "tmlinfo,statusslu,sludataget,sluitemdataget,sluctl"}
+{"uuid": "18d87b1e074111eabb27000af77f0b3c", "user_name": "changzhou", "user_auth": 4, "user_id": -1, "source_dev": 0, "area_id": 0, "user_db": "mydb1024", "enable_if": "querydatartu,errinfo,tmlinfo,querydataerr"}

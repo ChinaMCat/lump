@@ -1337,7 +1337,7 @@ class TmlInfoHandler(base.RequestHandler):
                                         iteminfo = msgws.TmlInfo.SluItemInfo()
                                         iteminfo.sluitem_id = int(d[1])
                                         iteminfo.sluitem_barcode = int(d[2])
-                                        # iteminfo.sluitem_loop_num = int(d[40])
+                                        iteminfo.sluitem_loop_num = int(d[25])
                                         iteminfo.sluitem_name = d[3]
                                         iteminfo.sluitem_phy_id = int(d[4])
                                         iteminfo.sluitem_lamp_id = d[
@@ -1371,10 +1371,10 @@ class TmlInfoHandler(base.RequestHandler):
                                             int(d[24])
                                         ])
                                         iteminfo.sluitem_rated_power.extend([
-                                            int(d[25]),
                                             int(d[26]),
                                             int(d[27]),
-                                            int(d[28])
+                                            int(d[28]),
+                                            int(d[29])
                                         ])
                                         info.sluitem_info.extend([iteminfo])
                                         del iteminfo
@@ -1428,7 +1428,7 @@ class TmlInfoHandler(base.RequestHandler):
                                         iteminfo = msgws.TmlInfo.SluItemInfo()
                                         iteminfo.sluitem_id = int(d[1])
                                         iteminfo.sluitem_barcode = int(d[2])
-                                        # iteminfo.sluitem_loop_num = int(d[40])
+                                        iteminfo.sluitem_loop_num = int(d[25])
                                         iteminfo.sluitem_name = d[3]
                                         iteminfo.sluitem_phy_id = int(d[4])
                                         iteminfo.sluitem_lamp_id = d[

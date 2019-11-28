@@ -875,7 +875,8 @@ message TmlInfo {
     }
     message EluInfo {
 		int32 tml_id = 1;  // 设备逻辑地址
-		int32 elu_id = 2;  // 漏电设备地址
+        int32 elu_id = 2;  // 漏电设备地址
+        int32 tml_parent_id = 4; // 上级设备逻辑地址
 		repeated EluitemInfo eluitem_info = 3;
 	}
 	message EluitemInfo {
@@ -1285,6 +1286,7 @@ message QueryDataElu {
         int32 el_value = 11; // 漏电电流值
         int32 data_mode = 12;  // 数据模式，1-漏电检测模式，2-温度检测模式
         string elu_name = 13;   // 名称
+        int32 tml_parent_id = 14; // 上级设备逻辑地址
     }
     Head head = 1;
     repeated DataEluView data_elu_view = 2;

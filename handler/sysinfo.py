@@ -1200,7 +1200,7 @@ class TmlInfoHandler(base.RequestHandler):
                             strsql = 'select a.rtu_id,a.rtu_phy_id,b.leak_line_id, \
                             b.is_used, b.leak_line_name, b.leak_comm_type_code, b.leak_mode, \
                             b.autobreak_autoalarm, b.upper_alarm_break_forleak_temperature, \
-                            b.time_delayfor_break,b.leak_end_lampport_sn,b.remark \
+                            b.time_delayfor_break,b.leak_end_lampport_sn,b.remark,a.rtu_fid \
                             from {0}.para_leak_line as b left join {0}.para_base_equipment as a  \
                             on a.rtu_id=b.leak_id where a.rtu_id>=1600000 and a.rtu_id<=1699999 {1} order by a.rtu_id'.format(
                                 self._db_name, str_tmls)
@@ -1222,6 +1222,7 @@ class TmlInfoHandler(base.RequestHandler):
                                             info = msgws.TmlInfo.EluInfo()
                                         info.tml_id = int(d[0])
                                         info.elu_id = int(d[1])
+                                        info.tml_parent_id = int(d[12])
 
                                     iteminfo = msgws.TmlInfo.EluitemInfo()
                                     iteminfo.eluitem_id = int(d[2])

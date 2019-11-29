@@ -286,7 +286,7 @@ class QueryDataErrHandler(base.RequestHandler):
 
                     if rqmsg.type == 0:  # 现存故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_create, \
-                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count,a.v,a.a,b.fault_name_define,d.loop_name \
+                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count,a.v,a.a,b.fault_name_define,d.loop_name,c.rtu_fid \
                         from {2}.info_fault_exist as a left join {0}.fault_types as b \
                         on a.fault_id=b.fault_id left join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
                         left join {0}.para_rtu_loop_info as d on a.rtu_id=d.rtu_id and a.loop_id=d.loop_id \
@@ -303,7 +303,7 @@ class QueryDataErrHandler(base.RequestHandler):
 
                     elif rqmsg.type == 1:  # 历史故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_remove, \
-                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id,a.v,a.a,b.fault_name_define,d.loop_name \
+                        c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id,a.v,a.a,b.fault_name_define,d.loop_name,c.rtu_fid \
                         from {3}.info_fault_history as a left join {0}.fault_types as b \
                         on a.fault_id=b.fault_id right join {0}.para_base_equipment as c on a.rtu_id=c.rtu_id \
                         left join {0}.para_rtu_loop_info as d on a.rtu_id=d.rtu_id and a.loop_id=d.loop_id \
@@ -371,6 +371,7 @@ class QueryDataErrHandler(base.RequestHandler):
                                 # errview.err_name_custome = d[13]
                                 errview.tml_loop_name = d[
                                     14] if d[14] is not None else ""
+                                errview.tml_parent_id = int(d[15])
                                 # 武汉特殊，融断器开路，火零不平衡报警取消回路名称结尾的’火线’二字
                                 if errview.err_id in (25, 26):
                                     if errview.tml_loop_name.endswith(u'火线'):

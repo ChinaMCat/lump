@@ -391,6 +391,7 @@ message QueryDataErr {
         double current = 15;  // 电流/零线电流
         string err_name_custome = 16;  // 自定义故障名称
         string tml_loop_name = 17;  // 回路名称，如果有的话
+        int32 tml_parent_id = 18; // 上级设备地址
     }
     Head head = 1;
     int32 type = 2;  // 类型,0-最新,1-历史

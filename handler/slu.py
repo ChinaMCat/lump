@@ -695,8 +695,10 @@ class SluTimerCtlHandler(base.RequestHandler):
                     self.request.remote_ip)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
+                    device_ids = ",".join([str(a) for a in rqmsg.tml_id])
                     rtu_ids = list(rqmsg.tml_id)
                 else:
+                    device_ids = ",".join([str(a) for a in self.check_tml_r(user_uuid, list(rqmsg.tml_id))])
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
                 if len(rtu_ids) == 0:
@@ -732,7 +734,7 @@ class SluTimerCtlHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env and rqmsg.data_mark == 1:
-            self.write_event(57, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+            self.write_event(57, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique, device_ids=device_ids, remark=u"交互接口命令")
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -759,8 +761,10 @@ class SluCtlHandler(base.RequestHandler):
                     self.request.remote_ip)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
+                    device_ids = ",".join([str(a) for a in rqmsg.tml_id])
                     rtu_ids = list(rqmsg.tml_id)
                 else:
+                    device_ids=",".join([str(a) for a in self.check_tml_r(user_uuid, list(rqmsg.tml_id))])
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 11
@@ -809,7 +813,7 @@ class SluCtlHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(65, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+            self.write_event(65, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique, device_ids=device_ids, remark=u"交互接口命令")
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -1104,7 +1108,7 @@ class SluCtlNBHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(65, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique)
+            self.write_event(65, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique, remark=u"交互接口命令")
         del msg, rqmsg, user_data, user_uuid
 
 

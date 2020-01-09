@@ -82,8 +82,8 @@ while True:
             # msg = msgslu.Wlst_slu_9d00()
 
             print(mx.stamp2time(time.time()), r)
-            if "70d0" in r:
-                print(msg.FromString(s))
+            # if "70d0" in r:
+            #     print(msg.FromString(s))
         del r, s
 
     if poll_list.get(socket2) == zmq.POLLERR:

@@ -334,7 +334,7 @@ class RequestHandler(mxweb.MXRequestHandler):
         # if isinstance(cur, types.GeneratorType):
         if cur is not None:
             for d in cur:
-                libiisi.tml_phy[int(d[0])] = (int(d[1]), int(d[2]), d[3])
+                libiisi.tml_phy[int(d[0])] = (int(d[1])%1000, int(d[2]), d[3])
         del cur
 
     def get_phy_list(self, tml_list):

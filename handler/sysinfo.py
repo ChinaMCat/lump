@@ -698,11 +698,11 @@ class TmlInfoHandler(base.RequestHandler):
                                                                   int(d[7]),
                                                                   d[3])
 
-                                    baseinfo.tml_id = int(d[0])%1000
+                                    baseinfo.tml_id = int(d[0])
                                     baseinfo.tml_dt_update = mx.switchStamp(
                                         int(d[10]))
                                     if mk == 1:
-                                        baseinfo.phy_id = int(d[1])
+                                        baseinfo.phy_id = int(d[1])%1000
                                         if int(d[0]) >= 1000000 and int(
                                                 d[0]) <= 1099999:  # - 终端
                                             baseinfo.tml_type = 1

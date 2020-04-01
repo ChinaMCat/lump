@@ -694,11 +694,11 @@ class TmlInfoHandler(base.RequestHandler):
                                 for d in cur:
                                     baseinfo = msgws.TmlInfo.BaseInfo()
                                     # 加入/更新地址对照缓存
-                                    libiisi.tml_phy[int(d[0])] = (int(d[1]),
+                                    libiisi.tml_phy[int(d[0])] = (int(d[1])%1000,
                                                                   int(d[7]),
                                                                   d[3])
 
-                                    baseinfo.tml_id = int(d[0])
+                                    baseinfo.tml_id = int(d[0])%1000
                                     baseinfo.tml_dt_update = mx.switchStamp(
                                         int(d[10]))
                                     if mk == 1:

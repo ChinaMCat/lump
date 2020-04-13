@@ -889,6 +889,17 @@ message TmlInfo {
 		int32 eluitem_alarm_upper = 7;  // 报警上限，单位毫安
 		int32 eluitem_alarm_delay = 8;  // 报警延迟，单位毫秒
 		string eluitem_remark = 9;  // 备注
+    }
+    message LockInfo {
+		int32 tml_id = 1; // 设备逻辑地址
+		int32 lock_id = 2; // 门控设备地址
+		int32 lock_off_delay = 3; // 开锁延迟，毫秒值，1-65535，默认5000
+		int32 freq_lights = 4; // 1～254表示打开或者关闭持续时间，单位100MS。0表示常闭，0xFF表示常开
+		int32 freq_beep = 5; // 1～254表示打开或者关闭持续时间，单位100MS。0表示常闭，0xFF表示常开
+		int32 time_delay = 6; // 以上2个freq状态的持续时间
+		int64 master_card1 = 7; // 主卡号1，用于现场添加卡
+		int64 master_card2 = 8; // 主卡号2，用于现场删除卡
+		int32 enable_alarm = 9; // 0-不允许主报，1-允许主报
 	}
     Head head = 1;
     repeated BaseInfo base_info = 12;  // 设备基础信息
@@ -901,6 +912,7 @@ message TmlInfo {
     repeated EsuInfo esu_info = 20;  // 节能设备填充
     repeated SluitemGrpInfo sluitem_grpinfo = 21;  // 单灯分组信息填充
     repeated EluInfo elu_info = 22;  // 漏电设备信息
+	repeated LockInfo lock_info = 23; // 恒杰门控设备信息 
     repeated int32 data_mark = 3 [packed=true];  // 请求数种类，同请求
 }
 

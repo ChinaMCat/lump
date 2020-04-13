@@ -634,6 +634,7 @@ class TmlInfoHandler(base.RequestHandler):
     # 1400000~1499999 - 光控
     # 1500000~1599999 - 单灯
     # 1600000~1699999 - 漏电
+    # 1800000~1899999 - 恒杰门控
 
     help_doc = u'''监控设备基础信息获取 (post方式访问)<br/>
     <b>参数:</b><br/>
@@ -724,6 +725,9 @@ class TmlInfoHandler(base.RequestHandler):
                                         elif int(d[0]) >= 1600000 and int(
                                                 d[0]) <= 1699999:  # - 漏电
                                             baseinfo.tml_type = 7
+                                        elif int(d[0]) >= 1800000 and int(
+                                                d[0]) <= 1899999:  # - 恒杰门控
+                                            baseinfo.tml_type = 8
                                         baseinfo.tml_st = int(d[2])
                                         baseinfo.tml_name = d[3]
                                         baseinfo.tml_name_py = pyhz.hanzi2pinyin(
@@ -1476,7 +1480,41 @@ class TmlInfoHandler(base.RequestHandler):
                                         msg.slu_info.extend([info])
 
                                 del cur, strsql
-
+                        elif mk == 18: # 恒杰门控
+                            if len(tml_ids) == 0:
+                                str_tmls = ''
+                            else:
+                                str_tmls = ' and a.rtu_id in ({0})'.format(
+                                    ','.join([str(a) for a in list(tml_ids)]))
+                            strsql = "select select a.rtu_id,a.rtu_phy_id,b.lock_off_delay, \
+                            b.freq_lights,b.freq_beep,b.time_delay,b.master_card1,b.master_card2, \
+                            b.enable_alarm from {0}.para_lock as b  \
+                            left join {0}.para_base_equipment as a on a.rtu_id=b.rtu_id  \
+                            where a.rtu_id>=1800000 and a.rtu_id<=1899999 {1} order by a.rtu_id".format(
+                                self._db_name, str_tmls)
+                            record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
+                                strsql, need_fetch=1, need_paging=0)
+                            if record_total is None:
+                                msg.head.if_st = 45
+                            else:
+                                msg.head.paging_record_total = record_total
+                                msg.head.paging_buffer_tag = buffer_tag
+                                msg.head.paging_idx = paging_idx
+                                msg.head.paging_total = paging_total
+                                for d in cur:
+                                    info = msgws.TmlInfo.LockInfo()
+                                    info.tml_id = int(d[0])
+                                    info.lock_id = int(d[1])
+                                    info.lock_off_delay = int(d[2])
+                                    info.freq_lights = int(d[3])
+                                    info.freq_beep =  int(d[4])
+                                    info.time_delay = int(d[5])
+                                    info.master_card1 = int(d[6])
+                                    info.master_card2 = int(d[7])
+                                    info.enable_alarm = int(d[8])
+                                    msg.lock_info.extend([info])
+                                    del info
+                            del cur, strsql
         self.write(mx.code_pb2(msg, self._go_back_format))
 
         self.finish()

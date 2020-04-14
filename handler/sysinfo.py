@@ -1486,12 +1486,13 @@ class TmlInfoHandler(base.RequestHandler):
                             else:
                                 str_tmls = ' and a.rtu_id in ({0})'.format(
                                     ','.join([str(a) for a in list(tml_ids)]))
-                            strsql = "select select a.rtu_id,a.rtu_phy_id,b.lock_off_delay, \
+                            strsql = "select a.rtu_id,a.rtu_phy_id,b.lock_off_delay, \
                             b.freq_lights,b.freq_beep,b.time_delay,b.master_card1,b.master_card2, \
-                            b.enable_alarm from {0}.para_lock as b  \
+                            b.enable_alarm,a.rtu_name from {0}.para_lock as b  \
                             left join {0}.para_base_equipment as a on a.rtu_id=b.rtu_id  \
                             where a.rtu_id>=1800000 and a.rtu_id<=1899999 {1} order by a.rtu_id".format(
                                 self._db_name, str_tmls)
+                            print(strsql)
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql, need_fetch=1, need_paging=0)
                             if record_total is None:
@@ -1504,7 +1505,7 @@ class TmlInfoHandler(base.RequestHandler):
                                 for d in cur:
                                     info = msgws.TmlInfo.LockInfo()
                                     info.tml_id = int(d[0])
-                                    info.lock_id = int(d[1])
+                                    info.phy_id = int(d[1])
                                     info.lock_off_delay = int(d[2])
                                     info.freq_lights = int(d[3])
                                     info.freq_beep = int(d[4])

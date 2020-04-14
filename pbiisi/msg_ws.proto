@@ -892,7 +892,7 @@ message TmlInfo {
     }
     message LockInfo {
 		int32 tml_id = 1; // 设备逻辑地址
-		int32 lock_id = 2; // 门控设备地址
+		int32 phy_id = 2; // 门控设备地址
 		int32 lock_off_delay = 3; // 开锁延迟，毫秒值，1-65535，默认5000
 		int32 freq_lights = 4; // 1～254表示打开或者关闭持续时间，单位100MS。0表示常闭，0xFF表示常开
 		int32 freq_beep = 5; // 1～254表示打开或者关闭持续时间，单位100MS。0表示常闭，0xFF表示常开

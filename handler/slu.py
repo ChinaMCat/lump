@@ -239,9 +239,10 @@ class QueryDataSluHandler(base.RequestHandler):
                                 ','.join([str(a) for a in tml_ids]))
 
                         if rqmsg.type == 0:
-                            #查看表是否存在
+                            # 查看表是否存在
                             strsql = 'select a.TABLE_NAME from information_schema.TABLES as a where a.TABLE_NAME in ("data_slu_ctrl_trigger","data_slu_ctrl_lamp_trigger" )' \
-                                     ' and a.TABLE_SCHEMA="{0}"'.format(self._db_name_data)
+                                     ' and a.TABLE_SCHEMA="{0}"'.format(
+                                         self._db_name_data)
                             cur = libiisi.m_sql.run_fetch(strsql)
                             has_view = False
                             if cur is not None:
@@ -385,7 +386,7 @@ class QueryDataSluHandler(base.RequestHandler):
                             if dv.sluitem_id > 0:
                                 msg.data_sluitem_view.extend([dv])
                         del cur, strsql
-                elif rqmsg.data_mark == 8: # 以太网/nb控制器数据
+                elif rqmsg.data_mark == 8:  # 以太网/nb控制器数据
                     # 验证用户可操作的设备id(数据库结构关系取消验证)
                     # if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
                     #     if len(rqmsg.tml_id) > 0:
@@ -409,9 +410,10 @@ class QueryDataSluHandler(base.RequestHandler):
                                 ','.join([str(a) for a in tml_ids]))
 
                         if rqmsg.type == 0:
-                            #查看表是否存在
+                            # 查看表是否存在
                             strsql = 'select a.TABLE_NAME from information_schema.TABLES as a where a.TABLE_NAME in ("data_slu_ctrl_trigger","data_slu_ctrl_lamp_trigger" )' \
-                                     ' and a.TABLE_SCHEMA="{0}"'.format(self._db_name_data)
+                                     ' and a.TABLE_SCHEMA="{0}"'.format(
+                                         self._db_name_data)
                             cur = libiisi.m_sql.run_fetch(strsql)
                             has_view = False
                             if cur is not None:
@@ -599,7 +601,7 @@ class SluDataGetHandler(base.RequestHandler):
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                         libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                             tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -659,7 +661,7 @@ class SluitemDataGetHandler(base.RequestHandler):
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                         libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                             tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -698,7 +700,8 @@ class SluTimerCtlHandler(base.RequestHandler):
                     device_ids = ",".join([str(a) for a in rqmsg.tml_id])
                     rtu_ids = list(rqmsg.tml_id)
                 else:
-                    device_ids = ",".join([str(a) for a in self.check_tml_r(user_uuid, list(rqmsg.tml_id))])
+                    device_ids = ",".join(
+                        [str(a) for a in self.check_tml_r(user_uuid, list(rqmsg.tml_id))])
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
 
                 if len(rtu_ids) == 0:
@@ -727,14 +730,15 @@ class SluTimerCtlHandler(base.RequestHandler):
                         # libiisi.set_to_send(tcsmsg, 0)
                         libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                             tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env and rqmsg.data_mark == 1:
-            self.write_event(57, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique, device_ids=device_ids, remark=u"交互接口命令")
+            self.write_event(57, contents, 2, user_name=user_data['user_name'],
+                             app_unique=rqmsg.head.unique, device_ids=device_ids, remark=u"交互接口命令")
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -764,7 +768,8 @@ class SluCtlHandler(base.RequestHandler):
                     device_ids = ",".join([str(a) for a in rqmsg.tml_id])
                     rtu_ids = list(rqmsg.tml_id)
                 else:
-                    device_ids=",".join([str(a) for a in self.check_tml_r(user_uuid, list(rqmsg.tml_id))])
+                    device_ids = ",".join(
+                        [str(a) for a in self.check_tml_r(user_uuid, list(rqmsg.tml_id))])
                     rtu_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
                 if len(rtu_ids) == 0:
                     msg.head.if_st = 11
@@ -806,14 +811,15 @@ class SluCtlHandler(base.RequestHandler):
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                         libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                             tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(65, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique, device_ids=device_ids, remark=u"交互接口命令")
+            self.write_event(65, contents, 2, user_name=user_data['user_name'],
+                             app_unique=rqmsg.head.unique, device_ids=device_ids, remark=u"交互接口命令")
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -864,7 +870,7 @@ class SluVerGetHandler(base.RequestHandler):
                         # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                         libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                             tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -914,16 +920,16 @@ class SluitemAddHandler(base.RequestHandler):
                         if len(cur) > 0:
                             rtu_id = cur[0][0]
                             for i in rqmsg.sluitem_args:
-                                #判断条码是否有值
+                                # 判断条码是否有值
                                 if i.sluitem_barcode > 0:
                                     strsqlcheck = 'select COUNT(*) from {0}.para_slu_ctrl where slu_id={1} and bar_code_id={2};'.format(
                                         self._db_name, rqmsg.slu_id,
                                         i.sluitem_barcode)
                                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                         strsqlcheck, need_fetch=1)
-                                    #判断sluitem_barcode 不为重复
+                                    # 判断sluitem_barcode 不为重复
                                     if cur is not None and cur[0][0] == 0:
-                                        #判断参数
+                                        # 判断参数
                                         rtu_id += 1
                                         order_id = i.sluitem_order if i.sluitem_order > 0 else rtu_id
                                         sluitem_name = i.sluitem_name if int(
@@ -973,18 +979,21 @@ class SluitemAddHandler(base.RequestHandler):
                                             int(4 - len(i.sluitem_rated_power))
                                             * [6])
 
-                                        strsql=strsql+'INSERT INTO {0}.para_slu_ctrl (rtu_id,slu_id,order_id,bar_code_id,rtu_name,is_used,is_alarm_auto,' \
-                                                        'vector_loop_1,vector_loop_2,vector_loop_3,vector_loop_4,power_rate_1,power_rate_2,' \
-                                                        'power_rate_3,power_rate_4,light_count,upper_power,lower_power,' \
+                                        strsql = strsql+'INSERT INTO {0}.para_slu_ctrl (rtu_id,slu_id,order_id,bar_code_id,rtu_name,is_used,is_alarm_auto,' \
+                                            'vector_loop_1,vector_loop_2,vector_loop_3,vector_loop_4,power_rate_1,power_rate_2,' \
+                                            'power_rate_3,power_rate_4,light_count,upper_power,lower_power,' \
                                                         'route_pass_1,route_pass_2,route_pass_3,route_pass_4,phy_id,lamp_code,is_auto_open_light_when_elec1,' \
                                                         'is_auto_open_light_when_elec2,is_auto_open_light_when_elec3,is_auto_open_light_when_elec4,ctrl_gis_x,ctrl_gis_y' \
                                                         ') VALUES({1},{2},{3},{4},"{5}",{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},' \
                                                         '{22},{23},"{24}",{25},{26},{27},{28},{29},{30});'.format(
-                                            self._db_name,rtu_id,rqmsg.slu_id,order_id,i.sluitem_barcode,sluitem_name,i.sluitem_st,i.sluitem_alarm,
-                                            sluitem_vector[0],sluitem_vector[1],sluitem_vector[2],sluitem_vector[3],sluitem_rated_power[0],sluitem_rated_power[1],
-                                            sluitem_rated_power[2],sluitem_rated_power[3],sluitem_loop_num,sluitem_power_uplimit,sluitem_power_lowlimit,
-                                            sluitem_route[0],sluitem_route[1],sluitem_route[2],sluitem_route[3],sluitem_phy_id,sluitem_lamp_id,sluitem_st_poweron[0],
-                                            sluitem_st_poweron[1],sluitem_st_poweron[2],sluitem_st_poweron[3],sluitem_gis_x,sluitem_gis_y)
+                                                            self._db_name, rtu_id, rqmsg.slu_id, order_id, i.sluitem_barcode, sluitem_name, i.sluitem_st, i.sluitem_alarm,
+                                                            sluitem_vector[0], sluitem_vector[1], sluitem_vector[2], sluitem_vector[
+                                                                3], sluitem_rated_power[0], sluitem_rated_power[1],
+                                                            sluitem_rated_power[2], sluitem_rated_power[
+                                                                3], sluitem_loop_num, sluitem_power_uplimit, sluitem_power_lowlimit,
+                                                            sluitem_route[0], sluitem_route[1], sluitem_route[2], sluitem_route[
+                                                                3], sluitem_phy_id, sluitem_lamp_id, sluitem_st_poweron[0],
+                                                            sluitem_st_poweron[1], sluitem_st_poweron[2], sluitem_st_poweron[3], sluitem_gis_x, sluitem_gis_y)
 
                                         # cur = yield self.mydata_collector(strsql, need_fetch=0)
                                         # if cur is not None:
@@ -1046,7 +1055,7 @@ class SluitemDataGetNBHandler(base.RequestHandler):
                 # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                 libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                     tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                        tcsmsg.SerializeToString())
+                    tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -1101,16 +1110,16 @@ class SluCtlNBHandler(base.RequestHandler):
                 # libiisi.set_to_send(tcsmsg, rqmsg.cmd_idx)
                 libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                     tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                        tcsmsg.SerializeToString())
+                    tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(65, contents, 2, user_name=user_data['user_name'],app_unique=rqmsg.head.unique, remark=u"交互接口命令")
+            self.write_event(
+                65, contents, 2, user_name=user_data['user_name'], app_unique=rqmsg.head.unique, remark=u"交互接口命令")
         del msg, rqmsg, user_data, user_uuid
-
 
 
 @mxweb.route()
@@ -1129,7 +1138,8 @@ class SluElecDataGetHandler(base.RequestHandler):
             msgws.rqSluElecDataGet(),  msgws.SluElecDataGet())
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
-                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                sdt, edt = self.process_input_date(
+                    rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 yield self.update_cache("r", user_uuid)
 
                 if rqmsg.data_mark == 0:  # 集中器数据
@@ -1234,7 +1244,7 @@ class SluElecDataGetHandler(base.RequestHandler):
                                 d.date_create <= {2} and d.electricity_total > 0  and d.slu_id {3} and d.ctrl_id {4}
                                 group by d.slu_id ,d.ctrl_id ,d.lamp_id) b
                                 where a.slu_id=b.slu_id and a.ctrl_id = b.ctrl_id and a.lamp_id = b.lamp_id
-                                GROUP BY a.slu_id,a.ctrl_id ,a.lamp_id'''.format(self._db_name_data, sdt, edt, str_tmls,str_sluitems)
+                                GROUP BY a.slu_id,a.ctrl_id ,a.lamp_id'''.format(self._db_name_data, sdt, edt, str_tmls, str_sluitems)
 
                         record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                             strsql,

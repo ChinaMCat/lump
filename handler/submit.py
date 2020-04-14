@@ -37,7 +37,8 @@ class SubmitAlarmHandler(base.RequestHandler):
                     try:
                         sfilter = 'jkdb.rep.alarm.{0}.{1}.{2}.{3}'.format(av.dt_create, av.is_alarm,
                                                                           av.err_id, av.tml_id)
-                        libiisi.send_to_zmq_pub(sfilter, av.SerializeToString())
+                        libiisi.send_to_zmq_pub(
+                            sfilter, av.SerializeToString())
                     except Exception as ex:
                         pass
                         # print(str(ex))

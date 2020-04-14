@@ -90,9 +90,10 @@ class UserLoginHandler(base.RequestHandler):
             msg.head.if_st = 0
             msg.head.if_msg = 'Wrong username or password'
             yield self.write_event(121,
-                                   'login from {0} failed'.format(self.request.remote_ip),
+                                   'login from {0} failed'.format(
+                                       self.request.remote_ip),
                                    2,
-                                   user_name=rqmsg.user,app_unique=rqmsg.head.unique)
+                                   user_name=rqmsg.user, app_unique=rqmsg.head.unique)
         else:
             for d in cur:
                 msg.user_id = d[0]
@@ -102,9 +103,10 @@ class UserLoginHandler(base.RequestHandler):
                 msg.remark = d[4] if d[4] is not None else ''
                 break
             yield self.write_event(121,
-                                   'login from {0} success'.format(self.request.remote_ip),
+                                   'login from {0} success'.format(
+                                       self.request.remote_ip),
                                    2,
-                                   user_name=rqmsg.user,app_unique=rqmsg.head.unique)
+                                   user_name=rqmsg.user, app_unique=rqmsg.head.unique)
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
@@ -143,7 +145,8 @@ class UserAddHandler(base.RequestHandler):
             # 检查用户名密码是否存在
             strsql = 'insert into {0}.user_info (user_name,user_password,user_real_name,date_create,date_update,date_access,user_remark) \
                         values ("{1}","{2}","{3}","{4}","{5}","{6}","{7}")'.format(
-                self._db_name, rqmsg.user, rqmsg.pwd, rqmsg.fullname, mx.switchStamp(time.time()),
+                self._db_name, rqmsg.user, rqmsg.pwd, rqmsg.fullname, mx.switchStamp(
+                    time.time()),
                 mx.switchStamp(time.time()), mx.switchStamp(time.time()),
                 'add user from {0}'.format(self.request.remote_ip))
             cur = yield self.mydata_collector(strsql, need_fetch=0)
@@ -154,9 +157,10 @@ class UserAddHandler(base.RequestHandler):
                 contents = 'add user {0} from {1} success'.format(rqmsg.user,
                                                                   self.request.remote_ip)
                 yield self.write_event(154, 'add user {0} from {1} success'.format(
-                    rqmsg.user, self.request.remote_ip,app_unique=rqmsg.head.unique))
+                    rqmsg.user, self.request.remote_ip, app_unique=rqmsg.head.unique))
             else:
-                contents = 'add user {0} from {1} failed'.format(rqmsg.user, self.request.remote_ip)
+                contents = 'add user {0} from {1} failed'.format(
+                    rqmsg.user, self.request.remote_ip)
                 msg.head.if_st = 0
                 msg.head.if_msg = 'User already exists'
         except Exception as ex:
@@ -165,7 +169,7 @@ class UserAddHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        yield self.write_event(154, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
+        yield self.write_event(154, contents, 2, user_name=rqmsg.user, app_unique=rqmsg.head.unique)
         del msg, rqmsg
 
 
@@ -203,7 +207,8 @@ class UserEditHandler(base.RequestHandler):
             strsql = 'update {0}.user_list set \
             user_password="{3}",user_real_name="{4}",user_phonenumber="{5}",user_remark="{6}" \
             where user_name="{1}" and user_password="{2}"'.format(
-                self._db_name, rqmsg.user.replace('"', ''), rqmsg.pwd_old.replace('"', ''),
+                self._db_name, rqmsg.user.replace(
+                    '"', ''), rqmsg.pwd_old.replace('"', ''),
                 rqmsg.pwd.replace('"', ''), rqmsg.fullname, rqmsg.mobile, rqmsg.remark)
             cur = yield self.mydata_collector(strsql, need_fetch=0, need_paging=0)
             affected_rows = cur[0][0]
@@ -212,7 +217,8 @@ class UserEditHandler(base.RequestHandler):
                 contents = 'edit user {0} from {1} success'.format(rqmsg.user,
                                                                    self.request.remote_ip)
                 msg.head.if_st = 1
-                msg.head.if_msg = 'successfully to edit user {0}'.format(rqmsg.user)
+                msg.head.if_msg = 'successfully to edit user {0}'.format(
+                    rqmsg.user)
             else:
                 contents = 'edit user {0} from {1} failed, wrong username or password or nothing change'.format(
                     rqmsg.user, self.request.remote_ip)
@@ -224,7 +230,7 @@ class UserEditHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        yield self.write_event(155, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
+        yield self.write_event(155, contents, 2, user_name=rqmsg.user, app_unique=rqmsg.head.unique)
         del msg, rqmsg
 
 
@@ -260,7 +266,7 @@ class UserDelHandler(base.RequestHandler):
         # 删除用户
         try:
             contents = ''
-            #判断是否admin账户，是则返回异常，不是则可以删除
+            # 判断是否admin账户，是则返回异常，不是则可以删除
             if rqmsg.user != 'admin':
                 # 检查用户名密码是否合法并且删除该用户
                 strsql = 'delete from {0}.user_list where user_name="{1}" and user_password="{2}"'.format(
@@ -288,7 +294,7 @@ class UserDelHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        yield self.write_event(156, contents, 2, user_name=rqmsg.user,app_unique=rqmsg.head.unique)
+        yield self.write_event(156, contents, 2, user_name=rqmsg.user, app_unique=rqmsg.head.unique)
         del msg, rqmsg
 
 

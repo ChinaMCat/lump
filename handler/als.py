@@ -32,7 +32,8 @@ class QueryDataAlsHandler(base.RequestHandler):
                                                                       msgws.QueryDataAls())
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
-                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                sdt, edt = self.process_input_date(
+                    rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 yield self.update_cache("r", user_uuid)
                 # 验证用户可操作的设备id
                 if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
@@ -42,7 +43,8 @@ class QueryDataAlsHandler(base.RequestHandler):
                         tml_ids = []
                 else:
                     if len(rqmsg.tml_id) > 0:
-                        tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+                        tml_ids = self.check_tml_r(
+                            user_uuid, list(rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
@@ -59,7 +61,7 @@ class QueryDataAlsHandler(base.RequestHandler):
                             from {5}.data_lux_record as a
                             left join {0}.para_base_equipment as b on a.rtu_id=b.rtu_id
                             where a.date_create>={1} and a.date_create<={2} {3} {4}'''.format(
-                        self._db_name, sdt, edt, str_tmls, self._fetch_limited,self._db_name_data)
+                        self._db_name, sdt, edt, str_tmls, self._fetch_limited, self._db_name_data)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,

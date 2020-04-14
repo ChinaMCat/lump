@@ -463,8 +463,7 @@ class RequestHandler(mxweb.MXRequestHandler):
             use_scode == 1: (安全码是否合法，请求参数，应答数据)'''
         # 处理隐藏参数
         args = self.request.arguments
-        if 'formatmydata' in args.keys(
-        ):  # 返回数据格式参数，0-base64，1-json，2-bytes，3-zlib, 默认0
+        if 'formatmydata' in args.keys():  # 返回数据格式参数，0-base64，1-json，2-bytes，3-zlib, 默认0
             try:
                 self._go_back_format = int(args.get('formatmydata')[0])
                 if self._go_back_format in (1, 2) and 'bro' not in args.keys():

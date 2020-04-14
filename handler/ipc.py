@@ -137,7 +137,7 @@ class IpcUplinkHandler(base.RequestHandler):
                         x = f.readline()
                         f.close()
                 y = rqmsg.raw_string.split(',')
-                tcsdata=dict()
+                tcsdata = dict()
                 if y[1] == "1":  # off
                     for i in range(1, 7):
                         tcsdata['k{0}'.format(i)] = 0
@@ -148,9 +148,9 @@ class IpcUplinkHandler(base.RequestHandler):
                     # libiisi.set_to_send(tcsmsg, 0, False)
                     libiisi.send_to_zmq_pub('tcs.req.{0}.wlst.rtu.2210'.format(
                         libiisi.cfg_tcs_port),
-                                            json.dumps(
-                                                tcsmsg,
-                                                separators=(',', ':')).lower())
+                        json.dumps(
+                        tcsmsg,
+                        separators=(',', ':')).lower())
                 else:
                     for i in range(1, 7):
                         tcsdata['k{0}'.format(i)] = 1
@@ -160,9 +160,9 @@ class IpcUplinkHandler(base.RequestHandler):
                     # libiisi.set_to_send(tcsmsg, 0, False)
                     libiisi.send_to_zmq_pub('tcs.req.{0}.wlst.rtu.2210'.format(
                         libiisi.cfg_tcs_port),
-                                            json.dumps(
-                                                tcsmsg,
-                                                separators=(',', ':')).lower())
+                        json.dumps(
+                        tcsmsg,
+                        separators=(',', ':')).lower())
             del devid, raw_string, createsql, insertsql, db_names
         else:
             msg.head.if_st = 0

@@ -1387,7 +1387,7 @@ class TmlInfoHandler(base.RequestHandler):
                                         msg.slu_info.extend([info])
 
                                 del cur, strsql
-                        elif mk == 17: # 运营上平台nb单灯
+                        elif mk == 17:  # 运营上平台nb单灯
                             if 6 not in [int(a) for a in rqmsg.data_mark]:
                                 if len(tml_ids) == 0:
                                     str_tmls = ''
@@ -1472,15 +1472,15 @@ class TmlInfoHandler(base.RequestHandler):
                                             int(d[28]),
                                             int(d[29])
                                         ])
-                                        iteminfo.sluitem_imei=d[30]
-                                        iteminfo.sluitem_platform=d[31]
+                                        iteminfo.sluitem_imei = d[30]
+                                        iteminfo.sluitem_platform = d[31]
                                         info.sluitem_info.extend([iteminfo])
                                         del iteminfo
                                     if info.tml_id > 0:
                                         msg.slu_info.extend([info])
 
                                 del cur, strsql
-                        elif mk == 18: # 恒杰门控
+                        elif mk == 18:  # 恒杰门控
                             if len(tml_ids) == 0:
                                 str_tmls = ''
                             else:
@@ -1507,7 +1507,7 @@ class TmlInfoHandler(base.RequestHandler):
                                     info.lock_id = int(d[1])
                                     info.lock_off_delay = int(d[2])
                                     info.freq_lights = int(d[3])
-                                    info.freq_beep =  int(d[4])
+                                    info.freq_beep = int(d[4])
                                     info.time_delay = int(d[5])
                                     info.master_card1 = int(d[6])
                                     info.master_card2 = int(d[7])
@@ -1651,12 +1651,12 @@ class StatusSluHandler(base.RequestHandler):
                 else:
                     if len(rqmsg.tml_id) > 0:
                         tml_ids = self.check_tml_r(user_uuid,
-                                                    list(rqmsg.tml_id))
+                                                   list(rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
                         msg.head.if_st = 11
-                        
+
                 if msg.head.if_st == 1:
                     if len(tml_ids) == 0:
                         str_tmls = ''
@@ -1671,7 +1671,7 @@ class StatusSluHandler(base.RequestHandler):
                             {1}.para_base_equipment as b on a.slu_id=b.rtu_id left join
                             (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist 
                             where rtu_id<1600000 and rtu_id>1500000 group by rtu_id) as c on a.slu_id=c.rtu_id
-                            where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(self._db_name_data,self._db_name,str_tmls)
+                            where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(self._db_name_data, self._db_name, str_tmls)
                     else:
                         strsql = '''select a.slu_id,a.ctrl_id,a.lamp_id,a.date_create,a.is_online,a.is_light,a.is_light,
                             b.rtu_name,b.rtu_phy_id,
@@ -1681,7 +1681,7 @@ class StatusSluHandler(base.RequestHandler):
                             (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist 
                             where rtu_id<1600000 and rtu_id>1500000 group by rtu_id) as c on a.slu_id=c.rtu_id
                             where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(self._db_name_data, self._db_name, str_tmls)
-                            
+
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
                         need_fetch=1,
@@ -1689,7 +1689,7 @@ class StatusSluHandler(base.RequestHandler):
                         paging_idx=msg.head.paging_idx,
                         paging_num=msg.head.paging_num,
                         need_paging=0,
-                        multi_record=[0,1])
+                        multi_record=[0, 1])
                     if record_total is None:
                         msg.head.if_st = 45
                     else:
@@ -1700,9 +1700,9 @@ class StatusSluHandler(base.RequestHandler):
                         msg.head.paging_idx = paging_idx
                         msg.head.paging_total = paging_total
                         for d in cur:
-                            if dv.tml_id!=int(d[0]):
+                            if dv.tml_id != int(d[0]):
                                 if dv.tml_id > 0:
-                                    if dva.sluitem_id>0:
+                                    if dva.sluitem_id > 0:
                                         dv.status_sluitem_view.extend([dva])
                                     msg.status_slu_view.extend([dv])
                                     dv = msgws.StatusSlu.StatusSluView()
@@ -1721,12 +1721,12 @@ class StatusSluHandler(base.RequestHandler):
                                 dva.sluitem_id = int(d[1])
                                 dva.st_sluitem = int(d[4])
 
-                            if dva.sluitem_id!=int(d[1]):
+                            if dva.sluitem_id != int(d[1]):
                                 dv.status_sluitem_view.extend([dva])
                                 dva = msgws.StatusSlu.StatusSluitemView()
                                 dva.sluitem_id = int(d[1])
                                 dva.st_sluitem = int(d[4])
-                            
+
                             dva.st_lamp.extend([int(d[5])])
                             dva.lamp_current.extend([float(d[10])])
                             dva.lamp_voltage.extend([float(d[11])])
@@ -1735,8 +1735,6 @@ class StatusSluHandler(base.RequestHandler):
                             dv.status_sluitem_view.extend([dva])
                             msg.status_slu_view.extend([dv])
                     del cur, strsql
-
-                                
 
         # if user_data is not None:
         #     if user_data['user_auth'] in libiisi.can_read:
@@ -1769,7 +1767,7 @@ class StatusSluHandler(base.RequestHandler):
         #                       a.fault,a.is_leakage,b.rtu_phy_id,b.rtu_name,c.err_num
         #                       from (select d.slu_id,d.ctrl_id,max(d.date_create) as date_create,
         #                       d.date_time_ctrl,d.status,e.is_online
-        #                       from {3}.data_slu_ctrl as d left join {3}.data_slu_state_new as e on d.slu_id=e.slu_id,d.ctrl_id=e.ctrl_id 
+        #                       from {3}.data_slu_ctrl as d left join {3}.data_slu_state_new as e on d.slu_id=e.slu_id,d.ctrl_id=e.ctrl_id
         #                       where e.lamp_id=1 and d.date_create>{2} {1}
         #                       group by d.slu_id,d.ctrl_id) as x left join {3}.data_slu_ctrl_lamp as a
         #                       on a.date_create=x.date_create and a.slu_id=x.slu_id and a.ctrl_id=x.ctrl_id
@@ -1780,7 +1778,7 @@ class StatusSluHandler(base.RequestHandler):
         #                 self._db_name, str_tmls,
         #                 mx.switchStamp(time.time() - 60 * 60 * 24 * 30),
         #                 self._db_name_data)
-        
+
         #             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
         #                 strsql,
         #                 need_fetch=1,

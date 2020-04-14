@@ -369,7 +369,8 @@ class QueryDataErrHandler(base.RequestHandler):
                                 # errview.err_name_custome = d[13]
                                 errview.tml_loop_name = d[
                                     14] if d[14] is not None else ""
-                                errview.tml_parent_id = int(d[15]) if d[15] is not None else 0
+                                errview.tml_parent_id = int(
+                                    d[15]) if d[15] is not None else 0
                                 # 武汉特殊，融断器开路，火零不平衡报警取消回路名称结尾的’火线’二字
                                 if errview.err_id in (25, 26):
                                     if errview.tml_loop_name.endswith(u'火线'):

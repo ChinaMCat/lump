@@ -693,18 +693,20 @@ class RtuCtlHandler(base.RequestHandler):
                         continue
                     dosomething = True
                     tcsdata = dict()
-                    on =u"回路:"
-                    off =u"回路:"
-                    contents = u'build-in user from {1} ctrl rtu '.format(libiisi.events_def.get(event_id), self.request.remote_ip)
+                    on = u"回路:"
+                    off = u"回路:"
+                    contents = u'build-in user from {1} ctrl rtu '.format(
+                        libiisi.events_def.get(event_id), self.request.remote_ip)
 
                     # 验证用户可操作的设备id
                     yield self.update_cache('x', user_uuid)
                     if 0 in user_data['area_x'] or user_data['is_buildin'] == 1:
-                        device_ids=",".join([str(a) for a in x.tml_id])
+                        device_ids = ",".join([str(a) for a in x.tml_id])
                         rtu_ids = ','.join(
                             [str(a) for a in self.get_phy_list(x.tml_id)])
                     else:
-                        device_ids=",".join([str(a) for a in self.check_tml_x(user_uuid, list(x.tml_id))])
+                        device_ids = ",".join(
+                            [str(a) for a in self.check_tml_x(user_uuid, list(x.tml_id))])
                         rtu_ids = ','.join([
                             str(a) for a in self.get_phy_list(
                                 self.check_tml_x(user_uuid, list(x.tml_id)))
@@ -731,7 +733,7 @@ class RtuCtlHandler(base.RequestHandler):
                                     if k == 0:
                                         on = on+str(i + 1) + ","
                                     else:
-                                        off = off+ str(i + 1) + ","
+                                        off = off + str(i + 1) + ","
                                 i += 1
                         elif x.opt == 2:  # 多回路操作
                             event_id = 19
@@ -740,9 +742,9 @@ class RtuCtlHandler(base.RequestHandler):
                                 for k in list(x.loop_do):
                                     tcsdata['k{0}'.format(i)] = k
                                     if k == 0:
-                                        on = on+str(i ) + ","
+                                        on = on+str(i) + ","
                                     else:
-                                        off =off+ str(i ) + ","
+                                        off = off + str(i) + ","
                                     if i == 6:
                                         break
                                     i += 1
@@ -788,13 +790,13 @@ class RtuCtlHandler(base.RequestHandler):
                                 json.dumps(tcsmsg, separators=(',',
                                                                ':')).lower())
                         if env:
-                            if event_id==17 or event_id==18:
-                                cur = yield self.write_event(event_id, contents, 2, user_name=user_data['user_name'], app_unique=rqmsg.head.unique, device_ids=device_ids,remark=u"交互接口命令")
+                            if event_id == 17 or event_id == 18:
+                                cur = yield self.write_event(event_id, contents, 2, user_name=user_data['user_name'], app_unique=rqmsg.head.unique, device_ids=device_ids, remark=u"交互接口命令")
                             if len(on) > 1:
                                 cur = yield self.write_event(19, on+contents, 2, user_name=user_data['user_name'], app_unique=rqmsg.head.unique, device_ids=device_ids, remark=u"交互接口命令")
                             if len(off) > 1:
                                 cur = yield self.write_event(20, off+contents, 2, user_name=user_data['user_name'], app_unique=rqmsg.head.unique, device_ids=device_ids, remark=u"交互接口命令")
-                        
+
                 if not dosomething:
                     msg.head.if_st = 11
             else:
@@ -802,9 +804,8 @@ class RtuCtlHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-       
-        del msg, rqmsg, user_data, user_uuid
 
+        del msg, rqmsg, user_data, user_uuid
 
 
 @mxweb.route()
@@ -901,7 +902,8 @@ class RtuTimerCtlHandler(base.RequestHandler):
                     rtu_ids = ','.join(
                         [str(a) for a in self.get_phy_list(rqmsg.tml_id)])
                 else:
-                    device_ids = ",".join([str(a) for a in self.check_tml_r(user_uuid, list(rqmsg.tml_id))])
+                    device_ids = ",".join(
+                        [str(a) for a in self.check_tml_r(user_uuid, list(rqmsg.tml_id))])
                     rtu_ids = ','.join([
                         str(a) for a in self.get_phy_list(
                             self.check_tml_r(user_uuid, list(rqmsg.tml_id)))

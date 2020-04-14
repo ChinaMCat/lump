@@ -32,7 +32,8 @@ class QueryDataLduHandler(base.RequestHandler):
 
         if user_data is not None:
             if user_data['user_auth'] in libiisi.can_read:
-                sdt, edt = self.process_input_date(rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
+                sdt, edt = self.process_input_date(
+                    rqmsg.dt_start, rqmsg.dt_end, to_chsarp=1)
                 msg.data_mark = rqmsg.data_mark
                 yield self.update_cache("r", user_uuid)
 
@@ -44,7 +45,8 @@ class QueryDataLduHandler(base.RequestHandler):
                         tml_ids = []
                 else:
                     if len(rqmsg.tml_id) > 0:
-                        tml_ids = self.check_tml_r(user_uuid, list(rqmsg.tml_id))
+                        tml_ids = self.check_tml_r(
+                            user_uuid, list(rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
@@ -67,7 +69,7 @@ class QueryDataLduHandler(base.RequestHandler):
                                 and x.rtu_id=a.rtu_id and x.loop_id=a.loop_id
                                 left join {0}.para_ldu_line as b on a.rtu_id=b.ldu_fid and a.loop_id=b.ldu_line_id'''.format(
                         self._db_name, str_tmls.replace('and', 'where'), self._db_name_data)
-                elif rqmsg.data_mark == 1:  #历史数据
+                elif rqmsg.data_mark == 1:  # 历史数据
                     strsql = '''select b.ldu_line_name,a.rtu_id,a.date_create,a.loop_id,a.ldu_voltage,a.ldu_current,
                                 a.ldu_active_power,a.ldu_reactive_power,a.ldu_fault_param,a.ldu_fault_data,
                                 a.ldu_pf_compensate,a.ldu_bright_rate,a.ldu_puse,
@@ -125,7 +127,7 @@ class QueryDataLduHandler(base.RequestHandler):
                             if alarm_s[7] == alarm_d[7] == '1':
                                 dv.loop_status = 1
                         # 暂不用
-                        dv.power_factor=d[10]
+                        dv.power_factor = d[10]
                         # dv.lighting_rate=d[11]
                         # dv.signal_strength=d[12]
                         # dv.impedance=d[13]
@@ -172,7 +174,8 @@ class LduDataGetHandler(base.RequestHandler):
                         if phy_id == -1:
                             continue
                         if fid > 0:
-                            addr = ','.join([str(a) for a in self.get_phy_list([fid])])
+                            addr = ','.join([str(a)
+                                             for a in self.get_phy_list([fid])])
                             cid = phy_id
                             tra = 2
                         else:
@@ -190,7 +193,8 @@ class LduDataGetHandler(base.RequestHandler):
                                                                  self.request.remote_ip, 0, addr,
                                                                  dict({'ln': int(''.join(s), 2)}))
                                     libiisi.send_to_zmq_pub(
-                                        'tcs.req.{0}.wlst.ldu.2600'.format(libiisi.cfg_tcs_port),
+                                        'tcs.req.{0}.wlst.ldu.2600'.format(
+                                            libiisi.cfg_tcs_port),
                                         json.dumps(tcsmsg,
                                                    separators=(',', ':')).lower())
                             if not noctl:
@@ -205,7 +209,8 @@ class LduDataGetHandler(base.RequestHandler):
                                                              self.request.remote_ip, 0, addr,
                                                              dict({'ln': int(''.join(s), 2)}))
                                 libiisi.send_to_zmq_pub(
-                                    'tcs.req.{0}.wlst.ldu.2600'.format(libiisi.cfg_tcs_port),
+                                    'tcs.req.{0}.wlst.ldu.2600'.format(
+                                        libiisi.cfg_tcs_port),
                                     json.dumps(tcsmsg,
                                                separators=(',', ':')).lower())
                             else:

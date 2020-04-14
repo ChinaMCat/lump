@@ -68,7 +68,7 @@ class QueryDataEluHandler(base.RequestHandler):
                                 left join {0}.para_base_equipment as c on a.leak_id=c.rtu_id'''.format(
                         self._db_name, str_tmls.replace('and', 'where'),
                         self._db_name_data)
-                elif rqmsg.data_mark == 1:  #历史数据
+                elif rqmsg.data_mark == 1:  # 历史数据
                     strsql = '''select b.leak_line_name,a.leak_id,a.date_create,a.leak_line_id,
                 				a.auto_break_auto_alarm,a.state_alarm,a.state_on_off,a.upper_alarm_break_for_leak_temperature,
                 				a.time_delay_break,a.alarm_value_leak_temperature,a.current_leak_temperature,a.leak_mode,c.rtu_name,c.rtu_fid
@@ -166,7 +166,7 @@ class EluDataGetHandler(base.RequestHandler):
                             tra=tra)
                         libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                             tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
                         tcsmsg = libiisi.initRtuProtobuf(
                             cmd='wlst.elu.6260',
                             addr=list(addr),
@@ -174,7 +174,7 @@ class EluDataGetHandler(base.RequestHandler):
                             tra=tra)
                         libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                             tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 
@@ -239,7 +239,7 @@ class EluCtlHandler(base.RequestHandler):
                         tcsmsg.wlst_tml.wlst_elu_6257.opt_do.extend(lp_do)
                         libiisi.send_to_zmq_pub('tcs.req.{1}.{0}'.format(
                             tcsmsg.head.cmd, libiisi.cfg_tcs_port),
-                                                tcsmsg.SerializeToString())
+                            tcsmsg.SerializeToString())
             else:
                 msg.head.if_st = 11
 

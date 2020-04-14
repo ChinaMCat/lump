@@ -283,7 +283,6 @@ class QueryDataErrHandler(base.RequestHandler):
                     else:
                         str_tmls = ' and a.rtu_id in ({0}) '.format(
                             ','.join([str(a) for a in tml_ids]))
-
                     if rqmsg.type == 0:  # 现存故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_create, \
                         c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.error_count,a.v,a.a,b.fault_name_define,d.loop_name,c.rtu_fid \
@@ -300,7 +299,6 @@ class QueryDataErrHandler(base.RequestHandler):
                             strsql += ' {0}'.format(str_errs)
                         strsql += ' order by a.date_create desc {0}'.format(
                             self._fetch_limited)
-
                     elif rqmsg.type == 1:  # 历史故障
                         strsql = 'select a.fault_id,b.fault_name,a.rtu_id,a.date_create,a.date_remove, \
                         c.rtu_phy_id,c.rtu_name,a.loop_id,a.lamp_id,a.remark,a.lamp_id,a.v,a.a,b.fault_name_define,d.loop_name,c.rtu_fid \
@@ -371,7 +369,7 @@ class QueryDataErrHandler(base.RequestHandler):
                                 # errview.err_name_custome = d[13]
                                 errview.tml_loop_name = d[
                                     14] if d[14] is not None else ""
-                                errview.tml_parent_id = int(d[15])
+                                errview.tml_parent_id = int(d[15]) if d[15] is not None else 0
                                 # 武汉特殊，融断器开路，火零不平衡报警取消回路名称结尾的’火线’二字
                                 if errview.err_id in (25, 26):
                                     if errview.tml_loop_name.endswith(u'火线'):

@@ -446,7 +446,7 @@ class RequestHandler(mxweb.MXRequestHandler):
                         values ({1},"{2}",{3},{4},{5},"{6}","{7}");'.format(
                 self._db_name_data, mx.switchStamp(time.time()), user_name,
                 event_id, is_client_snd, int(rtu_id), contents, remark)
-        print(strsql)
+                
         cur = self.mydata_collector(strsql, need_fetch=0)
         del cur, strsql
 

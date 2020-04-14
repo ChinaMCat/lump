@@ -1492,7 +1492,7 @@ class TmlInfoHandler(base.RequestHandler):
                             left join {0}.para_base_equipment as a on a.rtu_id=b.rtu_id  \
                             where a.rtu_id>=1800000 and a.rtu_id<=1899999 {1} order by a.rtu_id".format(
                                 self._db_name, str_tmls)
-                            print(strsql)
+
                             record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                                 strsql, need_fetch=1, need_paging=0)
                             if record_total is None:

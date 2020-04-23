@@ -1487,7 +1487,7 @@ class TmlInfoHandler(base.RequestHandler):
                                 str_tmls = ' and a.rtu_id in ({0})'.format(
                                     ','.join([str(a) for a in list(tml_ids)]))
                             strsql = "select a.rtu_id,a.rtu_phy_id,b.lock_off_delay, \
-                            b.freq_lights,b.freq_beep,b.time_delay,b.master_card1,b.master_card2, \
+                            b.freq_lights,b.freq_beep,b.time_delay, \
                             b.enable_alarm,a.rtu_name from {0}.para_lock as b  \
                             left join {0}.para_base_equipment as a on a.rtu_id=b.rtu_id  \
                             where a.rtu_id>=1800000 and a.rtu_id<=1899999 {1} order by a.rtu_id".format(
@@ -1510,9 +1510,9 @@ class TmlInfoHandler(base.RequestHandler):
                                     info.freq_lights = int(d[3])
                                     info.freq_beep = int(d[4])
                                     info.time_delay = int(d[5])
-                                    info.master_card1 = int(d[6])
-                                    info.master_card2 = int(d[7])
-                                    info.enable_alarm = int(d[8])
+                                    # info.master_card1 = int(d[6])
+                                    # info.master_card2 = int(d[7])
+                                    info.enable_alarm = int(d[6])
                                     msg.lock_info.extend([info])
                                     del info
                             del cur, strsql

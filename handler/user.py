@@ -72,16 +72,16 @@ class UserLoginJKHandler(base.RequestHandler):
                     ud = libiisi.cache_user.get(k)
                     if ud is not None:
                         # 注销已登录用户
-                        if ud['user_name'] == rqmsg.user and ud['source_dev'] == rqmsg.dev:
+                        if ud['user_name'] == rqmsg.user and ud[
+                                'source_dev'] == rqmsg.dev:
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
-                            self.write_event(
-                                122,
-                                contents,
-                                2,
-                                user_name=user_name,
-                                app_unique=rqmsg.head.unique)
+                            self.write_event(122,
+                                             contents,
+                                             2,
+                                             user_name=user_name,
+                                             app_unique=rqmsg.head.unique)
                             del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
@@ -190,8 +190,9 @@ class UserLoginJKHandler(base.RequestHandler):
             url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url,
                                                urlencode(args))
             try:
-                rep = yield self.thc.fetch(
-                    url, raise_error=True, request_timeout=10)
+                rep = yield self.thc.fetch(url,
+                                           raise_error=True,
+                                           request_timeout=10)
                 # rep = utils.m_httpclinet_pool.request('GET',
                 #                                       baseurl,
                 #                                       fields=args,
@@ -206,8 +207,9 @@ class UserLoginJKHandler(base.RequestHandler):
                 if not retry:
                     retry = True
                     try:
-                        rep = yield self.thc.fetch(
-                            url, raise_error=False, request_timeout=3)
+                        rep = yield self.thc.fetch(url,
+                                                   raise_error=False,
+                                                   request_timeout=3)
                         dom = xmld.parseString(rep.body)
                         root = dom.documentElement
                         msg.flow_data = root.firstChild.wholeText
@@ -220,12 +222,11 @@ class UserLoginJKHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        self.write_event(
-            121,
-            contents,
-            2,
-            user_name=rqmsg.user,
-            app_unique=rqmsg.head.unique)
+        self.write_event(121,
+                         contents,
+                         2,
+                         user_name=rqmsg.user,
+                         app_unique=rqmsg.head.unique)
         del rqmsg, msg
 
 
@@ -282,16 +283,16 @@ class UserLoginHandler(base.RequestHandler):
                     ud = libiisi.cache_user.get(k)
                     if ud is not None:
                         # 注销已登录用户
-                        if ud['user_name'] == rqmsg.user and ud['source_dev'] == rqmsg.dev:
+                        if ud['user_name'] == rqmsg.user and ud[
+                                'source_dev'] == rqmsg.dev:
                             contents = 'logout by sys because login from {0}'.format(
                                 self.request.remote_ip)
                             user_name = libiisi.cache_user[k]['user_name']
-                            self.write_event(
-                                122,
-                                contents,
-                                2,
-                                user_name=user_name,
-                                app_unique=rqmsg.head.unique)
+                            self.write_event(122,
+                                             contents,
+                                             2,
+                                             user_name=user_name,
+                                             app_unique=rqmsg.head.unique)
                             del libiisi.cache_user[k]
                             break
             contents = 'login from {0} success'.format(self.request.remote_ip)
@@ -405,8 +406,9 @@ class UserLoginHandler(base.RequestHandler):
             url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url,
                                                urlencode(args))
             try:
-                rep = yield self.thc.fetch(
-                    url, raise_error=True, request_timeout=10)
+                rep = yield self.thc.fetch(url,
+                                           raise_error=True,
+                                           request_timeout=10)
                 # rep = utils.m_httpclinet_pool.request('GET',
                 #                                       baseurl,
                 #                                       fields=args,
@@ -421,8 +423,9 @@ class UserLoginHandler(base.RequestHandler):
                 if not retry:
                     retry = True
                     try:
-                        rep = yield self.thc.fetch(
-                            url, raise_error=False, request_timeout=3)
+                        rep = yield self.thc.fetch(url,
+                                                   raise_error=False,
+                                                   request_timeout=3)
                         dom = xmld.parseString(rep.body)
                         root = dom.documentElement
                         msg.flow_data = root.firstChild.wholeText
@@ -435,12 +438,11 @@ class UserLoginHandler(base.RequestHandler):
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
-        self.write_event(
-            121,
-            contents,
-            2,
-            user_name=rqmsg.user,
-            app_unique=rqmsg.head.unique)
+        self.write_event(121,
+                         contents,
+                         2,
+                         user_name=rqmsg.user,
+                         app_unique=rqmsg.head.unique)
         del rqmsg, msg
 
 
@@ -482,12 +484,11 @@ class UserLogoutHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(
-                122,
-                contents,
-                2,
-                user_name=user_data['user_name'],
-                app_unique=rqmsg.head.unique)
+            self.write_event(122,
+                             contents,
+                             2,
+                             user_name=user_data['user_name'],
+                             app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data
 
 
@@ -563,12 +564,11 @@ class UserAddHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(
-                154,
-                contents,
-                2,
-                user_name=user_data['user_name'],
-                app_unique=rqmsg.head.unique)
+            self.write_event(154,
+                             contents,
+                             2,
+                             user_name=user_data['user_name'],
+                             app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data
 
 
@@ -622,12 +622,11 @@ class UserDelHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(
-                156,
-                contents,
-                2,
-                user_name=user_data['user_name'],
-                app_unique=rqmsg.head.unique)
+            self.write_event(156,
+                             contents,
+                             2,
+                             user_name=user_data['user_name'],
+                             app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data, user_uuid
 
 
@@ -661,7 +660,8 @@ class UserEditHandler(base.RequestHandler):
                     rqmsg.pwd_old.replace('"', ''))
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql, need_fetch=1)
-                if record_total > 0 or user_data['user_auth'] in libiisi.can_admin:
+                if record_total > 0 or user_data[
+                        'user_auth'] in libiisi.can_admin:
                     if user_data['user_name'] == rqmsg.user:
                         if user_data['user_auth'] in libiisi.can_write:
                             strsql = 'update {0}.user_list set user_real_name="{1}", \
@@ -702,10 +702,9 @@ class UserEditHandler(base.RequestHandler):
                 'old_pwd': rqmsg.pwd_old,
                 'new_pwd': rqmsg.pwd
             }
-            rep = yield self.thc.fetch(
-                "{0}?{1}".format(url, urlencode(data)),
-                raise_error=False,
-                request_timeout=20)
+            rep = yield self.thc.fetch("{0}?{1}".format(url, urlencode(data)),
+                                       raise_error=False,
+                                       request_timeout=20)
             if 'true' in rep.body:
                 msg.head.if_st = 1
                 msg.head.if_msg = "sz UpdatePassword success"
@@ -742,7 +741,8 @@ class UserInfoHandler(base.RequestHandler):
         env = False
         contents = ''
 
-        if user_uuid in libiisi.cache_buildin_users and user_data['user_auth'] < 15:
+        if user_uuid in libiisi.cache_buildin_users and user_data[
+                'user_auth'] < 15:
             msg.head.if_st = 0
             msg.head.if_msg = 'build-in user are not allowed to view user info.'
         else:
@@ -774,8 +774,7 @@ class UserInfoHandler(base.RequestHandler):
                         for d in cur:
                             userview = msgws.UserInfo.UserView()
                             userview.user = d[0]
-                            userview.fullname = d[
-                                1] if d[1] is not None else ''
+                            userview.fullname = d[1] if d[1] is not None else ''
                             # userview.pwd = d[2]
                             # userview.auth = d[3]
                             userview.mobile = d[3] if d[3] is not None else ''

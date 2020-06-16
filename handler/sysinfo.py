@@ -55,7 +55,7 @@ class SysLightingRateHandler(base.RequestHandler):
             # daylight = False # 调试用
             lighton = 0
             lightall = 0
-            strsql = '''select count(*) from {0}.data_slu_state_new 
+            strsql = '''select count(*) from {0}.data_slu_state_new
                         union all
                         select count(*) from {0}.data_slu_state_new where is_online=1 and is_light=1
                         union all
@@ -78,21 +78,21 @@ class SysLightingRateHandler(base.RequestHandler):
                 msg.lamp_on = 0
             else:
                 if rqmsg.type == 0:  # 假亮灯率
-                    if os.path.isfile(os.path.join(libiisi.m_cachedir, ".fakelr")):
-                        with open(
-                                os.path.join(libiisi.m_cachedir, ".fakelr"),
-                                "r") as f:
+                    if os.path.isfile(
+                            os.path.join(libiisi.m_cachedir, ".fakelr")):
+                        with open(os.path.join(libiisi.m_cachedir, ".fakelr"),
+                                  "r") as f:
                             a = f.readline()
                             f.close()
                         msg.lighting_rate = random.uniform(int(float(a)), 100)
                     else:
                         msg.lighting_rate = random.uniform(98, 100)
-                        with open(
-                                os.path.join(libiisi.m_cachedir, ".fakelr"),
-                                "w") as f:
+                        with open(os.path.join(libiisi.m_cachedir, ".fakelr"),
+                                  "w") as f:
                             f.write(str(msg.lighting_rate))
                             f.close()
-                    msg.lamp_on = int(msg.lamp_total * (msg.lighting_rate/100))
+                    msg.lamp_on = int(msg.lamp_total *
+                                      (msg.lighting_rate / 100))
                 elif rqmsg.type == 1:  # 依据data_slu_state_new表数据进行亮灯率计算
                     strsql = '''select sum(lamp_power) from {0}.data_slu_state_new where is_light = 1'''.format(
                         self._db_name_data)
@@ -108,7 +108,8 @@ class SysLightingRateHandler(base.RequestHandler):
                         msg.lighting_rate = random.uniform(95, 100)
                     else:
                         # msg.lighting_rate = (lighton * 1.0 / lightall)*100
-                        msg.lighting_rate = (1-lightoff*1.0/lightall)*100
+                        msg.lighting_rate = (1 -
+                                             lightoff * 1.0 / lightall) * 100
             del cur, strsql
 
         self.write(mx.code_pb2(msg, self._go_back_format))
@@ -136,7 +137,8 @@ class TreeInfoHandler(base.RequestHandler):
                 z = user_data['area_r'].union(user_data['area_w']).union(
                     user_data['area_x'])
                 if rqmsg.data_mark in (0, 1):  # 获取区域和分组
-                    if user_data['user_auth'] in libiisi.can_admin or user_data['is_buildin'] == 1:
+                    if user_data['user_auth'] in libiisi.can_admin or user_data[
+                            'is_buildin'] == 1:
                         strsql = '''select area_id,area_name,-1,1 from {0}.area_info
                                     union all select grp_id,grp_name,area_id,2 from {0}.area_equipment_group'''.format(
                             self._db_name)
@@ -164,7 +166,8 @@ class TreeInfoHandler(base.RequestHandler):
                             msg.tree_view.extend([tv])
                 if rqmsg.data_mark in (0, 2):
                     x = {}
-                    if user_data['user_auth'] in libiisi.can_admin or user_data['is_buildin'] == 1:
+                    if user_data['user_auth'] in libiisi.can_admin or user_data[
+                            'is_buildin'] == 1:
                         strsql = '''select grp_id,grp_name,rtu_list from {0}.area_equipment_group'''.format(
                             self._db_name)
                     else:
@@ -189,7 +192,8 @@ class TreeInfoHandler(base.RequestHandler):
                                 for c in a:
                                     x[c] = d[0]
 
-                        if 0 in user_data['area_r'] or user_data['is_buildin'] == 1:
+                        if 0 in user_data['area_r'] or user_data[
+                                'is_buildin'] == 1:
                             strsql = '''select a.rtu_id,a.rtu_name,a.rtu_fid,case when a.rtu_fid>0 then 4 else 3 end,b.mobile_no from {0}.para_base_equipment as a
                                         left join {0}.para_rtu_gprs as b on a.rtu_id=b.rtu_id'''.format(
                                 self._db_name)
@@ -241,11 +245,13 @@ class GroupInfoHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read:
                 strsql = 'select grp_id,grp_name,rtu_list,area_id,orderx from {0}.area_equipment_group'.format(
                     self._db_name)
-                if user_data['user_auth'] not in libiisi.can_admin and user_data['is_buildin'] != 1:
+                if user_data[
+                        'user_auth'] not in libiisi.can_admin and user_data[
+                            'is_buildin'] != 1:
                     z = user_data['area_r'].union(user_data['area_w']).union(
                         user_data['area_x'])
-                    strsql += ' where area_id in ({0})'.format(
-                        ','.join([str(a) for a in z]))
+                    strsql += ' where area_id in ({0})'.format(','.join(
+                        [str(a) for a in z]))
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql, need_fetch=1, need_paging=0)
                 if record_total is None:
@@ -292,11 +298,13 @@ class AreaInfoHandler(base.RequestHandler):
             if user_data['user_auth'] in libiisi.can_read:
                 strsql = 'select area_id,area_name,rtu_list from {0}.area_info'.format(
                     self._db_name)
-                if user_data['user_auth'] not in libiisi.can_admin and user_data['is_buildin'] != 1:
+                if user_data[
+                        'user_auth'] not in libiisi.can_admin and user_data[
+                            'is_buildin'] != 1:
                     z = user_data['area_r'].union(user_data['area_w']).union(
                         user_data['area_x'])
-                    strsql += ' where area_id in ({0})'.format(
-                        ','.join([str(a) for a in z]))
+                    strsql += ' where area_id in ({0})'.format(','.join(
+                        [str(a) for a in z]))
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql, need_fetch=1, need_paging=0)
                 if record_total is None:
@@ -335,23 +343,20 @@ class AreaInfoHandler(base.RequestHandler):
                                 z = [int(b[0]) for b in cur]
                                 av.tml_id.extend(z)
                             msg.area_view.extend([av])
-                            if d[2] is not None and int(
-                                    d[0]
-                            ) in user_data['area_r']:  # or user_data['user_auth'] in libiisi.can_admin:
+                            if d[2] is not None and int(d[0]) in user_data[
+                                    'area_r']:  # or user_data['user_auth'] in libiisi.can_admin:
                                 if user_uuid in libiisi.cache_tml_r.keys():
                                     libiisi.cache_tml_r[user_uuid].union(y)
                                 else:
                                     libiisi.cache_tml_r[user_uuid] = set(y)
-                            if d[2] is not None and int(
-                                    d[0]
-                            ) in user_data['area_w']:  # or user_data['user_auth'] in libiisi.can_admin:
+                            if d[2] is not None and int(d[0]) in user_data[
+                                    'area_w']:  # or user_data['user_auth'] in libiisi.can_admin:
                                 if user_uuid in libiisi.cache_tml_w.keys():
                                     libiisi.cache_tml_w[user_uuid].union(y)
                                 else:
                                     libiisi.cache_tml_w[user_uuid] = set(y)
-                            if d[2] is not None and int(
-                                    d[0]
-                            ) in user_data['area_x']:  # or user_data['user_auth'] in libiisi.can_admin:
+                            if d[2] is not None and int(d[0]) in user_data[
+                                    'area_x']:  # or user_data['user_auth'] in libiisi.can_admin:
                                 if user_uuid in libiisi.cache_tml_x.keys():
                                     libiisi.cache_tml_x[user_uuid].union(y)
                                 else:
@@ -490,12 +495,11 @@ class SysEditHandler(base.RequestHandler):
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         if env:
-            self.write_event(
-                165,
-                contents,
-                2,
-                user_name=user_data['user_name'],
-                app_unique=rqmsg.head.unique)
+            self.write_event(165,
+                             contents,
+                             2,
+                             user_name=user_data['user_name'],
+                             app_unique=rqmsg.head.unique)
         del msg, rqmsg, user_data
 
 
@@ -596,8 +600,8 @@ class SysInfoHandler(base.RequestHandler):
 
                     del cur, strsql
                 if 7 in msg.data_mark:
-                    tcsmsg = libiisi.initRtuProtobuf(
-                        cmd='wlst.sys.status', addr=[-1])
+                    tcsmsg = libiisi.initRtuProtobuf(cmd='wlst.sys.status',
+                                                     addr=[-1])
                     tcsmsg.head.mod = 1
                     tcsmsg.head.src = 2
                     m = yield self.check_zmq_status(
@@ -660,8 +664,8 @@ class TmlInfoHandler(base.RequestHandler):
                         tml_ids = []
                 else:
                     if len(rqmsg.tml_id) > 0:
-                        tml_ids = self.check_tml_r(user_uuid, list(
-                            rqmsg.tml_id))
+                        tml_ids = self.check_tml_r(user_uuid,
+                                                   list(rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
@@ -732,18 +736,18 @@ class TmlInfoHandler(base.RequestHandler):
                                         baseinfo.tml_name = d[3]
                                         baseinfo.tml_name_py = pyhz.hanzi2pinyin(
                                             u"{0}".format(d[3]))
-                                        baseinfo.tml_com_sn = d[
-                                            4] if d[4] is not None else ''
+                                        baseinfo.tml_com_sn = d[4] if d[
+                                            4] is not None else ''
                                         baseinfo.tml_com_ip = int(
                                             d[5]) if d[5] is not None else 0
                                         baseinfo.tml_model = int(d[6])
                                         baseinfo.tml_parent_id = int(d[7])
                                         baseinfo.tml_dt_setup = mx.switchStamp(
                                             int(d[8]))
-                                        baseinfo.tml_desc = d[
-                                            9] if d[9] is not None else ''
-                                        baseinfo.tml_street = d[
-                                            11] if d[11] is not None else ''
+                                        baseinfo.tml_desc = d[9] if d[
+                                            9] is not None else ''
+                                        baseinfo.tml_street = d[11] if d[
+                                            11] is not None else ''
                                     # baseinfo.tml_guid = d[12]
                                     msg.base_info.extend([baseinfo])
                                     del baseinfo
@@ -841,8 +845,8 @@ class TmlInfoHandler(base.RequestHandler):
                                     if d[9] is not None:
                                         loopinfo = msgws.TmlInfo.RtuLoopItem()
                                         loopinfo.loop_id = int(d[9])
-                                        loopinfo.loop_name = d[
-                                            10] if d[10] is not None else ""
+                                        loopinfo.loop_name = d[10] if d[
+                                            10] is not None else ""
                                         loopinfo.loop_phase = int(d[11])
                                         loopinfo.loop_current_range = int(
                                             d[12])
@@ -1312,7 +1316,7 @@ class TmlInfoHandler(base.RequestHandler):
                                 c.is_auto_open_light_when_elec3,c.is_auto_open_light_when_elec4, \
                                 c.is_used,c.is_alarm_auto,c.vector_loop_1,c.vector_loop_2, \
                                 c.vector_loop_3,c.vector_loop_4,c.light_count,c.power_rate_1, \
-                                c.power_rate_2,c.power_rate_3,c.power_rate_4 \
+                                c.power_rate_2,c.power_rate_3,c.power_rate_4,b.field_name \
                                 from {0}.para_slu_sgl as b left join {0}.para_slu_sgl_item as a  \
                                 on a.field_id=b.field_id left join {0}.para_slu_sgl_ctrl as c on  \
                                 c.ctrl_id=a.ctrl_id where a.field_id>=1700000 and a.field_id<=1799999 {1} order by a.ctrl_id'.format(
@@ -1337,6 +1341,7 @@ class TmlInfoHandler(base.RequestHandler):
                                                 msg.slu_info.extend([info])
                                                 info = msgws.TmlInfo.SluInfo()
                                             info.tml_id = int(d[0])
+                                            info.tml_name = d[30]
                                         if d[2] is None:
                                             continue
                                         iteminfo = msgws.TmlInfo.SluItemInfo()
@@ -1345,8 +1350,8 @@ class TmlInfoHandler(base.RequestHandler):
                                         iteminfo.sluitem_loop_num = int(d[25])
                                         iteminfo.sluitem_name = d[3]
                                         iteminfo.sluitem_phy_id = int(d[4])
-                                        iteminfo.sluitem_lamp_id = d[
-                                            5] if d[5] is not None else ''
+                                        iteminfo.sluitem_lamp_id = d[5] if d[
+                                            5] is not None else ''
                                         iteminfo.sluitem_gis_x = float(d[6])
                                         iteminfo.sluitem_gis_y = float(d[7])
                                         iteminfo.sluitem_power_uplimit = int(
@@ -1403,7 +1408,7 @@ class TmlInfoHandler(base.RequestHandler):
                                 c.is_auto_open_light_when_elec3,c.is_auto_open_light_when_elec4, \
                                 c.is_used,c.is_alarm_auto,c.vector_loop_1,c.vector_loop_2, \
                                 c.vector_loop_3,c.vector_loop_4,c.light_count,c.power_rate_1, \
-                                c.power_rate_2,c.power_rate_3,c.power_rate_4,c.imei,c.platform \
+                                c.power_rate_2,c.power_rate_3,c.power_rate_4,c.imei,c.platform,b.field_name \
                                 from {0}.para_slu_sgl as b left join {0}.para_slu_sgl_item as a  \
                                 on a.field_id=b.field_id left join {0}.para_slu_sgl_ctrl as c on  \
                                 c.ctrl_id=a.ctrl_id where a.field_id>=1700000 and a.field_id<=1799999 {1} order by a.ctrl_id'.format(
@@ -1428,6 +1433,7 @@ class TmlInfoHandler(base.RequestHandler):
                                                 msg.slu_info.extend([info])
                                                 info = msgws.TmlInfo.SluInfo()
                                             info.tml_id = int(d[0])
+                                            info.tml_name = d[32]
                                         if d[2] is None:
                                             continue
                                         iteminfo = msgws.TmlInfo.SluItemInfo()
@@ -1436,8 +1442,8 @@ class TmlInfoHandler(base.RequestHandler):
                                         iteminfo.sluitem_loop_num = int(d[25])
                                         iteminfo.sluitem_name = d[3]
                                         iteminfo.sluitem_phy_id = int(d[4])
-                                        iteminfo.sluitem_lamp_id = d[
-                                            5] if d[5] is not None else ''
+                                        iteminfo.sluitem_lamp_id = d[5] if d[
+                                            5] is not None else ''
                                         iteminfo.sluitem_gis_x = float(d[6])
                                         iteminfo.sluitem_gis_y = float(d[7])
                                         iteminfo.sluitem_power_uplimit = int(
@@ -1550,8 +1556,8 @@ class StatusRtuHandler(base.RequestHandler):
                         tml_ids = []
                 else:
                     if len(rqmsg.tml_id) > 0:
-                        tml_ids = self.check_tml_r(user_uuid, list(
-                            rqmsg.tml_id))
+                        tml_ids = self.check_tml_r(user_uuid,
+                                                   list(rqmsg.tml_id))
                     else:
                         tml_ids = libiisi.cache_tml_r[user_uuid]
                     if len(tml_ids) == 0:
@@ -1561,8 +1567,8 @@ class StatusRtuHandler(base.RequestHandler):
                     if len(tml_ids) == 0:
                         str_tmls = ''
                     else:
-                        str_tmls = ' and a.rtu_id in ({0}) '.format(
-                            ','.join([str(a) for a in tml_ids]))
+                        str_tmls = ' and a.rtu_id in ({0}) '.format(','.join(
+                            [str(a) for a in tml_ids]))
 
                     strsql = 'select a.TABLE_NAME from information_schema.VIEWS as a where a.TABLE_NAME="data_rtu_view_new" and a.TABLE_SCHEMA="{0}_data"'.format(
                         self._db_name)
@@ -1662,26 +1668,28 @@ class StatusSluHandler(base.RequestHandler):
                     if len(tml_ids) == 0:
                         str_tmls = ''
                     else:
-                        str_tmls = ' and a.slu_id in ({0}) '.format(
-                            ','.join([str(a) for a in tml_ids]))
+                        str_tmls = ' and a.slu_id in ({0}) '.format(','.join(
+                            [str(a) for a in tml_ids]))
                     if user_uuid == "ab6443e6781911e78ad6fcaa14e489ec":
                         strsql = '''select a.slu_id,a.ctrl_id,a.lamp_id,a.date_create,a.is_online,a.is_light,a.lamp_power,
                             b.rtu_name,b.rtu_phy_id,
-                            c.err_num,a.lamp_current,a.lamp_voltage 
+                            c.err_num,a.lamp_current,a.lamp_voltage
                             from {0}.data_slu_state_new as a left join
                             {1}.para_base_equipment as b on a.slu_id=b.rtu_id left join
-                            (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist 
+                            (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist
                             where rtu_id<1600000 and rtu_id>1500000 group by rtu_id) as c on a.slu_id=c.rtu_id
-                            where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(self._db_name_data, self._db_name, str_tmls)
+                            where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(
+                            self._db_name_data, self._db_name, str_tmls)
                     else:
                         strsql = '''select a.slu_id,a.ctrl_id,a.lamp_id,a.date_create,a.is_online,a.is_light,a.is_light,
                             b.rtu_name,b.rtu_phy_id,
-                            c.err_num,a.is_light,a.is_light  
+                            c.err_num,a.is_light,a.is_light
                             from {0}.data_slu_state_new as a left join
                             {1}.para_base_equipment as b on a.slu_id=b.rtu_id left join
-                            (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist 
+                            (select count(rtu_id) as err_num,rtu_id from {0}.info_fault_exist
                             where rtu_id<1600000 and rtu_id>1500000 group by rtu_id) as c on a.slu_id=c.rtu_id
-                            where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(self._db_name_data, self._db_name, str_tmls)
+                            where 1=1 {2} order by a.slu_id,a.ctrl_id,a.lamp_id'''.format(
+                            self._db_name_data, self._db_name, str_tmls)
 
                     record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                         strsql,
@@ -1880,7 +1888,8 @@ class SysStatusHandler(base.RequestHandler):
                 	select count(*) from {1}.info_fault_exist where rtu_id <1600000 and rtu_id>=1500000 and fault_id=50 union all
                 	select count(*) from {0}.para_slu_ctrl union all
                 	select count(*) from {1}.data_slu_state_new where is_online=1 union all
-                	select count(*) from {1}.info_fault_exist where rtu_id <1600000 and rtu_id>=1500000 and fault_id>=51 and fault_id <=64'''.format(self._db_name, self._db_name_data)
+                	select count(*) from {1}.info_fault_exist where rtu_id <1600000 and rtu_id>=1500000 and fault_id>=51 and fault_id <=64'''.format(
+                    self._db_name, self._db_name_data)
 
                 record_total, buffer_tag, paging_idx, paging_total, cur = yield self.mydata_collector(
                     strsql, need_fetch=1, need_paging=0)

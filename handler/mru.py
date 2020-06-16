@@ -189,7 +189,6 @@ class MruDataGetHandler(base.RequestHandler):
                                 date=rqmsg.dt_mark,
                                 br=rqmsg.baud_rate))
                         # libiisi.set_to_send(tcsmsg, 0, False)
-                        print(tcsmsg)
                         libiisi.send_to_zmq_pub(
                             'tcs.req.{0}.wlst.mru.9100'.format(
                                 libiisi.cfg_tcs_port),

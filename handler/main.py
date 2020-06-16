@@ -244,7 +244,6 @@ class CheckUpgradeLocalHandler(base.RequestHandler):
         if len(exe) > 0:
             # 读取版本
             f = os.path.join(libiisi.m_confdir, "ver", "{0}.ver".format(exe))
-            print(f)
             if os.path.exists(f):
                 with open(f) as fr:
                     resu["ver"] = fr.readline()

@@ -743,6 +743,7 @@ message TmlInfo {
         int32 slu_pwm_rate = 21;  // pwm频率或485波特率
         int32 slu_off_line = 23;  // 停运,0-false,1-true
         repeated SluItemInfo sluitem_info = 22;
+        string tml_name = 24; // 名称
     }
     message LduInfo {
         int32 tml_id = 1;  // 设备逻辑地址
@@ -912,7 +913,7 @@ message TmlInfo {
     repeated EsuInfo esu_info = 20;  // 节能设备填充
     repeated SluitemGrpInfo sluitem_grpinfo = 21;  // 单灯分组信息填充
     repeated EluInfo elu_info = 22;  // 漏电设备信息
-	repeated LockInfo lock_info = 23; // 恒杰门控设备信息 
+	repeated LockInfo lock_info = 23; // 恒杰门控设备信息
     repeated int32 data_mark = 3 [packed=true];  // 请求数种类，同请求
 }
 

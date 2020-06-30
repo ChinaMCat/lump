@@ -172,28 +172,20 @@ class Message(object):
       we *do* stop because of an END_GROUP tag, the number
       of bytes returned does not include the bytes
       for the END_GROUP tag information.
-
-    Raises:
-      message.DecodeError if the input cannot be parsed.
     """
     raise NotImplementedError
 
   def ParseFromString(self, serialized):
     """Parse serialized protocol buffer data into this message.
 
-    Like MergeFromString(), except we clear the object first.
+    Like MergeFromString(), except we clear the object first and
+    do not return the value that MergeFromString returns.
     """
     self.Clear()
-    return self.MergeFromString(serialized)
+    self.MergeFromString(serialized)
 
-  def SerializeToString(self, **kwargs):
+  def SerializeToString(self):
     """Serializes the protocol message to a binary string.
-
-    Arguments:
-      **kwargs: Keyword arguments to the serialize method, accepts
-        the following keyword args:
-        deterministic: If true, requests deterministic serialization of the
-          protobuf, with predictable ordering of map keys.
 
     Returns:
       A binary string representation of the message if all of the required
@@ -204,17 +196,11 @@ class Message(object):
     """
     raise NotImplementedError
 
-  def SerializePartialToString(self, **kwargs):
+  def SerializePartialToString(self):
     """Serializes the protocol message to a binary string.
 
     This method is similar to SerializeToString but doesn't check if the
     message is initialized.
-
-    Arguments:
-      **kwargs: Keyword arguments to the serialize method, accepts
-        the following keyword args:
-        deterministic: If true, requests deterministic serialization of the
-          protobuf, with predictable ordering of map keys.
 
     Returns:
       A string representation of the partial message.
@@ -268,10 +254,6 @@ class Message(object):
     raise NotImplementedError
 
   def ClearExtension(self, extension_handle):
-    raise NotImplementedError
-
-  def UnknownFields(self):
-    """Returns the UnknownFieldSet."""
     raise NotImplementedError
 
   def DiscardUnknownFields(self):

@@ -40,8 +40,6 @@ This files defines well known classes which need extra maintenance including:
 
 __author__ = 'jieluo@google.com (Jie Luo)'
 
-import calendar
-import collections
 from datetime import datetime
 from datetime import timedelta
 import six
@@ -69,14 +67,13 @@ class ParseError(Error):
 class Any(object):
   """Class for Any Message type."""
 
-  def Pack(self, msg, type_url_prefix='type.googleapis.com/',
-           deterministic=None):
+  def Pack(self, msg, type_url_prefix='type.googleapis.com/'):
     """Packs the specified message into current Any message."""
     if len(type_url_prefix) < 1 or type_url_prefix[-1] != '/':
       self.type_url = '%s/%s' % (type_url_prefix, msg.DESCRIPTOR.full_name)
     else:
       self.type_url = '%s%s' % (type_url_prefix, msg.DESCRIPTOR.full_name)
-    self.value = msg.SerializeToString(deterministic=deterministic)
+    self.value = msg.SerializeToString()
 
   def Unpack(self, msg):
     """Unpacks the current Any message into specified message."""
@@ -93,7 +90,7 @@ class Any(object):
 
   def Is(self, descriptor):
     """Checks if this Any represents the given protobuf type."""
-    return '/' in self.type_url and self.TypeName() == descriptor.full_name
+    return self.TypeName() == descriptor.full_name
 
 
 class Timestamp(object):
@@ -234,15 +231,9 @@ class Timestamp(object):
 
   def FromDatetime(self, dt):
     """Converts datetime to Timestamp."""
-    # Using this guide: http://wiki.python.org/moin/WorkingWithTime
-    # And this conversion guide: http://docs.python.org/library/time.html
-
-    # Turn the date parameter into a tuple (struct_time) that can then be
-    # manipulated into a long value of seconds.  During the conversion from
-    # struct_time to long, the source date in UTC, and so it follows that the
-    # correct transformation is calendar.timegm()
-    self.seconds = calendar.timegm(dt.utctimetuple())
-    self.nanos = dt.microsecond * _NANOS_PER_MICROSECOND
+    td = dt - datetime(1970, 1, 1)
+    self.seconds = td.seconds + td.days * _SECONDS_PER_DAY
+    self.nanos = td.microseconds * _NANOS_PER_MICROSECOND
 
 
 class Duration(object):
@@ -359,12 +350,12 @@ class Duration(object):
             self.nanos, _NANOS_PER_MICROSECOND))
 
   def FromTimedelta(self, td):
-    """Converts timedelta to Duration."""
+    """Convertd timedelta to Duration."""
     self._NormalizeDuration(td.seconds + td.days * _SECONDS_PER_DAY,
                             td.microseconds * _NANOS_PER_MICROSECOND)
 
   def _NormalizeDuration(self, seconds, nanos):
-    """Set Duration by seconds and nanos."""
+    """Set Duration by seconds and nonas."""
     # Force nanos to be negative if the duration is negative.
     if seconds < 0 and nanos > 0:
       seconds += 1
@@ -382,9 +373,6 @@ def _CheckDurationValid(seconds, nanos):
     raise Error(
         'Duration is not valid: Nanos {0} must be in range '
         '[-999999999, 999999999].'.format(nanos))
-  if (nanos < 0 and seconds > 0) or (nanos > 0 and seconds < 0):
-    raise Error(
-        'Duration is not valid: Sign mismatch.')
 
 
 def _RoundTowardZero(value, divider):
@@ -485,7 +473,7 @@ def _IsValidPath(message_descriptor, path):
   parts = path.split('.')
   last = parts.pop()
   for name in parts:
-    field = message_descriptor.fields_by_name.get(name)
+    field = message_descriptor.fields_by_name[name]
     if (field is None or
         field.label == FieldDescriptor.LABEL_REPEATED or
         field.type != FieldDescriptor.TYPE_MESSAGE):
@@ -659,17 +647,20 @@ def _MergeMessage(
         raise ValueError('Error: Field {0} in message {1} is not a singular '
                          'message field and cannot have sub-fields.'.format(
                              name, source_descriptor.full_name))
-      if source.HasField(name):
-        _MergeMessage(
-            child, getattr(source, name), getattr(destination, name),
-            replace_message, replace_repeated)
+      _MergeMessage(
+          child, getattr(source, name), getattr(destination, name),
+          replace_message, replace_repeated)
       continue
     if field.label == FieldDescriptor.LABEL_REPEATED:
       if replace_repeated:
         destination.ClearField(_StrConvert(name))
       repeated_source = getattr(source, name)
       repeated_destination = getattr(destination, name)
-      repeated_destination.MergeFrom(repeated_source)
+      if field.cpp_type == FieldDescriptor.CPPTYPE_MESSAGE:
+        for item in repeated_source:
+          repeated_destination.add().MergeFrom(item)
+      else:
+        repeated_destination.extend(repeated_source)
     else:
       if field.cpp_type == FieldDescriptor.CPPTYPE_MESSAGE:
         if replace_message:
@@ -707,12 +698,6 @@ def _SetStructValue(struct_value, value):
     struct_value.string_value = value
   elif isinstance(value, _INT_OR_FLOAT):
     struct_value.number_value = value
-  elif isinstance(value, dict):
-    struct_value.struct_value.Clear()
-    struct_value.struct_value.update(value)
-  elif isinstance(value, list):
-    struct_value.list_value.Clear()
-    struct_value.list_value.extend(value)
   else:
     raise ValueError('Unexpected type')
 
@@ -743,49 +728,18 @@ class Struct(object):
   def __getitem__(self, key):
     return _GetStructValue(self.fields[key])
 
-  def __contains__(self, item):
-    return item in self.fields
-
   def __setitem__(self, key, value):
     _SetStructValue(self.fields[key], value)
 
-  def __delitem__(self, key):
-    del self.fields[key]
-
-  def __len__(self):
-    return len(self.fields)
-
-  def __iter__(self):
-    return iter(self.fields)
-
-  def keys(self):  # pylint: disable=invalid-name
-    return self.fields.keys()
-
-  def values(self):  # pylint: disable=invalid-name
-    return [self[key] for key in self]
-
-  def items(self):  # pylint: disable=invalid-name
-    return [(key, self[key]) for key in self]
-
   def get_or_create_list(self, key):
     """Returns a list for this key, creating if it didn't exist already."""
-    if not self.fields[key].HasField('list_value'):
-      # Clear will mark list_value modified which will indeed create a list.
-      self.fields[key].list_value.Clear()
     return self.fields[key].list_value
 
   def get_or_create_struct(self, key):
     """Returns a struct for this key, creating if it didn't exist already."""
-    if not self.fields[key].HasField('struct_value'):
-      # Clear will mark struct_value modified which will indeed create a struct.
-      self.fields[key].struct_value.Clear()
     return self.fields[key].struct_value
 
-  def update(self, dictionary):  # pylint: disable=invalid-name
-    for key, value in dictionary.items():
-      _SetStructValue(self.fields[key], value)
-
-collections.MutableMapping.register(Struct)
+  # TODO(haberman): allow constructing/merging from dict.
 
 
 class ListValue(object):
@@ -808,28 +762,17 @@ class ListValue(object):
   def __setitem__(self, index, value):
     _SetStructValue(self.values.__getitem__(index), value)
 
-  def __delitem__(self, key):
-    del self.values[key]
-
   def items(self):
     for i in range(len(self)):
       yield self[i]
 
   def add_struct(self):
     """Appends and returns a struct value as the next value in the list."""
-    struct_value = self.values.add().struct_value
-    # Clear will mark struct_value modified which will indeed create a struct.
-    struct_value.Clear()
-    return struct_value
+    return self.values.add().struct_value
 
   def add_list(self):
     """Appends and returns a list value as the next value in the list."""
-    list_value = self.values.add().list_value
-    # Clear will mark list_value modified which will indeed create a list.
-    list_value.Clear()
-    return list_value
-
-collections.MutableSequence.register(ListValue)
+    return self.values.add().list_value
 
 
 WKTBASES = {

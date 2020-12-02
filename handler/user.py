@@ -17,6 +17,7 @@ from tornado.httpclient import AsyncHTTPClient
 import base
 import mlib_iisi.utils as libiisi
 import pbiisi.msg_ws_pb2 as msgws
+import json
 
 
 @mxweb.route()
@@ -397,24 +398,26 @@ class UserLoginHandler(base.RequestHandler):
 
         # 读取appconfig
         libiisi.m_app_config.loadConfig(libiisi.cfg_app_config_file)
-        msg.app_config = libiisi.m_app_config.getJson()
+        appcf = json.loads(libiisi.m_app_config.getJson())
+        appcf["dg_url"] = libiisi.cfg_fs_url
 
-        # 登录工作流
         if rqmsg.dev == 3:
+            # 登录工作流
             retry = False
             args = {'user_name': rqmsg.user, 'user_password': rqmsg.pwd}
             url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url,
                                                urlencode(args))
             try:
-                rep = yield self.thc.fetch(url,
-                                           raise_error=True,
-                                           request_timeout=10)
+                rep = self._pm.request("GET", url, request_timeout=5)
+                # rep = yield self.thc.fetch(url,
+                #                            raise_error=True,
+                #                            request_timeout=10)
                 # rep = utils.m_httpclinet_pool.request('GET',
                 #                                       baseurl,
                 #                                       fields=args,
                 #                                       timeout=2.0,
                 #                                       retries=False)
-                dom = xmld.parseString(rep.body)
+                dom = xmld.parseString(rep.data)
                 root = dom.documentElement
                 msg.flow_data = root.firstChild.wholeText
                 del dom, root
@@ -423,10 +426,8 @@ class UserLoginHandler(base.RequestHandler):
                 if not retry:
                     retry = True
                     try:
-                        rep = yield self.thc.fetch(url,
-                                                   raise_error=False,
-                                                   request_timeout=3)
-                        dom = xmld.parseString(rep.body)
+                        rep = self._pm.request("GET", url, request_timeout=5)
+                        dom = xmld.parseString(rep.data)
                         root = dom.documentElement
                         msg.flow_data = root.firstChild.wholeText
                         del dom, root
@@ -435,6 +436,17 @@ class UserLoginHandler(base.RequestHandler):
                         msg.flow_data = ''
                 else:
                     msg.flow_data = ''
+            # 登录灯杆
+            url = "{0}/smartlamppost-node/a/system/v1/login?loginName={1}&password={2}".format(
+                libiisi.cfg_fs_url, rqmsg.user, rqmsg.pwd)
+            try:
+                rep = self._pm.request("GET", url, request_timeout=5)
+                body = json.loads(rep.data)
+                appcf["dg_token"] = body["data"]["token"]
+            except Exception as ex:
+                print(ex)
+
+        msg.app_config = json.dumps(appcf)
 
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()

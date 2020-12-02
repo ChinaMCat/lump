@@ -75,16 +75,18 @@ while True:
     #     # i = 0
 
     if poll_list.get(socket2) == zmq.POLLIN:
-        r, s = socket2.recv_multipart()
-        if "json" in r:
-            print(mx.stamp2time(time.time()), r, "---", json.dumps(s))
-        else:
-            # msg = msgslu.Wlst_slu_9d00()
-
-            print(mx.stamp2time(time.time()), r)
-            # if "70d0" in r:
-            #     print(msg.FromString(s))
-        del r, s
+        try:
+            r, s = socket2.recv_multipart()
+            if "json" in r:
+                print(mx.stamp2time(time.time()), r, "---", json.dumps(s))
+            else:
+                # msg = msgslu.Wlst_slu_9d00()
+                print(mx.stamp2time(time.time()), r)
+                # if "70d0" in r:
+                #     print(msg.FromString(s))
+            del r, s
+        except:
+            pass
 
     if poll_list.get(socket2) == zmq.POLLERR:
         print('socket2 error')

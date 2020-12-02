@@ -516,7 +516,7 @@ class QueryDataRtuHandler(base.RequestHandler):
                                     where a.temperature>-50 and a.date_create>={1} and a.date_create<={2} {3}) as x
                                     join {0}.para_base_equipment as b on x.rtu_id=b.rtu_id
                                     join {0}.para_rtu_loop_info as c on x.rtu_id=c.rtu_id and x.loop_id=c.loop_id
-                                    where 1=1 {6} 
+                                    where 1=1 {6}
                                     ORDER BY x.rtu_id ,x.date_create'''.format(
                                 self._db_name, sdt, edt, str_tmls,
                                 self._fetch_limited, self._db_name_data, str_tmls.replace("a.", "c."))

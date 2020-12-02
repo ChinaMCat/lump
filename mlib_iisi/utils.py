@@ -72,7 +72,7 @@ def load_profile():
 
 
 def load_config(conf):
-    global m_config, m_app_config, cfg_app_config_file, cfg_dbsvr_url, cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_jk_data, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain, cfg_page_num
+    global m_config, m_app_config, cfg_app_config_file, cfg_dbsvr_url, cfg_dg_url, cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_jk_data, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain, cfg_page_num
     load_profile()
     m_config.loadConfig(conf)
     cfg_bind_port = m_config.getData('bind_port')
@@ -87,6 +87,7 @@ def load_config(conf):
     cfg_dbname_dg = m_config.getData('db_name_dg')  # 灯杆数据库名称
     cfg_dbname_uas = m_config.getData('db_name_uas')  # uas数据库名称
     cfg_dz_url = m_config.getData('dz_url')  # 电桩接口地址
+    cfg_dg_url = m_config.getData('dg_url')  # 灯杆登录接口地址
     cfg_fs_url = '{0}/FlowService.asmx'.format(
         m_config.getData('fs_url'))  # 市政工作流接口地址
     cfg_dbsvr_url = m_config.getData('dbsvr_url')

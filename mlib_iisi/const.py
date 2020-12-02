@@ -49,6 +49,7 @@ cfg_fs_url = ''  # 市政工作流接口地址
 cfg_dbsvr_url = ''  # 中间层接口地址
 cfg_enable_cross_domain = 0
 cfg_app_config_file = ''  # app额外配置信息
+cfg_dg_url = '' # 灯杆登录接口
 
 can_read = set((4, 5, 6, 7, 15))  # 可读权限值
 can_write = set((2, 3, 6, 7, 15))  # 可写权限值

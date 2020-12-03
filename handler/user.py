@@ -399,7 +399,7 @@ class UserLoginHandler(base.RequestHandler):
         # 读取appconfig
         libiisi.m_app_config.loadConfig(libiisi.cfg_app_config_file)
         appcf = json.loads(libiisi.m_app_config.getJson())
-        appcf["dg_url"] = libiisi.cfg_fs_url
+        appcf["dg_url"] = libiisi.cfg_dgfwd_url
 
         if rqmsg.dev == 3:
             # 登录工作流
@@ -438,7 +438,7 @@ class UserLoginHandler(base.RequestHandler):
                     msg.flow_data = ''
             # 登录灯杆
             url = "{0}/smartlamppost-node/a/system/v1/login?loginName={1}&password={2}".format(
-                libiisi.cfg_fs_url, rqmsg.user, rqmsg.pwd)
+                libiisi.cfg_dg_url, rqmsg.user, rqmsg.pwd)
             try:
                 rep = self._pm.request("GET", url, request_timeout=5)
                 body = json.loads(rep.data)

@@ -88,6 +88,7 @@ def load_config(conf):
     cfg_dbname_uas = m_config.getData('db_name_uas')  # uas数据库名称
     cfg_dz_url = m_config.getData('dz_url')  # 电桩接口地址
     cfg_dg_url = m_config.getData('dg_url')  # 灯杆登录接口地址
+    cfg_dgfwd_url = m_config.getData('dgfwd_url')  # 灯杆转发接口地址
     cfg_fs_url = '{0}/FlowService.asmx'.format(
         m_config.getData('fs_url'))  # 市政工作流接口地址
     cfg_dbsvr_url = m_config.getData('dbsvr_url')

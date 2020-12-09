@@ -408,7 +408,10 @@ class UserLoginHandler(base.RequestHandler):
             url = '{0}/mobileLogin?{1}'.format(libiisi.cfg_fs_url,
                                                urlencode(args))
             try:
-                rep = self._pm.request("GET", url, request_timeout=5)
+                rep = self._pm.request("GET",
+                                       url,
+                                       request_timeout=5,
+                                       retries=False)
                 # rep = yield self.thc.fetch(url,
                 #                            raise_error=True,
                 #                            request_timeout=10)
@@ -423,24 +426,27 @@ class UserLoginHandler(base.RequestHandler):
                 del dom, root
             except Exception as ex:
                 print(ex)
-                if not retry:
-                    retry = True
-                    try:
-                        rep = self._pm.request("GET", url, request_timeout=5)
-                        dom = xmld.parseString(rep.data)
-                        root = dom.documentElement
-                        msg.flow_data = root.firstChild.wholeText
-                        del dom, root
-                    except Exception as ex:
-                        print(str(ex))
-                        msg.flow_data = ''
-                else:
-                    msg.flow_data = ''
+                # if not retry:
+                #     retry = True
+                #     try:
+                #         rep = self._pm.request("GET", url, request_timeout=5)
+                #         dom = xmld.parseString(rep.data)
+                #         root = dom.documentElement
+                #         msg.flow_data = root.firstChild.wholeText
+                #         del dom, root
+                #     except Exception as ex:
+                #         print(str(ex))
+                #         msg.flow_data = ''
+                # else:
+                msg.flow_data = ''
             # 登录灯杆
-            url = "{0}/smartlamppost-node/a/system/v1/login?loginName={1}&password={2}".format(
+            url = "{0}/smartlamppost-node/a/system/v1/user/login?loginName={1}&password={2}".format(
                 libiisi.cfg_dg_url, rqmsg.user, rqmsg.pwd)
             try:
-                rep = self._pm.request("GET", url, request_timeout=5)
+                rep = self._pm.request("GET",
+                                       url,
+                                       request_timeout=5,
+                                       retries=False)
                 body = json.loads(rep.data)
                 appcf["dg_token"] = body["data"]["token"]
             except Exception as ex:

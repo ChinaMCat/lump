@@ -72,7 +72,7 @@ def load_profile():
 
 
 def load_config(conf):
-    global m_config, m_app_config, cfg_app_config_file, cfg_dbsvr_url, cfg_dg_url, cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_jk_data, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain, cfg_page_num
+    global m_config, m_app_config, cfg_app_config_file, cfg_dbsvr_url, cfg_dg_url, cfg_dgfwd_url, cfg_bind_port, cfg_tcs_port, cfg_dbname_jk, cfg_dbname_dg, cfg_dbname_jk_data, cfg_dbname_uas, cfg_dz_url, cfg_fs_url, cfg_enable_cross_domain, cfg_page_num
     load_profile()
     m_config.loadConfig(conf)
     cfg_bind_port = m_config.getData('bind_port')

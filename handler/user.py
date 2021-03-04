@@ -410,7 +410,7 @@ class UserLoginHandler(base.RequestHandler):
             try:
                 rep = self._pm.request("GET",
                                        url,
-                                       request_timeout=5,
+                                       timeout=5,
                                        retries=False)
                 # rep = yield self.thc.fetch(url,
                 #                            raise_error=True,
@@ -445,9 +445,10 @@ class UserLoginHandler(base.RequestHandler):
             try:
                 rep = self._pm.request("GET",
                                        url,
-                                       request_timeout=5,
+                                       timeout=5,
                                        retries=False)
                 body = json.loads(rep.data)
+                print("===",body)
                 appcf["dg_token"] = body["data"]["token"]
             except Exception as ex:
                 print(ex)

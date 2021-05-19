@@ -448,13 +448,11 @@ class UserLoginHandler(base.RequestHandler):
                                        timeout=5,
                                        retries=False)
                 body = json.loads(rep.data)
-                print("===",body)
                 appcf["dg_token"] = body["data"]["token"]
             except Exception as ex:
                 print(ex)
 
         msg.app_config = json.dumps(appcf)
-
         self.write(mx.code_pb2(msg, self._go_back_format))
         self.finish()
         self.write_event(121,
@@ -723,7 +721,7 @@ class UserEditHandler(base.RequestHandler):
             }
             rep = yield self.thc.fetch("{0}?{1}".format(url, urlencode(data)),
                                        raise_error=False,
-                                       request_timeout=20)
+                                       request_timeout=5)
             if 'true' in rep.body:
                 msg.head.if_st = 1
                 msg.head.if_msg = "sz UpdatePassword success"

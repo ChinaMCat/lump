@@ -745,7 +745,7 @@ class RtuCtlHandler(base.RequestHandler):
                                         on = on+str(i) + ","
                                     else:
                                         off = off + str(i) + ","
-                                    if i == 6:
+                                    if i == 8:
                                         break
                                     i += 1
                                 tcsmsg = libiisi.initRtuJson(
